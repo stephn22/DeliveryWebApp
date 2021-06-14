@@ -13,6 +13,8 @@ namespace DeliveryWebApp.Infrastructure.Persistence.Configurations
     {
         public void Configure(EntityTypeBuilder<Restaurant> builder)
         {
+            builder.HasKey(c => c.Id);
+
             builder.Property(r => r.Address)
                 .IsRequired();
 

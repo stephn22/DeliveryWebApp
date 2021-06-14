@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace DeliveryWebApp.Domain.Entities
 {
-    public class Client : User
+    public class Client
     {
         public virtual Address Address { get; set; }
     }
