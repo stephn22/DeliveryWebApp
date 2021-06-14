@@ -1,8 +1,10 @@
 ﻿using DeliveryWebApp.Application.Common.Interfaces;
 using DeliveryWebApp.Infrastructure.Identity;
 using DeliveryWebApp.Infrastructure.Persistence;
+using DeliveryWebApp.Infrastructure.Security;
+using DeliveryWebApp.Infrastructure.Security.Policies;
 using DeliveryWebApp.Infrastructure.Services;
-using Microsoft.AspNetCore.Authentication;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
@@ -14,25 +16,22 @@ namespace DeliveryWebApp.Infrastructure
     {
         public static IServiceCollection AddInfrastructure(this IServiceCollection services, IConfiguration configuration)
         {
-            if (configuration.GetValue<bool>("UseInMemoryDatabase"))
-            {
-                services.AddDbContext<ApplicationDbContext>(options =>
-                    options.UseInMemoryDatabase("DeliveryWebAppDb"));
-            }
-            else
-            {
-                services.AddDbContext<ApplicationDbContext>(options =>
-                    options.UseSqlServer(
-                        configuration.GetConnectionString("DefaultConnection"),
-                        b => b.MigrationsAssembly(typeof(ApplicationDbContext).Assembly.FullName)));
-            }
+
+            services.AddDbContext<ApplicationDbContext>(options =>
+                options.UseSqlServer(
+                    configuration.GetConnectionString("DefaultConnection"),
+                    b => b.MigrationsAssembly(typeof(ApplicationDbContext).Assembly.FullName)));
 
             services.AddScoped<IApplicationDbContext>(provider => provider.GetService<ApplicationDbContext>());
 
             services.AddScoped<IDomainEventService, DomainEventService>();
 
             services
-                .AddDefaultIdentity<ApplicationUser>()
+                .AddDefaultIdentity<ApplicationUser>(options =>
+                {
+                    options.SignIn.RequireConfirmedAccount = true;
+                    options.User.RequireUniqueEmail = true;
+                })
                 .AddRoles<IdentityRole>()
                 .AddEntityFrameworkStores<ApplicationDbContext>();
 
@@ -42,13 +41,41 @@ namespace DeliveryWebApp.Infrastructure
             services.AddTransient<IDateTime, DateTimeService>();
             services.AddTransient<IIdentityService, IdentityService>();
 
+            /***************************** EmailSender *********************************/
+
+            services.AddTransient<IEmailSender, EmailSender>();
+            services.Configure<AuthMessageSenderOptions>(configuration);
+
+            /********************************** OAuth **********************************/
+
             services.AddAuthentication()
-                .AddIdentityServerJwt();
+                .AddGoogle(options =>
+                {
+                    var googleAuthNSection = configuration.GetSection("Authentication:Google");
+
+                    options.ClientId = googleAuthNSection["ClientId"];
+                    options.ClientSecret = googleAuthNSection["ClientSecret"];
+                })
+                .AddMicrosoftAccount(microsoftOptions =>
+                {
+                    microsoftOptions.ClientId = configuration["Authentication:Microsoft:ClientId"];
+                    microsoftOptions.ClientSecret = configuration["Authentication:Microsoft:ClientSecret"];
+                });
+
+            /********************************** Policies **********************************/
 
             services.AddAuthorization(options =>
             {
-                options.AddPolicy("CanPurge", policy => policy.RequireRole("Administrator"));
+                options.AddPolicy(PolicyName.IsAdmin, policy => policy.AddRequirements(new IsAdmin()));
+                options.AddPolicy(PolicyName.IsRestaurateur, policy => policy.AddRequirements(new IsRestaurateur()));
+                options.AddPolicy(PolicyName.IsRider, policy => policy.AddRequirements(new IsRider()));
+                options.AddPolicy(PolicyName.IsDefault, policy => policy.AddRequirements(new IsDefault()));
             });
+
+            services.AddSingleton<IAuthorizationHandler, IsAdminAuthorizationHandler>();
+            services.AddSingleton<IAuthorizationHandler, IsRestaurateurAuthorizationHandler>();
+            services.AddSingleton<IAuthorizationHandler, IsRiderAuthorizationHandler>();
+            services.AddSingleton<IAuthorizationHandler, IsDefaultAuthorizationHandler>();
 
             return services;
         }
