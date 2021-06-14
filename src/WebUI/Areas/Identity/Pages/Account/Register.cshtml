@@ -13,9 +13,24 @@
             <hr />
             <div asp-validation-summary="All" class="text-danger"></div>
             <div class="form-group">
+                <label asp-for="Input.FName"></label>
+                <input asp-for="Input.FName" class="form-control" />
+                <span asp-validation-for="Input.FName" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Input.LName"></label>
+                <input asp-for="Input.LName" class="form-control" />
+                <span asp-validation-for="Input.LName" class="text-danger"></span>
+            </div>
+            <div class="form-group">
                 <label asp-for="Input.Email"></label>
                 <input asp-for="Input.Email" class="form-control" />
                 <span asp-validation-for="Input.Email" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Input.UserName"></label>
+                <input asp-for="Input.UserName" class="form-control" />
+                <span asp-validation-for="Input.UserName" class="text-danger"></span>
             </div>
             <div class="form-group">
                 <label asp-for="Input.Password"></label>
@@ -49,10 +64,27 @@
                     <form id="external-account" asp-page="./ExternalLogin" asp-route-returnUrl="@Model.ReturnUrl" method="post" class="form-horizontal">
                         <div>
                             <p>
-                                @foreach (var provider in Model.ExternalLogins)
-                                {
-                                    <button type="submit" class="btn btn-primary" name="provider" value="@provider.Name" title="Log in using your @provider.DisplayName account">@provider.DisplayName</button>
-                                }
+                                @* Google btn *@
+                                <button type="submit" class="btn btn-outline-dark" name="provider" value="@Model.ExternalLogins[0].Name" title="Log in using your @Model.ExternalLogins[0].DisplayName account">
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="21" height="21" viewBox="0 0 326667 333333" shape-rendering="geometricPrecision" text-rendering="geometricPrecision" image-rendering="optimizeQuality" fill-rule="evenodd" clip-rule="evenodd">
+                                        <path d="M326667 170370c0-13704-1112-23704-3518-34074H166667v61851h91851c-1851 15371-11851 38519-34074 54074l-311 2071 49476 38329 3428 342c31481-29074 49630-71852 49630-122593m0 0z" fill="#4285f4" />
+                                        <path d="M166667 333333c44999 0 82776-14815 110370-40370l-52593-40742c-14074 9815-32963 16667-57777 16667-44074 0-81481-29073-94816-69258l-1954 166-51447 39815-673 1870c27407 54444 83704 91852 148890 91852z" fill="#34a853" />
+                                        <path d="M71851 199630c-3518-10370-5555-21482-5555-32963 0-11482 2036-22593 5370-32963l-93-2209-52091-40455-1704 811C6482 114444 1 139814 1 166666s6482 52221 17777 74814l54074-41851m0 0z" fill="#fbbc04" />
+                                        <path d="M166667 64444c31296 0 52406 13519 64444 24816l47037-45926C249260 16482 211666 1 166667 1 101481 1 45185 37408 17777 91852l53889 41853c13520-40185 50927-69260 95001-69260m0 0z" fill="#ea4335" />
+                                    </svg>
+                                    @Model.ExternalLogins[0].DisplayName
+                                </button>
+
+                                @* Microsoft btn *@
+                                <button type="submit" class="btn btn-outline-dark" name="provider" value="@Model.ExternalLogins[1].Name" title="Log in using your @Model.ExternalLogins[1].DisplayName account">
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="21" height="21" viewBox="0 0 21 21">
+                                        <rect x="1" y="1" width="9" height="9" fill="#f25022" />
+                                        <rect x="1" y="11" width="9" height="9" fill="#00a4ef" />
+                                        <rect x="11" y="1" width="9" height="9" fill="#7fba00" />
+                                        <rect x="11" y="11" width="9" height="9" fill="#ffb900" />
+                                    </svg>
+                                    @Model.ExternalLogins[1].DisplayName
+                                </button>
                             </p>
                         </div>
                     </form>
