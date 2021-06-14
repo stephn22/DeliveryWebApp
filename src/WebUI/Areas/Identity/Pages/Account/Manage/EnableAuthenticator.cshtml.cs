@@ -149,7 +149,7 @@ namespace DeliveryWebApp.WebUI.Areas.Identity.Pages.Account.Manage
         {
             return string.Format(
                 AuthenticatorUriFormat,
-                _urlEncoder.Encode("DeliveryWebApp.WebUI"),
+                _urlEncoder.Encode("DeliveryApp"),
                 _urlEncoder.Encode(email),
                 unformattedKey);
         }
