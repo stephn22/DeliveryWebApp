@@ -1,6 +1,7 @@
 ﻿using DeliveryWebApp.Application.Common.Interfaces;
 using DeliveryWebApp.Infrastructure.Identity;
 using DeliveryWebApp.Infrastructure.Persistence;
+using DeliveryWebApp.WebUI;
 using MediatR;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Identity;
@@ -14,7 +15,6 @@ using System;
 using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
-using WebUI;
 
 [SetUpFixture]
 public class Testing
