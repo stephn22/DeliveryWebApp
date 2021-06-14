@@ -1,0 +1,14 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net5.0</TargetFramework>
+    <RootNamespace>DeliveryWebApp.Domain</RootNamespace>
+    <AssemblyName>DeliveryWebApp.Domain</AssemblyName>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <Folder Include="Events\" />
+    <Folder Include="ValueObjects\" />
+  </ItemGroup>
+
+</Project>
