@@ -29,13 +29,16 @@ namespace DeliveryWebApp.Infrastructure.Persistence.Configurations
                 .OnDelete(DeleteBehavior.Cascade)
                 .IsRequired();
 
+            builder.HasOne(u => u.Restaurant)
+                .WithOne()
+                .HasForeignKey<Restaurant>(u => u.Id)
+                .OnDelete(DeleteBehavior.Cascade)
+                .IsRequired();
+
             builder.Property(u => u.TotalPrice)
                 .IsRequired();
 
             builder.Property(o => o.Date)
-                .IsRequired();
-
-            builder.Property(o => o.Restaurant)
                 .IsRequired();
         }
     }

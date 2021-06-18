@@ -18,9 +18,7 @@ namespace DeliveryWebApp.Infrastructure.Persistence.Configurations
             builder.HasMany(c => c.Addresses)
                 .WithOne()
                 .HasForeignKey(c => c.Id)
-                .OnDelete(DeleteBehavior.Cascade);
-
-            // FIXME missing client fk
+                .IsRequired();
         }
     }
 }

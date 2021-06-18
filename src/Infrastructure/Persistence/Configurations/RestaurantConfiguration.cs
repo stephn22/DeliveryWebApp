@@ -27,7 +27,9 @@ namespace DeliveryWebApp.Infrastructure.Persistence.Configurations
                 .OnDelete(DeleteBehavior.Cascade)
                 .IsRequired();
 
-            builder.Property(r => r.Address)
+            builder.HasOne(u => u.Address)
+                .WithOne()
+                .HasForeignKey<Address>(u => u.Id)
                 .IsRequired();
 
             builder.Property(r => r.Name)
@@ -36,7 +38,7 @@ namespace DeliveryWebApp.Infrastructure.Persistence.Configurations
             builder.Property(r => r.LogoUrl)
                 .IsRequired();
 
-            builder.Property(r => r.Address)
+            builder.Property(u => u.Name)
                 .IsRequired();
         }
     }
