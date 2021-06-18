@@ -29,6 +29,11 @@ namespace DeliveryWebApp.Infrastructure.Persistence
 
                 if (await userManager.FindByIdAsync(administrator.Id) != null)
                 {
+                    // FIXME
+                    //var token = await userManager.GenerateEmailConfirmationTokenAsync(administrator);
+
+                    //await userManager.ConfirmEmailAsync(administrator, token);
+
                     await userManager.AddToRolesAsync(administrator, new[] { administratorRole.Name });
 
                     await userManager.AddClaimAsync(administrator, new Claim(ClaimName.Role, RoleName.Admin));

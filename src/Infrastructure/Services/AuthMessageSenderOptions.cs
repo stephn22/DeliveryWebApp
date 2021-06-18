@@ -7,7 +7,7 @@ using DeliveryWebApp.Application.Common.Interfaces;
 
 namespace DeliveryWebApp.Infrastructure.Services
 {
-    public class AuthMessageSenderOptions : IAuthMessageSenderOptions
+    public class AuthMessageSenderOptions
     {
         public string User { get; set; }
         public string Key { get; set; }

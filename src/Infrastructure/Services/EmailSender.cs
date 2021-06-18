@@ -16,7 +16,7 @@ namespace DeliveryWebApp.Infrastructure.Services
     {
 
         private readonly IConfiguration _configuration;
-        public IAuthMessageSenderOptions Options { get; }
+        public AuthMessageSenderOptions Options { get; }
 
         public EmailSender(IOptions<AuthMessageSenderOptions> optionsAccessor, IConfiguration configuration)
         {
