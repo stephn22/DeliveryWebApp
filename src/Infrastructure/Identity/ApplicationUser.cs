@@ -2,7 +2,7 @@
 
 namespace DeliveryWebApp.Infrastructure.Identity
 {
-    public class ApplicationUser : IdentityUser // FIXME not supported by ef
+    public class ApplicationUser : IdentityUser
     {
     }
 }
