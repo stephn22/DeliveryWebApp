@@ -1,8 +1,13 @@
-﻿using Microsoft.Extensions.Configuration;
-using Microsoft.Extensions.Options;
-using SendGrid;
-using SendGrid.Helpers.Mail;
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
 using System.Threading.Tasks;
+using DeliveryWebApp.Application.Common.Interfaces;
+using Microsoft.Extensions.Configuration;
+using SendGrid;
+using Microsoft.Extensions.Options;
+using SendGrid.Helpers.Mail;
 using IEmailSender = Microsoft.AspNetCore.Identity.UI.Services.IEmailSender;
 
 namespace DeliveryWebApp.Infrastructure.Services
