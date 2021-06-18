@@ -28,7 +28,7 @@ namespace DeliveryWebApp.Infrastructure
             services.AddScoped<IDomainEventService, DomainEventService>();
 
             services
-                .AddIdentity<ApplicationUser, IdentityRole>(options =>
+                .AddDefaultIdentity<ApplicationUser>(options =>
                 {
                     options.SignIn.RequireConfirmedAccount = true;
                     options.User.RequireUniqueEmail = true;
@@ -36,6 +36,9 @@ namespace DeliveryWebApp.Infrastructure
                 .AddRoles<IdentityRole>()
                 .AddEntityFrameworkStores<ApplicationDbContext>()
                 .AddDefaultTokenProviders();
+
+            services.AddIdentityServer()
+                .AddApiAuthorization<ApplicationUser, ApplicationDbContext>();
 
             services.AddTransient<IDateTime, DateTimeService>();
             services.AddTransient<IIdentityService, IdentityService>();
