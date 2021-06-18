@@ -21,7 +21,7 @@ namespace DeliveryWebApp.Infrastructure.Persistence.Configurations
                 .WithOne()
                 .HasForeignKey<Restaurant>(u => u.Id)
                 .IsRequired()
-                .OnDelete(DeleteBehavior.SetNull);
+                .OnDelete(DeleteBehavior.NoAction);
         }
     }
 }

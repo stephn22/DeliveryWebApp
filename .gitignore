@@ -234,3 +234,4 @@ _Pvt_Extensions
 .fake/
 /NDependOut
 /DeliveryWebApp.ndproj
+/src/WebUI/Log

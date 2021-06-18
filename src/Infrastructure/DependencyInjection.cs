@@ -20,7 +20,7 @@ namespace DeliveryWebApp.Infrastructure
             services.AddDbContext<ApplicationDbContext>(options =>
                 options.UseSqlServer(
                     configuration.GetConnectionString("DefaultConnection"),
-                    b => b.MigrationsAssembly("Infrastructure.Persistence.Migrations")));
+                    b => b.MigrationsAssembly("DeliveryWebApp.WebUI")));
 
             services.AddScoped<IApplicationDbContext>(provider => provider.GetService<ApplicationDbContext>());
 
