@@ -18,7 +18,7 @@ namespace DeliveryWebApp.Infrastructure.Persistence.Configurations
             builder.HasMany(u => u.Products)
                 .WithOne()
                 .HasForeignKey(u => u.Id)
-                .OnDelete(DeleteBehavior.SetNull);
+                .OnDelete(DeleteBehavior.NoAction);
 
             builder.HasOne(u => u.Address)
                 .WithOne()
