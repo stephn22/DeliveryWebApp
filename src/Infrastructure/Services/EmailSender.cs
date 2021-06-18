@@ -8,6 +8,7 @@ using Microsoft.Extensions.Configuration;
 using SendGrid;
 using Microsoft.Extensions.Options;
 using SendGrid.Helpers.Mail;
+using IEmailSender = Microsoft.AspNetCore.Identity.UI.Services.IEmailSender;
 
 namespace DeliveryWebApp.Infrastructure.Services
 {
