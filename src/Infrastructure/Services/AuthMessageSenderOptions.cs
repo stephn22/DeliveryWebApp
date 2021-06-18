@@ -9,7 +9,7 @@ namespace DeliveryWebApp.Infrastructure.Services
 {
     public class AuthMessageSenderOptions
     {
-        public string User { get; set; }
-        public string Key { get; set; }
+        public string SendGridUser { get; set; }
+        public string SendGridKey { get; set; }
     }
 }

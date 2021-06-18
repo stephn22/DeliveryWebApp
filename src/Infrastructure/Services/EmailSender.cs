@@ -26,7 +26,7 @@ namespace DeliveryWebApp.Infrastructure.Services
 
         public async Task SendEmailAsync(string email, string subject, string msg)
         {
-            await Execute(Options.Key, subject, msg, email);
+            await Execute(Options.SendGridKey, subject, msg, email);
         }
 
         private async Task Execute(string apiKey, string subject, string message, string email)
@@ -34,7 +34,7 @@ namespace DeliveryWebApp.Infrastructure.Services
             var client = new SendGridClient(apiKey);
             var msg = new SendGridMessage()
             {
-                From = new EmailAddress(_configuration["EmailSender:Email"], Options.User),
+                From = new EmailAddress(_configuration["EmailSender:Email"], Options.SendGridUser),
                 Subject = subject,
                 PlainTextContent = message,
                 HtmlContent = message
