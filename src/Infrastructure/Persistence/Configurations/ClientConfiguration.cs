@@ -15,8 +15,7 @@ namespace DeliveryWebApp.Infrastructure.Persistence.Configurations
     {
         public void Configure(EntityTypeBuilder<Client> builder)
         {
-            builder.Property(u => u.ApplicationUserFk)
-                .IsRequired();
+            builder.HasKey(u => u.ApplicationUserFk);
 
             builder.HasMany(c => c.Addresses)
                 .WithOne()
