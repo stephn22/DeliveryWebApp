@@ -15,11 +15,14 @@ namespace DeliveryWebApp.Infrastructure.Persistence.Configurations
     {
         public void Configure(EntityTypeBuilder<Restaurateur> builder)
         {
-            builder.Property(typeof(ApplicationUser), PropertyName.User)
+            builder.Property(u => u.ApplicationUserFk)
                 .IsRequired();
 
-            builder.Property(o => o.Restaurant)
-                .IsRequired();
+            builder.HasOne(u => u.Restaurant)
+                .WithOne()
+                .HasForeignKey<Restaurant>(u => u.Id)
+                .IsRequired()
+                .OnDelete(DeleteBehavior.SetNull);
         }
     }
 }

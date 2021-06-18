@@ -24,12 +24,12 @@ namespace DeliveryWebApp.Infrastructure.Persistence.Configurations
             builder.HasMany(u => u.Products)
                 .WithOne()
                 .HasForeignKey(u => u.Id)
-                .OnDelete(DeleteBehavior.Cascade)
-                .IsRequired();
+                .OnDelete(DeleteBehavior.SetNull);
 
             builder.HasOne(u => u.Address)
                 .WithOne()
                 .HasForeignKey<Address>(u => u.Id)
+                .OnDelete(DeleteBehavior.NoAction)
                 .IsRequired();
 
             builder.Property(r => r.Name)
