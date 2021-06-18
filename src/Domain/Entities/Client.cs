@@ -8,6 +8,7 @@ namespace DeliveryWebApp.Domain.Entities
 {
     public class Client
     {
-        public virtual Address Address { get; set; }
+        public string ApplicationUserFk { get; set; }
+        public ICollection<Address> Addresses { get; set; }
     }
 }

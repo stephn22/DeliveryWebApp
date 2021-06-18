@@ -8,6 +8,7 @@ namespace DeliveryWebApp.Domain.Entities
 {
     public class Restaurateur
     {
+        public string ApplicationUserFk { get; set; }
         public virtual Restaurant Restaurant { get; set; }
     }
 }

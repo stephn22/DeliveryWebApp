@@ -17,10 +17,19 @@ namespace DeliveryWebApp.Infrastructure.Persistence.Configurations
         {
             builder.HasKey(c => c.Id);
 
-            builder.Property(typeof(ApplicationUser), PropertyName.User)
+            builder.HasOne(u => u.Client)
+                .WithOne()
+                .HasForeignKey<Client>(u => u.ApplicationUserFk)
+                .OnDelete(DeleteBehavior.Cascade)
                 .IsRequired();
 
-            builder.Property(o => o.Products)
+            builder.HasMany(u => u.Products)
+                .WithOne()
+                .HasForeignKey(u => u.Id)
+                .OnDelete(DeleteBehavior.Cascade)
+                .IsRequired();
+
+            builder.Property(u => u.TotalPrice)
                 .IsRequired();
 
             builder.Property(o => o.Date)

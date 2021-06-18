@@ -15,11 +15,12 @@ namespace DeliveryWebApp.Infrastructure.Persistence.Configurations
     {
         public void Configure(EntityTypeBuilder<Client> builder)
         {
-            builder.Property(typeof(ApplicationUser), PropertyName.User)
-                .IsRequired();
+            builder.HasMany(c => c.Addresses)
+                .WithOne()
+                .HasForeignKey(c => c.Id)
+                .OnDelete(DeleteBehavior.Cascade);
 
-            builder.Property(r => r.Address)
-                .IsRequired();
+            // FIXME missing client fk
         }
     }
 }

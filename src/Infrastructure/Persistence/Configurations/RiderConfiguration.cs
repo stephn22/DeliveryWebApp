@@ -15,11 +15,14 @@ namespace DeliveryWebApp.Infrastructure.Persistence.Configurations
     {
         public void Configure(EntityTypeBuilder<Rider> builder)
         {
-            builder.Property(typeof(ApplicationUser), PropertyName.User)
-                .IsRequired();
 
             builder.Property(r => r.DeliveryCredit)
                 .IsRequired();
+
+            builder.HasMany(u => u.OpenOrders)
+                .WithOne()
+                .HasForeignKey(u => u.Id)
+                .OnDelete(DeleteBehavior.Cascade);
         }
     }
 }

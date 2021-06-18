@@ -15,6 +15,18 @@ namespace DeliveryWebApp.Infrastructure.Persistence.Configurations
         {
             builder.HasKey(c => c.Id);
 
+            builder.HasOne(u => u.Restaurateur)
+                .WithOne()
+                .HasForeignKey<Restaurateur>(u => u.ApplicationUserFk)
+                .OnDelete(DeleteBehavior.Cascade)
+                .IsRequired();
+
+            builder.HasMany(u => u.Products)
+                .WithOne()
+                .HasForeignKey(u => u.Id)
+                .OnDelete(DeleteBehavior.Cascade)
+                .IsRequired();
+
             builder.Property(r => r.Address)
                 .IsRequired();
 
@@ -26,7 +38,6 @@ namespace DeliveryWebApp.Infrastructure.Persistence.Configurations
 
             builder.Property(r => r.Address)
                 .IsRequired();
-
         }
     }
 }

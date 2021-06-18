@@ -8,6 +8,9 @@ namespace DeliveryWebApp.Domain.Entities
 {
     public class Basket : BaseEntity
     {
+        public virtual Client Client { get; set; }
         public ICollection<Product> Products { get; set; }
+
+        public double TotalPrice { get; set; }
     }
 }
