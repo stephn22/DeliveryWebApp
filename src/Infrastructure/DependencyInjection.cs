@@ -33,6 +33,7 @@ namespace DeliveryWebApp.Infrastructure
                     options.SignIn.RequireConfirmedAccount = true;
                     options.User.RequireUniqueEmail = true;
                 })
+                .AddRoles<IdentityRole>()
                 .AddEntityFrameworkStores<ApplicationDbContext>()
                 .AddDefaultTokenProviders();
 
@@ -64,13 +65,11 @@ namespace DeliveryWebApp.Infrastructure
 
             services.AddAuthorization(options =>
             {
-                options.AddPolicy(PolicyName.IsAdmin, policy => policy.AddRequirements(new IsAdmin()));
                 options.AddPolicy(PolicyName.IsRestaurateur, policy => policy.AddRequirements(new IsRestaurateur()));
                 options.AddPolicy(PolicyName.IsRider, policy => policy.AddRequirements(new IsRider()));
                 options.AddPolicy(PolicyName.IsDefault, policy => policy.AddRequirements(new IsDefault()));
             });
 
-            services.AddSingleton<IAuthorizationHandler, IsAdminAuthorizationHandler>();
             services.AddSingleton<IAuthorizationHandler, IsRestaurateurAuthorizationHandler>();
             services.AddSingleton<IAuthorizationHandler, IsRiderAuthorizationHandler>();
             services.AddSingleton<IAuthorizationHandler, IsDefaultAuthorizationHandler>();

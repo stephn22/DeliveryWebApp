@@ -8,7 +8,6 @@ namespace DeliveryWebApp.Infrastructure.Security
 {
     public class PolicyName
     {
-        public const string IsAdmin = "IsAdmin";
         public const string IsRestaurateur = "IsRestaurateur";
         public const string IsRider = "IsRider";
         public const string IsDefault = "IsDefault";
