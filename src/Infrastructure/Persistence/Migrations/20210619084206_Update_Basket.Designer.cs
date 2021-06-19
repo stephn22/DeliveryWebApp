@@ -4,14 +4,16 @@ using DeliveryWebApp.Infrastructure.Persistence;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 namespace DeliveryWebApp.WebUI.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20210619084206_Update_Basket")]
+    partial class Update_Basket
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -67,13 +69,10 @@ namespace DeliveryWebApp.WebUI.Migrations
 
             modelBuilder.Entity("DeliveryWebApp.Domain.Entities.Client", b =>
                 {
-                    b.Property<string>("Id")
+                    b.Property<string>("ApplicationUserFk")
                         .HasColumnType("nvarchar(450)");
 
-                    b.Property<string>("ApplicationUserFk")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.HasKey("Id");
+                    b.HasKey("ApplicationUserFk");
 
                     b.ToTable("Clients");
                 });
@@ -147,29 +146,23 @@ namespace DeliveryWebApp.WebUI.Migrations
 
             modelBuilder.Entity("DeliveryWebApp.Domain.Entities.Restaurateur", b =>
                 {
-                    b.Property<string>("Id")
+                    b.Property<string>("ApplicationUserFk")
                         .HasColumnType("nvarchar(450)");
 
-                    b.Property<string>("ApplicationUserFk")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.HasKey("Id");
+                    b.HasKey("ApplicationUserFk");
 
                     b.ToTable("Restaurateurs");
                 });
 
             modelBuilder.Entity("DeliveryWebApp.Domain.Entities.Rider", b =>
                 {
-                    b.Property<string>("Id")
-                        .HasColumnType("nvarchar(450)");
-
                     b.Property<string>("ApplicationUserFk")
-                        .HasColumnType("nvarchar(max)");
+                        .HasColumnType("nvarchar(450)");
 
                     b.Property<double>("DeliveryCredit")
                         .HasColumnType("float");
 
-                    b.HasKey("Id");
+                    b.HasKey("ApplicationUserFk");
 
                     b.ToTable("Riders");
                 });
@@ -496,13 +489,13 @@ namespace DeliveryWebApp.WebUI.Migrations
                 {
                     b.HasOne("DeliveryWebApp.Domain.Entities.Basket", null)
                         .WithOne("Client")
-                        .HasForeignKey("DeliveryWebApp.Domain.Entities.Client", "Id")
+                        .HasForeignKey("DeliveryWebApp.Domain.Entities.Client", "ApplicationUserFk")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
                     b.HasOne("DeliveryWebApp.Domain.Entities.Order", null)
                         .WithOne("Client")
-                        .HasForeignKey("DeliveryWebApp.Domain.Entities.Client", "Id")
+                        .HasForeignKey("DeliveryWebApp.Domain.Entities.Client", "ApplicationUserFk")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
                 });
@@ -543,16 +536,16 @@ namespace DeliveryWebApp.WebUI.Migrations
 
             modelBuilder.Entity("DeliveryWebApp.Domain.Entities.Restaurant", b =>
                 {
-                    b.HasOne("DeliveryWebApp.Domain.Entities.Order", null)
-                        .WithOne("Restaurant")
-                        .HasForeignKey("DeliveryWebApp.Domain.Entities.Restaurant", "Id")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
                     b.HasOne("DeliveryWebApp.Domain.Entities.Restaurateur", null)
                         .WithOne("Restaurant")
                         .HasForeignKey("DeliveryWebApp.Domain.Entities.Restaurant", "Id")
                         .OnDelete(DeleteBehavior.NoAction)
+                        .IsRequired();
+
+                    b.HasOne("DeliveryWebApp.Domain.Entities.Order", null)
+                        .WithOne("Restaurant")
+                        .HasForeignKey("DeliveryWebApp.Domain.Entities.Restaurant", "Id")
+                        .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
                 });
 

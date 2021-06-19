@@ -31,9 +31,6 @@ namespace DeliveryWebApp.Infrastructure.Persistence.Configurations
 
             builder.Property(r => r.LogoUrl)
                 .IsRequired();
-
-            builder.Property(u => u.Name)
-                .IsRequired();
         }
     }
 }

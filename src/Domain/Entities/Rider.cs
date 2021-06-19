@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace DeliveryWebApp.Domain.Entities
 {
-    public class Rider
+    public class Rider : BaseEntity
     {
         public string ApplicationUserFk { get; set; }
         public double DeliveryCredit { get; set; }

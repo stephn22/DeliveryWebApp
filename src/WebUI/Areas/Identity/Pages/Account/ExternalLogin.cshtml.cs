@@ -6,8 +6,11 @@ using System.Security.Claims;
 using System.Text;
 using System.Text.Encodings.Web;
 using System.Threading.Tasks;
+using DeliveryWebApp.Domain.Entities;
 using Microsoft.AspNetCore.Authorization;
 using DeliveryWebApp.Infrastructure.Identity;
+using DeliveryWebApp.Infrastructure.Persistence;
+using DeliveryWebApp.Infrastructure.Security;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.UI.Services;
 using Microsoft.AspNetCore.Mvc;
@@ -22,17 +25,20 @@ namespace DeliveryWebApp.WebUI.Areas.Identity.Pages.Account
     {
         private readonly SignInManager<ApplicationUser> _signInManager;
         private readonly UserManager<ApplicationUser> _userManager;
+        private readonly ApplicationDbContext _context;
         private readonly IEmailSender _emailSender;
         private readonly ILogger<ExternalLoginModel> _logger;
 
         public ExternalLoginModel(
             SignInManager<ApplicationUser> signInManager,
             UserManager<ApplicationUser> userManager,
+            ApplicationDbContext context,
             ILogger<ExternalLoginModel> logger,
             IEmailSender emailSender)
         {
             _signInManager = signInManager;
             _userManager = userManager;
+            _context = context;
             _logger = logger;
             _emailSender = emailSender;
         }
@@ -51,7 +57,7 @@ namespace DeliveryWebApp.WebUI.Areas.Identity.Pages.Account
         {
             [Required]
             [DataType(DataType.Text)]
-            [Display(Name = "SendGridUser Name")]
+            [Display(Name = "Username")]
             public string UserName { get; set; }
 
             [Required]
@@ -103,10 +109,12 @@ namespace DeliveryWebApp.WebUI.Areas.Identity.Pages.Account
                 // If the user does not have an account, then ask the user to create an account.
                 ReturnUrl = returnUrl;
                 ProviderDisplayName = info.ProviderDisplayName;
-                if (info.Principal.HasClaim(c => c.Type == ClaimTypes.Email))
+                if (info.Principal.HasClaim(c => c.Type == ClaimTypes.Email) &&
+                    info.Principal.HasClaim(c => c.Type == ClaimTypes.Name))
                 {
                     Input = new InputModel
                     {
+                        UserName = info.Principal.FindFirstValue(ClaimTypes.Name),
                         Email = info.Principal.FindFirstValue(ClaimTypes.Email)
                     };
                 }
@@ -136,6 +144,14 @@ namespace DeliveryWebApp.WebUI.Areas.Identity.Pages.Account
                     if (result.Succeeded)
                     {
                         _logger.LogInformation("SendGridUser created an account using {Name} provider.", info.LoginProvider);
+
+                        // Add to Client table
+                        _context.Clients.Add(new Client() // TODO check
+                        {
+                            ApplicationUserFk = user.Id
+                        });
+
+                        await _userManager.AddClaimAsync(user, new Claim(ClaimName.Role, PolicyName.IsDefault));
 
                         var userId = await _userManager.GetUserIdAsync(user);
                         var code = await _userManager.GenerateEmailConfirmationTokenAsync(user);

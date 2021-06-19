@@ -15,7 +15,7 @@ namespace DeliveryWebApp.Infrastructure.Persistence.Configurations
     {
         public void Configure(EntityTypeBuilder<Rider> builder)
         {
-            builder.HasKey(u => u.ApplicationUserFk);
+            builder.HasKey(u => u.Id);
 
             builder.Property(r => r.DeliveryCredit)
                 .IsRequired();
