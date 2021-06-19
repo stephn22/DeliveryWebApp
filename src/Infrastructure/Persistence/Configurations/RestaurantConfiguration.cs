@@ -13,7 +13,10 @@ namespace DeliveryWebApp.Infrastructure.Persistence.Configurations
     {
         public void Configure(EntityTypeBuilder<Restaurant> builder)
         {
-            builder.HasKey(c => c.Id);
+            builder.Property(u => u.Id)
+                .ValueGeneratedOnAdd();
+
+            builder.HasKey(u => u.Id);
 
             builder.HasMany(u => u.Products)
                 .WithOne()

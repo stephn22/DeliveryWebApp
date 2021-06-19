@@ -103,12 +103,6 @@ namespace DeliveryWebApp.WebUI.Areas.Identity.Pages.Account
                 {
                     _logger.LogInformation("User created a new account with password.");
 
-                    // Add to Client table
-                    _context.Clients.Add(new Client() // TODO check
-                    {
-                        ApplicationUserFk = user.Id
-                    });
-
                     /****************************** Claims ******************************/
 
                     await _userManager.AddClaimsAsync(user, new[]

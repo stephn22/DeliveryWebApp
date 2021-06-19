@@ -145,12 +145,6 @@ namespace DeliveryWebApp.WebUI.Areas.Identity.Pages.Account
                     {
                         _logger.LogInformation("SendGridUser created an account using {Name} provider.", info.LoginProvider);
 
-                        // Add to Client table
-                        _context.Clients.Add(new Client() // TODO check
-                        {
-                            ApplicationUserFk = user.Id
-                        });
-
                         await _userManager.AddClaimAsync(user, new Claim(ClaimName.Role, PolicyName.IsDefault));
 
                         var userId = await _userManager.GetUserIdAsync(user);

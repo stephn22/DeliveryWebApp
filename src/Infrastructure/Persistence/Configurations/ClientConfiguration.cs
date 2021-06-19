@@ -15,6 +15,9 @@ namespace DeliveryWebApp.Infrastructure.Persistence.Configurations
     {
         public void Configure(EntityTypeBuilder<Client> builder)
         {
+            builder.Property(u => u.Id)
+                .ValueGeneratedOnAdd();
+
             builder.HasKey(u => u.Id);
 
             builder.HasMany(c => c.Addresses)

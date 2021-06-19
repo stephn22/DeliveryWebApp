@@ -15,7 +15,10 @@ namespace DeliveryWebApp.Infrastructure.Persistence.Configurations
     {
         public void Configure(EntityTypeBuilder<Order> builder)
         {
-            builder.HasKey(c => c.Id);
+            builder.Property(u => u.Id)
+                .ValueGeneratedOnAdd();
+
+            builder.HasKey(u => u.Id);
 
             builder.HasOne(u => u.Client)
                 .WithOne()
