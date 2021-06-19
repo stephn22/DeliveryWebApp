@@ -36,6 +36,7 @@ namespace DeliveryWebApp.Infrastructure.Persistence
         public DbSet<Basket> Baskets { get; set; }
         public DbSet<Order> Orders { get; set; }
         public DbSet<Product> Products { get; set; }
+        public DbSet<Client> Clients { get; set; }
         public DbSet<Restaurant> Restaurants { get; set; }
         public DbSet<Restaurateur> Restaurateurs { get; set; }
         public DbSet<Rider> Riders { get; set; }
