@@ -57,6 +57,7 @@
 
   <ItemGroup>
     <Folder Include="Log\" />
+    <Folder Include="Pages\Admin\" />
   </ItemGroup>
 
 </Project>
