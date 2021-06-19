@@ -1,27 +1,54 @@
 ﻿@using DeliveryWebApp.Infrastructure.Identity
+@using DeliveryWebApp.Infrastructure.Security
+@using Microsoft.AspNetCore.Authorization
 @using Microsoft.AspNetCore.Identity
 @inject SignInManager<ApplicationUser> SignInManager
 @inject UserManager<ApplicationUser> UserManager
+@inject IAuthorizationService AuthorizationService
+
+@{
+    var isRestaurateur = (await AuthorizationService.AuthorizeAsync(User, PolicyName.IsRestaurateur)).Succeeded;
+}
 
 <ul class="navbar-nav">
-@if (SignInManager.IsSignedIn(User))
-{
-    <li class="nav-item">
-        <a  class="nav-link text-dark" asp-area="Identity" asp-page="/Account/Manage/Index" title="Manage">Hello @User.Identity.Name!</a>
-    </li>
-    <li class="nav-item">
-        <form class="form-inline" asp-area="Identity" asp-page="/Account/Logout" asp-route-returnUrl="@Url.Page("/", new { area = "" })" method="post" >
-            <button  type="submit" class="nav-link btn btn-link text-dark">Logout</button>
-        </form>
-    </li>
-}
-else
-{
-    <li class="nav-item">
-        <a class="nav-link text-dark" asp-area="Identity" asp-page="/Account/Register">Register</a>
-    </li>
-    <li class="nav-item">
-        <a class="nav-link text-dark" asp-area="Identity" asp-page="/Account/Login">Login</a>
-    </li>
-}
+    @if (SignInManager.IsSignedIn(User))
+    {
+        <li class="nav-item">
+            @*<a class="nav-link text-dark" asp-area="Identity" asp-page="/Account/Manage/Index" title="Manage">@User.Identity.Name</a>*@
+            <div class="btn-group">
+                <button type="button" class="btn btn-primary dropdown-toggle" asp-area="Identity" asp-page="/Account/Manage/Index" data-bs-toggle="dropdown" aria-expanded="false" title="Manage">
+                    @User.Identity.Name
+                </button>
+                
+                <ul class="dropdown-menu">
+                    <li><a class="dropdown-item">My Restaurant</a></li>
+                    <li><a class="dropdown-item">My Products</a></li>
+                </ul>
+            </div>
+        </li>
+        <li class="nav-item">
+            <form class="form-inline" asp-area="Identity" asp-page="/Account/Logout" asp-route-returnUrl="@Url.Page("/", new { area = "" })" method="post">
+                <button type="submit" class="nav-link btn btn-link text-dark" title="Logout">
+                    @* Logout img *@
+                    <svg xmlns="http://www.w3.org/2000/svg" enable-background="new 0 0 24 24" height="24px" viewBox="0 0 24 24" width="30px" fill="#000000">
+                        <g>
+                            <path d="M0,0h24v24H0V0z" fill="none"/>
+                        </g>
+                        <g>
+                            <path d="M17,8l-1.41,1.41L17.17,11H9v2h8.17l-1.58,1.58L17,16l4-4L17,8z M5,5h7V3H5C3.9,3,3,3.9,3,5v14c0,1.1,0.9,2,2,2h7v-2H5V5z"/>
+                        </g>
+                    </svg>
+                </button>
+            </form>
+        </li>
+    }
+    else
+    {
+        <li class="nav-item">
+            <a class="nav-link text-dark" asp-area="Identity" asp-page="/Account/Register">Register</a>
+        </li>
+        <li class="nav-item">
+            <a class="nav-link text-dark" asp-area="Identity" asp-page="/Account/Login">Login</a>
+        </li>
+    }
 </ul>
