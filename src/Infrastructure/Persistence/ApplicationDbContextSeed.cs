@@ -5,6 +5,7 @@ using Microsoft.Extensions.DependencyInjection;
 using System;
 using System.Linq;
 using System.Threading.Tasks;
+using DeliveryWebApp.Infrastructure.Security;
 
 namespace DeliveryWebApp.Infrastructure.Persistence
 {
@@ -13,7 +14,7 @@ namespace DeliveryWebApp.Infrastructure.Persistence
         public static async Task SeedDefaultUserAsync(UserManager<ApplicationUser> userManager,
             RoleManager<IdentityRole> roleManager, IServiceProvider serviceProvider)
         {
-            var administratorRole = new IdentityRole("Administrator");
+            var administratorRole = new IdentityRole(RoleName.Admin);
 
             var config = serviceProvider.GetRequiredService<IConfiguration>();
 

@@ -8,6 +8,9 @@
 
 @{
     var isRestaurateur = (await AuthorizationService.AuthorizeAsync(User, PolicyName.IsRestaurateur)).Succeeded;
+    var isRider = (await AuthorizationService.AuthorizeAsync(User, PolicyName.IsRider)).Succeeded;
+    var isDefaultUser = (await AuthorizationService.AuthorizeAsync(User, PolicyName.IsDefault)).Succeeded;
+    var isAdmin = User.IsInRole(RoleName.Admin);
 }
 
 <ul class="navbar-nav">
@@ -21,8 +24,28 @@
                 </button>
                 
                 <ul class="dropdown-menu">
-                    <li><a class="dropdown-item">My Restaurant</a></li>
-                    <li><a class="dropdown-item">My Products</a></li>
+                    @if (isRestaurateur)
+                    {
+                        <li><a class="dropdown-item">Restaurant</a></li>
+                        <li><a class="dropdown-item">Products</a></li>
+                    }
+                    @if (isRider)
+                    {
+                        <li><a class="dropdown-item">Credit</a></li>
+                        <li><a class="dropdown-item">Orders</a></li>
+                        <li><a class="dropdown-item">Delivery History</a></li>
+                    }
+                    @if (isDefaultUser)
+                    {
+                        <li><a class="dropdown-item">Order History</a></li>
+                    }
+                    @if (isAdmin)
+                    {
+                        <li><a class="dropdown-item">User Requests</a></li>
+                        <li><a class="dropdown-item">User list</a></li>
+                        <li><a class="dropdown-item">Orders</a></li>
+                    }
+
                 </ul>
             </div>
         </li>

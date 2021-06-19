@@ -6,6 +6,7 @@ using System.Security.Claims;
 using System.Text;
 using System.Text.Encodings.Web;
 using System.Threading.Tasks;
+using DeliveryWebApp.Domain.Entities;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authorization;
 using DeliveryWebApp.Infrastructure.Identity;
@@ -103,6 +104,10 @@ namespace DeliveryWebApp.WebUI.Areas.Identity.Pages.Account
                     _logger.LogInformation("User created a new account with password.");
 
                     // Add to Client table
+                    _context.Clients.Add(new Client() // TODO check
+                    {
+                        ApplicationUserFk = user.Id
+                    });
 
                     /****************************** Claims ******************************/
 
