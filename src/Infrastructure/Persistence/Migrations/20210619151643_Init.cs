@@ -3,7 +3,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 
 namespace DeliveryWebApp.WebUI.Migrations
 {
-    public partial class Update_Context : Migration
+    public partial class Init : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
@@ -50,7 +50,8 @@ namespace DeliveryWebApp.WebUI.Migrations
                 name: "Baskets",
                 columns: table => new
                 {
-                    Id = table.Column<string>(type: "nvarchar(450)", nullable: false),
+                    Id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
                     TotalPrice = table.Column<double>(type: "float", nullable: false)
                 },
                 constraints: table =>
@@ -101,23 +102,27 @@ namespace DeliveryWebApp.WebUI.Migrations
                 name: "Restaurateurs",
                 columns: table => new
                 {
-                    ApplicationUserFk = table.Column<string>(type: "nvarchar(450)", nullable: false)
+                    Id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    ApplicationUserFk = table.Column<string>(type: "nvarchar(max)", nullable: true)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_Restaurateurs", x => x.ApplicationUserFk);
+                    table.PrimaryKey("PK_Restaurateurs", x => x.Id);
                 });
 
             migrationBuilder.CreateTable(
                 name: "Riders",
                 columns: table => new
                 {
-                    ApplicationUserFk = table.Column<string>(type: "nvarchar(450)", nullable: false),
+                    Id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    ApplicationUserFk = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     DeliveryCredit = table.Column<double>(type: "float", nullable: false)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_Riders", x => x.ApplicationUserFk);
+                    table.PrimaryKey("PK_Riders", x => x.Id);
                 });
 
             migrationBuilder.CreateTable(
@@ -230,14 +235,15 @@ namespace DeliveryWebApp.WebUI.Migrations
                 name: "Clients",
                 columns: table => new
                 {
-                    ApplicationUserFk = table.Column<string>(type: "nvarchar(450)", nullable: false)
+                    Id = table.Column<int>(type: "int", nullable: false),
+                    ApplicationUserFk = table.Column<string>(type: "nvarchar(max)", nullable: true)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_Clients", x => x.ApplicationUserFk);
+                    table.PrimaryKey("PK_Clients", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_Clients_Baskets_ApplicationUserFk",
-                        column: x => x.ApplicationUserFk,
+                        name: "FK_Clients_Baskets_Id",
+                        column: x => x.Id,
                         principalTable: "Baskets",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
@@ -247,7 +253,7 @@ namespace DeliveryWebApp.WebUI.Migrations
                 name: "Products",
                 columns: table => new
                 {
-                    Id = table.Column<string>(type: "nvarchar(450)", nullable: false),
+                    Id = table.Column<int>(type: "int", nullable: false),
                     Name = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     ImageUrl = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     Price = table.Column<double>(type: "float", nullable: false),
@@ -269,7 +275,7 @@ namespace DeliveryWebApp.WebUI.Migrations
                 name: "Addresses",
                 columns: table => new
                 {
-                    Id = table.Column<string>(type: "nvarchar(450)", nullable: false),
+                    Id = table.Column<int>(type: "int", nullable: false),
                     AddressLine1 = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     AddressLine2 = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     Number = table.Column<string>(type: "nvarchar(max)", nullable: false),
@@ -284,7 +290,7 @@ namespace DeliveryWebApp.WebUI.Migrations
                         name: "FK_Addresses_Clients_Id",
                         column: x => x.Id,
                         principalTable: "Clients",
-                        principalColumn: "ApplicationUserFk",
+                        principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                 });
 
@@ -292,7 +298,7 @@ namespace DeliveryWebApp.WebUI.Migrations
                 name: "Restaurants",
                 columns: table => new
                 {
-                    Id = table.Column<string>(type: "nvarchar(450)", nullable: false),
+                    Id = table.Column<int>(type: "int", nullable: false),
                     LogoUrl = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     Name = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     Category = table.Column<string>(type: "nvarchar(max)", nullable: true)
@@ -304,17 +310,18 @@ namespace DeliveryWebApp.WebUI.Migrations
                         name: "FK_Restaurants_Restaurateurs_Id",
                         column: x => x.Id,
                         principalTable: "Restaurateurs",
-                        principalColumn: "ApplicationUserFk");
+                        principalColumn: "Id");
                 });
 
             migrationBuilder.CreateTable(
                 name: "Orders",
                 columns: table => new
                 {
-                    Id = table.Column<string>(type: "nvarchar(450)", nullable: false),
+                    Id = table.Column<int>(type: "int", nullable: false),
                     Date = table.Column<DateTime>(type: "datetime2", nullable: false),
                     TotalPrice = table.Column<double>(type: "float", nullable: false),
-                    RestaurantId = table.Column<string>(type: "nvarchar(450)", nullable: true)
+                    Status = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    RestaurantId = table.Column<int>(type: "int", nullable: true)
                 },
                 constraints: table =>
                 {
@@ -329,7 +336,7 @@ namespace DeliveryWebApp.WebUI.Migrations
                         name: "FK_Orders_Riders_Id",
                         column: x => x.Id,
                         principalTable: "Riders",
-                        principalColumn: "ApplicationUserFk",
+                        principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                 });
 
@@ -404,9 +411,9 @@ namespace DeliveryWebApp.WebUI.Migrations
                 columns: new[] { "SubjectId", "SessionId", "Type" });
 
             migrationBuilder.AddForeignKey(
-                name: "FK_Clients_Orders_ApplicationUserFk",
+                name: "FK_Clients_Orders_Id",
                 table: "Clients",
-                column: "ApplicationUserFk",
+                column: "Id",
                 principalTable: "Orders",
                 principalColumn: "Id",
                 onDelete: ReferentialAction.Cascade);

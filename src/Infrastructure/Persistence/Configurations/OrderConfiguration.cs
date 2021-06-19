@@ -43,6 +43,9 @@ namespace DeliveryWebApp.Infrastructure.Persistence.Configurations
 
             builder.Property(o => o.Date)
                 .IsRequired();
+
+            builder.Property(u => u.Status)
+                .IsRequired();
         }
     }
 }
