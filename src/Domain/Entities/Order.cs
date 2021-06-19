@@ -13,5 +13,6 @@ namespace DeliveryWebApp.Domain.Entities
         public DateTime Date { get; set; }
         public virtual Restaurant Restaurant { get; set; }
         public double TotalPrice { get; set; }
+        public string Status { get; set; }
     }
 }

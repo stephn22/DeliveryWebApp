@@ -8,6 +8,6 @@ namespace DeliveryWebApp.Domain.Entities
 {
     public abstract class BaseEntity
     {
-        public virtual string Id { get; protected set; }
+        public virtual int Id { get; protected set; }
     }
 }
