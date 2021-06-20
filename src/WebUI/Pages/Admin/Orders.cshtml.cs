@@ -6,9 +6,12 @@ using Microsoft.EntityFrameworkCore;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using DeliveryWebApp.Infrastructure.Security;
+using Microsoft.AspNetCore.Authorization;
 
 namespace DeliveryWebApp.WebUI.Pages.Admin
 {
+    [Authorize(Roles = RoleName.Admin)]
     public class OrdersModel : PageModel
     {
         private readonly ApplicationDbContext _context;

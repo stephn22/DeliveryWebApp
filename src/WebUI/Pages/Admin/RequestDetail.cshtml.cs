@@ -10,9 +10,11 @@ using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.EntityFrameworkCore;
 using System.Linq;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Authorization;
 
 namespace DeliveryWebApp.WebUI.Pages.Admin
 {
+    [Authorize(Roles = RoleName.Admin)]
     public class RequestDetailModel : PageModel
     {
         private readonly ApplicationDbContext _context;
