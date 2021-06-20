@@ -15,6 +15,7 @@ namespace DeliveryWebApp.Application.Common.Interfaces
         DbSet<Restaurant> Restaurants { get; set; }
         DbSet<Restaurateur> Restaurateurs { get; set; }
         DbSet<Rider> Riders { get; set; }
+        DbSet<Request> Requests { get; set; }
 
         Task<int> SaveChangesAsync(CancellationToken cancellationToken);
     }

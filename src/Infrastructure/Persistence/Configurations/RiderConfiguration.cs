@@ -20,6 +20,11 @@ namespace DeliveryWebApp.Infrastructure.Persistence.Configurations
 
             builder.HasKey(u => u.Id);
 
+            builder.HasOne(u => u.Client)
+                .WithOne()
+                .HasForeignKey<Client>(u => u.Id)
+                .OnDelete(DeleteBehavior.Cascade);
+
             builder.Property(r => r.DeliveryCredit)
                 .IsRequired();
 

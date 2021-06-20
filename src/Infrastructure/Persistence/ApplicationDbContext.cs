@@ -10,6 +10,7 @@ using System.Linq;
 using System.Reflection;
 using System.Threading;
 using System.Threading.Tasks;
+using DeliveryWebApp.Infrastructure.Persistence.Configurations.Constants;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
 namespace DeliveryWebApp.Infrastructure.Persistence
@@ -40,6 +41,7 @@ namespace DeliveryWebApp.Infrastructure.Persistence
         public DbSet<Restaurant> Restaurants { get; set; }
         public DbSet<Restaurateur> Restaurateurs { get; set; }
         public DbSet<Rider> Riders { get; set; }
+        public DbSet<Request> Requests { get; set; }
 
         public override async Task<int> SaveChangesAsync(CancellationToken cancellationToken = new CancellationToken())
         {

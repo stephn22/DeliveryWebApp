@@ -11,18 +11,17 @@ using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
 namespace DeliveryWebApp.Infrastructure.Persistence.Configurations
 {
-    public class ClientConfiguration : IEntityTypeConfiguration<Client>
+    public class RequestConfiguration : IEntityTypeConfiguration<Request>
     {
-        public void Configure(EntityTypeBuilder<Client> builder)
+        public void Configure(EntityTypeBuilder<Request> builder)
         {
-            builder.HasKey(u => u.Id);
+            builder.HasKey(c => c.Id);
 
-            builder.Property(u => u.Id)
-                .ValueGeneratedOnAdd();
-
-            builder.HasMany(c => c.Addresses)
+            builder.HasOne(c => c.Client)
                 .WithOne()
-                .HasForeignKey(c => c.Id)
+                .HasForeignKey<Client>(c => c.Id);
+
+            builder.Property(c => c.Role)
                 .IsRequired();
         }
     }

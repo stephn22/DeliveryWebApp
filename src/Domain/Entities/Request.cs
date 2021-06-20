@@ -6,9 +6,9 @@ using System.Threading.Tasks;
 
 namespace DeliveryWebApp.Domain.Entities
 {
-    public class Restaurateur : BaseEntity
+    public class Request : BaseEntity
     {
-        public virtual Client Client { get; set; }
-        public virtual Restaurant Restaurant { get; set; }
+        public Client Client { get; set; }
+        public string Role { get; set; }
     }
 }

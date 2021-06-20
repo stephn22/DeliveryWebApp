@@ -1,0 +1,44 @@
+﻿@page
+@model DeliveryWebApp.WebUI.Pages.Admin.RequestsModel
+@{
+    ViewData["Title"] = "Requests";
+}
+
+<h1>Users Requests</h1>
+
+<table class="table">
+    <thead>
+    <tr class="table-primary">
+        <th>
+            @Html.DisplayNameFor(model => model.Requests[0].Id)
+        </th>
+        <th>
+            User
+        </th>
+        <th>
+            Role Requested
+        </th>
+        <th>
+        </th>
+        <th></th>
+    </tr>
+    </thead>
+    <tbody>
+    @foreach (var item in Model.Requests) {
+        <tr>
+            <td>
+                @Html.DisplayFor(modelItem => item.Id)
+            </td>
+            <td>
+                <a asp-page="/Admin/RequestDetail">User</a>
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Role)
+            </td>
+            <td>
+                <a asp-page="/Admin/RequestDetail" asp-route-id="@item.Id">Details</a>
+            </td>
+        </tr>
+    }
+    </tbody>
+</table>
