@@ -1,3 +1,4 @@
+using System.Globalization;
 using DeliveryWebApp.Application;
 using DeliveryWebApp.Application.Common.Interfaces;
 using DeliveryWebApp.Infrastructure;
@@ -5,6 +6,7 @@ using DeliveryWebApp.Infrastructure.Persistence;
 using DeliveryWebApp.WebUI.Services;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.Localization;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
@@ -33,7 +35,12 @@ namespace DeliveryWebApp.WebUI
             services.AddHealthChecks()
                 .AddDbContextCheck<ApplicationDbContext>();
 
-            services.AddRazorPages();
+            services.AddRazorPages().AddDataAnnotationsLocalization();
+
+            services.AddLocalization(options =>
+            {
+                options.ResourcesPath = Configuration["ResourcePath"];
+            });
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -53,6 +60,21 @@ namespace DeliveryWebApp.WebUI
 
             app.UseHttpsRedirection();
             app.UseStaticFiles();
+
+            var cultures = new[]
+            {
+                new CultureInfo("en"),
+                new CultureInfo("en")
+            };
+
+            var options = new RequestLocalizationOptions
+            {
+                DefaultRequestCulture = new RequestCulture(cultures[0]),
+                SupportedCultures = cultures,
+                SupportedUICultures = cultures
+            };
+
+            app.UseRequestLocalization(options);
 
             app.UseRouting();
 
