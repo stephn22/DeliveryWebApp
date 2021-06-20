@@ -145,6 +145,7 @@ namespace DeliveryWebApp.WebUI.Areas.Identity.Pages.Account
                     {
                         _logger.LogInformation("SendGridUser created an account using {Name} provider.", info.LoginProvider);
 
+                        // add claim default user
                         await _userManager.AddClaimAsync(user, new Claim(ClaimName.Role, PolicyName.IsDefault));
 
                         var userId = await _userManager.GetUserIdAsync(user);
