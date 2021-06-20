@@ -20,6 +20,9 @@ namespace DeliveryWebApp.Infrastructure.Persistence.Configurations
             builder.Property(u => u.Id)
                 .ValueGeneratedOnAdd();
 
+            builder.Property(u => u.ApplicationUserFk)
+                .IsRequired();
+
             builder.HasMany(c => c.Addresses)
                 .WithOne()
                 .HasForeignKey(c => c.Id)
