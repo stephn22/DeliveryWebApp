@@ -1,0 +1,76 @@
+﻿@page
+@model DeliveryWebApp.WebUI.Areas.Identity.Pages.Account.Manage.AddressModel
+@{
+    ViewData["Title"] = "Your addresses";
+}
+
+<h4>@ViewData["Title"]</h4>
+<partial name="_StatusMessage" for="StatusMessage" />
+
+<ul class="nav nav-tabs" id="myTab" role="tablist">
+    <li class="nav-item" role="presentation">
+        <button class="nav-link active" id="address-tab-0" data-bs-toggle="tab" data-bs-target="#address0" type="button" role="tab" aria-controls="address0" aria-selected="true">Address 1</button>
+    </li>
+    <li class="nav-item" role="presentation">
+        <button class="nav-link" id="address-tab-1" data-bs-toggle="tab" data-bs-target="#address1" type="button" role="tab" aria-controls="address1" aria-selected="false">Address 2</button>
+    </li>
+    <li class="nav-item" role="presentation">
+        <button class="nav-link" id="address-tab-2" data-bs-toggle="tab" data-bs-target="#address2" type="button" role="tab" aria-controls="address2" aria-selected="false">Address 3</button>
+    </li>
+</ul>
+
+<div class="tab-content" id="myTabContent">
+    <div class="tab-pane fade show active" id="address0" role="tabpanel" aria-labelledby="address-tab-1">
+        @if (Model.HasAtLeastOneAddress)
+        {
+
+        }
+        else
+        {
+            <form>
+                <div class="form-row">
+                    <div class="form-group col-md-6">
+                        <label asp-for="Input.AddressLine1"></label>
+                        <input class="form-control" asp-for="Input.AddressLine1" placeholder="Address Line 1">
+                        <span asp-validation-for="Input.AddressLine1" class="text-danger"></span>
+                    </div>
+                    <div class="form-group col-md-6">
+                        <label asp-for="Input.AddressLine2"></label>
+                        <input class="form-control" asp-for="Input.AddressLine2" placeholder="Address Line 2">
+                        <span asp-validation-for="Input.AddressLine2" class="text-danger"></span>
+                    </div>
+                </div>
+                <div class="form-group col-1">
+                    <label asp-for="Input.Number"></label>
+                    <input class="form-control" asp-for="Input.Number" placeholder="1, 21B...">
+                    <span asp-validation-for="Input.Number" class="text-danger"></span>
+                </div>
+                <div class="form-group col-md-6">
+                    <label asp-for="Input.City"></label>
+                    <input class="form-control" asp-for="Input.City" placeholder="City">
+                    <span asp-validation-for="Input.City" class="text-danger"></span>
+                </div>
+                <div class="form-row">
+                    <div class="form-group col-md-6">
+                        <label asp-for="Input.PostalCode"></label>
+                        <input class="form-control" asp-for="Input.PostalCode" placeholder="Postal Code: 20020...">
+                        <span asp-validation-for="Input.PostalCode" class="text-danger"></span>
+                    </div>
+                    <div class="form-group col-md-4">
+                        <label asp-for="Input.Country"></label>
+                        <select class="form-select" aria-label="Select country" asp-for="Input.Country" asp-items="Model.Countries">
+                        </select>
+                        <span asp-validation-for="Input.Country" class="text-danger"></span>
+                    </div>
+                </div>
+                <button type="submit" class="btn btn-primary">Submit</button>
+            </form>
+        }
+    </div>
+    <div class="tab-pane fade" id="address1" role="tabpanel" aria-labelledby="address-tab-1">
+        ...
+    </div>
+    <div class="tab-pane fade" id="address2" role="tabpanel" aria-labelledby="address-tab-2">
+        ...
+    </div>
+</div>
