@@ -13,21 +13,21 @@ namespace DeliveryWebApp.Domain.Entities
         public string Number { get; set; }
         public string City { get; set; }
         public string PostalCode { get; set; }
-        public string StateProvince { get; set; }
+        public string Country { get; set; }
 
-        public Address(string addressLine1, string addressLine2, string number, string city, string postalCode, string stateProvince)
+        public Address(string addressLine1, string addressLine2, string number, string city, string postalCode, string country)
         {
             AddressLine1 = addressLine1;
             AddressLine2 = addressLine2;
             Number = number;
             City = city;
             PostalCode = postalCode;
-            StateProvince = stateProvince;
+            Country = country;
         }
 
         public override string ToString()
         {
-            return $"{AddressLine1}, {AddressLine2}, {Number}, {City}, {PostalCode}, {StateProvince}";
+            return $"{AddressLine1}, {AddressLine2}, {Number}, {City}, {PostalCode}, {Country}";
         }
     }
 }

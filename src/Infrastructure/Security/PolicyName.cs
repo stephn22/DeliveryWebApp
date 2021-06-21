@@ -11,5 +11,6 @@ namespace DeliveryWebApp.Infrastructure.Security
         public const string IsRestaurateur = "IsRestaurateur";
         public const string IsRider = "IsRider";
         public const string IsDefault = "IsDefault";
+        public const string IsClient = "IsClient"; // user that can be Restaurateur or Rider or Default user but not Admin
     }
 }

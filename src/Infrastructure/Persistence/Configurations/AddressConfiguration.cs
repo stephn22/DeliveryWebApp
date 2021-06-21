@@ -32,7 +32,7 @@ namespace DeliveryWebApp.Infrastructure.Persistence.Configurations
             builder.Property(c => c.PostalCode)
                 .IsRequired();
 
-            builder.Property(c => c.StateProvince)
+            builder.Property(c => c.Country)
                 .IsRequired();
         }
     }
