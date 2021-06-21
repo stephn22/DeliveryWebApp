@@ -11,7 +11,6 @@ using DeliveryWebApp.Infrastructure.Security;
 using IdentityServer4.Extensions;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
-using Microsoft.AspNetCore.Identity.UI.Services;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.AspNetCore.Mvc.Rendering;
@@ -26,7 +25,8 @@ namespace DeliveryWebApp.WebUI.Areas.Identity.Pages.Account.Manage
         private readonly ILogger<AddressModel> _logger;
         private readonly ApplicationDbContext _context;
 
-        public AddressModel(UserManager<ApplicationUser> userManager, ILogger<AddressModel> logger, ApplicationDbContext context)
+        public AddressModel(UserManager<ApplicationUser> userManager, ILogger<AddressModel> logger,
+            ApplicationDbContext context)
         {
             _userManager = userManager;
             _logger = logger;
@@ -96,10 +96,11 @@ namespace DeliveryWebApp.WebUI.Areas.Identity.Pages.Account.Manage
                 return Page();
             }
 
+            StatusMessage = "Your addresses have been updated";
             return RedirectToPage();
         }
 
-        private static IEnumerable<KeyValuePair<string, string>> CountryList()
+        private IEnumerable<KeyValuePair<string, string>> CountryList()
         {
             var cultureList = new Dictionary<string, string>();
 
@@ -107,11 +108,22 @@ namespace DeliveryWebApp.WebUI.Areas.Identity.Pages.Account.Manage
 
             foreach (var c in cultureInfo)
             {
-                var regionInfo = new RegionInfo(c.LCID);
-
-                if (!cultureList.ContainsKey(regionInfo.Name))
+                var regionInfo = new RegionInfo(0x0409);
+                try
                 {
-                    cultureList.Add(regionInfo.Name, regionInfo.EnglishName);
+                    regionInfo = new RegionInfo(c.LCID);
+                }
+                catch (CultureNotFoundException e)
+                {
+                    regionInfo = new RegionInfo(0x0409); // English europe
+                    _logger.LogWarning($"{e.Message}: culture not found, using English(0x0409) by default");
+                }
+                finally
+                {
+                    if (!cultureList.ContainsKey(regionInfo.Name))
+                    {
+                        cultureList.Add(regionInfo.Name, regionInfo.EnglishName);
+                    }
                 }
             }
 
