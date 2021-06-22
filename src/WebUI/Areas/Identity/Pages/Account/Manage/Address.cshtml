@@ -7,6 +7,7 @@
 
 <h4>@ViewData["Title"]</h4>
 <partial name="_StatusMessage" for="StatusMessage"/>
+@*  FIXME *@
 
 @foreach (var collection in Model.Addresses)
 {
@@ -22,13 +23,13 @@
     <div class="container">
         <div class="row">
             <div class="col-md-12">
-                <button id="btn-add-tab" type="button" class="btn btn-primary pull-right">Add Address</button>
+                <button id="btn-add-tab" type="button" class="btn btn-primary text-end">Add Address</button>
 
                 @* Nav tabs *@
                 <ul class="nav nav-tabs" id="tab-list" role="tablist">
                     <li class="nav-item" role="presentation">
                         <button class="nav-link active" id="address-tab-0" data-bs-toggle="tab" data-bs-target="#address0" type="button" role="tab" aria-controls="address0" aria-selected="true">
-                            <span>Address 1</span><span class="glyphicon glyphicon-pencil text-muted edit"></span>
+                            Address 1
                         </button>
                     </li>
                     @* <li class="nav-item" role="presentation"> *@
@@ -57,7 +58,7 @@
                                 </div>
                             </div>
                             <div class="form-row">
-                                <div class="form-group col-1">
+                                <div class="form-group col-2">
                                     <label asp-for="Input.Number"></label>
                                     <input class="form-control" asp-for="Input.Number" placeholder="1, 21B...">
                                     <span asp-validation-for="Input.Number" class="text-danger"></span>
@@ -100,10 +101,5 @@
 }
 else
 {
-}
-
-@section Scripts
-{
-    <script src="~/js/dynamicTabs.js"></script>
 }
 

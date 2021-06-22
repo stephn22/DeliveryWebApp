@@ -21,6 +21,9 @@
             <th>
                 @Html.DisplayNameFor(model => model.Orders[0].TotalPrice)
             </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Orders[0].Status)
+            </th>
             <th></th>
         </tr>
     </thead>
@@ -38,6 +41,9 @@
             </td>
             <td>
                 @Html.DisplayFor(modelItem => item.Restaurant.Name)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Status)
             </td>
             <td>
                 <a asp-page="./Details" asp-route-id="@item.Id">Details</a>

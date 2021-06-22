@@ -4,5 +4,6 @@
     {
         public const string Open = "Open";
         public const string Closed = "Closed";
+        public const string Delivered = "Delivered";
     }
 }

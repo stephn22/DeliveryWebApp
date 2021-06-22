@@ -9,7 +9,7 @@
 @{
     var isRestaurateur = (await AuthorizationService.AuthorizeAsync(User, PolicyName.IsRestaurateur)).Succeeded;
     var isRider = (await AuthorizationService.AuthorizeAsync(User, PolicyName.IsRider)).Succeeded;
-    var isDefaultUser = (await AuthorizationService.AuthorizeAsync(User, PolicyName.IsDefault)).Succeeded;
+    var isClient = (await AuthorizationService.AuthorizeAsync(User, PolicyName.IsClient)).Succeeded;
     var isAdmin = User.IsInRole(RoleName.Admin);
 }
 
@@ -42,25 +42,25 @@
                             <a class="dropdown-item">Credit</a>
                         </li>
                         <li>
-                            <a class="dropdown-item">Orders</a>
+                            <a class="dropdown-item">Open Orders</a>
                         </li>
                         <li>
                             <a class="dropdown-item">Delivery History</a>
                         </li>
                     }
-                    @if (isDefaultUser)
+                    @if (isClient)
                     {
                         <li>
-                            <a class="dropdown-item">Order History</a>
+                            <a class="dropdown-item" asp-page="/Customer/Orders">Order History</a>
                         </li>
                     }
                     @if (isAdmin)
                     {
                         <li>
-                            <a class="dropdown-item" asp-page="Admin/Requests">User Requests</a>
+                            <a class="dropdown-item" asp-page="/Admin/Requests">User Requests</a>
                         </li>
                         <li>
-                            <a class="dropdown-item" asp-page="Admin/UserList">User List</a>
+                            <a class="dropdown-item" asp-page="/Admin/UserList">User List</a>
                         </li>
                         <li>
                             <a class="dropdown-item" asp-page="/Admin/Orders">Orders</a>

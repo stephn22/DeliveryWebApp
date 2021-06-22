@@ -1,13 +1,12 @@
 using DeliveryWebApp.Domain.Entities;
 using DeliveryWebApp.Infrastructure.Persistence;
-using Microsoft.AspNetCore.Mvc;
+using DeliveryWebApp.Infrastructure.Security;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.EntityFrameworkCore;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using DeliveryWebApp.Infrastructure.Security;
-using Microsoft.AspNetCore.Authorization;
 
 namespace DeliveryWebApp.WebUI.Pages.Admin
 {
@@ -25,9 +24,9 @@ namespace DeliveryWebApp.WebUI.Pages.Admin
 
         public async Task OnGetAsync()
         {
-            IQueryable<Order> orders = from o in _context.Orders
-                                       orderby o.Date descending
-                                       select o;
+            var orders = from o in _context.Orders
+                         orderby o.Date descending
+                         select o;
 
             Orders = await orders.ToListAsync();
         }
