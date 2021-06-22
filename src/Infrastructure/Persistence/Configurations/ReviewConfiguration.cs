@@ -21,7 +21,6 @@ namespace DeliveryWebApp.Infrastructure.Persistence.Configurations
             builder.HasOne(r => r.Client)
                 .WithOne()
                 .HasForeignKey<Client>(c => c.Id)
-                .IsRequired()
                 .OnDelete(DeleteBehavior.NoAction);
 
             builder.HasOne(r => r.Restaurant)
@@ -32,7 +31,6 @@ namespace DeliveryWebApp.Infrastructure.Persistence.Configurations
             builder.HasOne(r => r.Restaurateur)
                 .WithOne()
                 .HasForeignKey<Restaurateur>(r => r.Id)
-                .IsRequired()
                 .OnDelete(DeleteBehavior.Cascade);
 
             builder.Property(r => r.Title)

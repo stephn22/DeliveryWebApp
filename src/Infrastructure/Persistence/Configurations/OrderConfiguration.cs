@@ -16,20 +16,17 @@ namespace DeliveryWebApp.Infrastructure.Persistence.Configurations
             builder.HasOne(u => u.Client)
                 .WithOne()
                 .HasForeignKey<Client>(u => u.Id)
-                .OnDelete(DeleteBehavior.NoAction)
-                .IsRequired();
+                .OnDelete(DeleteBehavior.NoAction);
 
             builder.HasMany(u => u.Products)
                 .WithOne()
                 .HasForeignKey(u => u.Id)
-                .OnDelete(DeleteBehavior.Cascade)
-                .IsRequired();
+                .OnDelete(DeleteBehavior.Cascade);
 
             builder.HasOne(u => u.Restaurant)
                 .WithOne()
                 .HasForeignKey<Restaurant>(u => u.Id)
-                .OnDelete(DeleteBehavior.Cascade)
-                .IsRequired();
+                .OnDelete(DeleteBehavior.Cascade);
 
             builder.Property(u => u.TotalPrice)
                 .IsRequired();

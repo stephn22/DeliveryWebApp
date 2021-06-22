@@ -26,8 +26,7 @@ namespace DeliveryWebApp.Infrastructure.Persistence.Configurations
             builder.HasOne(u => u.Address)
                 .WithOne()
                 .HasForeignKey<Address>(u => u.Id)
-                .OnDelete(DeleteBehavior.NoAction)
-                .IsRequired();
+                .OnDelete(DeleteBehavior.NoAction);
 
             builder.Property(r => r.Name)
                 .IsRequired();

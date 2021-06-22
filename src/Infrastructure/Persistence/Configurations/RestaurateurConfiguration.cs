@@ -28,7 +28,6 @@ namespace DeliveryWebApp.Infrastructure.Persistence.Configurations
             builder.HasOne(u => u.Restaurant)
                 .WithOne()
                 .HasForeignKey<Restaurant>(u => u.Id)
-                .IsRequired()
                 .OnDelete(DeleteBehavior.NoAction);
         }
     }

@@ -25,8 +25,7 @@ namespace DeliveryWebApp.Infrastructure.Persistence.Configurations
 
             builder.HasMany(c => c.Addresses)
                 .WithOne()
-                .HasForeignKey(c => c.Id)
-                .IsRequired();
+                .HasForeignKey(c => c.Id);
         }
     }
 }
