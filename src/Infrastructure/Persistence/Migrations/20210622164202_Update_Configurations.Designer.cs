@@ -10,8 +10,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace DeliveryWebApp.WebUI.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20210622081725_Request_Update")]
-    partial class Request_Update
+    [Migration("20210622164202_Update_Configurations")]
+    partial class Update_Configurations
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
