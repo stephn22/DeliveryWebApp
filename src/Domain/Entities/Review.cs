@@ -8,11 +8,11 @@ namespace DeliveryWebApp.Domain.Entities
 {
     public class Review : BaseEntity
     {
-        public virtual Client Client { get; set; }
+        public Client Client { get; set; }
         public string Title { get; set; }
         public string Text { get; set; }
         public int Grade { get; set; }
-        public virtual Restaurateur Restaurateur { get; set; }
-        public virtual Restaurant Restaurant { get; set; }
+        public Restaurateur Restaurateur { get; set; }
+        public Restaurant Restaurant { get; set; }
     }
 }

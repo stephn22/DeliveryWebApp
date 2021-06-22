@@ -14,14 +14,5 @@ namespace DeliveryWebApp.Domain.Entities
         public int Discount { get; set; }
         public string Category { get; set; }
         public int Quantity { get; set; }
-
-        public Product(string name, string imageUrl, double price, int discount, string category)
-        {
-            Name = name;
-            ImageUrl = imageUrl;
-            Price = price;
-            Discount = discount;
-            Category = category;
-        }
     }
 }
