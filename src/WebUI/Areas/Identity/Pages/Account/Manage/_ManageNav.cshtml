@@ -1,21 +1,44 @@
-﻿@using DeliveryWebApp.Infrastructure.Security
+﻿@using Microsoft.AspNetCore.Authorization
+@using DeliveryWebApp.Infrastructure.Security
 @inject SignInManager<ApplicationUser> SignInManager
+@inject IAuthorizationService AuthorizationService
 @{
     var hasExternalLogins = (await SignInManager.GetExternalAuthenticationSchemesAsync()).Any();
+    var isClient = (await AuthorizationService.AuthorizeAsync(User, PolicyName.IsClient)).Succeeded;
     var isAdmin = User.IsInRole(RoleName.Admin);
 }
 <ul class="nav nav-pills flex-column">
-    <li class="nav-item"><a class="nav-link @ManageNavPages.IndexNavClass(ViewContext)" id="profile" asp-page="./Index">Profile</a></li>
+    <li class="nav-item">
+        <a class="nav-link @ManageNavPages.IndexNavClass(ViewContext)" id="profile" asp-page="./Index">Profile</a>
+    </li>
     @if (!isAdmin)
     {
-        <li class="nav-item"><a class="nav-link @ManageNavPages.EmailNavClass(ViewContext)" id="email" asp-page="./Email">Email</a></li>
-        <li class="nav-item"><a class="nav-link @ManageNavPages.AddressNavClass(ViewContext)" id="email" asp-page="./Address">Address</a></li>
+        <li class="nav-item">
+            <a class="nav-link @ManageNavPages.EmailNavClass(ViewContext)" id="email" asp-page="./Email">Email</a>
+        </li>
+        <li class="nav-item">
+            <a class="nav-link @ManageNavPages.AddressNavClass(ViewContext)" id="email" asp-page="./Address">Address</a>
+        </li>
     }
-    <li class="nav-item"><a class="nav-link @ManageNavPages.ChangePasswordNavClass(ViewContext)" id="change-password" asp-page="./ChangePassword">Password</a></li>
+    <li class="nav-item">
+        <a class="nav-link @ManageNavPages.ChangePasswordNavClass(ViewContext)" id="change-password" asp-page="./ChangePassword">Password</a>
+    </li>
     @if (hasExternalLogins)
     {
-        <li id="external-logins" class="nav-item"><a id="external-login" class="nav-link @ManageNavPages.ExternalLoginsNavClass(ViewContext)" asp-page="./ExternalLogins">External logins</a></li>
+        <li id="external-logins" class="nav-item">
+            <a id="external-login" class="nav-link @ManageNavPages.ExternalLoginsNavClass(ViewContext)" asp-page="./ExternalLogins">External logins</a>
+        </li>
     }
-    <li class="nav-item"><a class="nav-link @ManageNavPages.TwoFactorAuthenticationNavClass(ViewContext)" id="two-factor" asp-page="./TwoFactorAuthentication">Two-factor authentication</a></li>
-    <li class="nav-item"><a class="nav-link @ManageNavPages.PersonalDataNavClass(ViewContext)" id="personal-data" asp-page="./PersonalData">Personal data</a></li>
+    <li class="nav-item">
+        <a class="nav-link @ManageNavPages.TwoFactorAuthenticationNavClass(ViewContext)" id="two-factor" asp-page="./TwoFactorAuthentication">Two-factor authentication</a>
+    </li>
+    @if (isClient)
+    {
+        <li class="nav-item">
+            <a class="nav-link @ManageNavPages.PersonalDataNavClass(ViewContext)" id="personal-data" asp-page="./PersonalData">Personal data</a>
+        </li>
+        <li class="nav-item">
+            <a class="nav-link @ManageNavPages.RequestNavClass(ViewContext)" id="request" asp-page="./Request">Request</a>
+        </li>
+    }
 </ul>

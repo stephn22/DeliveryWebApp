@@ -1,7 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc.Rendering;
 
 namespace DeliveryWebApp.WebUI.Areas.Identity.Pages.Account.Manage
@@ -24,6 +21,8 @@ namespace DeliveryWebApp.WebUI.Areas.Identity.Pages.Account.Manage
 
         public static string PersonalData => "PersonalData";
 
+        public static string Request => "Request";
+
         public static string TwoFactorAuthentication => "TwoFactorAuthentication";
 
         public static string IndexNavClass(ViewContext viewContext) => PageNavClass(viewContext, Index);
@@ -32,22 +31,29 @@ namespace DeliveryWebApp.WebUI.Areas.Identity.Pages.Account.Manage
 
         public static string AddressNavClass(ViewContext viewContext) => PageNavClass(viewContext, Address);
 
-        public static string ChangePasswordNavClass(ViewContext viewContext) => PageNavClass(viewContext, ChangePassword);
+        public static string ChangePasswordNavClass(ViewContext viewContext) =>
+            PageNavClass(viewContext, ChangePassword);
 
-        public static string DownloadPersonalDataNavClass(ViewContext viewContext) => PageNavClass(viewContext, DownloadPersonalData);
+        public static string DownloadPersonalDataNavClass(ViewContext viewContext) =>
+            PageNavClass(viewContext, DownloadPersonalData);
 
-        public static string DeletePersonalDataNavClass(ViewContext viewContext) => PageNavClass(viewContext, DeletePersonalData);
+        public static string DeletePersonalDataNavClass(ViewContext viewContext) =>
+            PageNavClass(viewContext, DeletePersonalData);
 
-        public static string ExternalLoginsNavClass(ViewContext viewContext) => PageNavClass(viewContext, ExternalLogins);
+        public static string ExternalLoginsNavClass(ViewContext viewContext) =>
+            PageNavClass(viewContext, ExternalLogins);
 
         public static string PersonalDataNavClass(ViewContext viewContext) => PageNavClass(viewContext, PersonalData);
 
-        public static string TwoFactorAuthenticationNavClass(ViewContext viewContext) => PageNavClass(viewContext, TwoFactorAuthentication);
+        public static string RequestNavClass(ViewContext viewContext) => PageNavClass(viewContext, Request);
+
+        public static string TwoFactorAuthenticationNavClass(ViewContext viewContext) =>
+            PageNavClass(viewContext, TwoFactorAuthentication);
 
         private static string PageNavClass(ViewContext viewContext, string page)
         {
             var activePage = viewContext.ViewData["ActivePage"] as string
-                ?? System.IO.Path.GetFileNameWithoutExtension(viewContext.ActionDescriptor.DisplayName);
+                             ?? System.IO.Path.GetFileNameWithoutExtension(viewContext.ActionDescriptor.DisplayName);
             return string.Equals(activePage, page, StringComparison.OrdinalIgnoreCase) ? "active" : null;
         }
     }

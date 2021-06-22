@@ -143,8 +143,10 @@ namespace DeliveryWebApp.WebUI.Areas.Identity.Pages.Account.Manage
                 _logger.LogWarning($"{e.Message} - {nameof(Addresses)}: cannot resolve user addresses");
                 Addresses = null;
             }
-
-            HasAtLeastOneAddress = (!Addresses.IsNullOrEmpty());
+            finally
+            {
+                HasAtLeastOneAddress = (!Addresses.IsNullOrEmpty());
+            }
         }
     }
 }
