@@ -30,11 +30,11 @@
                     @if (isRestaurateur)
                     {
                         <li>
-                            <a class="dropdown-item">Restaurant</a>
+                            <a class="dropdown-item" asp-page="/Restaurateur/RestaurantDashboard">Dashboard</a>
                         </li>
-                        <li>
+                        @*<li>
                             <a class="dropdown-item">Products</a>
-                        </li>
+                        </li>*@
                     }
                     @if (isRider)
                     {
@@ -52,6 +52,9 @@
                     {
                         <li>
                             <a class="dropdown-item" asp-page="/Customer/Orders">Order History</a>
+                        </li>
+                        <li>
+                            <a class="dropdown-item" asp-page="/Client/Request">Request</a>
                         </li>
                     }
                     @if (isAdmin)

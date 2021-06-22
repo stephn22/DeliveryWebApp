@@ -99,7 +99,7 @@ namespace DeliveryWebApp.WebUI.Pages.Admin
             }
             else
             {
-                _context.Restaurateurs.Add(new Restaurateur()
+                _context.Restaurateurs.Add(new Domain.Entities.Restaurateur
                 {
                     Client = UserRequest.Client,
                 });
