@@ -7,9 +7,12 @@
 
 <h4>@ViewData["Title"]</h4>
 
-<div class="alert alert-success" role="alert">
-    <partial name="_StatusMessage" for="StatusMessage"/>
-</div>
+@if (!Model.StatusMessage.IsNullOrEmpty())
+{
+    <div class="alert alert-success" role="alert">
+        <partial name="_StatusMessage" for="StatusMessage" />
+    </div>
+}
 
 @*  FIXME *@
 

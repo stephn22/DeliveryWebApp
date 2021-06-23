@@ -1,6 +1,7 @@
 ﻿@page
 @using DeliveryWebApp.Domain.Constants
 @using DeliveryWebApp.Infrastructure.Security
+@using IdentityServer4.Extensions
 @model DeliveryWebApp.WebUI.Areas.Identity.Pages.Account.Manage.RequestModel
 @{
     ViewData["Title"] = "Change User Request";
@@ -8,27 +9,23 @@
 
 <h4>@ViewData["Title"]</h4>
 
-@* TODO: push notifications *@
+@* TODO: push notifications and localize *@
 
-<div class="alert alert-success" role="alert">
-    <partial name="_StatusMessage" for="StatusMessage"/>
-</div>
-
-@if (Model.Request != null)
+@if (Model.UserRequest != null)
 {
-    @switch (Model.Request.Status)
+    @switch (Model.UserRequest.Status)
     {
         case RequestStatus.Idle:
             <div class="alert alert-primary" role="alert">
-                <p>Your request to become a @Model.Request.Role has been sent, please wait the administrator.</p>
+                <p>Your request to become a @Model.UserRequest.Role has been sent, please wait the administrator.</p>
             </div>
             break;
 
         case RequestStatus.Accepted:
             <div class="alert alert-success" role="alert">
-                <p>Your request to become a @Model.Request.Role has been accepted!</p>
+                <p>Your request to become a @Model.UserRequest.Role has been accepted!</p>
 
-                @if (Model.Request.Role == RoleName.Rider)
+                @if (Model.UserRequest.Role == RoleName.Rider)
                 {
                     <p>You are ready to go!</p>
                 }
@@ -41,7 +38,7 @@
 
         case RequestStatus.Rejected:
             <div class="alert alert-danger" role="alert">
-                <p>Your request to become a @Model.Request.Role has been rejected :(</p>
+                <p>Your request to become a @Model.UserRequest.Role has been rejected :(</p>
                 @* TODO: Contact administrator? *@
             </div>
             break;
@@ -50,17 +47,14 @@
 else
 {
     <h6>If you want to become a rider or a restaurateur and manage your own restaurant, send a request to the system admin</h6>
-
-    <div class="text-center">
-        <form method="post">
-            <div class="form-row">
-                <div class="form-group col-md-6">
-                    <label asp-for="Input.Role"></label>
-                    <select class="form-select" aria-label="Select country" asp-for="Input.Role" asp-items="Model.Roles">
-                    </select>
-                    <span asp-validation-for="Input.Role" class="text-danger"></span>
-                </div>
-            </div>
-        </form>
-    </div>
+    <br/>
+    <form method="post">
+        <div class="form-group col-md-3">
+            <label asp-for="Input.Role"></label>
+            <select class="form-select" aria-label="Select country" asp-for="Input.Role" asp-items="Model.Roles">
+            </select>
+            <span asp-validation-for="Input.Role" class="text-danger"></span>
+        </div>
+        <button type="submit" class="btn btn-primary">Submit</button>
+    </form>
 }
