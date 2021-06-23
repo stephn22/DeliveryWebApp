@@ -15,12 +15,9 @@ namespace DeliveryWebApp.Infrastructure.Persistence.Configurations
     {
         public void Configure(EntityTypeBuilder<Request> builder)
         {
-            builder.HasKey(c => c.Id);
-
-            builder.HasOne(c => c.Client)
-                .WithOne()
-                .HasForeignKey<Client>(c => c.Id)
-                .OnDelete(DeleteBehavior.Cascade);
+            //builder.HasOne(c => c.Client)
+            //    .WithOne()
+            //    .HasForeignKey<Client>(c => c.Id);
 
             builder.Property(c => c.Role)
                 .IsRequired();

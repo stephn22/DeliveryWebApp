@@ -17,18 +17,16 @@ namespace DeliveryWebApp.Infrastructure.Persistence.Configurations
         {
             builder.HasKey(u => u.Id);
 
-            builder.HasOne(u => u.Client)
-                .WithOne()
-                .HasForeignKey<Client>(u => u.Id)
-                .OnDelete(DeleteBehavior.Cascade);
+            //builder.HasOne(u => u.Client)
+            //    .WithOne()
+            //    .HasForeignKey<Client>(u => u.Id);
 
             builder.Property(r => r.DeliveryCredit)
                 .IsRequired();
 
-            builder.HasMany(u => u.OpenOrders)
-                .WithOne()
-                .HasForeignKey(u => u.Id)
-                .OnDelete(DeleteBehavior.NoAction);
+            //builder.HasMany(u => u.OpenOrders)
+            //    .WithOne()
+            //    .HasForeignKey(u => u.Id);
         }
     }
 }

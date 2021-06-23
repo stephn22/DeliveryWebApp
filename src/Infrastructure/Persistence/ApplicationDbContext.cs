@@ -68,12 +68,12 @@ namespace DeliveryWebApp.Infrastructure.Persistence
             return result;
         }
 
-        //protected override void OnModelCreating(ModelBuilder builder)
-        //{
-        //    builder.ApplyConfigurationsFromAssembly(Assembly.GetExecutingAssembly());
+        protected override void OnModelCreating(ModelBuilder builder)
+        {
+            builder.ApplyConfigurationsFromAssembly(Assembly.GetExecutingAssembly());
 
-        //    base.OnModelCreating(builder);
-        //}
+            base.OnModelCreating(builder);
+        }
 
         private async Task DispatchEvents()
         {

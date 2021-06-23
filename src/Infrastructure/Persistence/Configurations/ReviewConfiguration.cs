@@ -13,8 +13,6 @@ namespace DeliveryWebApp.Infrastructure.Persistence.Configurations
     {
         public void Configure(EntityTypeBuilder<Review> builder)
         {
-            builder.HasKey(r => r.Id);
-
             builder.Property(r => r.Title)
                 .IsRequired();
 

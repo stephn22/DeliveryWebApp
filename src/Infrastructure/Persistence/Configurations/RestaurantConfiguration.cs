@@ -13,17 +13,9 @@ namespace DeliveryWebApp.Infrastructure.Persistence.Configurations
     {
         public void Configure(EntityTypeBuilder<Restaurant> builder)
         {
-            builder.HasKey(u => u.Id);
-
             builder.HasMany(u => u.Products)
                 .WithOne()
-                .HasForeignKey(u => u.Id)
-                .OnDelete(DeleteBehavior.NoAction);
-
-            builder.HasOne(u => u.Address)
-                .WithOne()
-                .HasForeignKey<Address>(u => u.Id)
-                .OnDelete(DeleteBehavior.NoAction);
+                .HasForeignKey(u => u.Id);
 
             builder.Property(r => r.Name)
                 .IsRequired();

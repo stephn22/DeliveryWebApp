@@ -15,8 +15,6 @@ namespace DeliveryWebApp.Infrastructure.Persistence.Configurations
     {
         public void Configure(EntityTypeBuilder<Address> builder)
         {
-            builder.HasKey(u => u.Id);
-
             builder.Property(c => c.AddressLine1)
                 .IsRequired();
 

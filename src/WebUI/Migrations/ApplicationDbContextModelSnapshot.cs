@@ -27,24 +27,29 @@ namespace DeliveryWebApp.WebUI.Migrations
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
                     b.Property<string>("AddressLine1")
+                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("AddressLine2")
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("City")
+                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<int?>("ClientId")
                         .HasColumnType("int");
 
                     b.Property<string>("Country")
+                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("Number")
+                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("PostalCode")
+                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.HasKey("Id");
@@ -84,6 +89,7 @@ namespace DeliveryWebApp.WebUI.Migrations
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
                     b.Property<string>("ApplicationUserFk")
+                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.HasKey("Id");
@@ -104,13 +110,14 @@ namespace DeliveryWebApp.WebUI.Migrations
                     b.Property<DateTime>("Date")
                         .HasColumnType("datetime2");
 
-                    b.Property<int?>("RestaurantId")
+                    b.Property<int?>("RestaurantId1")
                         .HasColumnType("int");
 
                     b.Property<int?>("RiderId")
                         .HasColumnType("int");
 
                     b.Property<string>("Status")
+                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<double>("TotalPrice")
@@ -120,7 +127,7 @@ namespace DeliveryWebApp.WebUI.Migrations
 
                     b.HasIndex("ClientId");
 
-                    b.HasIndex("RestaurantId");
+                    b.HasIndex("RestaurantId1");
 
                     b.HasIndex("RiderId");
 
@@ -130,11 +137,6 @@ namespace DeliveryWebApp.WebUI.Migrations
             modelBuilder.Entity("DeliveryWebApp.Domain.Entities.Product", b =>
                 {
                     b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int")
-                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
-
-                    b.Property<int?>("BasketId")
                         .HasColumnType("int");
 
                     b.Property<string>("Category")
@@ -149,25 +151,13 @@ namespace DeliveryWebApp.WebUI.Migrations
                     b.Property<string>("Name")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<int?>("OrderId")
-                        .HasColumnType("int");
-
                     b.Property<double>("Price")
                         .HasColumnType("float");
 
                     b.Property<int>("Quantity")
                         .HasColumnType("int");
 
-                    b.Property<int?>("RestaurantId")
-                        .HasColumnType("int");
-
                     b.HasKey("Id");
-
-                    b.HasIndex("BasketId");
-
-                    b.HasIndex("OrderId");
-
-                    b.HasIndex("RestaurantId");
 
                     b.ToTable("Products");
                 });
@@ -183,6 +173,7 @@ namespace DeliveryWebApp.WebUI.Migrations
                         .HasColumnType("int");
 
                     b.Property<string>("Role")
+                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("Status")
@@ -198,9 +189,7 @@ namespace DeliveryWebApp.WebUI.Migrations
             modelBuilder.Entity("DeliveryWebApp.Domain.Entities.Restaurant", b =>
                 {
                     b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int")
-                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+                        .HasColumnType("int");
 
                     b.Property<int?>("AddressId")
                         .HasColumnType("int");
@@ -209,9 +198,11 @@ namespace DeliveryWebApp.WebUI.Migrations
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("LogoUrl")
+                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("Name")
+                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<int?>("RestaurateurId")
@@ -262,9 +253,12 @@ namespace DeliveryWebApp.WebUI.Migrations
                         .HasColumnType("int");
 
                     b.Property<string>("Text")
-                        .HasColumnType("nvarchar(max)");
+                        .IsRequired()
+                        .HasMaxLength(250)
+                        .HasColumnType("nvarchar(250)");
 
                     b.Property<string>("Title")
+                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.HasKey("Id");
@@ -621,32 +615,36 @@ namespace DeliveryWebApp.WebUI.Migrations
                         .WithMany("Orders")
                         .HasForeignKey("ClientId");
 
-                    b.HasOne("DeliveryWebApp.Domain.Entities.Restaurant", "Restaurant")
+                    b.HasOne("DeliveryWebApp.Domain.Entities.Restaurant", null)
                         .WithMany("Orders")
-                        .HasForeignKey("RestaurantId");
+                        .HasForeignKey("RestaurantId1");
 
                     b.HasOne("DeliveryWebApp.Domain.Entities.Rider", null)
                         .WithMany("OpenOrders")
                         .HasForeignKey("RiderId");
 
                     b.Navigation("Client");
-
-                    b.Navigation("Restaurant");
                 });
 
             modelBuilder.Entity("DeliveryWebApp.Domain.Entities.Product", b =>
                 {
                     b.HasOne("DeliveryWebApp.Domain.Entities.Basket", null)
                         .WithMany("Products")
-                        .HasForeignKey("BasketId");
+                        .HasForeignKey("Id")
+                        .OnDelete(DeleteBehavior.NoAction)
+                        .IsRequired();
 
                     b.HasOne("DeliveryWebApp.Domain.Entities.Order", null)
                         .WithMany("Products")
-                        .HasForeignKey("OrderId");
+                        .HasForeignKey("Id")
+                        .OnDelete(DeleteBehavior.NoAction)
+                        .IsRequired();
 
                     b.HasOne("DeliveryWebApp.Domain.Entities.Restaurant", null)
                         .WithMany("Products")
-                        .HasForeignKey("RestaurantId");
+                        .HasForeignKey("Id")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
                 });
 
             modelBuilder.Entity("DeliveryWebApp.Domain.Entities.Request", b =>
@@ -663,6 +661,12 @@ namespace DeliveryWebApp.WebUI.Migrations
                     b.HasOne("DeliveryWebApp.Domain.Entities.Address", "Address")
                         .WithMany()
                         .HasForeignKey("AddressId");
+
+                    b.HasOne("DeliveryWebApp.Domain.Entities.Order", null)
+                        .WithOne("Restaurant")
+                        .HasForeignKey("DeliveryWebApp.Domain.Entities.Restaurant", "Id")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
 
                     b.HasOne("DeliveryWebApp.Domain.Entities.Restaurateur", "Restaurateur")
                         .WithOne("Restaurant")
@@ -776,6 +780,8 @@ namespace DeliveryWebApp.WebUI.Migrations
             modelBuilder.Entity("DeliveryWebApp.Domain.Entities.Order", b =>
                 {
                     b.Navigation("Products");
+
+                    b.Navigation("Restaurant");
                 });
 
             modelBuilder.Entity("DeliveryWebApp.Domain.Entities.Restaurant", b =>

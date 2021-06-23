@@ -11,6 +11,6 @@ namespace DeliveryWebApp.Infrastructure.Security
         public const string Admin = "Administrator";
         public const string Restaurateur = "Restaurateur";
         public const string Rider = "Rider";
-        public const string Default = "DefaultUser";
+        public const string Default = "Default User";
     }
 }

@@ -18,8 +18,6 @@ namespace DeliveryWebApp.Infrastructure.Persistence.Configurations
     {
         public void Configure(EntityTypeBuilder<Basket> builder)
         {
-            builder.HasKey(u => u.Id);
-
             builder.HasMany(b => b.Products)
                 .WithOne()
                 .HasForeignKey(e => e.Id)
