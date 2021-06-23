@@ -42,6 +42,7 @@ namespace DeliveryWebApp.WebUI.Areas.Identity.Pages.Account
             _logger = logger;
             _emailSender = emailSender;
         }
+        // TODO: Add claims for fname and lname
 
         [BindProperty]
         public InputModel Input { get; set; }
