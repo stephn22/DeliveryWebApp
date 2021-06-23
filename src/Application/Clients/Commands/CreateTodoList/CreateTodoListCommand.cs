@@ -6,10 +6,10 @@ using System.Threading.Tasks;
 
 namespace DeliveryWebApp.Application.TodoLists.Commands.CreateTodoList
 {
-    //public class CreateTodoListCommand : IRequest<int>
-    //{
-    //    public string Title { get; set; }
-    //}
+    public class CreateTodoListCommand : IRequest<int>
+    {
+        public string Title { get; set; }
+    }
 
     //public class CreateTodoListCommandHandler : IRequestHandler<CreateTodoListCommand, int>
     //{

@@ -9,10 +9,10 @@ using System.Threading.Tasks;
 
 namespace DeliveryWebApp.Application.TodoLists.Commands.DeleteTodoList
 {
-    //public class DeleteTodoListCommand : IRequest
-    //{
-    //    public int Id { get; set; }
-    //}
+    public class DeleteTodoListCommand : IRequest
+    {
+        public int Id { get; set; }
+    }
 
     //public class DeleteTodoListCommandHandler : IRequestHandler<DeleteTodoListCommand>
     //{
