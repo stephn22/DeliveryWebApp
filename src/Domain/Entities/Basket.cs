@@ -12,7 +12,7 @@ namespace DeliveryWebApp.Domain.Entities
 
         public double TotalPrice { get; set; }
 
-        public int ClientId { get; set; }
-        public Client Client { get; set; }
+        public int? ClientId { get; set; }
+        public virtual Client Client { get; set; }
     }
 }

@@ -8,7 +8,7 @@ namespace DeliveryWebApp.Domain.Entities
 {
     public class Rider : BaseEntity
     {
-        public Client Client { get; set; }
+        public virtual Client Client { get; set; }
         public double DeliveryCredit { get; set; }
         public ICollection<Order> OpenOrders { get; set; }
 

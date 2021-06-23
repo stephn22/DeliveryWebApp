@@ -10,7 +10,7 @@ namespace DeliveryWebApp.Domain.Entities
     {
         public string ApplicationUserFk { get; set; }
         public ICollection<Address> Addresses { get; set; }
-        public Basket Basket { get; set; }
+        public virtual Basket Basket { get; set; }
         public ICollection<Review> Reviews { get; set; }
         public ICollection<Order> Orders { get; set; }
     }

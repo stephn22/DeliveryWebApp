@@ -8,8 +8,8 @@ namespace DeliveryWebApp.Domain.Entities
 {
     public class Restaurateur : BaseEntity
     {
-        public Client Client { get; set; }
-        public Restaurant Restaurant { get; set; }
+        public virtual Client Client { get; set; }
+        public virtual Restaurant Restaurant { get; set; }
         public ICollection<Review> Reviews { get; set; }
     }
 }
