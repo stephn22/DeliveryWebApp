@@ -13,25 +13,7 @@ namespace DeliveryWebApp.Infrastructure.Persistence.Configurations
     {
         public void Configure(EntityTypeBuilder<Review> builder)
         {
-            builder.Property(r => r.Id)
-                .ValueGeneratedOnAdd();
-
             builder.HasKey(r => r.Id);
-
-            builder.HasOne(r => r.Client)
-                .WithOne()
-                .HasForeignKey<Client>(c => c.Id)
-                .OnDelete(DeleteBehavior.NoAction);
-
-            builder.HasOne(r => r.Restaurant)
-                .WithOne()
-                .HasForeignKey<Restaurant>(r => r.Id)
-                .OnDelete(DeleteBehavior.Cascade);
-
-            builder.HasOne(r => r.Restaurateur)
-                .WithOne()
-                .HasForeignKey<Restaurateur>(r => r.Id)
-                .OnDelete(DeleteBehavior.Cascade);
 
             builder.Property(r => r.Title)
                 .IsRequired();

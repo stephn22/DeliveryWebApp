@@ -15,9 +15,6 @@ namespace DeliveryWebApp.Infrastructure.Persistence.Configurations
     {
         public void Configure(EntityTypeBuilder<Address> builder)
         {
-            builder.Property(u => u.Id)
-                .ValueGeneratedOnAdd();
-
             builder.HasKey(u => u.Id);
 
             builder.Property(c => c.AddressLine1)

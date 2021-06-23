@@ -10,5 +10,6 @@ namespace DeliveryWebApp.Domain.Entities
     {
         public Client Client { get; set; }
         public Restaurant Restaurant { get; set; }
+        public ICollection<Review> Reviews { get; set; }
     }
 }

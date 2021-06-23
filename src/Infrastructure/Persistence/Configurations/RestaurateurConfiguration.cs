@@ -15,9 +15,6 @@ namespace DeliveryWebApp.Infrastructure.Persistence.Configurations
     {
         public void Configure(EntityTypeBuilder<Restaurateur> builder)
         {
-            builder.Property(u => u.Id)
-                .ValueGeneratedOnAdd();
-
             builder.HasKey(u => u.Id);
 
             builder.HasOne(u => u.Client)
@@ -25,9 +22,14 @@ namespace DeliveryWebApp.Infrastructure.Persistence.Configurations
                 .HasForeignKey<Client>(u => u.Id)
                 .OnDelete(DeleteBehavior.Cascade);
 
+            builder.HasMany(r => r.Reviews)
+                .WithOne(r => r.Restaurateur)
+                .HasForeignKey(r => r.RestaurateurId)
+                .OnDelete(DeleteBehavior.Cascade);
+
             builder.HasOne(u => u.Restaurant)
-                .WithOne()
-                .HasForeignKey<Restaurant>(u => u.Id)
+                .WithOne(c => c.Restaurateur)
+                .HasForeignKey<Restaurant>(u => u.RestaurateurId)
                 .OnDelete(DeleteBehavior.NoAction);
         }
     }

@@ -14,5 +14,8 @@ namespace DeliveryWebApp.Domain.Entities
         public Address Address { get; set; }
         public ICollection<Product> Products { get; set; }
         public ICollection<Order> Orders { get; set; }
+
+        public int RestaurateurId { get; set; }
+        public Restaurateur Restaurateur { get; set; }
     }
 }

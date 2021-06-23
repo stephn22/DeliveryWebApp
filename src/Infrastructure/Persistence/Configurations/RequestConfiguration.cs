@@ -20,8 +20,7 @@ namespace DeliveryWebApp.Infrastructure.Persistence.Configurations
             builder.HasOne(c => c.Client)
                 .WithOne()
                 .HasForeignKey<Client>(c => c.Id)
-                .OnDelete(DeleteBehavior.Cascade)
-                .IsRequired();
+                .OnDelete(DeleteBehavior.Cascade);
 
             builder.Property(c => c.Role)
                 .IsRequired();

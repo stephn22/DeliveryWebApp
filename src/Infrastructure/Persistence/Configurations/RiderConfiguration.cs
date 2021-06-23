@@ -15,9 +15,6 @@ namespace DeliveryWebApp.Infrastructure.Persistence.Configurations
     {
         public void Configure(EntityTypeBuilder<Rider> builder)
         {
-            builder.Property(u => u.Id)
-                .ValueGeneratedOnAdd();
-
             builder.HasKey(u => u.Id);
 
             builder.HasOne(u => u.Client)
@@ -31,7 +28,7 @@ namespace DeliveryWebApp.Infrastructure.Persistence.Configurations
             builder.HasMany(u => u.OpenOrders)
                 .WithOne()
                 .HasForeignKey(u => u.Id)
-                .OnDelete(DeleteBehavior.Cascade);
+                .OnDelete(DeleteBehavior.NoAction);
         }
     }
 }

@@ -17,15 +17,27 @@ namespace DeliveryWebApp.Infrastructure.Persistence.Configurations
         {
             builder.HasKey(u => u.Id);
 
-            builder.Property(u => u.Id)
-                .ValueGeneratedOnAdd();
-
             builder.Property(u => u.ApplicationUserFk)
                 .IsRequired();
+
+            builder.HasOne(c => c.Basket)
+                .WithOne(b => b.Client)
+                .HasForeignKey<Basket>(b => b.ClientId)
+                .OnDelete(DeleteBehavior.Cascade);
 
             builder.HasMany(c => c.Addresses)
                 .WithOne()
                 .HasForeignKey(c => c.Id);
+
+            builder.HasMany(r => r.Reviews)
+                .WithOne(c => c.Client)
+                .HasForeignKey(c => c.ClientId)
+                .OnDelete(DeleteBehavior.NoAction);
+
+            builder.HasMany(r => r.Orders)
+                .WithOne(c => c.Client)
+                .HasForeignKey(r => r.ClientId)
+                .OnDelete(DeleteBehavior.Cascade);
         }
     }
 }

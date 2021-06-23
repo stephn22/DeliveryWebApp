@@ -4,16 +4,14 @@ using DeliveryWebApp.Infrastructure.Persistence;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
-using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 namespace DeliveryWebApp.WebUI.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20210622164852_Update")]
-    partial class Update
+    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
     {
-        protected override void BuildTargetModel(ModelBuilder modelBuilder)
+        protected override void BuildModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -24,7 +22,6 @@ namespace DeliveryWebApp.WebUI.Migrations
             modelBuilder.Entity("DeliveryWebApp.Domain.Entities.Address", b =>
                 {
                     b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
                         .HasColumnType("int");
 
                     b.Property<string>("AddressLine1")
@@ -62,10 +59,16 @@ namespace DeliveryWebApp.WebUI.Migrations
                         .HasColumnType("int")
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
+                    b.Property<int>("ClientId")
+                        .HasColumnType("int");
+
                     b.Property<double>("TotalPrice")
                         .HasColumnType("float");
 
                     b.HasKey("Id");
+
+                    b.HasIndex("ClientId")
+                        .IsUnique();
 
                     b.ToTable("Baskets");
                 });
@@ -73,7 +76,6 @@ namespace DeliveryWebApp.WebUI.Migrations
             modelBuilder.Entity("DeliveryWebApp.Domain.Entities.Client", b =>
                 {
                     b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
                         .HasColumnType("int");
 
                     b.Property<string>("ApplicationUserFk")
@@ -88,7 +90,9 @@ namespace DeliveryWebApp.WebUI.Migrations
             modelBuilder.Entity("DeliveryWebApp.Domain.Entities.Order", b =>
                 {
                     b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    b.Property<int>("ClientId")
                         .HasColumnType("int");
 
                     b.Property<DateTime>("Date")
@@ -105,6 +109,8 @@ namespace DeliveryWebApp.WebUI.Migrations
                         .HasColumnType("float");
 
                     b.HasKey("Id");
+
+                    b.HasIndex("ClientId");
 
                     b.HasIndex("RestaurantId");
 
@@ -161,7 +167,6 @@ namespace DeliveryWebApp.WebUI.Migrations
             modelBuilder.Entity("DeliveryWebApp.Domain.Entities.Restaurant", b =>
                 {
                     b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
                         .HasColumnType("int");
 
                     b.Property<string>("Category")
@@ -175,7 +180,13 @@ namespace DeliveryWebApp.WebUI.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<int>("RestaurateurId")
+                        .HasColumnType("int");
+
                     b.HasKey("Id");
+
+                    b.HasIndex("RestaurateurId")
+                        .IsUnique();
 
                     b.ToTable("Restaurants");
                 });
@@ -184,7 +195,8 @@ namespace DeliveryWebApp.WebUI.Migrations
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
+                        .HasColumnType("int")
+                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
                     b.HasKey("Id");
 
@@ -198,7 +210,13 @@ namespace DeliveryWebApp.WebUI.Migrations
                         .HasColumnType("int")
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
+                    b.Property<int>("ClientId")
+                        .HasColumnType("int");
+
                     b.Property<int>("Grade")
+                        .HasColumnType("int");
+
+                    b.Property<int>("RestaurateurId")
                         .HasColumnType("int");
 
                     b.Property<string>("Text")
@@ -211,6 +229,10 @@ namespace DeliveryWebApp.WebUI.Migrations
                         .HasColumnType("nvarchar(max)");
 
                     b.HasKey("Id");
+
+                    b.HasIndex("ClientId");
+
+                    b.HasIndex("RestaurateurId");
 
                     b.ToTable("Review");
                 });
@@ -548,20 +570,19 @@ namespace DeliveryWebApp.WebUI.Migrations
                         .IsRequired();
                 });
 
-            modelBuilder.Entity("DeliveryWebApp.Domain.Entities.Client", b =>
+            modelBuilder.Entity("DeliveryWebApp.Domain.Entities.Basket", b =>
                 {
-                    b.HasOne("DeliveryWebApp.Domain.Entities.Basket", null)
-                        .WithOne("Client")
-                        .HasForeignKey("DeliveryWebApp.Domain.Entities.Client", "Id")
+                    b.HasOne("DeliveryWebApp.Domain.Entities.Client", "Client")
+                        .WithOne("Basket")
+                        .HasForeignKey("DeliveryWebApp.Domain.Entities.Basket", "ClientId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("DeliveryWebApp.Domain.Entities.Order", null)
-                        .WithOne("Client")
-                        .HasForeignKey("DeliveryWebApp.Domain.Entities.Client", "Id")
-                        .OnDelete(DeleteBehavior.NoAction)
-                        .IsRequired();
+                    b.Navigation("Client");
+                });
 
+            modelBuilder.Entity("DeliveryWebApp.Domain.Entities.Client", b =>
+                {
                     b.HasOne("DeliveryWebApp.Domain.Entities.Request", null)
                         .WithOne("Client")
                         .HasForeignKey("DeliveryWebApp.Domain.Entities.Client", "Id")
@@ -574,12 +595,6 @@ namespace DeliveryWebApp.WebUI.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("DeliveryWebApp.Domain.Entities.Review", null)
-                        .WithOne("Client")
-                        .HasForeignKey("DeliveryWebApp.Domain.Entities.Client", "Id")
-                        .OnDelete(DeleteBehavior.NoAction)
-                        .IsRequired();
-
                     b.HasOne("DeliveryWebApp.Domain.Entities.Rider", null)
                         .WithOne("Client")
                         .HasForeignKey("DeliveryWebApp.Domain.Entities.Client", "Id")
@@ -589,15 +604,23 @@ namespace DeliveryWebApp.WebUI.Migrations
 
             modelBuilder.Entity("DeliveryWebApp.Domain.Entities.Order", b =>
                 {
+                    b.HasOne("DeliveryWebApp.Domain.Entities.Client", "Client")
+                        .WithMany("Orders")
+                        .HasForeignKey("ClientId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
                     b.HasOne("DeliveryWebApp.Domain.Entities.Rider", null)
                         .WithMany("OpenOrders")
                         .HasForeignKey("Id")
-                        .OnDelete(DeleteBehavior.Cascade)
+                        .OnDelete(DeleteBehavior.NoAction)
                         .IsRequired();
 
                     b.HasOne("DeliveryWebApp.Domain.Entities.Restaurant", null)
                         .WithMany("Orders")
                         .HasForeignKey("RestaurantId");
+
+                    b.Navigation("Client");
                 });
 
             modelBuilder.Entity("DeliveryWebApp.Domain.Entities.Product", b =>
@@ -605,13 +628,13 @@ namespace DeliveryWebApp.WebUI.Migrations
                     b.HasOne("DeliveryWebApp.Domain.Entities.Basket", null)
                         .WithMany("Products")
                         .HasForeignKey("Id")
-                        .OnDelete(DeleteBehavior.Cascade)
+                        .OnDelete(DeleteBehavior.NoAction)
                         .IsRequired();
 
                     b.HasOne("DeliveryWebApp.Domain.Entities.Order", null)
                         .WithMany("Products")
                         .HasForeignKey("Id")
-                        .OnDelete(DeleteBehavior.Cascade)
+                        .OnDelete(DeleteBehavior.NoAction)
                         .IsRequired();
 
                     b.HasOne("DeliveryWebApp.Domain.Entities.Restaurant", null)
@@ -629,26 +652,32 @@ namespace DeliveryWebApp.WebUI.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("DeliveryWebApp.Domain.Entities.Restaurateur", null)
+                    b.HasOne("DeliveryWebApp.Domain.Entities.Restaurateur", "Restaurateur")
                         .WithOne("Restaurant")
-                        .HasForeignKey("DeliveryWebApp.Domain.Entities.Restaurant", "Id")
+                        .HasForeignKey("DeliveryWebApp.Domain.Entities.Restaurant", "RestaurateurId")
                         .OnDelete(DeleteBehavior.NoAction)
                         .IsRequired();
 
-                    b.HasOne("DeliveryWebApp.Domain.Entities.Review", null)
-                        .WithOne("Restaurant")
-                        .HasForeignKey("DeliveryWebApp.Domain.Entities.Restaurant", "Id")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                    b.Navigation("Restaurateur");
                 });
 
-            modelBuilder.Entity("DeliveryWebApp.Domain.Entities.Restaurateur", b =>
+            modelBuilder.Entity("DeliveryWebApp.Domain.Entities.Review", b =>
                 {
-                    b.HasOne("DeliveryWebApp.Domain.Entities.Review", null)
-                        .WithOne("Restaurateur")
-                        .HasForeignKey("DeliveryWebApp.Domain.Entities.Restaurateur", "Id")
+                    b.HasOne("DeliveryWebApp.Domain.Entities.Client", "Client")
+                        .WithMany("Reviews")
+                        .HasForeignKey("ClientId")
+                        .OnDelete(DeleteBehavior.NoAction)
+                        .IsRequired();
+
+                    b.HasOne("DeliveryWebApp.Domain.Entities.Restaurateur", "Restaurateur")
+                        .WithMany("Reviews")
+                        .HasForeignKey("RestaurateurId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
+
+                    b.Navigation("Client");
+
+                    b.Navigation("Restaurateur");
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<string>", b =>
@@ -704,20 +733,22 @@ namespace DeliveryWebApp.WebUI.Migrations
 
             modelBuilder.Entity("DeliveryWebApp.Domain.Entities.Basket", b =>
                 {
-                    b.Navigation("Client");
-
                     b.Navigation("Products");
                 });
 
             modelBuilder.Entity("DeliveryWebApp.Domain.Entities.Client", b =>
                 {
                     b.Navigation("Addresses");
+
+                    b.Navigation("Basket");
+
+                    b.Navigation("Orders");
+
+                    b.Navigation("Reviews");
                 });
 
             modelBuilder.Entity("DeliveryWebApp.Domain.Entities.Order", b =>
                 {
-                    b.Navigation("Client");
-
                     b.Navigation("Products");
 
                     b.Navigation("Restaurant");
@@ -742,15 +773,8 @@ namespace DeliveryWebApp.WebUI.Migrations
                     b.Navigation("Client");
 
                     b.Navigation("Restaurant");
-                });
 
-            modelBuilder.Entity("DeliveryWebApp.Domain.Entities.Review", b =>
-                {
-                    b.Navigation("Client");
-
-                    b.Navigation("Restaurant");
-
-                    b.Navigation("Restaurateur");
+                    b.Navigation("Reviews");
                 });
 
             modelBuilder.Entity("DeliveryWebApp.Domain.Entities.Rider", b =>

@@ -8,20 +8,12 @@ namespace DeliveryWebApp.Infrastructure.Persistence.Configurations
     {
         public void Configure(EntityTypeBuilder<Order> builder)
         {
-            builder.Property(u => u.Id)
-                .ValueGeneratedOnAdd();
-
             builder.HasKey(u => u.Id);
-
-            builder.HasOne(u => u.Client)
-                .WithOne()
-                .HasForeignKey<Client>(u => u.Id)
-                .OnDelete(DeleteBehavior.NoAction);
 
             builder.HasMany(u => u.Products)
                 .WithOne()
                 .HasForeignKey(u => u.Id)
-                .OnDelete(DeleteBehavior.Cascade);
+                .OnDelete(DeleteBehavior.NoAction);
 
             builder.HasOne(u => u.Restaurant)
                 .WithOne()

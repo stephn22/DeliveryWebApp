@@ -18,20 +18,12 @@ namespace DeliveryWebApp.Infrastructure.Persistence.Configurations
     {
         public void Configure(EntityTypeBuilder<Basket> builder)
         {
-            builder.Property(u => u.Id)
-                .ValueGeneratedOnAdd();
-
             builder.HasKey(u => u.Id);
 
-            builder.HasOne(u => u.Client)
+            builder.HasMany(b => b.Products)
                 .WithOne()
-                .HasForeignKey<Client>(u => u.Id)
-                .OnDelete(DeleteBehavior.Cascade);
-
-            builder.HasMany(c => c.Products)
-                .WithOne()
-                .HasForeignKey(c => c.Id)
-                .OnDelete(DeleteBehavior.Cascade);
+                .HasForeignKey(e => e.Id)
+                .OnDelete(DeleteBehavior.NoAction);
 
             builder.Property(u => u.TotalPrice)
                 .IsRequired();
