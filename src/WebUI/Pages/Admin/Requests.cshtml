@@ -30,7 +30,7 @@
                 @Html.DisplayFor(modelItem => item.Id)
             </td>
             <td>
-                <a asp-page="/Admin/RequestDetail">User</a>
+                <a asp-page="/Admin/RequestDetail" asp-route-id="@item.Id">User</a>
             </td>
             <td>
                 @Html.DisplayFor(modelItem => item.Role)

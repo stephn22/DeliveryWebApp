@@ -6,6 +6,7 @@ using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using Microsoft.Extensions.Logging;
 using Serilog;
 
 namespace DeliveryWebApp.WebUI
@@ -62,7 +63,7 @@ namespace DeliveryWebApp.WebUI
         public static IHostBuilder CreateHostBuilder(string[] args) =>
             Host.CreateDefaultBuilder(args)
                 .UseSerilog((context, services, configuration) => configuration
-                    .ReadFrom.Configuration(context.Configuration)
+                    .ReadFrom.Configuration(context.Configuration, "Serilog")
                     .ReadFrom.Services(services)
                     .Enrich.FromLogContext()
                     .WriteTo.Console())

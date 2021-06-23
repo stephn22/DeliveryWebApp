@@ -17,6 +17,7 @@ using Microsoft.AspNetCore.Identity.UI.Services;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.AspNetCore.WebUtilities;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 
 namespace DeliveryWebApp.WebUI.Areas.Identity.Pages.Account
@@ -103,7 +104,7 @@ namespace DeliveryWebApp.WebUI.Areas.Identity.Pages.Account
                 {
                     _logger.LogInformation("User created a new account with password.");
 
-                    /****************************** Claims ******************************/
+                    // Claims
 
                     await _userManager.AddClaimsAsync(user, new[]
                     {
@@ -111,8 +112,6 @@ namespace DeliveryWebApp.WebUI.Areas.Identity.Pages.Account
                         new Claim(ClaimName.LName, Input.LName),
                         new Claim(ClaimName.Role, RoleName.Default), // default user after registration
                     });
-
-                    /******************************+++++++******************************/
 
                     var code = await _userManager.GenerateEmailConfirmationTokenAsync(user);
                     code = WebEncoders.Base64UrlEncode(Encoding.UTF8.GetBytes(code));
@@ -127,6 +126,19 @@ namespace DeliveryWebApp.WebUI.Areas.Identity.Pages.Account
 
                     if (_userManager.Options.SignIn.RequireConfirmedAccount)
                     {
+                        // add to Clients table
+                        _context.Clients.Add(new Client
+                        {
+                            ApplicationUserFk = user.Id,
+                            Basket = null,
+                            Addresses = null,
+                            Orders = null, 
+                            Reviews = null
+                            
+                        });
+
+                        await _context.SaveChangesAsync(); // FIXME
+
                         return RedirectToPage("RegisterConfirmation", new { email = Input.Email, returnUrl = returnUrl });
                     }
                     else

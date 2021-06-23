@@ -53,13 +53,14 @@ namespace DeliveryWebApp.WebUI.Pages.Customer
 
         private void GetProducts()
         {
-            Products = Order.Products.Select(p => new Product(
-                p.Name,
-                p.ImageUrl,
-                p.Price,
-                p.Discount,
-                p.Category)
-            ).ToList();
+            Products = Order.Products.Select(p => new Product
+            {
+                Name = p.Name,
+                ImageUrl = p.ImageUrl,
+                Price = p.Price,
+                Discount = p.Discount,
+                Category = p.Category
+            }).ToList();
         }
     }
 }
