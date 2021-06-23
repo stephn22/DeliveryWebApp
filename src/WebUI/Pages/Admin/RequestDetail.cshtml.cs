@@ -1,16 +1,19 @@
-using System;
-using System.ComponentModel.DataAnnotations;
 using DeliveryWebApp.Domain.Entities;
 using DeliveryWebApp.Infrastructure.Identity;
 using DeliveryWebApp.Infrastructure.Persistence;
 using DeliveryWebApp.Infrastructure.Security;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Logging;
+using System;
+using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Threading.Tasks;
-using Microsoft.AspNetCore.Authorization;
+using DeliveryWebApp.Domain.Constants;
+using Microsoft.AspNetCore.Http;
 
 namespace DeliveryWebApp.WebUI.Pages.Admin
 {
@@ -19,11 +22,13 @@ namespace DeliveryWebApp.WebUI.Pages.Admin
     {
         private readonly ApplicationDbContext _context;
         private readonly UserManager<ApplicationUser> _userManager;
+        private readonly ILogger<RequestDetailModel> _logger;
 
-        public RequestDetailModel(ApplicationDbContext context, UserManager<ApplicationUser> userManager)
+        public RequestDetailModel(ApplicationDbContext context, UserManager<ApplicationUser> userManager, ILogger<RequestDetailModel> logger)
         {
             _context = context;
             _userManager = userManager;
+            _logger = logger;
         }
 
         public Request UserRequest { get; set; }
@@ -36,8 +41,8 @@ namespace DeliveryWebApp.WebUI.Pages.Admin
         public class InputModel
         {
             [Required]
-            [DataType(DataType.Text)]
-            [Display(Name = "DeliveryCredit")]
+            [DataType(DataType.Currency)]
+            [Display(Name = "Delivery Credit")]
             public double DeliveryCredit { get; set; } // TODO: Culture
         }
 
@@ -48,17 +53,21 @@ namespace DeliveryWebApp.WebUI.Pages.Admin
                 return NotFound();
             }
 
-            // get request instance
-            UserRequest = await _context.Requests.FirstOrDefaultAsync(o => o.Id == id);
+            var client = await GetClientAsync(id);
 
-            var appUserFk = UserRequest.Client.ApplicationUserFk;
+            // get request instance
+            UserRequest = await (from r in _context.Requests
+                                 where r.Client == client
+                                 select r).FirstOrDefaultAsync();
+
+            var appUserFk = client.ApplicationUserFk;
 
             Client = await GetUserAsync(appUserFk);
-            await GetClaimAsync(Client);
+            await GetClaimRoleAsync(Client);
 
-            IsRider = (UserRequest.Role == RoleName.Rider);
+            IsRider = UserRequest.Role.Equals(RoleName.Rider);
 
-            if (Request == null)
+            if (UserRequest == null)
             {
                 return NotFound();
             }
@@ -66,13 +75,23 @@ namespace DeliveryWebApp.WebUI.Pages.Admin
             return Page();
         }
 
+        /// <summary>
+        /// Get application user instance from id (Client.ApplicationUserFk)
+        /// </summary>
+        /// <param name="id">Identifier of ApplicationUser(IdentityUser)</param>
+        /// <returns>ApplicationUser instance</returns>
         private async Task<ApplicationUser> GetUserAsync(string id)
         {
             var user = await _userManager.FindByIdAsync(id);
             return user;
         }
 
-        private async Task GetClaimAsync(ApplicationUser user)
+        /// <summary>
+        /// Get the RoleName given the ApplicationUser
+        /// </summary>
+        /// <param name="user">ApplicationUser</param>
+        /// <returns></returns>
+        private async Task GetClaimRoleAsync(ApplicationUser user)
         {
             var claims = await _userManager.GetClaimsAsync(user);
 
@@ -81,12 +100,14 @@ namespace DeliveryWebApp.WebUI.Pages.Admin
             ClaimValue = claim.Value;
         }
 
-        public async Task<IActionResult> OnPostAsync()
+        public async Task<IActionResult> OnPostAcceptBtnAsync()
         {
             if (!ModelState.IsValid)
             {
                 return BadRequest();
             }
+
+            var user = await _userManager.GetUserAsync(User);
 
             // update tables
             if (IsRider)
@@ -109,6 +130,64 @@ namespace DeliveryWebApp.WebUI.Pages.Admin
 
             await _context.SaveChangesAsync();
             return RedirectToPage("/Admin/Requests");
+        }
+
+        public async Task<IActionResult> OnPostRejectBtnAsync()
+        {
+            UserRequest.Status = RequestStatus.Rejected;
+            Input.DeliveryCredit = 0.00;
+
+            // update request table
+            _context.Requests.Attach(UserRequest).State = EntityState.Modified;
+
+            try
+            {
+                await _context.SaveChangesAsync();
+            }
+            catch (DbUpdateConcurrencyException e)
+            {
+                _logger.LogError($"Could not update entry of user request {UserRequest.Id} - {e.Message}");
+            }
+
+            // TODO push notification to client
+            return RedirectToPage("/Admin/Requests");
+        }
+
+        /// <summary>
+        /// Get the Client instance given the identifier (Client.Id)
+        /// </summary>
+        /// <param name="id">Identifier of the client</param>
+        /// <returns>Client instance</returns>
+        private async Task<Client> GetClientAsync(int? id)
+        {
+            try
+            {
+                if (id != null)
+                {
+                    return await (from c in _context.Clients
+                        where c.Id == id
+                        select c).FirstOrDefaultAsync();
+                }
+
+                throw new InvalidOperationException();
+            }
+            catch (InvalidOperationException e)
+            {
+                _logger.LogError($"Unable to find client with id:{id} - {e.Message}");
+                return null;
+            }
+        }
+
+        /// <summary>
+        /// Get the Client instance given the Application user instance
+        /// </summary>
+        /// <param name="id">Application user instance</param>
+        /// <returns>Client instance</returns>
+        private async Task<Client> GetClientAsync(ApplicationUser user)
+        {
+            return await (from c in _context.Clients
+                where c.ApplicationUserFk == user.Id
+                select c).FirstOrDefaultAsync();
         }
     }
 }

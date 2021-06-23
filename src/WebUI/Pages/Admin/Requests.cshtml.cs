@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using DeliveryWebApp.Domain.Constants;
 using DeliveryWebApp.Domain.Entities;
 using DeliveryWebApp.Infrastructure.Persistence;
 using DeliveryWebApp.Infrastructure.Security;
@@ -27,6 +28,7 @@ namespace DeliveryWebApp.WebUI.Pages.Admin
         public async Task OnGetAsync()
         {
             var requests = from r in _context.Requests
+                           where r.Status == RequestStatus.Idle
                 select r;
 
             Requests = await requests.ToListAsync();

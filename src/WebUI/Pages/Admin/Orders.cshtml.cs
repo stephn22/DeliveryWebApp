@@ -7,6 +7,7 @@ using Microsoft.EntityFrameworkCore;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Mvc;
 
 namespace DeliveryWebApp.WebUI.Pages.Admin
 {
@@ -22,13 +23,15 @@ namespace DeliveryWebApp.WebUI.Pages.Admin
 
         public IList<Order> Orders { get; set; }
 
-        public async Task OnGetAsync()
+        public async Task<IActionResult> OnGetAsync()
         {
             var orders = from o in _context.Orders
                          orderby o.Date descending
                          select o;
 
             Orders = await orders.ToListAsync();
+
+            return Page();
         }
     }
 }

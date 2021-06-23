@@ -18,6 +18,7 @@
 
   <ItemGroup>
     <PackageReference Include="FluentValidation.AspNetCore" Version="10.2.3" />
+    <PackageReference Include="MediatR" Version="9.0.0" />
     <PackageReference Include="Microsoft.AspNetCore.ApiAuthorization.IdentityServer" Version="5.0.7" />
     <PackageReference Include="Microsoft.AspNetCore.Authentication.Google" Version="5.0.7" />
     <PackageReference Include="Microsoft.AspNetCore.Authentication.MicrosoftAccount" Version="5.0.7" />
@@ -33,6 +34,7 @@
     </PackageReference>
     <PackageReference Include="Microsoft.Extensions.Diagnostics.HealthChecks.EntityFrameworkCore" Version="5.0.7" />
     <PackageReference Include="Microsoft.VisualStudio.Web.CodeGeneration.Design" Version="5.0.2" />
+    <PackageReference Include="Newtonsoft.Json" Version="13.0.1" />
     <PackageReference Include="SendGrid" Version="9.23.2" />
     <PackageReference Include="Serilog" Version="2.10.0" />
     <PackageReference Include="Serilog.AspNetCore" Version="4.1.0" />
@@ -81,6 +83,21 @@
     <None Include="wwwroot\lib\bootstrap\dist\js\bootstrap.min.js" />
     <None Include="wwwroot\lib\bootstrap\dist\js\bootstrap.min.js.map" />
     <None Include="wwwroot\lib\bootstrap\LICENSE" />
+    <None Include="wwwroot\lib\jsgrid-1.5.3\i18n\jsgrid-de.js" />
+    <None Include="wwwroot\lib\jsgrid-1.5.3\i18n\jsgrid-es.js" />
+    <None Include="wwwroot\lib\jsgrid-1.5.3\i18n\jsgrid-fr.js" />
+    <None Include="wwwroot\lib\jsgrid-1.5.3\i18n\jsgrid-he.js" />
+    <None Include="wwwroot\lib\jsgrid-1.5.3\i18n\jsgrid-ja.js" />
+    <None Include="wwwroot\lib\jsgrid-1.5.3\i18n\jsgrid-ka.js" />
+    <None Include="wwwroot\lib\jsgrid-1.5.3\i18n\jsgrid-pl.js" />
+    <None Include="wwwroot\lib\jsgrid-1.5.3\i18n\jsgrid-pt-br.js" />
+    <None Include="wwwroot\lib\jsgrid-1.5.3\i18n\jsgrid-pt.js" />
+    <None Include="wwwroot\lib\jsgrid-1.5.3\i18n\jsgrid-ru.js" />
+    <None Include="wwwroot\lib\jsgrid-1.5.3\i18n\jsgrid-tr.js" />
+    <None Include="wwwroot\lib\jsgrid-1.5.3\i18n\jsgrid-zh-cn.js" />
+    <None Include="wwwroot\lib\jsgrid-1.5.3\i18n\jsgrid-zh-tw.js" />
+    <None Include="wwwroot\lib\jsgrid-1.5.3\jsgrid.js" />
+    <None Include="wwwroot\lib\jsgrid-1.5.3\jsgrid.min.js" />
   </ItemGroup>
 
 </Project>
