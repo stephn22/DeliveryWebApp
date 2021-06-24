@@ -1,3 +1,4 @@
+using DeliveryWebApp.Domain.Constants;
 using DeliveryWebApp.Domain.Entities;
 using DeliveryWebApp.Infrastructure.Identity;
 using DeliveryWebApp.Infrastructure.Persistence;
@@ -12,8 +13,8 @@ using System;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Threading.Tasks;
-using DeliveryWebApp.Domain.Constants;
-using Microsoft.AspNetCore.Http;
+using DeliveryWebApp.Application.Clients.Queries.GetClients;
+using DeliveryWebApp.Infrastructure.Services.Utilities;
 
 namespace DeliveryWebApp.WebUI.Pages.Admin
 {
@@ -32,7 +33,7 @@ namespace DeliveryWebApp.WebUI.Pages.Admin
         }
 
         public Request UserRequest { get; set; }
-        public ApplicationUser Client { get; set; }
+        public ApplicationUser ApplicationUser { get; set; }
         public string ClaimValue { get; set; }
         public bool IsRider { get; set; }
 
@@ -53,19 +54,20 @@ namespace DeliveryWebApp.WebUI.Pages.Admin
                 return NotFound();
             }
 
-            var client = await GetClientAsync(id);
+            // get client by request id
+            var client = await _context.GetClientByRequestIdAsync(id);
 
             // get request instance
             UserRequest = await (from r in _context.Requests
-                                 where r.Client == client
+                                 where r.Id == id
                                  select r).FirstOrDefaultAsync();
 
             var appUserFk = client.ApplicationUserFk;
 
-            Client = await GetUserAsync(appUserFk);
-            await GetClaimRoleAsync(Client);
+            ApplicationUser = await _userManager.FindByIdAsync(appUserFk);
+            ClaimValue = await _userManager.GetRoleAsync(ApplicationUser);
 
-            IsRider = UserRequest.Role.Equals(RoleName.Rider);
+            IsRider = UserRequest.Role.Equals(RoleName.Rider); // FIXME: always false
 
             if (UserRequest == null)
             {
@@ -75,39 +77,12 @@ namespace DeliveryWebApp.WebUI.Pages.Admin
             return Page();
         }
 
-        /// <summary>
-        /// Get application user instance from id (Client.ApplicationUserFk)
-        /// </summary>
-        /// <param name="id">Identifier of ApplicationUser(IdentityUser)</param>
-        /// <returns>ApplicationUser instance</returns>
-        private async Task<ApplicationUser> GetUserAsync(string id)
-        {
-            var user = await _userManager.FindByIdAsync(id);
-            return user;
-        }
-
-        /// <summary>
-        /// Get the RoleName given the ApplicationUser
-        /// </summary>
-        /// <param name="user">ApplicationUser</param>
-        /// <returns></returns>
-        private async Task GetClaimRoleAsync(ApplicationUser user)
-        {
-            var claims = await _userManager.GetClaimsAsync(user);
-
-            var claim = claims.First(u => u.Type == ClaimName.Role);
-
-            ClaimValue = claim.Value;
-        }
-
         public async Task<IActionResult> OnPostAcceptBtnAsync()
         {
             if (!ModelState.IsValid)
             {
                 return BadRequest();
             }
-
-            var user = await _userManager.GetUserAsync(User);
 
             // update tables
             if (IsRider)
@@ -151,43 +126,6 @@ namespace DeliveryWebApp.WebUI.Pages.Admin
 
             // TODO push notification to client
             return RedirectToPage("/Admin/Requests");
-        }
-
-        /// <summary>
-        /// Get the Client instance given the identifier (Client.Id)
-        /// </summary>
-        /// <param name="id">Identifier of the client</param>
-        /// <returns>Client instance</returns>
-        private async Task<Client> GetClientAsync(int? id)
-        {
-            try
-            {
-                if (id != null)
-                {
-                    return await (from c in _context.Clients
-                        where c.Id == id
-                        select c).FirstOrDefaultAsync();
-                }
-
-                throw new InvalidOperationException();
-            }
-            catch (InvalidOperationException e)
-            {
-                _logger.LogError($"Unable to find client with id:{id} - {e.Message}");
-                return null;
-            }
-        }
-
-        /// <summary>
-        /// Get the Client instance given the Application user instance
-        /// </summary>
-        /// <param name="id">Application user instance</param>
-        /// <returns>Client instance</returns>
-        private async Task<Client> GetClientAsync(ApplicationUser user)
-        {
-            return await (from c in _context.Clients
-                where c.ApplicationUserFk == user.Id
-                select c).FirstOrDefaultAsync();
         }
     }
 }

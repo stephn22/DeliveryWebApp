@@ -6,6 +6,7 @@
 
 <h1>Detail of Request: @Model.UserRequest.Id</h1>
 
+@*TODO: LOCALIZE*@
 <div>
     <h4>Request</h4>
     <hr/>
@@ -14,7 +15,7 @@
             @Html.DisplayNameFor(model => model.UserRequest.Client)
         </dt>
         <dd class="col-sm-10">
-            @Html.DisplayFor(model => model.Client.Email)
+            @Html.DisplayFor(model => model.ApplicationUser.Email)
         </dd>
         <dt class="col-sm-2">
             Current Role
@@ -37,7 +38,6 @@
                     <label asp-for="Input.DeliveryCredit"></label>
                     <input asp-for="Input.DeliveryCredit" class="form-control"/>
                     <div class="input-group-append">
-                        @*TODO: LOCALIZE*@
                         <span class="input-group-text">€</span>
                     </div>
                     <span asp-validation-for="Input.DeliveryCredit" class="text-danger"></span>
