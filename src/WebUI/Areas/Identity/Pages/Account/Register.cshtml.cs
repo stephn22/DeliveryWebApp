@@ -137,7 +137,7 @@ namespace DeliveryWebApp.WebUI.Areas.Identity.Pages.Account
                             
                         });
 
-                        await _context.SaveChangesAsync(); // FIXME
+                        await _context.SaveChangesAsync();
 
                         return RedirectToPage("RegisterConfirmation", new { email = Input.Email, returnUrl = returnUrl });
                     }

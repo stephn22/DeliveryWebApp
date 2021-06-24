@@ -42,7 +42,6 @@ namespace DeliveryWebApp.WebUI.Areas.Identity.Pages.Account
             _logger = logger;
             _emailSender = emailSender;
         }
-        // TODO: Add claims for fname and lname
 
         [BindProperty]
         public InputModel Input { get; set; }
@@ -56,6 +55,16 @@ namespace DeliveryWebApp.WebUI.Areas.Identity.Pages.Account
 
         public class InputModel
         {
+            [Required]
+            [DataType((DataType.Text))]
+            [Display(Name = "First Name")]
+            public string FName { get; set; }
+
+            [Required]
+            [DataType((DataType.Text))]
+            [Display(Name = "Last Name")]
+            public string LName { get; set; }
+
             [Required]
             [DataType(DataType.Text)]
             [Display(Name = "Username")]
@@ -110,12 +119,10 @@ namespace DeliveryWebApp.WebUI.Areas.Identity.Pages.Account
                 // If the user does not have an account, then ask the user to create an account.
                 ReturnUrl = returnUrl;
                 ProviderDisplayName = info.ProviderDisplayName;
-                if (info.Principal.HasClaim(c => c.Type == ClaimTypes.Email) &&
-                    info.Principal.HasClaim(c => c.Type == ClaimTypes.Name))
+                if (info.Principal.HasClaim(c => c.Type == ClaimTypes.Email))
                 {
                     Input = new InputModel
                     {
-                        UserName = info.Principal.FindFirstValue(ClaimTypes.Name),
                         Email = info.Principal.FindFirstValue(ClaimTypes.Email)
                     };
                 }
@@ -136,7 +143,7 @@ namespace DeliveryWebApp.WebUI.Areas.Identity.Pages.Account
 
             if (ModelState.IsValid)
             {
-                var user = new ApplicationUser { UserName = Input.Email, Email = Input.Email };
+                var user = new ApplicationUser { UserName = Input.UserName, Email = Input.Email };
 
                 var result = await _userManager.CreateAsync(user);
                 if (result.Succeeded)
@@ -146,8 +153,12 @@ namespace DeliveryWebApp.WebUI.Areas.Identity.Pages.Account
                     {
                         _logger.LogInformation("SendGridUser created an account using {Name} provider.", info.LoginProvider);
 
-                        // add claim default user
-                        await _userManager.AddClaimAsync(user, new Claim(ClaimName.Role, PolicyName.IsDefault));
+                        await _userManager.AddClaimsAsync(user, new []
+                        {
+                            new Claim(ClaimName.FName, Input.FName),
+                            new Claim(ClaimName.LName, Input.LName),
+                            new Claim(ClaimName.Role, RoleName.Default)
+                        });
 
                         var userId = await _userManager.GetUserIdAsync(user);
                         var code = await _userManager.GenerateEmailConfirmationTokenAsync(user);
@@ -164,6 +175,19 @@ namespace DeliveryWebApp.WebUI.Areas.Identity.Pages.Account
                         // If account confirmation is required, we need to show the link if we don't have a real email sender
                         if (_userManager.Options.SignIn.RequireConfirmedAccount)
                         {
+                            // add to Clients table
+                            _context.Clients.Add(new Client
+                            {
+                                ApplicationUserFk = user.Id,
+                                Basket = null,
+                                Addresses = null,
+                                Orders = null,
+                                Reviews = null
+                            });
+
+                            await _context.SaveChangesAsync();
+
+
                             return RedirectToPage("./RegisterConfirmation", new { Email = Input.Email });
                         }
 
