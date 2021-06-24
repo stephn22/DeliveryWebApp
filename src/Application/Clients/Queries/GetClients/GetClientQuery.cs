@@ -1,14 +1,9 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading;
-using System.Threading.Tasks;
-using DeliveryWebApp.Application.Common.Interfaces;
+﻿using DeliveryWebApp.Application.Common.Interfaces;
 using DeliveryWebApp.Domain.Entities;
-using MediatR;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Logging;
+using System;
+using System.Linq;
+using System.Threading.Tasks;
 
 namespace DeliveryWebApp.Application.Clients.Queries.GetClients
 {
@@ -19,21 +14,41 @@ namespace DeliveryWebApp.Application.Clients.Queries.GetClients
         /// </summary>
         /// <param name="id">Identifier of the client</param>
         /// <returns>Client instance</returns>
-        public static async Task<Client> GetClientAsync(this IApplicationDbContext context, int? clientId)
+        public static async Task<Client> GetClientByRequestIdAsync(this IApplicationDbContext context, int? requestId)
         {
             try
             {
-                if (clientId != null)
+                if (requestId == null)
                 {
-                    return await (context.Clients.Where(c => c.Id == clientId)).FirstAsync();
+                    throw new NullReferenceException();
                 }
 
-                throw new InvalidOperationException();
+                return await (from request in context.Requests
+                    where request.Id == requestId
+                    select request.Client).FirstAsync();
             }
-            catch (InvalidOperationException e)
+            catch (NullReferenceException e)
             {
                 Console.WriteLine(e);
                 return null;
+            }
+        }
+
+        public static async Task<Client> GetClientByIdAsync(this IApplicationDbContext context, int? clientId)
+        {
+            try
+            {
+                if (clientId == null)
+                {
+                    throw new NullReferenceException();
+                }
+
+                return await context.Clients.Where(c => c.Id == clientId).FirstAsync();
+            }
+            catch (NullReferenceException e)
+            {
+                Console.WriteLine(e);
+                throw;
             }
         }
     }

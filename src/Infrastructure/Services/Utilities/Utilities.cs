@@ -8,7 +8,7 @@ namespace DeliveryWebApp.Infrastructure.Services.Utilities
 {
     public static class Utilities
     {
-        public static async Task<string> GetClaimRoleAsync(this UserManager<ApplicationUser> userManager,
+        public static async Task<string> GetRoleAsync(this UserManager<ApplicationUser> userManager,
             ApplicationUser user)
         {
             var claims = await userManager.GetClaimsAsync(user);
