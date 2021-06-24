@@ -1,6 +1,5 @@
 using DeliveryWebApp.Application.Clients.Queries;
 using DeliveryWebApp.Application.Clients.Queries.GetClients;
-using DeliveryWebApp.Application.Clients.Queries.GetRiders;
 using DeliveryWebApp.Domain.Entities;
 using DeliveryWebApp.Infrastructure.Identity;
 using DeliveryWebApp.Infrastructure.Persistence;
@@ -17,6 +16,8 @@ using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Threading.Tasks;
+using DeliveryWebApp.Application.Restaurateurs.Queries.GetRestaurateurs;
+using DeliveryWebApp.Application.Riders.Queries.GetRiders;
 
 namespace DeliveryWebApp.WebUI.Pages.Admin
 {
@@ -40,23 +41,7 @@ namespace DeliveryWebApp.WebUI.Pages.Admin
         public IList<Rider> Riders { get; set; }
         public IList<Domain.Entities.Restaurateur> Restaurateurs { get; set; }
 
-        public IDictionary<int, string> RoleDictionary { get; set; }
 
-        [BindProperty]
-        public IEnumerable<SelectListItem> Roles => new[]
-        {
-            new SelectListItem {Text = RoleName.Default, Value = RoleName.Default},
-            new SelectListItem {Text = RoleName.Rider, Value = RoleName.Rider},
-            new SelectListItem {Text = RoleName.Restaurateur, Value = RoleName.Restaurateur}
-        };
-
-        [BindProperty] public InputModel Input { get; set; }
-
-        public class InputModel
-        {
-            [Required]
-            public string Role { get; set; }
-        }
 
         public async Task<IActionResult> OnGetAsync()
         {
