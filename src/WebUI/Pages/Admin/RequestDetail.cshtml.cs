@@ -15,6 +15,7 @@ using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Security.Claims;
 using System.Threading.Tasks;
+using DeliveryWebApp.Application.Clients.Extensions;
 
 namespace DeliveryWebApp.WebUI.Pages.Admin
 {
@@ -77,7 +78,7 @@ namespace DeliveryWebApp.WebUI.Pages.Admin
             return Page();
         }
 
-        public async Task<IActionResult> OnPostAcceptBtnAsync(int? id)
+        public async Task<IActionResult> OnPostAcceptAsync(int? id)
         {
             if (!ModelState.IsValid)
             {
@@ -133,7 +134,7 @@ namespace DeliveryWebApp.WebUI.Pages.Admin
             return RedirectToPage("/Admin/Requests");
         }
 
-        public async Task<IActionResult> OnPostRejectBtnAsync(int? id)
+        public async Task<IActionResult> OnPostRejectAsync(int? id)
         {
             UserRequest.Status = RequestStatus.Rejected;
             Input.DeliveryCredit = 0.00;

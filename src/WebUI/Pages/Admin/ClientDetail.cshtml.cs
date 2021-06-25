@@ -13,9 +13,13 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.Extensions.Logging;
 using System.Threading.Tasks;
+using DeliveryWebApp.Application.Clients.Extensions;
 using DeliveryWebApp.Application.Clients.Queries.GetClients;
+using DeliveryWebApp.Application.Restaurateurs.Extensions;
+using DeliveryWebApp.Application.Riders.Extensions;
 using DeliveryWebApp.Infrastructure.Services.Utilities;
 using Microsoft.AspNetCore.Mvc.Rendering;
+using Microsoft.EntityFrameworkCore;
 
 namespace DeliveryWebApp.WebUI.Pages.Admin
 {
@@ -40,22 +44,13 @@ namespace DeliveryWebApp.WebUI.Pages.Admin
         public string FName { get; set; }
         public string LName { get; set; }
         public string Email { get; set; }
-
-        [BindProperty]
-        public IEnumerable<SelectListItem> Roles => new[]
-        {
-            new SelectListItem {Text = RoleName.Default, Value = RoleName.Default},
-            new SelectListItem {Text = RoleName.Rider, Value = RoleName.Rider},
-            new SelectListItem {Text = RoleName.Restaurateur, Value = RoleName.Restaurateur}
-        };
-
+        public string CurrentRole { get; set; }
+        public string SelectedTab { get; set; }
 
         [BindProperty] public InputModel Input { get; set; }
 
         public class InputModel
         {
-            [Required]
-            public string Role { get; set; }
 
             [Required]
             [DataType(DataType.Currency)]
@@ -79,52 +74,120 @@ namespace DeliveryWebApp.WebUI.Pages.Admin
             LName = await user.GetLNameAsync(_userManager);
             Email = await _userManager.GetEmailAsync(user);
 
+            CurrentRole = await _userManager.GetRoleAsync(user);
+
             return Page();
         }
 
-        public async Task<IActionResult> OnPostAsync()
+        public async Task<IActionResult> OnPostToClientAsync(int? id)
         {
             if (!ModelState.IsValid)
             {
                 return Page();
             }
 
+            Client = await _context.GetClientByIdAsync(id);
+
             var user = await _userManager.FindByIdAsync(Client.ApplicationUserFk);
-            var currentRole = await _userManager.GetRoleAsync(user);
+            CurrentRole = await _userManager.GetRoleAsync(user);
 
-            if (Input.Role != currentRole)
+            if (CurrentRole != RoleName.Default)
             {
-                // get old claim instance
-                var oldClaim = (from claim in await _userManager.GetClaimsAsync(user)
-                                      where claim.Type == ClaimName.Role
-                                      select claim).First();
+                // update claim
+                var oldClaim = await _userManager.GetClaimByTypeAsync(user, ClaimName.Role);
+                await _userManager.ReplaceClaimAsync(user, oldClaim, new Claim(ClaimName.Role, RoleName.Default));
 
-                // replace the old claim with new claim
-                await _userManager.ReplaceClaimAsync(user, oldClaim, new Claim(ClaimName.Role, Input.Role));
-
-
-                //update tables
-                switch (Input.Role)
+                // update tables TODO: check if cascade
+                switch (CurrentRole)
                 {
-                    case RoleName.Rider:
-                        _context.Riders.Add(new Rider
-                        {
-                            Client = Client,
-                            DeliveryCredit = Input.DeliveryCredit,
-                            OpenOrders = null
-                        });
+                    case RoleName.Rider: // remove from table if rider
+                        var rider = await _context.GetRiderByClientIdAsync(id);
+
+                        _context.Riders.Remove(rider);
                         break;
 
-                    case RoleName.Restaurateur:
-                        _context.Restaurateurs.Add(new Domain.Entities.Restaurateur
-                        {
-                            Client = Client,
-                            Restaurant = null,
-                            Reviews = null
-                        });
+                    case RoleName.Restaurateur: // remove from table if restaurateur
+                        var restaurateur = await _context.GetRestaurateurByClientIdAsync(id);
+
+                        _context.Restaurateurs.Remove(restaurateur);
                         break;
                 }
             }
+
+            await _context.SaveChangesAsync();
+
+            return RedirectToPage("/Admin/UserList");
+        }
+
+        public async Task<IActionResult> OnPostToRiderAsync(int? id)
+        {
+            if (!ModelState.IsValid)
+            {
+                return Page();
+            }
+
+            Client = await _context.GetClientByIdAsync(id);
+
+            var user = await _userManager.FindByIdAsync(Client.ApplicationUserFk);
+            CurrentRole = await _userManager.GetRoleAsync(user);
+
+            if (CurrentRole != RoleName.Rider)
+            {
+                var oldClaim = await _userManager.GetClaimByTypeAsync(user, ClaimName.Role);
+
+                await _userManager.ReplaceClaimAsync(user, oldClaim, new Claim(ClaimName.Role, RoleName.Rider));
+
+                // update table
+
+                _context.Riders.Add(new Rider
+                {
+                    Client = Client,
+                    DeliveryCredit = Input.DeliveryCredit,
+                    OpenOrders = null
+                });
+            }
+            else // update only delivery credit
+            {
+                var rider = await _context.GetRiderByClientIdAsync(id);
+
+                rider.DeliveryCredit = Input.DeliveryCredit;
+                _context.Riders.Update(rider);
+            }
+
+            await _context.SaveChangesAsync();
+
+            return RedirectToPage("/Admin/UserList");
+        }
+
+        public async Task<IActionResult> OnPostToRestaurateurAsync(int? id)
+        {
+
+            if (!ModelState.IsValid)
+            {
+                return Page();
+            }
+
+            Client = await _context.GetClientByIdAsync(id);
+
+            var user = await _userManager.FindByIdAsync(Client.ApplicationUserFk);
+            CurrentRole = await _userManager.GetRoleAsync(user);
+
+            if (CurrentRole != RoleName.Restaurateur)
+            {
+                var oldClaim = await _userManager.GetClaimByTypeAsync(user, ClaimName.Role);
+                await _userManager.ReplaceClaimAsync(user, oldClaim, new Claim(ClaimName.Role, RoleName.Rider));
+
+                // update tables
+
+                _context.Restaurateurs.Add(new Domain.Entities.Restaurateur
+                {
+                    Client = Client,
+                    Restaurant = null,
+                    Reviews = null
+                });
+            }
+
+            await _context.SaveChangesAsync();
 
             return RedirectToPage("/Admin/UserList");
         }
