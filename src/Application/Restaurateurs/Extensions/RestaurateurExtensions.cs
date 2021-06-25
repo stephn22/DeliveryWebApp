@@ -1,24 +1,27 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Linq;
+using System.Text;
 using System.Threading.Tasks;
 using DeliveryWebApp.Application.Common.Interfaces;
 using DeliveryWebApp.Domain.Entities;
 using Microsoft.EntityFrameworkCore;
 
-namespace DeliveryWebApp.Application.Riders.Extensions
+namespace DeliveryWebApp.Application.Restaurateurs.Extensions
 {
-    public static class RiderExtensions
+    public static class RestaurateurExtensions
     {
-        public static async Task<Rider> GetRiderByIdAsync(this IApplicationDbContext context, int? riderId)
+        public static async Task<Restaurateur> GetRestaurateurByIdAsync(this IApplicationDbContext context,
+            int? restaurateurId)
         {
             try
             {
-                if (riderId == null)
+                if (restaurateurId == null)
                 {
                     throw new NullReferenceException();
                 }
 
-                return await context.Riders.Where(r => r.Id == riderId).FirstAsync();
+                return await context.Restaurateurs.Where(r => r.Id == restaurateurId).FirstAsync();
             }
             catch (NullReferenceException e)
             {
@@ -27,16 +30,17 @@ namespace DeliveryWebApp.Application.Riders.Extensions
             }
         }
 
-        public static async Task<Rider> GetRiderByClientIdAsync(this IApplicationDbContext context, int? cliendId)
+        public static async Task<Restaurateur> GetRestaurateurByClientIdAsync(this IApplicationDbContext context,
+            int? clientId)
         {
             try
             {
-                if (cliendId == null)
+                if (clientId == null)
                 {
                     throw new NullReferenceException();
                 }
 
-                return await context.Riders.Where(r => r.Client.Id == cliendId).FirstAsync();
+                return await context.Restaurateurs.Where(r => r.Client.Id == clientId).FirstAsync();
             }
             catch (NullReferenceException e)
             {
