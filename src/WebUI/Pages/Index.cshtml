@@ -1,12 +1,38 @@
 ﻿@page
+@using DeliveryWebApp.Infrastructure.Identity
+@using DeliveryWebApp.Infrastructure.Security
+@using Microsoft.AspNetCore.Authorization
+@using Microsoft.AspNetCore.Identity
 @model IndexModel
+@inject UserManager<ApplicationUser> UserManager
+@inject IAuthorizationService AuthorizationService
 @{
+    var isRestaurateur = (await AuthorizationService.AuthorizeAsync(User, PolicyName.IsRestaurateur)).Succeeded;
+    var isRider = (await AuthorizationService.AuthorizeAsync(User, PolicyName.IsRider)).Succeeded;
+    var isDefault = (await AuthorizationService.AuthorizeAsync(User, PolicyName.IsDefault)).Succeeded;
+    var isAdmin = User.IsInRole(RoleName.Admin);
     ViewData["Title"] = "Home page";
 }
 
 <div class="text-center">
-    <h1 class="display-4">Welcome</h1>
-    <p>Learn about <a href="https://docs.microsoft.com/aspnet/core">building Web apps with ASP.NET Core</a>.</p>
-    
+
+    @if (isAdmin)
+    {
+        <h1 class="display-4">Welcome Administrator</h1>
+        <img src="/icons/undraw_Profile_re_4a55.svg" alt="admin" height="520" width="520" class="text-center"/>
+    }
+    @if (isRider)
+    {
+        <h1 class="display-4">Welcome</h1>
+    }
+    @if (isRestaurateur)
+    {
+        <h1 class="display-4">Welcome</h1>
+    }
+    @if (isDefault)
+    {
+        <h1 class="display-4">Welcome</h1>
+    }
+
     @* TODO: Update this page *@
 </div>
