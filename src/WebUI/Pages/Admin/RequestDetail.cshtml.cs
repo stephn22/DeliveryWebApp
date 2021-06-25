@@ -67,7 +67,7 @@ namespace DeliveryWebApp.WebUI.Pages.Admin
             ApplicationUser = await _userManager.FindByIdAsync(appUserFk);
             ClaimValue = await _userManager.GetRoleAsync(ApplicationUser);
 
-            IsRider = UserRequest.Role.Equals(RoleName.Rider); // FIXME: always false
+            IsRider = UserRequest.Role.Equals(RoleName.Rider);
 
             if (UserRequest == null)
             {
@@ -77,12 +77,19 @@ namespace DeliveryWebApp.WebUI.Pages.Admin
             return Page();
         }
 
-        public async Task<IActionResult> OnPostAcceptBtnAsync()
+        public async Task<IActionResult> OnPostAcceptBtnAsync(int? id)
         {
             if (!ModelState.IsValid)
             {
                 return BadRequest();
             }
+
+            UserRequest = await (from r in _context.Requests
+                where r.Id == id
+                select r).FirstOrDefaultAsync();
+
+            IsRider = UserRequest.Role.Equals(RoleName.Rider);
+            await _context.GetClientByRequestIdAsync(id);
 
             // update tables
             if (IsRider)
@@ -101,28 +108,26 @@ namespace DeliveryWebApp.WebUI.Pages.Admin
                 });
             }
 
+            UserRequest.Status = RequestStatus.Accepted;
+
+            // update request table
+            _context.Requests.Update(UserRequest);
+
             // TODO push notification to client
 
             await _context.SaveChangesAsync();
             return RedirectToPage("/Admin/Requests");
         }
 
-        public async Task<IActionResult> OnPostRejectBtnAsync()
+        public async Task<IActionResult> OnPostRejectBtnAsync(int? id)
         {
             UserRequest.Status = RequestStatus.Rejected;
             Input.DeliveryCredit = 0.00;
 
             // update request table
-            _context.Requests.Attach(UserRequest).State = EntityState.Modified;
+            _context.Requests.Update(UserRequest);
 
-            try
-            {
-                await _context.SaveChangesAsync();
-            }
-            catch (DbUpdateConcurrencyException e)
-            {
-                _logger.LogError($"Could not update entry of user request {UserRequest.Id} - {e.Message}");
-            }
+            await _context.SaveChangesAsync();
 
             // TODO push notification to client
             return RedirectToPage("/Admin/Requests");
