@@ -1,4 +1,5 @@
-﻿using DeliveryWebApp.Application.Common.Interfaces;
+﻿using System;
+using DeliveryWebApp.Application.Common.Interfaces;
 using DeliveryWebApp.Infrastructure.Identity;
 using DeliveryWebApp.Infrastructure.Persistence;
 using DeliveryWebApp.Infrastructure.Security;
@@ -26,6 +27,13 @@ namespace DeliveryWebApp.Infrastructure
             services.AddScoped<IApplicationDbContext>(provider => provider.GetService<ApplicationDbContext>());
 
             services.AddScoped<IDomainEventService, DomainEventService>();
+
+            services.AddSession(options =>
+            {
+                options.IdleTimeout = TimeSpan.FromMinutes(10);
+            });
+
+            services.AddMemoryCache();
 
             services
                 .AddDefaultIdentity<ApplicationUser>(options =>

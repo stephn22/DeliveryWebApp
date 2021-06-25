@@ -2,6 +2,7 @@
 using DeliveryWebApp.Infrastructure.Security;
 using Microsoft.AspNetCore.Identity;
 using System.Linq;
+using System.Security.Claims;
 using System.Threading.Tasks;
 
 namespace DeliveryWebApp.Infrastructure.Services.Utilities
@@ -15,6 +16,16 @@ namespace DeliveryWebApp.Infrastructure.Services.Utilities
             var claim = claims.First(u => u.Type == ClaimName.Role);
 
             return claim.Value;
+        }
+
+        public static async Task<Claim> GetClaimByTypeAsync(this UserManager<ApplicationUser> userManager,
+            ApplicationUser user, string claimType)
+        {
+            var c = (from claim in await userManager.GetClaimsAsync(user)
+                where claim.Type == claimType
+                select claim).First();
+
+            return c;
         }
 
         public static async Task<string> GetFNameAsync(this ApplicationUser user,

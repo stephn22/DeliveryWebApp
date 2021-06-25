@@ -8,6 +8,16 @@
 
 <h1>Detail of Client: @Model.Client.Id</h1>
 
+@* TODO: LOCALIZE and fix image *@
+
+@section Head {
+    <style type="text/css">
+        #submit-btn { margin-top: 1rem; }
+
+        p { margin: 1rem; }
+    </style>
+}
+
 <div>
     <dl class="row">
         <dt class="col-sm-2">
@@ -41,59 +51,147 @@
             }
         }
         <dt class="col-sm-2">
-            <button id="edit-role-btn" class="btn btn-outline-dark text-start">
+            Current Role
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.CurrentRole)
+        </dd>
+        <dt class="col-sm-2">
+            <button id="edit-role-btn" class="btn btn-outline-dark text-start" type="button" data-bs-toggle="collapse" data-bs-target="#collapse-roles" aria-expanded="false" aria-controls="collapse-roles">
                 <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-pencil-square" viewBox="0 0 16 16">
-                    <path d="M15.502 1.94a.5.5 0 0 1 0 .706L14.459 3.69l-2-2L13.502.646a.5.5 0 0 1 .707 0l1.293 1.293zm-1.75 2.456-2-2L4.939 9.21a.5.5 0 0 0-.121.196l-.805 2.414a.25.25 0 0 0 .316.316l2.414-.805a.5.5 0 0 0 .196-.12l6.813-6.814z" />
-                    <path fill-rule="evenodd" d="M1 13.5A1.5 1.5 0 0 0 2.5 15h11a1.5 1.5 0 0 0 1.5-1.5v-6a.5.5 0 0 0-1 0v6a.5.5 0 0 1-.5.5h-11a.5.5 0 0 1-.5-.5v-11a.5.5 0 0 1 .5-.5H9a.5.5 0 0 0 0-1H2.5A1.5 1.5 0 0 0 1 2.5v11z" />
+                    <path d="M15.502 1.94a.5.5 0 0 1 0 .706L14.459 3.69l-2-2L13.502.646a.5.5 0 0 1 .707 0l1.293 1.293zm-1.75 2.456-2-2L4.939 9.21a.5.5 0 0 0-.121.196l-.805 2.414a.25.25 0 0 0 .316.316l2.414-.805a.5.5 0 0 0 .196-.12l6.813-6.814z"/>
+                    <path fill-rule="evenodd" d="M1 13.5A1.5 1.5 0 0 0 2.5 15h11a1.5 1.5 0 0 0 1.5-1.5v-6a.5.5 0 0 0-1 0v6a.5.5 0 0 1-.5.5h-11a.5.5 0 0 1-.5-.5v-11a.5.5 0 0 1 .5-.5H9a.5.5 0 0 0 0-1H2.5A1.5 1.5 0 0 0 1 2.5v11z"/>
                 </svg>
-                Edit Role
+                Edit
             </button>
         </dt>
-        <dd class="col-sm-2">
-            <select id="role-select" class="form-select" aria-label="Disabled role select" disabled asp-for="Input.Role" asp-items="Model.Roles"></select>
-            <span asp-validation-for="Input.Role" class="text-danger"></span>
-        </dd>
-        @*@if (Model.Input.Role == RoleName.Rider) FIXME
-        {*@
-            <dt class="col-sm-2">
-                Delivery credit
-            </dt>
-
-            <dd class="col-sm-2">
-                <div class="form-group col-1">
-                    <div class="input-group">
-                        <label asp-for="Input.DeliveryCredit"></label>
-                        <input asp-for="Input.DeliveryCredit" class="form-control"/>
-                        <div class="input-group-append">
-                            <span class="input-group-text">€</span>
-                        </div>
-                        <span asp-validation-for="Input.DeliveryCredit" class="text-danger"></span>
-                    </div>
-                </div>
-            </dd>
-        @*}*@
     </dl>
-    <form method="post">
-        <div class="form-group">
-            <button class="btn btn-primary" type="submit">
-                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-save" viewBox="0 0 16 16">
-                    <path d="M2 1a1 1 0 0 0-1 1v12a1 1 0 0 0 1 1h12a1 1 0 0 0 1-1V2a1 1 0 0 0-1-1H9.5a1 1 0 0 0-1 1v7.293l2.646-2.647a.5.5 0 0 1 .708.708l-3.5 3.5a.5.5 0 0 1-.708 0l-3.5-3.5a.5.5 0 1 1 .708-.708L7.5 9.293V2a2 2 0 0 1 2-2H14a2 2 0 0 1 2 2v12a2 2 0 0 1-2 2H2a2 2 0 0 1-2-2V2a2 2 0 0 1 2-2h2.5a.5.5 0 0 1 0 1H2z"/>
-                </svg>
-                Submit
-            </button>
-        </div>
-    </form>
-</div>
 
+    @* Collapse *@
+    <div class="collapse" id="collapse-roles">
+        <div class="card card-body col-sm-6">
+            @* Tabs *@
+            <ul class="nav nav-tabs" id="tabs" role="tablist">
+                <li class="nav-item" role="presentation">
+                    <button class="nav-link active" id="client-tab" data-bs-toggle="tab" data-bs-target="#client" type="button" role="tab" aria-controls="client" aria-selected="true">
+                        <img src="/icons/person-circle.svg" alt="client" height="16" width="16"/>
+                        To Client
+                    </button>
+                </li>
+                <li class="nav-item" role="presentation">
+                    <button class="nav-link" id="rider-tab" data-bs-toggle="tab" data-bs-target="#rider" type="button" role="tab" aria-controls="rider" aria-selected="false">
+                        <img src="/icons/truck.svg" alt="client" height="16" width="16"/>
+                        To Rider
+                    </button>
+                </li>
+                <li class="nav-item" role="presentation">
+                    <button class="nav-link" id="restaurateur-tab" data-bs-toggle="tab" data-bs-target="#restaurateur" type="button" role="tab" aria-controls="restaurateur" aria-selected="false">
+                        <img src="/icons/shop.svg" alt="client" height="16" width="16"/>
+                        To Restaurateur
+                    </button>
+                </li>
+            </ul>
+
+            @* Tabs content *@
+            <div class="tab-content" id="tab-panes">
+
+                @* Client tab *@
+                <div class="tab-pane fade show active" id="client" role="tabpanel" aria-labelledby="client-tab">
+
+                    @if (Model.CurrentRole == RoleName.Default)
+                    {
+                        <p>This user is already a Client</p>
+                    }
+                    else
+                    {
+                        <p>You are going to change this user role from <strong>@Model.CurrentRole</strong> to <strong>Client</strong></p>
+                    }
+
+                    <form method="post" asp-page-handler="ToClient">
+                        <div class="form-group">
+                            <button class="btn btn-primary" type="submit">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-save" viewBox="0 0 16 16">
+                                    <path d="M2 1a1 1 0 0 0-1 1v12a1 1 0 0 0 1 1h12a1 1 0 0 0 1-1V2a1 1 0 0 0-1-1H9.5a1 1 0 0 0-1 1v7.293l2.646-2.647a.5.5 0 0 1 .708.708l-3.5 3.5a.5.5 0 0 1-.708 0l-3.5-3.5a.5.5 0 1 1 .708-.708L7.5 9.293V2a2 2 0 0 1 2-2H14a2 2 0 0 1 2 2v12a2 2 0 0 1-2 2H2a2 2 0 0 1-2-2V2a2 2 0 0 1 2-2h2.5a.5.5 0 0 1 0 1H2z"/>
+                                </svg>
+                                Submit
+                            </button>
+                        </div>
+                    </form>
+
+                </div>
+
+                @* Rider tab *@
+                <div class="tab-pane fade" id="rider" role="tabpanel" aria-labelledby="rider-tab">
+
+                    @if (Model.CurrentRole == RoleName.Rider)
+                    {
+                        <p>This user is already a Rider</p>
+
+                        <p>Change delivery credit:</p>
+                    }
+                    else
+                    {
+                        <p>You are going to change this user role from <strong>@Model.CurrentRole</strong> to <strong>Client</strong></p>
+                        <p>Insert delivery credit:</p>
+                    }
+
+                    <form method="post" asp-page-handler="ToRider">
+                        <div class="form-group col-2">
+                            <div class="input-group">
+                                <input asp-for="Input.DeliveryCredit" class="form-control" />
+                                <span asp-validation-for="Input.DeliveryCredit"></span>
+                                <div class="input-group-append">
+                                    <span class="input-group-text">€</span>
+                                </div>
+                                <span asp-validation-for="Input.DeliveryCredit" class="text-danger"></span>
+                            </div>
+                            <br />
+                            <button class="btn btn-primary" type="submit">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-save" viewBox="0 0 16 16">
+                                    <path d="M2 1a1 1 0 0 0-1 1v12a1 1 0 0 0 1 1h12a1 1 0 0 0 1-1V2a1 1 0 0 0-1-1H9.5a1 1 0 0 0-1 1v7.293l2.646-2.647a.5.5 0 0 1 .708.708l-3.5 3.5a.5.5 0 0 1-.708 0l-3.5-3.5a.5.5 0 1 1 .708-.708L7.5 9.293V2a2 2 0 0 1 2-2H14a2 2 0 0 1 2 2v12a2 2 0 0 1-2 2H2a2 2 0 0 1-2-2V2a2 2 0 0 1 2-2h2.5a.5.5 0 0 1 0 1H2z"/>
+                                </svg>
+                                Submit
+                            </button>
+                        </div>
+                    </form>
+
+                </div>
+
+                @* Restaurateur tab *@
+                <div class="tab-pane fade" id="restaurateur" role="tabpanel" aria-labelledby="restaurateur-tab">
+
+                    @if (Model.CurrentRole == RoleName.Restaurateur)
+                    {
+                        <p>This user is already a Restaurateur</p>
+                    }
+                    else
+                    {
+                        <p>You are going to change this user role from <strong>@Model.CurrentRole</strong> to <strong>Restaurateur</strong></p>
+                    }
+
+                    <form method="post" asp-page-handler="ToRestaurateur">
+                        <div class="form-group">
+                            <button class="btn btn-primary" type="submit">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-save" viewBox="0 0 16 16">
+                                    <path d="M2 1a1 1 0 0 0-1 1v12a1 1 0 0 0 1 1h12a1 1 0 0 0 1-1V2a1 1 0 0 0-1-1H9.5a1 1 0 0 0-1 1v7.293l2.646-2.647a.5.5 0 0 1 .708.708l-3.5 3.5a.5.5 0 0 1-.708 0l-3.5-3.5a.5.5 0 1 1 .708-.708L7.5 9.293V2a2 2 0 0 1 2-2H14a2 2 0 0 1 2 2v12a2 2 0 0 1-2 2H2a2 2 0 0 1-2-2V2a2 2 0 0 1 2-2h2.5a.5.5 0 0 1 0 1H2z"/>
+                                </svg>
+                                Submit
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <a asp-page="/Admin/UserList">Back to list</a>
+
+</div>
 @section Scripts
 {
-    <script>
-        "use strict";
-
-        $(document).ready(function() {
-            $("#edit-role-btn").click(function() {
-                $("#role-select").disabled = false;
-            });
+    <script language="javascript">
+        $(".collapse").onclick(function(event) {
+            event.stopPropagation();
         });
     </script>
 }

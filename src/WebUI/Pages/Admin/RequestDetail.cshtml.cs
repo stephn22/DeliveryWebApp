@@ -1,20 +1,21 @@
+using DeliveryWebApp.Application.Clients.Queries.GetClients;
 using DeliveryWebApp.Domain.Constants;
 using DeliveryWebApp.Domain.Entities;
 using DeliveryWebApp.Infrastructure.Identity;
 using DeliveryWebApp.Infrastructure.Persistence;
 using DeliveryWebApp.Infrastructure.Security;
+using DeliveryWebApp.Infrastructure.Services.Utilities;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
-using System;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
+using System.Security.Claims;
 using System.Threading.Tasks;
-using DeliveryWebApp.Application.Clients.Queries.GetClients;
-using DeliveryWebApp.Infrastructure.Services.Utilities;
+using DeliveryWebApp.Application.Clients.Extensions;
 
 namespace DeliveryWebApp.WebUI.Pages.Admin
 {
@@ -67,7 +68,7 @@ namespace DeliveryWebApp.WebUI.Pages.Admin
             ApplicationUser = await _userManager.FindByIdAsync(appUserFk);
             ClaimValue = await _userManager.GetRoleAsync(ApplicationUser);
 
-            IsRider = UserRequest.Role.Equals(RoleName.Rider); // FIXME: always false
+            IsRider = UserRequest.Role.Equals(RoleName.Rider);
 
             if (UserRequest == null)
             {
@@ -77,12 +78,26 @@ namespace DeliveryWebApp.WebUI.Pages.Admin
             return Page();
         }
 
-        public async Task<IActionResult> OnPostAcceptBtnAsync()
+        public async Task<IActionResult> OnPostAcceptAsync(int? id)
         {
             if (!ModelState.IsValid)
             {
                 return BadRequest();
             }
+
+            var client = await _context.GetClientByRequestIdAsync(id);
+            var appUserFk = client.ApplicationUserFk;
+
+            ApplicationUser = await _userManager.FindByIdAsync(appUserFk);
+
+            var oldClaim = await _userManager.GetClaimByTypeAsync(ApplicationUser, ClaimName.Role);
+
+            UserRequest = await (from r in _context.Requests
+                                 where r.Id == id
+                                 select r).FirstOrDefaultAsync();
+
+            IsRider = UserRequest.Role.Equals(RoleName.Rider);
+            await _context.GetClientByRequestIdAsync(id);
 
             // update tables
             if (IsRider)
@@ -92,6 +107,10 @@ namespace DeliveryWebApp.WebUI.Pages.Admin
                     Client = UserRequest.Client,
                     DeliveryCredit = Input.DeliveryCredit
                 });
+
+                // change claim
+                await _userManager.ReplaceClaimAsync(ApplicationUser, oldClaim,
+                    new Claim(ClaimName.Role, RoleName.Rider));
             }
             else
             {
@@ -99,7 +118,15 @@ namespace DeliveryWebApp.WebUI.Pages.Admin
                 {
                     Client = UserRequest.Client,
                 });
+
+                await _userManager.ReplaceClaimAsync(ApplicationUser, oldClaim,
+                    new Claim(ClaimName.Role, RoleName.Restaurateur));
             }
+
+            UserRequest.Status = RequestStatus.Accepted;
+
+            // update request table
+            _context.Requests.Update(UserRequest);
 
             // TODO push notification to client
 
@@ -107,22 +134,15 @@ namespace DeliveryWebApp.WebUI.Pages.Admin
             return RedirectToPage("/Admin/Requests");
         }
 
-        public async Task<IActionResult> OnPostRejectBtnAsync()
+        public async Task<IActionResult> OnPostRejectAsync(int? id)
         {
             UserRequest.Status = RequestStatus.Rejected;
             Input.DeliveryCredit = 0.00;
 
             // update request table
-            _context.Requests.Attach(UserRequest).State = EntityState.Modified;
+            _context.Requests.Update(UserRequest);
 
-            try
-            {
-                await _context.SaveChangesAsync();
-            }
-            catch (DbUpdateConcurrencyException e)
-            {
-                _logger.LogError($"Could not update entry of user request {UserRequest.Id} - {e.Message}");
-            }
+            await _context.SaveChangesAsync();
 
             // TODO push notification to client
             return RedirectToPage("/Admin/Requests");

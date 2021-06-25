@@ -1,5 +1,6 @@
-using DeliveryWebApp.Application.Clients.Queries;
 using DeliveryWebApp.Application.Clients.Queries.GetClients;
+using DeliveryWebApp.Application.Restaurateurs.Queries.GetRestaurateurs;
+using DeliveryWebApp.Application.Riders.Queries.GetRiders;
 using DeliveryWebApp.Domain.Entities;
 using DeliveryWebApp.Infrastructure.Identity;
 using DeliveryWebApp.Infrastructure.Persistence;
@@ -9,15 +10,10 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
-using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.Extensions.Logging;
 using System.Collections.Generic;
-using System.ComponentModel;
-using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Threading.Tasks;
-using DeliveryWebApp.Application.Restaurateurs.Queries.GetRestaurateurs;
-using DeliveryWebApp.Application.Riders.Queries.GetRiders;
 
 namespace DeliveryWebApp.WebUI.Pages.Admin
 {
@@ -109,7 +105,7 @@ namespace DeliveryWebApp.WebUI.Pages.Admin
             return lName;
         }
 
-        public async Task<string> GetEmailAsync(int id, string listname)
+        public async Task<string> GetEmailByIdAsync(int id, string listname)
         {
             var user = await GetUserAsync(id, listname);
 
