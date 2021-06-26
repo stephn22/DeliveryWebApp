@@ -1,3 +1,4 @@
+using System;
 using DeliveryWebApp.Application.Clients.Queries.GetClients;
 using DeliveryWebApp.Application.Restaurateurs.Queries.GetRestaurateurs;
 using DeliveryWebApp.Application.Riders.Queries.GetRiders;
@@ -13,7 +14,14 @@ using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.Extensions.Logging;
 using System.Collections.Generic;
 using System.Linq;
+using System.Net;
+using System.Security.Claims;
 using System.Threading.Tasks;
+using DeliveryWebApp.Application.Clients.Extensions;
+using DeliveryWebApp.Application.Restaurateurs.Extensions;
+using DeliveryWebApp.Application.Riders.Extensions;
+using DeliveryWebApp.Infrastructure.Services.Utilities;
+using Microsoft.AspNetCore.Authentication;
 
 namespace DeliveryWebApp.WebUI.Pages.Admin
 {
@@ -48,8 +56,88 @@ namespace DeliveryWebApp.WebUI.Pages.Admin
             return Page();
         }
 
-        public async Task<IActionResult> OnPostAsync()
+        public async Task<IActionResult> OnPostBlockClientAsync(int id)
         {
+            var client = await _context.GetClientByIdAsync(id);
+
+            var user = await _userManager.FindByIdAsync(client.ApplicationUserFk);
+
+            _logger.LogInformation($"Blocked user with id: {user.Id}");
+
+            // block the user
+            var enabledClaim = await _userManager.GetEnabledClaimAsync(user);
+            await _userManager.ReplaceClaimAsync(user, enabledClaim, new Claim(ClaimName.Enabled, ClaimValue.Disabled));
+
+            return Page();
+        }
+
+        public async Task<IActionResult> OnPostDeleteClientAsync(int id)
+        {
+            var client = await _context.GetClientByIdAsync(id);
+
+            var user = await _userManager.FindByIdAsync(client.ApplicationUserFk);
+
+            await _userManager.DeleteAsync(user);
+            _context.Clients.Remove(client);
+
+            await _context.SaveChangesAsync();
+
+            _logger.LogInformation($"Deleted user with id: {user.Id}");
+
+            return Page();
+        }
+
+        public async Task<IActionResult> OnPostBlockRiderAsync(int id)
+        {
+            var rider = await _context.GetRiderByIdAsync(id);
+            var user = await _userManager.FindByIdAsync(rider.Client.ApplicationUserFk);
+
+            var enabledClaim = await _userManager.GetEnabledClaimAsync(user);
+            await _userManager.ReplaceClaimAsync(user, enabledClaim, new Claim(ClaimName.Enabled, ClaimValue.Disabled));
+
+            _logger.LogInformation($"Blocked user with id: {user.Id}");
+
+            return Page();
+        }
+
+        public async Task<IActionResult> OnPostDeleteRiderAsync(int id)
+        {
+            var rider = await _context.GetRiderByIdAsync(id);
+            var user = await _userManager.FindByIdAsync(rider.Client.ApplicationUserFk);
+
+            await _userManager.DeleteAsync(user);
+            _context.Riders.Remove(rider);
+
+            await _context.SaveChangesAsync();
+
+            _logger.LogInformation($"Deleted user with id: {user.Id}");
+
+            return Page();
+        }
+
+        public async Task<IActionResult> OnPostBlockRestaurateurAsync(int id)
+        {
+            var restaurateur = await _context.GetRestaurateurByIdAsync(id);
+            var user = await _userManager.FindByIdAsync(restaurateur.Client.ApplicationUserFk);
+
+            var enabledClaim = await _userManager.GetEnabledClaimAsync(user);
+            await _userManager.ReplaceClaimAsync(user, enabledClaim, new Claim(ClaimName.Enabled, ClaimValue.Disabled));
+
+            _logger.LogInformation($"Blocked user with id: {user.Id}");
+
+            return Page();
+        }
+
+        public async Task<IActionResult> OnPostDeleteRestaurateurAsync(int id)
+        {
+            var restaurateur = await _context.GetRestaurateurByIdAsync(id);
+            var user = await _userManager.FindByIdAsync(restaurateur.Client.ApplicationUserFk);
+
+            await _userManager.DeleteAsync(user);
+            _context.Restaurateurs.Remove(restaurateur);
+
+            _logger.LogInformation($"Deleted user with id: {user.Id}");
+
             return Page();
         }
 
