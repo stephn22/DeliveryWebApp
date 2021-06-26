@@ -6,6 +6,8 @@ using System.Text.Encodings.Web;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authorization;
 using DeliveryWebApp.Infrastructure.Identity;
+using DeliveryWebApp.Infrastructure.Security;
+using DeliveryWebApp.Infrastructure.Services.Utilities;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.UI.Services;
@@ -86,8 +88,20 @@ namespace DeliveryWebApp.WebUI.Areas.Identity.Pages.Account
                 var result = await _signInManager.PasswordSignInAsync(Input.UserName, Input.Password, Input.RememberMe, lockoutOnFailure: false);
                 if (result.Succeeded)
                 {
-                    _logger.LogInformation("SendGridUser logged in.");
-                    return LocalRedirect(returnUrl);
+                    var user = await _userManager.GetUserAsync(User);
+
+                    var isEnabled = await _userManager.GetEnabledClaimAsync(user);
+
+                    if (isEnabled.Value == ClaimValue.Enabled)
+                    {
+                        _logger.LogInformation("User logged in.");
+                        return LocalRedirect(returnUrl);
+                    }
+                    else
+                    {
+                        ModelState.AddModelError(string.Empty, "User has been blocked by admin.");
+                        return Page();
+                    }
                 }
                 if (result.RequiresTwoFactor)
                 {
@@ -95,7 +109,7 @@ namespace DeliveryWebApp.WebUI.Areas.Identity.Pages.Account
                 }
                 if (result.IsLockedOut)
                 {
-                    _logger.LogWarning("SendGridUser account locked out.");
+                    _logger.LogWarning("User account locked out.");
                     return RedirectToPage("./Lockout");
                 }
                 else
