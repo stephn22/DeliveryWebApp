@@ -38,6 +38,8 @@ namespace DeliveryWebApp.Infrastructure
             services
                 .AddDefaultIdentity<ApplicationUser>(options =>
                 {
+                    options.Lockout.AllowedForNewUsers = true;
+                    options.Lockout.MaxFailedAccessAttempts = 3;
                     options.SignIn.RequireConfirmedAccount = true;
                     options.User.RequireUniqueEmail = true;
                 })
@@ -76,7 +78,7 @@ namespace DeliveryWebApp.Infrastructure
                 options.AddPolicy(PolicyName.IsRestaurateur, policy => policy.AddRequirements(new IsRestaurateur()));
                 options.AddPolicy(PolicyName.IsRider, policy => policy.AddRequirements(new IsRider()));
                 options.AddPolicy(PolicyName.IsDefault, policy => policy.AddRequirements(new IsDefault()));
-                options.AddPolicy(PolicyName.IsClient, policy => policy.AddRequirements(new IsClient())); // user that can be Restaurateur or Rider or Default user but not Admin
+                options.AddPolicy(PolicyName.IsEnabled, policy => policy.AddRequirements(new IsClient())); // user that can be Restaurateur or Rider or Default user but not Admin
             });
 
             services.AddSingleton<IAuthorizationHandler, IsRestaurateurAuthorizationHandler>();

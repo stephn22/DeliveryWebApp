@@ -57,5 +57,15 @@ namespace DeliveryWebApp.Infrastructure.Services.Utilities
 
             return lName;
         }
+
+        public static async Task<Claim> GetEnabledClaimAsync(this UserManager<ApplicationUser> userManager,
+            ApplicationUser user)
+        {
+            var claim = (from c in await userManager.GetClaimsAsync(user)
+                where c.Type == ClaimName.Enabled
+                select c).First();
+
+            return claim;
+        }
     }
 }
