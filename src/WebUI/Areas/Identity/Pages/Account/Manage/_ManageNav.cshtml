@@ -11,11 +11,11 @@
     <li class="nav-item">
         <a class="nav-link @ManageNavPages.IndexNavClass(ViewContext)" id="profile" asp-page="./Index">Profile</a>
     </li>
+    <li class="nav-item">
+        <a class="nav-link @ManageNavPages.EmailNavClass(ViewContext)" id="email" asp-page="./Email">Email</a>
+    </li>
     @if (!isAdmin)
     {
-        <li class="nav-item">
-            <a class="nav-link @ManageNavPages.EmailNavClass(ViewContext)" id="email" asp-page="./Email">Email</a>
-        </li>
         <li class="nav-item">
             <a class="nav-link @ManageNavPages.AddressNavClass(ViewContext)" id="email" asp-page="./Address">Address</a>
         </li>
