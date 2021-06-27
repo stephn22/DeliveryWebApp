@@ -1,6 +1,10 @@
 ﻿@page
 
-@using Newtonsoft.Json
+@using DeliveryWebApp.Infrastructure.Identity
+@using DeliveryWebApp.Infrastructure.Services.Utilities
+@using IdentityServer4.Extensions
+@using Microsoft.AspNetCore.Identity
+@inject UserManager<ApplicationUser> UserManager
 @model DeliveryWebApp.WebUI.Pages.Admin.UserListModel
 @{
     ViewData["Title"] = "User List";
@@ -48,362 +52,424 @@
 @* Clients tab *@
 <div class="tab-pane fade show active" id="pills-clients" role="tabpanel" aria-labelledby="pills-clients-tab">
 
-    <table class="table">
-        <thead>
-        <tr class="table-primary">
-            <th>
-                @Html.DisplayNameFor(model => model.Clients[0].Id)
-            </th>
-            <th>
-                First Name
-            </th>
-            <th>
-                Last Name
-            </th>
-            <th>
-                Email
-            </th>
-            <th>
-                Details
-            </th>
-            <th>
-                Block
-            </th>
-            <th>
-                Delete
-            </th>
-        </tr>
-        </thead>
-        <tbody>
-        @foreach (var item in Model.Clients)
-        {
-            <tr>
-                <td>
-                    @Html.DisplayFor(modelItem => item.Id)
-                </td>
-                <td>
-                    @await Model.GetFNameAsync(item.Id, nameof(Model.Clients))
-                </td>
-                <td>
-                    @await Model.GetLNameAsync(item.Id, nameof(Model.Clients))
-                </td>
-                <td>
-                    @await Model.GetEmailByIdAsync(item.Id, nameof(Model.Clients))
-                </td>
-                <td>
-                    <a asp-page="/Admin/ClientDetail" asp-route-id="@item.Id" title="View details">
-                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-eye" viewBox="0 0 16 16">
-                            <path d="M16 8s-3-5.5-8-5.5S0 8 0 8s3 5.5 8 5.5S16 8 16 8zM1.173 8a13.133 13.133 0 0 1 1.66-2.043C4.12 4.668 5.88 3.5 8 3.5c2.12 0 3.879 1.168 5.168 2.457A13.133 13.133 0 0 1 14.828 8c-.058.087-.122.183-.195.288-.335.48-.83 1.12-1.465 1.755C11.879 11.332 10.119 12.5 8 12.5c-2.12 0-3.879-1.168-5.168-2.457A13.134 13.134 0 0 1 1.172 8z"/>
-                            <path d="M8 5.5a2.5 2.5 0 1 0 0 5 2.5 2.5 0 0 0 0-5zM4.5 8a3.5 3.5 0 1 1 7 0 3.5 3.5 0 0 1-7 0z"/>
-                        </svg>
-                    </a>
-
-                </td>
-                <td>
-                    <a href="#" title="Block user" data-bs-toggle="modal" data-bs-target="#client-@item.Id-block-modal">
-                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-shield-x" viewBox="0 0 16 16">
-                            <path d="M5.338 1.59a61.44 61.44 0 0 0-2.837.856.481.481 0 0 0-.328.39c-.554 4.157.726 7.19 2.253 9.188a10.725 10.725 0 0 0 2.287 2.233c.346.244.652.42.893.533.12.057.218.095.293.118a.55.55 0 0 0 .101.025.615.615 0 0 0 .1-.025c.076-.023.174-.061.294-.118.24-.113.547-.29.893-.533a10.726 10.726 0 0 0 2.287-2.233c1.527-1.997 2.807-5.031 2.253-9.188a.48.48 0 0 0-.328-.39c-.651-.213-1.75-.56-2.837-.855C9.552 1.29 8.531 1.067 8 1.067c-.53 0-1.552.223-2.662.524zM5.072.56C6.157.265 7.31 0 8 0s1.843.265 2.928.56c1.11.3 2.229.655 2.887.87a1.54 1.54 0 0 1 1.044 1.262c.596 4.477-.787 7.795-2.465 9.99a11.775 11.775 0 0 1-2.517 2.453 7.159 7.159 0 0 1-1.048.625c-.28.132-.581.24-.829.24s-.548-.108-.829-.24a7.158 7.158 0 0 1-1.048-.625 11.777 11.777 0 0 1-2.517-2.453C1.928 10.487.545 7.169 1.141 2.692A1.54 1.54 0 0 1 2.185 1.43 62.456 62.456 0 0 1 5.072.56z"/>
-                            <path d="M6.146 5.146a.5.5 0 0 1 .708 0L8 6.293l1.146-1.147a.5.5 0 1 1 .708.708L8.707 7l1.147 1.146a.5.5 0 0 1-.708.708L8 7.707 6.854 8.854a.5.5 0 1 1-.708-.708L7.293 7 6.146 5.854a.5.5 0 0 1 0-.708z"/>
-                        </svg>
-                    </a>
-
-                    @* Vertically centered modal to confirm action *@
-
-                    <div class="modal fade show" id="client-@item.Id-block-modal" aria-labelledby="client-@item.Id-block-modal-title" aria-modal="true" role="dialog">
-                        <div class="modal-dialog modal-dialog-centered">
-                            <div class="modal-content">
-                                <div class="modal-header">
-                                    <h5 class="modal-title" id="client-@item.Id-block-modal-title">Block user @await Model.GetEmailByIdAsync(item.Id, nameof(Model.Clients))</h5>
-                                    <button class="btn-close" data-bs-dismiss="modal" aria-label="close"></button>
-                                </div>
-                                <div class="modal-body">
-                                    <p>Are you sure you want to block this user?</p>
-                                </div>
-                                <div class="modal-footer">
-                                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                                    <button type="button" class="btn btn-primary" asp-page-handler="BlockUser" asp-route-id="@item.Id" data-bs-dismiss="modal">Confirm</button>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-
-                </td>
-                <td>
-                    <a href="#"  title="Delete user" data-bs-toggle="modal" data-bs-target="#client-@item.Id-delete-modal">
-                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-trash" viewBox="0 0 16 16">
-                            <path d="M5.5 5.5A.5.5 0 0 1 6 6v6a.5.5 0 0 1-1 0V6a.5.5 0 0 1 .5-.5zm2.5 0a.5.5 0 0 1 .5.5v6a.5.5 0 0 1-1 0V6a.5.5 0 0 1 .5-.5zm3 .5a.5.5 0 0 0-1 0v6a.5.5 0 0 0 1 0V6z" />
-                            <path fill-rule="evenodd" d="M14.5 3a1 1 0 0 1-1 1H13v9a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V4h-.5a1 1 0 0 1-1-1V2a1 1 0 0 1 1-1H6a1 1 0 0 1 1-1h2a1 1 0 0 1 1 1h3.5a1 1 0 0 1 1 1v1zM4.118 4 4 4.059V13a1 1 0 0 0 1 1h6a1 1 0 0 0 1-1V4.059L11.882 4H4.118zM2.5 3V2h11v1h-11z" />
-                        </svg>
-                    </a>
-
-                    @* Vertically centered modal to confirm action *@
-
-                    <div class="modal fade show" id="client-@item.Id-delete-modal" aria-labelledby="client-@item.Id-delete-modal-title" aria-modal="true" role="dialog">
-                        <div id="" class="modal-dialog modal-dialog-centered">
-                            <div class="modal-content">
-                                <div class="modal-header">
-                                    <h5 class="modal-title" id="client-@item.Id-delete-modal-title">Delete user @await Model.GetEmailByIdAsync(item.Id, nameof(Model.Clients))</h5>
-                                    <button class="btn-close" data-bs-dismiss="modal" aria-label="close"></button>
-                                </div>
-                                <div class="modal-body">
-                                    <p>Are you sure you want to <strong>permanently delete</strong> this user?</p>
-                                </div>
-                                <div class="modal-footer">
-                                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                                    <button type="button" class="btn btn-primary" asp-page-handler="DeleteUser" asp-route-id="@item.Id">Confirm</button>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </td>
+    @if (Model.Clients.IsNullOrEmpty())
+    {
+        <div class="alert alert-secondary" role="alert">
+            <p>There are no customers registered at the moment</p>
+        </div>
+    }
+    else
+    {
+        <table class="table">
+            <thead>
+            <tr class="table-primary">
+                <th>
+                    @Html.DisplayNameFor(model => model.Clients[0].Id)
+                </th>
+                <th>
+                    First Name
+                </th>
+                <th>
+                    Last Name
+                </th>
+                <th>
+                    Email
+                </th>
+                <th>
+                    Details
+                </th>
+                <th>
+                    Block
+                </th>
+                <th>
+                    Delete
+                </th>
             </tr>
-        }
-        </tbody>
-    </table>
+            </thead>
+            <tbody>
+            @foreach (var item in Model.Clients)
+            {
+                <tr id="tr-@item.Id">
+                    <td>
+                        @Html.DisplayFor(modelItem => item.Id)
+                    </td>
+                    <td>
+                        @await Model.GetFNameAsync(item.Id, nameof(Model.Clients))
+                    </td>
+                    <td>
+                        @await Model.GetLNameAsync(item.Id, nameof(Model.Clients))
+                    </td>
+                    <td>
+                        @await Model.GetEmailByIdAsync(item.Id, nameof(Model.Clients))
+                    </td>
+                    <td>
+                        <a class="btn" asp-page="/Admin/ClientDetail" asp-route-id="@item.Id" title="View details">
+                            <img src="/icons/eye.svg" alt="detail" height="16" width="16"/>
+                        </a>
+                    </td>
+                    <td>
+                        @if (await UserManager.IsLockedOutAsync(await UserManager.FindByIdAsync(item.ApplicationUserFk))) // user is disabled
+                        {
+                            <form method="post">
+                                <button asp-page-handler="UnblockClient" class="btn" title="Unblock user" type="submit" asp-route-id="@item.Id">
+                                    <img src="/icons/shield-slash.svg" alt="blocked" height="16" width="16"/>
+                                </button>
+                            </form>
+                        }
+                        else // not disabled
+                        {
+                            <a class="btn" title="Block user" data-bs-toggle="modal" data-bs-target="#client-@item.Id-block-modal">
+                                <img src="/icons/shield.svg" alt="enabled" height="16" width="16"/>
+                            </a>
+
+                        @* Vertically centered modal to confirm action *@
+
+                            <div class="modal fade show" id="client-@item.Id-block-modal" aria-labelledby="client-@item.Id-block-modal-title" aria-modal="true" role="dialog">
+                                <div class="modal-dialog modal-dialog-centered">
+                                    <div class="modal-content">
+                                        <div class="modal-header">
+                                            <h5 class="modal-title" id="client-@item.Id-block-modal-title">Block user @await Model.GetEmailByIdAsync(item.Id, nameof(Model.Clients))</h5>
+                                            <button class="btn-close" data-bs-dismiss="modal" aria-label="close"></button>
+                                        </div>
+                                        <div class="modal-body">
+                                            <p>Are you sure you want to block this user?</p>
+                                        </div>
+                                        <div class="modal-footer">
+                                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+
+                                            <form method="post">
+                                                <button type="submit" class="btn btn-primary" value="BlockClient" asp-page-handler="BlockClient" asp-route-id="@item.Id">Confirm</button>
+                                            </form>
+
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        }
+
+                    </td>
+                    <td>
+                        <a class="btn" title="Delete user" data-bs-toggle="modal" data-bs-target="#client-@item.Id-delete-modal">
+                            <img src="/icons/trash.svg" alt="delete" height="16" width="16"/>
+                        </a>
+
+                        @* Vertically centered modal to confirm action *@
+
+                        <div class="modal fade show" id="client-@item.Id-delete-modal" aria-labelledby="client-@item.Id-delete-modal-title" aria-modal="true" role="dialog">
+                            <div id="" class="modal-dialog modal-dialog-centered">
+                                <div class="modal-content">
+                                    <div class="modal-header">
+                                        <h5 class="modal-title" id="client-@item.Id-delete-modal-title">Delete user @await Model.GetEmailByIdAsync(item.Id, nameof(Model.Clients))</h5>
+                                        <button class="btn-close" data-bs-dismiss="modal" aria-label="close"></button>
+                                    </div>
+                                    <div class="modal-body">
+                                        <p>Are you sure you want to <strong>permanently delete</strong> this user?</p>
+                                    </div>
+                                    <div class="modal-footer">
+                                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+
+                                        <form method="post">
+                                            <button type="submit" class="btn btn-primary" value="DeleteClient" asp-page-handler="DeleteClient" asp-route-id="@item.Id">Confirm</button>
+                                        </form>
+
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </td>
+                </tr>
+            }
+            </tbody>
+        </table>
+    }
+
 </div>
 
 @* Riders tab *@
 <div class="tab-pane fade" id="pills-riders" role="tabpanel" aria-labelledby="pills-riders-tab">
 
-    <table class="table">
-        <thead>
-        <tr class="table-primary">
-            <th>
-                @Html.DisplayNameFor(model => model.Riders[0].Id)
-            </th>
-            <th>
-                First Name
-            </th>
-            <th>
-                Last Name
-            </th>
-            <th>
-                Email
-            </th>
-            <th>
-                Delivery Credit
-            </th>
-            <th>
-                Details
-            </th>
-            <th>
-                Block
-            </th>
-            <th>
-                Delete
-            </th>
-        </tr>
-        </thead>
-        <tbody>
-        @foreach (var item in Model.Riders)
-        {
-            <tr>
-                <td>
-                    @Html.DisplayFor(modelItem => item.Id)
-                </td>
-                <td>
-                    @await Model.GetFNameAsync(item.Id, nameof(Model.Riders))
-                </td>
-                <td>
-                    @await Model.GetLNameAsync(item.Id, nameof(Model.Riders))
-                </td>
-                <td>
-                    @await Model.GetEmailByIdAsync(item.Id, nameof(Model.Riders))
-                </td>
-                <td>
-                    @Html.DisplayFor(modelItem => item.DeliveryCredit) €
-                    @* TODO: editable *@
-                </td>
-                <td>
-                    <a asp-page="#" asp-route-id="@item.Id" title="View details">
-                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-eye" viewBox="0 0 16 16">
-                            <path d="M16 8s-3-5.5-8-5.5S0 8 0 8s3 5.5 8 5.5S16 8 16 8zM1.173 8a13.133 13.133 0 0 1 1.66-2.043C4.12 4.668 5.88 3.5 8 3.5c2.12 0 3.879 1.168 5.168 2.457A13.133 13.133 0 0 1 14.828 8c-.058.087-.122.183-.195.288-.335.48-.83 1.12-1.465 1.755C11.879 11.332 10.119 12.5 8 12.5c-2.12 0-3.879-1.168-5.168-2.457A13.134 13.134 0 0 1 1.172 8z" />
-                            <path d="M8 5.5a2.5 2.5 0 1 0 0 5 2.5 2.5 0 0 0 0-5zM4.5 8a3.5 3.5 0 1 1 7 0 3.5 3.5 0 0 1-7 0z" />
-                        </svg>
-                    </a>
-                </td>
-                <td>
-                    <a href="#" title="Block user" data-bs-toggle="modal" data-bs-target="#rider-@item.Id-block-modal">
-                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-shield-x" viewBox="0 0 16 16">
-                            <path d="M5.338 1.59a61.44 61.44 0 0 0-2.837.856.481.481 0 0 0-.328.39c-.554 4.157.726 7.19 2.253 9.188a10.725 10.725 0 0 0 2.287 2.233c.346.244.652.42.893.533.12.057.218.095.293.118a.55.55 0 0 0 .101.025.615.615 0 0 0 .1-.025c.076-.023.174-.061.294-.118.24-.113.547-.29.893-.533a10.726 10.726 0 0 0 2.287-2.233c1.527-1.997 2.807-5.031 2.253-9.188a.48.48 0 0 0-.328-.39c-.651-.213-1.75-.56-2.837-.855C9.552 1.29 8.531 1.067 8 1.067c-.53 0-1.552.223-2.662.524zM5.072.56C6.157.265 7.31 0 8 0s1.843.265 2.928.56c1.11.3 2.229.655 2.887.87a1.54 1.54 0 0 1 1.044 1.262c.596 4.477-.787 7.795-2.465 9.99a11.775 11.775 0 0 1-2.517 2.453 7.159 7.159 0 0 1-1.048.625c-.28.132-.581.24-.829.24s-.548-.108-.829-.24a7.158 7.158 0 0 1-1.048-.625 11.777 11.777 0 0 1-2.517-2.453C1.928 10.487.545 7.169 1.141 2.692A1.54 1.54 0 0 1 2.185 1.43 62.456 62.456 0 0 1 5.072.56z" />
-                            <path d="M6.146 5.146a.5.5 0 0 1 .708 0L8 6.293l1.146-1.147a.5.5 0 1 1 .708.708L8.707 7l1.147 1.146a.5.5 0 0 1-.708.708L8 7.707 6.854 8.854a.5.5 0 1 1-.708-.708L7.293 7 6.146 5.854a.5.5 0 0 1 0-.708z" />
-                        </svg>
-                    </a>
-
-                    @* Vertically centered modal to confirm action *@
-
-                    <div class="modal fade show" id="rider-@item.Id-block-modal" aria-labelledby="rider-@item.Id-block-modal-title" aria-modal="true" role="dialog">
-                        <div class="modal-dialog modal-dialog-centered">
-                            <div class="modal-content">
-                                <div class="modal-header">
-                                    <h5 class="modal-title" id="rider-@item.Id-block-modal-title">Block user @await Model.GetEmailByIdAsync(item.Id, nameof(Model.Clients))</h5>
-                                    <button class="btn-close" data-bs-dismiss="modal" aria-label="close"></button>
-                                </div>
-                                <div class="modal-body">
-                                    <p>Are you sure you want to block this user?</p>
-                                </div>
-                                <div class="modal-footer">
-                                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                                    <button type="button" class="btn btn-primary" asp-page-handler="BlockRider" asp-route-id="@item.Id" data-bs-dismiss="modal">Confirm</button>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-
-                </td>
-                <td>
-                    <a href="#" title="Delete user" data-bs-toggle="modal" data-bs-target="#rider-@item.Id-delete-modal">
-                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-trash" viewBox="0 0 16 16">
-                            <path d="M5.5 5.5A.5.5 0 0 1 6 6v6a.5.5 0 0 1-1 0V6a.5.5 0 0 1 .5-.5zm2.5 0a.5.5 0 0 1 .5.5v6a.5.5 0 0 1-1 0V6a.5.5 0 0 1 .5-.5zm3 .5a.5.5 0 0 0-1 0v6a.5.5 0 0 0 1 0V6z" />
-                            <path fill-rule="evenodd" d="M14.5 3a1 1 0 0 1-1 1H13v9a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V4h-.5a1 1 0 0 1-1-1V2a1 1 0 0 1 1-1H6a1 1 0 0 1 1-1h2a1 1 0 0 1 1 1h3.5a1 1 0 0 1 1 1v1zM4.118 4 4 4.059V13a1 1 0 0 0 1 1h6a1 1 0 0 0 1-1V4.059L11.882 4H4.118zM2.5 3V2h11v1h-11z" />
-                        </svg>
-                    </a>
-
-                    @* Vertically centered modal to confirm action *@
-
-                    <div class="modal fade show" id="rider-@item.Id-delete-modal" aria-labelledby="rider-@item.Id-delete-modal-title" aria-modal="true" role="dialog">
-                        <div id="" class="modal-dialog modal-dialog-centered">
-                            <div class="modal-content">
-                                <div class="modal-header">
-                                    <h5 class="modal-title" id="rider-@item.Id-delete-modal-title">Delete user @await Model.GetEmailByIdAsync(item.Id, nameof(Model.Clients))</h5>
-                                    <button class="btn-close" data-bs-dismiss="modal" aria-label="close"></button>
-                                </div>
-                                <div class="modal-body">
-                                    <p>Are you sure you want to <strong>permanently delete</strong> this user?</p>
-                                </div>
-                                <div class="modal-footer">
-                                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                                    <button type="button" class="btn btn-primary" asp-page-handler="DeleteRider" asp-route-id="@item.Id">Confirm</button>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </td>
+    @if (Model.Riders.IsNullOrEmpty())
+    {
+        <div class="alert alert-secondary" role="alert">
+            <p>There are no riders registered at the moment</p>
+        </div>
+    }
+    else
+    {
+        <table class="table">
+            <thead>
+            <tr class="table-primary">
+                <th>
+                    @Html.DisplayNameFor(model => model.Riders[0].Id)
+                </th>
+                <th>
+                    First Name
+                </th>
+                <th>
+                    Last Name
+                </th>
+                <th>
+                    Email
+                </th>
+                <th>
+                    Delivery Credit
+                </th>
+                <th>
+                    Details
+                </th>
+                <th>
+                    Block
+                </th>
+                <th>
+                    Delete
+                </th>
             </tr>
-        }
-        </tbody>
-    </table>
+            </thead>
+            <tbody>
+            @foreach (var item in Model.Riders)
+            {
+                <tr>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.Id)
+                    </td>
+                    <td>
+                        @await Model.GetFNameAsync(item.Id, nameof(Model.Riders))
+                    </td>
+                    <td>
+                        @await Model.GetLNameAsync(item.Id, nameof(Model.Riders))
+                    </td>
+                    <td>
+                        @await Model.GetEmailByIdAsync(item.Id, nameof(Model.Riders))
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.DeliveryCredit) €
+                        @* TODO: editable *@
+                    </td>
+                    <td>
+                        <a class="btn" asp-page="#" asp-route-id="@item.Id" title="View details">
+                            <img src="/icons/eye.svg" alt="detail" height="16" width="16"/>
+                        </a>
+                    </td>
+                    <td>
+
+                        @if (await UserManager.IsLockedOutAsync(await UserManager.FindByIdAsync(item.Client.ApplicationUserFk))) // user is disabled
+                        {
+                            <form method="post">
+                                <button class="btn" asp-page-handler="UnblockRider" type="submit" title="Unblock user" asp-route-id="@item.Id">
+                                    <img src="/icons/shield-slash.svg" alt="blocked" height="16" width="16"/>
+                                </button>
+                            </form>
+                        }
+                        else // not disabled
+                        {
+                            <a href="#" class="btn" title="Block user" data-bs-toggle="modal" data-bs-target="#rider-@item.Id-block-modal">
+                                <img src="/icons/shield.svg" alt="enabled" height="16" width="16"/>
+                            </a>
+
+                        @* Vertically centered modal to confirm action *@
+
+                            <div class="modal fade show" id="rider-@item.Id-block-modal" aria-labelledby="rider-@item.Id-block-modal-title" aria-modal="true" role="dialog">
+                                <div class="modal-dialog modal-dialog-centered">
+                                    <div class="modal-content">
+                                        <div class="modal-header">
+                                            <h5 class="modal-title" id="rider-@item.Id-block-modal-title">Block user @await Model.GetEmailByIdAsync(item.Id, nameof(Model.Clients))</h5>
+                                            <button class="btn-close" data-bs-dismiss="modal" aria-label="close"></button>
+                                        </div>
+                                        <div class="modal-body">
+                                            <p>Are you sure you want to block this user?</p>
+                                        </div>
+                                        <div class="modal-footer">
+                                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+
+                                            <form method="post">
+                                                <button type="button" class="btn btn-primary" asp-page-handler="BlockRider" asp-route-id="@item.Id">Confirm</button>
+                                            </form>
+
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        }
+
+                    </td>
+                    <td>
+                        <a class="btn" href="#" title="Delete user" data-bs-toggle="modal" data-bs-target="#rider-@item.Id-delete-modal">
+                            <img src="/icons/trash.svg" alt="delete" height="16" width="16"/>
+                        </a>
+
+                        @* Vertically centered modal to confirm action *@
+
+                        <div class="modal fade show" id="rider-@item.Id-delete-modal" aria-labelledby="rider-@item.Id-delete-modal-title" aria-modal="true" role="dialog">
+                            <div id="" class="modal-dialog modal-dialog-centered">
+                                <div class="modal-content">
+                                    <div class="modal-header">
+                                        <h5 class="modal-title" id="rider-@item.Id-delete-modal-title">Delete user @await Model.GetEmailByIdAsync(item.Id, nameof(Model.Clients))</h5>
+                                        <button class="btn-close" data-bs-dismiss="modal" aria-label="close"></button>
+                                    </div>
+                                    <div class="modal-body">
+                                        <p>Are you sure you want to <strong>permanently delete</strong> this user?</p>
+                                    </div>
+                                    <div class="modal-footer">
+                                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+
+                                        <form method="post">
+                                            <button type="button" class="btn btn-primary" asp-page-handler="DeleteRider" asp-route-id="@item.Id">Confirm</button>
+                                        </form>
+
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </td>
+                </tr>
+            }
+            </tbody>
+        </table>
+    }
+
+
 </div>
 
 @* Restaurateurs tab *@
 <div class="tab-pane fade" id="pills-restaurateurs" role="tabpanel" aria-labelledby="pills-restaurateurs-tab">
 
-    <table class="table">
-        <thead>
-        <tr class="table-primary">
-            <th>
-                @Html.DisplayNameFor(model => model.Restaurateurs[0].Id)
-            </th>
-            <th>
-                First Name
-            </th>
-            <th>
-                Last Name
-            </th>
-            <th>
-                Email
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Restaurateurs[0].Restaurant)
-            </th>
-            <th>
-                Details
-            </th>
-            <th>
-                Block
-            </th>
-            <th>
-                Delete
-            </th>
-        </tr>
-        </thead>
-        <tbody>
-        @foreach (var item in Model.Restaurateurs)
-        {
-            <tr>
-                <td>
-                    @Html.DisplayFor(modelItem => item.Id)
-                </td>
-                <td>
-                    @await Model.GetFNameAsync(item.Id, nameof(Model.Restaurateurs))
-                </td>
-                <td>
-                    @await Model.GetLNameAsync(item.Id, nameof(Model.Restaurateurs))
-                </td>
-                <td>
-                    @await Model.GetEmailByIdAsync(item.Id, nameof(Model.Restaurateurs))
-                </td>
-                <td>
-                    <a asp-page="#" asp-route-id="@item.Id">Restaurant</a>
-                </td>
-                <td>
-                    <a asp-page="#" asp-route-id="@item.Id" title="View details">
-                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-eye" viewBox="0 0 16 16">
-                            <path d="M16 8s-3-5.5-8-5.5S0 8 0 8s3 5.5 8 5.5S16 8 16 8zM1.173 8a13.133 13.133 0 0 1 1.66-2.043C4.12 4.668 5.88 3.5 8 3.5c2.12 0 3.879 1.168 5.168 2.457A13.133 13.133 0 0 1 14.828 8c-.058.087-.122.183-.195.288-.335.48-.83 1.12-1.465 1.755C11.879 11.332 10.119 12.5 8 12.5c-2.12 0-3.879-1.168-5.168-2.457A13.134 13.134 0 0 1 1.172 8z" />
-                            <path d="M8 5.5a2.5 2.5 0 1 0 0 5 2.5 2.5 0 0 0 0-5zM4.5 8a3.5 3.5 0 1 1 7 0 3.5 3.5 0 0 1-7 0z" />
-                        </svg>
-                    </a>
-                </td>
-                <td>
-                    <a href="#" title="Block user" data-bs-toggle="modal" data-bs-target="#restaurateur-@item.Id-block-modal">
-                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-shield-x" viewBox="0 0 16 16">
-                            <path d="M5.338 1.59a61.44 61.44 0 0 0-2.837.856.481.481 0 0 0-.328.39c-.554 4.157.726 7.19 2.253 9.188a10.725 10.725 0 0 0 2.287 2.233c.346.244.652.42.893.533.12.057.218.095.293.118a.55.55 0 0 0 .101.025.615.615 0 0 0 .1-.025c.076-.023.174-.061.294-.118.24-.113.547-.29.893-.533a10.726 10.726 0 0 0 2.287-2.233c1.527-1.997 2.807-5.031 2.253-9.188a.48.48 0 0 0-.328-.39c-.651-.213-1.75-.56-2.837-.855C9.552 1.29 8.531 1.067 8 1.067c-.53 0-1.552.223-2.662.524zM5.072.56C6.157.265 7.31 0 8 0s1.843.265 2.928.56c1.11.3 2.229.655 2.887.87a1.54 1.54 0 0 1 1.044 1.262c.596 4.477-.787 7.795-2.465 9.99a11.775 11.775 0 0 1-2.517 2.453 7.159 7.159 0 0 1-1.048.625c-.28.132-.581.24-.829.24s-.548-.108-.829-.24a7.158 7.158 0 0 1-1.048-.625 11.777 11.777 0 0 1-2.517-2.453C1.928 10.487.545 7.169 1.141 2.692A1.54 1.54 0 0 1 2.185 1.43 62.456 62.456 0 0 1 5.072.56z" />
-                            <path d="M6.146 5.146a.5.5 0 0 1 .708 0L8 6.293l1.146-1.147a.5.5 0 1 1 .708.708L8.707 7l1.147 1.146a.5.5 0 0 1-.708.708L8 7.707 6.854 8.854a.5.5 0 1 1-.708-.708L7.293 7 6.146 5.854a.5.5 0 0 1 0-.708z" />
-                        </svg>
-                    </a>
-
-                    @* Vertically centered modal to confirm action *@
-
-                    <div class="modal fade show" id="restaurateur-@item.Id-block-modal" aria-labelledby="restaurateur-@item.Id-block-modal-title" aria-modal="true" role="dialog">
-                        <div class="modal-dialog modal-dialog-centered">
-                            <div class="modal-content">
-                                <div class="modal-header">
-                                    <h5 class="modal-title" id="restaurateur-@item.Id-block-modal-title">Block user @await Model.GetEmailByIdAsync(item.Id, nameof(Model.Clients))</h5>
-                                    <button class="btn-close" data-bs-dismiss="modal" aria-label="close"></button>
-                                </div>
-                                <div class="modal-body">
-                                    <p>Are you sure you want to block this user?</p>
-                                </div>
-                                <div class="modal-footer">
-                                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                                    <button type="button" class="btn btn-primary" asp-page-handler="BlockRestaurateur" asp-route-id="@item.Id" data-bs-dismiss="modal">Confirm</button>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-
-                </td>
-                <td>
-                    <a href="#" title="Delete user" data-bs-toggle="modal" data-bs-target="#rider-@item.Id-delete-modal">
-                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-trash" viewBox="0 0 16 16">
-                            <path d="M5.5 5.5A.5.5 0 0 1 6 6v6a.5.5 0 0 1-1 0V6a.5.5 0 0 1 .5-.5zm2.5 0a.5.5 0 0 1 .5.5v6a.5.5 0 0 1-1 0V6a.5.5 0 0 1 .5-.5zm3 .5a.5.5 0 0 0-1 0v6a.5.5 0 0 0 1 0V6z" />
-                            <path fill-rule="evenodd" d="M14.5 3a1 1 0 0 1-1 1H13v9a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V4h-.5a1 1 0 0 1-1-1V2a1 1 0 0 1 1-1H6a1 1 0 0 1 1-1h2a1 1 0 0 1 1 1h3.5a1 1 0 0 1 1 1v1zM4.118 4 4 4.059V13a1 1 0 0 0 1 1h6a1 1 0 0 0 1-1V4.059L11.882 4H4.118zM2.5 3V2h11v1h-11z" />
-                        </svg>
-                    </a>
-
-                    @* Vertically centered modal to confirm action *@
-
-                    <div class="modal fade show" id="rider-@item.Id-delete-modal" aria-labelledby="rider-@item.Id-delete-modal-title" aria-modal="true" role="dialog">
-                        <div id="" class="modal-dialog modal-dialog-centered">
-                            <div class="modal-content">
-                                <div class="modal-header">
-                                    <h5 class="modal-title" id="rider-@item.Id-delete-modal-title">Delete user @await Model.GetEmailByIdAsync(item.Id, nameof(Model.Clients))</h5>
-                                    <button class="btn-close" data-bs-dismiss="modal" aria-label="close"></button>
-                                </div>
-                                <div class="modal-body">
-                                    <p>Are you sure you want to <strong>permanently delete</strong> this user?</p>
-                                </div>
-                                <div class="modal-footer">
-                                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                                    <button type="button" class="btn btn-primary" asp-page-handler="DeleteRestaurateur" asp-route-id="@item.Id">Confirm</button>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </td>
+    @if (Model.Restaurateurs.IsNullOrEmpty())
+    {
+        <div class="alert alert-secondary" role="alert">
+            <p>There are no restaurateurs registered at the moment</p>
+        </div>
+    }
+    else
+    {
+        <table class="table">
+            <thead>
+            <tr class="table-primary">
+                <th>
+                    @Html.DisplayNameFor(model => model.Restaurateurs[0].Id)
+                </th>
+                <th>
+                    First Name
+                </th>
+                <th>
+                    Last Name
+                </th>
+                <th>
+                    Email
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.Restaurateurs[0].Restaurant)
+                </th>
+                <th>
+                    Details
+                </th>
+                <th>
+                    Block
+                </th>
+                <th>
+                    Delete
+                </th>
             </tr>
-        }
-        </tbody>
-    </table>
+            </thead>
+            <tbody>
+            @foreach (var item in Model.Restaurateurs)
+            {
+                <tr>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.Id)
+                    </td>
+                    <td>
+                        @await Model.GetFNameAsync(item.Id, nameof(Model.Restaurateurs))
+                    </td>
+                    <td>
+                        @await Model.GetLNameAsync(item.Id, nameof(Model.Restaurateurs))
+                    </td>
+                    <td>
+                        @await Model.GetEmailByIdAsync(item.Id, nameof(Model.Restaurateurs))
+                    </td>
+                    <td>
+                        <a asp-page="#" asp-route-id="@item.Id">Restaurant</a>
+                    </td>
+                    <td>
+                        <a class="btn" asp-page="#" asp-route-id="@item.Id" title="View details">
+                            <img src="/icons/eye.svg" alt="detail" height="16" width="16"/>
+                        </a>
+                    </td>
+                    <td>
+
+                        @if (await UserManager.IsLockedOutAsync(await UserManager.FindByIdAsync(item.Client.ApplicationUserFk)))
+                        {
+                            <form method="post">
+                                <button class="btn" type="submit" asp-page-handler="UnblockRestaurateur" title="Unblock user" asp-route-id="@item.Id">
+                                    <img src="/icons/shield-slash.svg" alt="blocked" height="16" width="16"/>
+                                </button>
+                            </form>
+                        }
+                        else
+                        {
+                            <a class="btn" href="#" title="Block user" data-bs-toggle="modal" data-bs-target="#restaurateur-@item.Id-block-modal">
+                                <img src="/icons/shield.svg" alt="enabled" height="16" width="16"/>
+                            </a>
+
+                        @* Vertically centered modal to confirm action *@
+
+                            <div class="modal fade show" id="restaurateur-@item.Id-block-modal" aria-labelledby="restaurateur-@item.Id-block-modal-title" aria-modal="true" role="dialog">
+                                <div class="modal-dialog modal-dialog-centered">
+                                    <div class="modal-content">
+                                        <div class="modal-header">
+                                            <h5 class="modal-title" id="restaurateur-@item.Id-block-modal-title">Block user @await Model.GetEmailByIdAsync(item.Id, nameof(Model.Clients))</h5>
+                                            <button class="btn-close" data-bs-dismiss="modal" aria-label="close"></button>
+                                        </div>
+                                        <div class="modal-body">
+                                            <p>Are you sure you want to block this user?</p>
+                                        </div>
+                                        <div class="modal-footer">
+                                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+
+                                            <form method="post">
+                                                <button type="button" class="btn btn-primary" asp-page-handler="BlockRestaurateur" asp-route-id="@item.Id">Confirm</button>
+                                            </form>
+
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        }
+
+                    </td>
+                    <td>
+                        <a class="btn" href="#" title="Delete user" data-bs-toggle="modal" data-bs-target="#rider-@item.Id-delete-modal">
+                            <img src="/icons/trash.svg" alt="delete" height="16" width="16"/>
+                        </a>
+
+                        @* Vertically centered modal to confirm action *@
+
+                        <div class="modal fade show" id="rider-@item.Id-delete-modal" aria-labelledby="rider-@item.Id-delete-modal-title" aria-modal="true" role="dialog">
+                            <div id="" class="modal-dialog modal-dialog-centered">
+                                <div class="modal-content">
+                                    <div class="modal-header">
+                                        <h5 class="modal-title" id="rider-@item.Id-delete-modal-title">Delete user @await Model.GetEmailByIdAsync(item.Id, nameof(Model.Clients))</h5>
+                                        <button class="btn-close" data-bs-dismiss="modal" aria-label="close"></button>
+                                    </div>
+                                    <div class="modal-body">
+                                        <p>Are you sure you want to <strong>permanently delete</strong> this user?</p>
+                                    </div>
+                                    <div class="modal-footer">
+                                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+
+                                        <form method="post">
+                                            <button type="button" class="btn btn-primary" asp-page-handler="DeleteRestaurateur" asp-route-id="@item.Id">Confirm</button>
+                                        </form>
+
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </td>
+                </tr>
+            }
+            </tbody>
+        </table>
+    }
+
 </div>
 </div>

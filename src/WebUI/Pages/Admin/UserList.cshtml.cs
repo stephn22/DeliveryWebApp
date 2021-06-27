@@ -1,4 +1,3 @@
-using System;
 using DeliveryWebApp.Application.Clients.Queries.GetClients;
 using DeliveryWebApp.Application.Restaurateurs.Queries.GetRestaurateurs;
 using DeliveryWebApp.Application.Riders.Queries.GetRiders;
@@ -6,6 +5,7 @@ using DeliveryWebApp.Domain.Entities;
 using DeliveryWebApp.Infrastructure.Identity;
 using DeliveryWebApp.Infrastructure.Persistence;
 using DeliveryWebApp.Infrastructure.Security;
+using DeliveryWebApp.Infrastructure.Services.Utilities;
 using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
@@ -14,14 +14,7 @@ using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.Extensions.Logging;
 using System.Collections.Generic;
 using System.Linq;
-using System.Net;
-using System.Security.Claims;
 using System.Threading.Tasks;
-using DeliveryWebApp.Application.Clients.Extensions;
-using DeliveryWebApp.Application.Restaurateurs.Extensions;
-using DeliveryWebApp.Application.Riders.Extensions;
-using DeliveryWebApp.Infrastructure.Services.Utilities;
-using Microsoft.AspNetCore.Authentication;
 
 namespace DeliveryWebApp.WebUI.Pages.Admin
 {
@@ -45,8 +38,6 @@ namespace DeliveryWebApp.WebUI.Pages.Admin
         public IList<Rider> Riders { get; set; }
         public IList<Domain.Entities.Restaurateur> Restaurateurs { get; set; }
 
-
-
         public async Task<IActionResult> OnGetAsync()
         {
             Clients = await _mediator.Send(new GetClientsQuery());
@@ -58,22 +49,41 @@ namespace DeliveryWebApp.WebUI.Pages.Admin
 
         public async Task<IActionResult> OnPostBlockClientAsync(int id)
         {
-            var client = await _context.GetClientByIdAsync(id);
+            Clients = await _mediator.Send(new GetClientsQuery());
+
+            var client = Clients.First(c => c.Id == id);
 
             var user = await _userManager.FindByIdAsync(client.ApplicationUserFk);
 
+            // block the user
+            await _userManager.BlockUser(user);
+
             _logger.LogInformation($"Blocked user with id: {user.Id}");
 
-            // block the user
-            var enabledClaim = await _userManager.GetEnabledClaimAsync(user);
-            await _userManager.ReplaceClaimAsync(user, enabledClaim, new Claim(ClaimName.Enabled, ClaimValue.Disabled));
+            return Page();
+        }
+
+        public async Task<IActionResult> OnPostUnblockClientAsync(int id)
+        {
+            Clients = await _mediator.Send(new GetClientsQuery());
+
+            var client = Clients.First(c => c.Id == id);
+
+            var user = await _userManager.FindByIdAsync(client.ApplicationUserFk);
+
+            // unblock
+            await _userManager.UnblockUser(user);
+
+            _logger.LogInformation($"Blocked user with id: {user.Id}");
 
             return Page();
         }
 
         public async Task<IActionResult> OnPostDeleteClientAsync(int id)
         {
-            var client = await _context.GetClientByIdAsync(id);
+            Clients = await _mediator.Send(new GetClientsQuery());
+
+            var client = Clients.First(c => c.Id == id);
 
             var user = await _userManager.FindByIdAsync(client.ApplicationUserFk);
 
@@ -84,25 +94,45 @@ namespace DeliveryWebApp.WebUI.Pages.Admin
 
             _logger.LogInformation($"Deleted user with id: {user.Id}");
 
-            return Page();
+            return RedirectToPage();
         }
 
         public async Task<IActionResult> OnPostBlockRiderAsync(int id)
         {
-            var rider = await _context.GetRiderByIdAsync(id);
+            Riders = await _mediator.Send(new GetRidersQuery());
+
+            var rider = Riders.First(r => r.Id == id);
             var user = await _userManager.FindByIdAsync(rider.Client.ApplicationUserFk);
 
-            var enabledClaim = await _userManager.GetEnabledClaimAsync(user);
-            await _userManager.ReplaceClaimAsync(user, enabledClaim, new Claim(ClaimName.Enabled, ClaimValue.Disabled));
+            // block the user
+            await _userManager.BlockUser(user);
 
             _logger.LogInformation($"Blocked user with id: {user.Id}");
 
             return Page();
         }
 
+        public async Task<IActionResult> OnPostUnblockRiderAsync(int id)
+        {
+            Riders = await _mediator.Send(new GetRidersQuery());
+
+            var rider = Riders.First(c => c.Id == id);
+
+            var user = await _userManager.FindByIdAsync(rider.Client.ApplicationUserFk);
+
+            // unblock
+            await _userManager.UnblockUser(user);
+
+            _logger.LogInformation($"Blocked user with id: {user.Id}");
+
+            return RedirectToPage();
+        }
+
         public async Task<IActionResult> OnPostDeleteRiderAsync(int id)
         {
-            var rider = await _context.GetRiderByIdAsync(id);
+            Riders = await _mediator.Send(new GetRidersQuery());
+
+            var rider = Riders.First(r => r.Id == id);
             var user = await _userManager.FindByIdAsync(rider.Client.ApplicationUserFk);
 
             await _userManager.DeleteAsync(user);
@@ -117,20 +147,40 @@ namespace DeliveryWebApp.WebUI.Pages.Admin
 
         public async Task<IActionResult> OnPostBlockRestaurateurAsync(int id)
         {
-            var restaurateur = await _context.GetRestaurateurByIdAsync(id);
+            Restaurateurs = await _mediator.Send(new GetRestaurateursQuery());
+
+            var restaurateur = Restaurateurs.First(r => r.Id == id);
             var user = await _userManager.FindByIdAsync(restaurateur.Client.ApplicationUserFk);
 
-            var enabledClaim = await _userManager.GetEnabledClaimAsync(user);
-            await _userManager.ReplaceClaimAsync(user, enabledClaim, new Claim(ClaimName.Enabled, ClaimValue.Disabled));
+            // block the user
+            await _userManager.BlockUser(user);
 
             _logger.LogInformation($"Blocked user with id: {user.Id}");
 
             return Page();
         }
 
+        public async Task<IActionResult> OnPostUnblockRestaurateurAsync(int id)
+        {
+            Restaurateurs = await _mediator.Send(new GetRestaurateursQuery());
+
+            var restaurateur = Restaurateurs.First(c => c.Id == id);
+
+            var user = await _userManager.FindByIdAsync(restaurateur.Client.ApplicationUserFk);
+
+            // unblock
+            await _userManager.UnblockUser(user);
+
+            _logger.LogInformation($"Blocked user with id: {user.Id}");
+
+            return RedirectToPage();
+        }
+
         public async Task<IActionResult> OnPostDeleteRestaurateurAsync(int id)
         {
-            var restaurateur = await _context.GetRestaurateurByIdAsync(id);
+            Restaurateurs = await _mediator.Send(new GetRestaurateursQuery());
+
+            var restaurateur = Restaurateurs.First(r => r.Id == id);
             var user = await _userManager.FindByIdAsync(restaurateur.Client.ApplicationUserFk);
 
             await _userManager.DeleteAsync(user);
@@ -141,7 +191,7 @@ namespace DeliveryWebApp.WebUI.Pages.Admin
             return Page();
         }
 
-        private async Task<ApplicationUser> GetUserAsync(int id, string listName)
+        public async Task<ApplicationUser> GetUserAsync(int id, string listName)
         {
             switch (listName)
             {
