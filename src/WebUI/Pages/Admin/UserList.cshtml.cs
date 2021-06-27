@@ -14,6 +14,7 @@ using Microsoft.Extensions.Logging;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using DeliveryWebApp.Application.Customers.Commands.DeleteCustomer;
 using DeliveryWebApp.Application.Customers.Queries.GetCustomers;
 
 namespace DeliveryWebApp.WebUI.Pages.Admin
@@ -88,9 +89,11 @@ namespace DeliveryWebApp.WebUI.Pages.Admin
             var user = await _userManager.FindByIdAsync(customer.ApplicationUserFk);
 
             await _userManager.DeleteAsync(user);
-            _context.Customers.Remove(customer);
 
-            await _context.SaveChangesAsync();
+            await _mediator.Send(new DeleteRestaurateurCommand()
+            {
+                Id = id
+            });
 
             _logger.LogInformation($"Deleted user with id: {user.Id}");
 

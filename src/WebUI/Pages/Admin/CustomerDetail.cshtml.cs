@@ -1,27 +1,29 @@
-using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations;
-using System.Linq;
-using System.Security.Claims;
 using DeliveryWebApp.Application.Common.Security;
+using DeliveryWebApp.Application.Customers.Extensions;
+using DeliveryWebApp.Application.Restaurateurs.Extensions;
+using DeliveryWebApp.Application.Riders.Extensions;
 using DeliveryWebApp.Domain.Entities;
 using DeliveryWebApp.Infrastructure.Identity;
 using DeliveryWebApp.Infrastructure.Persistence;
 using DeliveryWebApp.Infrastructure.Security;
+using DeliveryWebApp.Infrastructure.Services.Utilities;
 using MediatR;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.Extensions.Logging;
+using System.ComponentModel.DataAnnotations;
+using System.Security.Claims;
 using System.Threading.Tasks;
-using DeliveryWebApp.Application.Customers.Extensions;
-using DeliveryWebApp.Application.Restaurateurs.Extensions;
-using DeliveryWebApp.Application.Riders.Extensions;
-using DeliveryWebApp.Infrastructure.Services.Utilities;
-using Microsoft.AspNetCore.Mvc.Rendering;
-using Microsoft.EntityFrameworkCore;
+using DeliveryWebApp.Application.Restaurateurs.Commands.CreateRestaurateur;
+using DeliveryWebApp.Application.Restaurateurs.Commands.DeleteRestaurateur;
+using DeliveryWebApp.Application.Riders.Commands.CreateRider;
+using DeliveryWebApp.Application.Riders.Commands.DeleteRider;
+using DeliveryWebApp.Application.Riders.Commands.UpdateRider;
 
 namespace DeliveryWebApp.WebUI.Pages.Admin
 {
+    // TODO: Add delete and block button
     [Authorize(Roles = RoleName.Admin)]
     public class CustomerDetailModel : PageModel
     {
@@ -44,7 +46,6 @@ namespace DeliveryWebApp.WebUI.Pages.Admin
         public string LName { get; set; }
         public string Email { get; set; }
         public string CurrentRole { get; set; }
-        public string SelectedTab { get; set; }
 
         [BindProperty] public InputModel Input { get; set; }
 
@@ -56,7 +57,6 @@ namespace DeliveryWebApp.WebUI.Pages.Admin
             public double DeliveryCredit { get; set; }
         }
 
-
         public async Task<IActionResult> OnGetAsync(int? id)
         {
             if (id == null)
@@ -65,7 +65,7 @@ namespace DeliveryWebApp.WebUI.Pages.Admin
             }
 
             // get customer by id
-            Customer = await _context.GetCustomerByIdAsync(id);
+            Customer = await _context.Customers.FindAsync(id);
 
             var user = await _userManager.FindByIdAsync(Customer.ApplicationUserFk);
 
@@ -85,7 +85,7 @@ namespace DeliveryWebApp.WebUI.Pages.Admin
                 return Page();
             }
 
-            Customer = await _context.GetCustomerByIdAsync(id);
+            Customer = await _context.Customers.FindAsync(id);
 
             var user = await _userManager.FindByIdAsync(Customer.ApplicationUserFk);
             CurrentRole = await _userManager.GetRoleAsync(user);
@@ -102,18 +102,22 @@ namespace DeliveryWebApp.WebUI.Pages.Admin
                     case RoleName.Rider: // remove from table if rider
                         var rider = await _context.GetRiderByCustomerIdAsync(id);
 
-                        _context.Riders.Remove(rider);
+                        await _mediator.Send(new DeleteRiderCommand()
+                        {
+                            Id = rider.Id
+                        });
                         break;
 
                     case RoleName.Restaurateur: // remove from table if restaurateur
                         var restaurateur = await _context.GetRestaurateurByCustomerIdAsync(id);
 
-                        _context.Restaurateurs.Remove(restaurateur);
+                        await _mediator.Send(new DeleteRestaurateurCommand()
+                        {
+                            Id = restaurateur.Id
+                        });
                         break;
                 }
             }
-
-            await _context.SaveChangesAsync();
 
             return RedirectToPage("/Admin/UserList");
         }
@@ -125,7 +129,7 @@ namespace DeliveryWebApp.WebUI.Pages.Admin
                 return Page();
             }
 
-            Customer = await _context.GetCustomerByIdAsync(id);
+            Customer = await _context.Customers.FindAsync(id);
 
             var user = await _userManager.FindByIdAsync(Customer.ApplicationUserFk);
             CurrentRole = await _userManager.GetRoleAsync(user);
@@ -138,22 +142,22 @@ namespace DeliveryWebApp.WebUI.Pages.Admin
 
                 // update table
 
-                _context.Riders.Add(new Rider
+                await _mediator.Send(new CreateRiderCommand()
                 {
                     Customer = Customer,
-                    DeliveryCredit = Input.DeliveryCredit,
-                    OpenOrders = null
+                    DeliveryCredit = Input.DeliveryCredit
                 });
             }
             else // update only delivery credit
             {
                 var rider = await _context.GetRiderByCustomerIdAsync(id);
 
-                rider.DeliveryCredit = Input.DeliveryCredit;
-                _context.Riders.Update(rider);
+                await _mediator.Send(new UpdateRiderCommand()
+                {
+                    Id = rider.Id,
+                    DeliveryCredit = Input.DeliveryCredit
+                });
             }
-
-            await _context.SaveChangesAsync();
 
             return RedirectToPage("/Admin/UserList");
         }
@@ -166,7 +170,7 @@ namespace DeliveryWebApp.WebUI.Pages.Admin
                 return Page();
             }
 
-            Customer = await _context.GetCustomerByIdAsync(id);
+            Customer = await _context.Customers.FindAsync(id);
 
             var user = await _userManager.FindByIdAsync(Customer.ApplicationUserFk);
             CurrentRole = await _userManager.GetRoleAsync(user);
@@ -178,16 +182,11 @@ namespace DeliveryWebApp.WebUI.Pages.Admin
 
                 // update tables
 
-                _context.Restaurateurs.Add(new Domain.Entities.Restaurateur
+                await _mediator.Send(new CreateRestaurateurCommand()
                 {
-                    Customer = Customer,
-                    Restaurant = null,
-                    Reviews = null
+                    Customer = Customer
                 });
             }
-
-            await _context.SaveChangesAsync();
-
             return RedirectToPage("/Admin/UserList");
         }
     }

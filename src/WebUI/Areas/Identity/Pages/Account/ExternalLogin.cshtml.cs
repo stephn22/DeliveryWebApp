@@ -1,22 +1,20 @@
-﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations;
-using System.Linq;
-using System.Security.Claims;
-using System.Text;
-using System.Text.Encodings.Web;
-using System.Threading.Tasks;
-using DeliveryWebApp.Domain.Entities;
-using Microsoft.AspNetCore.Authorization;
+﻿using DeliveryWebApp.Application.Customers.Commands.CreateCustomer;
 using DeliveryWebApp.Infrastructure.Identity;
 using DeliveryWebApp.Infrastructure.Persistence;
 using DeliveryWebApp.Infrastructure.Security;
+using MediatR;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.UI.Services;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.AspNetCore.WebUtilities;
 using Microsoft.Extensions.Logging;
+using System.ComponentModel.DataAnnotations;
+using System.Security.Claims;
+using System.Text;
+using System.Text.Encodings.Web;
+using System.Threading.Tasks;
 
 namespace DeliveryWebApp.WebUI.Areas.Identity.Pages.Account
 {
@@ -27,6 +25,7 @@ namespace DeliveryWebApp.WebUI.Areas.Identity.Pages.Account
         private readonly UserManager<ApplicationUser> _userManager;
         private readonly ApplicationDbContext _context;
         private readonly IEmailSender _emailSender;
+        private readonly IMediator _mediator;
         private readonly ILogger<ExternalLoginModel> _logger;
 
         public ExternalLoginModel(
@@ -34,12 +33,14 @@ namespace DeliveryWebApp.WebUI.Areas.Identity.Pages.Account
             UserManager<ApplicationUser> userManager,
             ApplicationDbContext context,
             ILogger<ExternalLoginModel> logger,
+            IMediator mediator,
             IEmailSender emailSender)
         {
             _signInManager = signInManager;
             _userManager = userManager;
             _context = context;
             _logger = logger;
+            _mediator = mediator;
             _emailSender = emailSender;
         }
 
@@ -94,7 +95,7 @@ namespace DeliveryWebApp.WebUI.Areas.Identity.Pages.Account
             if (remoteError != null)
             {
                 ErrorMessage = $"Error from external provider: {remoteError}";
-                return RedirectToPage("./Login", new {ReturnUrl = returnUrl });
+                return RedirectToPage("./Login", new { ReturnUrl = returnUrl });
             }
             var info = await _signInManager.GetExternalLoginInfoAsync();
             if (info == null)
@@ -104,7 +105,7 @@ namespace DeliveryWebApp.WebUI.Areas.Identity.Pages.Account
             }
 
             // Sign in the user with this external login provider if the user already has a login.
-            var result = await _signInManager.ExternalLoginSignInAsync(info.LoginProvider, info.ProviderKey, isPersistent: false, bypassTwoFactor : true);
+            var result = await _signInManager.ExternalLoginSignInAsync(info.LoginProvider, info.ProviderKey, isPersistent: false, bypassTwoFactor: true);
             if (result.Succeeded)
             {
                 _logger.LogInformation("{Name} logged in with {LoginProvider} provider.", info.Principal.Identity.Name, info.LoginProvider);
@@ -153,7 +154,7 @@ namespace DeliveryWebApp.WebUI.Areas.Identity.Pages.Account
                     {
                         _logger.LogInformation("SendGridUser created an account using {Name} provider.", info.LoginProvider);
 
-                        await _userManager.AddClaimsAsync(user, new []
+                        await _userManager.AddClaimsAsync(user, new[]
                         {
                             new Claim(ClaimName.FName, Input.FName),
                             new Claim(ClaimName.LName, Input.LName),
@@ -176,18 +177,12 @@ namespace DeliveryWebApp.WebUI.Areas.Identity.Pages.Account
                         if (_userManager.Options.SignIn.RequireConfirmedAccount)
                         {
                             // add to Customers table
-                            _context.Customers.Add(new Customer
+
+                            await _mediator.Send(new CreateRestaurateurCommand()
                             {
-                                ApplicationUserFk = user.Id,
-                                Basket = null,
-                                Addresses = null,
-                                Orders = null,
-                                Reviews = null
+                                ApplicationUserFk = user.Id
                             });
-
-                            await _context.SaveChangesAsync();
-
-
+                            
                             return RedirectToPage("./RegisterConfirmation", new { Email = Input.Email });
                         }
 
