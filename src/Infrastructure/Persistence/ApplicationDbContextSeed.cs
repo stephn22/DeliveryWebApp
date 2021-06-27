@@ -31,6 +31,8 @@ namespace DeliveryWebApp.Infrastructure.Persistence
                 await userManager.CreateAsync(administrator, config["AdminCredentials:Password"]);
                 await userManager.AddToRolesAsync(administrator, new[] { administratorRole.Name });
 
+                await userManager.SetLockoutEnabledAsync(administrator, false);
+
                 var token = await userManager.GenerateEmailConfirmationTokenAsync(administrator);
                 await userManager.ConfirmEmailAsync(administrator, token);
             }
