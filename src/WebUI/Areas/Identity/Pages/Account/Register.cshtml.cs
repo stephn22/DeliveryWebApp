@@ -129,7 +129,7 @@ namespace DeliveryWebApp.WebUI.Areas.Identity.Pages.Account
                     if (_userManager.Options.SignIn.RequireConfirmedAccount)
                     {
                         // add to Customers table
-                        await _mediator.Send(new CreateRestaurateurCommand()
+                        await _mediator.Send(new CreateCustomerCommand
                         {
                             ApplicationUserFk = user.Id
                         });

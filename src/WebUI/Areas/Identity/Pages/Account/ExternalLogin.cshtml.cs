@@ -178,7 +178,7 @@ namespace DeliveryWebApp.WebUI.Areas.Identity.Pages.Account
                         {
                             // add to Customers table
 
-                            await _mediator.Send(new CreateRestaurateurCommand()
+                            await _mediator.Send(new CreateCustomerCommand
                             {
                                 ApplicationUserFk = user.Id
                             });

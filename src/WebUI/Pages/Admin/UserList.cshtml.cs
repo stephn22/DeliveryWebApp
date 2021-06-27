@@ -90,7 +90,7 @@ namespace DeliveryWebApp.WebUI.Pages.Admin
 
             await _userManager.DeleteAsync(user);
 
-            await _mediator.Send(new DeleteRestaurateurCommand()
+            await _mediator.Send(new DeleteCustomerCommand
             {
                 Id = id
             });

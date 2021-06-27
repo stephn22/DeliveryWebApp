@@ -102,7 +102,7 @@ namespace DeliveryWebApp.WebUI.Pages.Admin
                     case RoleName.Rider: // remove from table if rider
                         var rider = await _context.GetRiderByCustomerIdAsync(id);
 
-                        await _mediator.Send(new DeleteRiderCommand()
+                        await _mediator.Send(new DeleteRiderCommand
                         {
                             Id = rider.Id
                         });
@@ -111,7 +111,7 @@ namespace DeliveryWebApp.WebUI.Pages.Admin
                     case RoleName.Restaurateur: // remove from table if restaurateur
                         var restaurateur = await _context.GetRestaurateurByCustomerIdAsync(id);
 
-                        await _mediator.Send(new DeleteRestaurateurCommand()
+                        await _mediator.Send(new DeleteRestaurateurCommand
                         {
                             Id = restaurateur.Id
                         });
@@ -142,7 +142,7 @@ namespace DeliveryWebApp.WebUI.Pages.Admin
 
                 // update table
 
-                await _mediator.Send(new CreateRiderCommand()
+                await _mediator.Send(new CreateRiderCommand
                 {
                     Customer = Customer,
                     DeliveryCredit = Input.DeliveryCredit
@@ -152,7 +152,7 @@ namespace DeliveryWebApp.WebUI.Pages.Admin
             {
                 var rider = await _context.GetRiderByCustomerIdAsync(id);
 
-                await _mediator.Send(new UpdateRiderCommand()
+                await _mediator.Send(new UpdateRiderCommand
                 {
                     Id = rider.Id,
                     DeliveryCredit = Input.DeliveryCredit
@@ -182,7 +182,7 @@ namespace DeliveryWebApp.WebUI.Pages.Admin
 
                 // update tables
 
-                await _mediator.Send(new CreateRestaurateurCommand()
+                await _mediator.Send(new CreateRestaurateurCommand
                 {
                     Customer = Customer
                 });
