@@ -12,7 +12,8 @@ namespace DeliveryWebApp.Application.Customers.Extensions
         /// <summary>
         /// Get the Customer instance given the identifier (Customer.Id)
         /// </summary>
-        /// <param name="id">Identifier of the customer</param>
+        /// <param name="context">database context</param>
+        /// <param name="requestId">id or user request</param>
         /// <returns>Customer instance</returns>
         public static async Task<Customer> GetCustomerByRequestIdAsync(this IApplicationDbContext context, int? requestId)
         {
