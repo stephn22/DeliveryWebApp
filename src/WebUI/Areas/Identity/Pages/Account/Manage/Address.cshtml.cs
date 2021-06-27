@@ -18,7 +18,7 @@ using Microsoft.Extensions.Logging;
 
 namespace DeliveryWebApp.WebUI.Areas.Identity.Pages.Account.Manage
 {
-    [Authorize(Policy = PolicyName.IsClient)]
+    [Authorize(Policy = PolicyName.IsCustomer)]
     public class AddressModel : PageModel
     {
         private readonly UserManager<ApplicationUser> _userManager;
@@ -134,7 +134,7 @@ namespace DeliveryWebApp.WebUI.Areas.Identity.Pages.Account.Manage
         {
             try
             {
-                Addresses = from c in _context.Clients
+                Addresses = from c in _context.Customers
                     where user.Id == c.ApplicationUserFk
                     select c.Addresses;
             }

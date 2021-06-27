@@ -8,8 +8,8 @@ namespace DeliveryWebApp.Domain.Entities
 {
     public class Review : BaseEntity
     {
-        public int? ClientId { get; set; }
-        public virtual Client Client { get; set; }
+        public int? CustomerId { get; set; }
+        public virtual Customer Customer { get; set; }
         public string Title { get; set; }
         public string Text { get; set; }
         public int Grade { get; set; }

@@ -30,17 +30,17 @@ namespace DeliveryWebApp.Application.Restaurateurs.Extensions
             }
         }
 
-        public static async Task<Restaurateur> GetRestaurateurByClientIdAsync(this IApplicationDbContext context,
-            int? clientId)
+        public static async Task<Restaurateur> GetRestaurateurByCustomerIdAsync(this IApplicationDbContext context,
+            int? customerId)
         {
             try
             {
-                if (clientId == null)
+                if (customerId == null)
                 {
                     throw new NullReferenceException();
                 }
 
-                return await context.Restaurateurs.Where(r => r.Client.Id == clientId).FirstAsync();
+                return await context.Restaurateurs.Where(r => r.Customer.Id == customerId).FirstAsync();
             }
             catch (NullReferenceException e)
             {

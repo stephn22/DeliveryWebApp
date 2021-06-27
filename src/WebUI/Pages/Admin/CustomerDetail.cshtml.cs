@@ -13,8 +13,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.Extensions.Logging;
 using System.Threading.Tasks;
-using DeliveryWebApp.Application.Clients.Extensions;
-using DeliveryWebApp.Application.Clients.Queries.GetClients;
+using DeliveryWebApp.Application.Customers.Extensions;
 using DeliveryWebApp.Application.Restaurateurs.Extensions;
 using DeliveryWebApp.Application.Riders.Extensions;
 using DeliveryWebApp.Infrastructure.Services.Utilities;
@@ -24,14 +23,14 @@ using Microsoft.EntityFrameworkCore;
 namespace DeliveryWebApp.WebUI.Pages.Admin
 {
     [Authorize(Roles = RoleName.Admin)]
-    public class ClientDetailModel : PageModel
+    public class CustomerDetailModel : PageModel
     {
         private readonly ApplicationDbContext _context;
-        private readonly ILogger<ClientDetailModel> _logger;
+        private readonly ILogger<CustomerDetailModel> _logger;
         private readonly UserManager<ApplicationUser> _userManager;
         private readonly IMediator _mediator;
 
-        public ClientDetailModel(ApplicationDbContext context, ILogger<ClientDetailModel> logger,
+        public CustomerDetailModel(ApplicationDbContext context, ILogger<CustomerDetailModel> logger,
             UserManager<ApplicationUser> userManager, IMediator mediator)
         {
             _context = context;
@@ -40,7 +39,7 @@ namespace DeliveryWebApp.WebUI.Pages.Admin
             _mediator = mediator;
         }
 
-        public Client Client { get; set; }
+        public Domain.Entities.Customer Customer { get; set; }
         public string FName { get; set; }
         public string LName { get; set; }
         public string Email { get; set; }
@@ -65,10 +64,10 @@ namespace DeliveryWebApp.WebUI.Pages.Admin
                 return NotFound();
             }
 
-            // get client by id
-            Client = await _context.GetClientByIdAsync(id);
+            // get customer by id
+            Customer = await _context.GetCustomerByIdAsync(id);
 
-            var user = await _userManager.FindByIdAsync(Client.ApplicationUserFk);
+            var user = await _userManager.FindByIdAsync(Customer.ApplicationUserFk);
 
             FName = await user.GetFNameAsync(_userManager);
             LName = await user.GetLNameAsync(_userManager);
@@ -79,16 +78,16 @@ namespace DeliveryWebApp.WebUI.Pages.Admin
             return Page();
         }
 
-        public async Task<IActionResult> OnPostToClientAsync(int? id)
+        public async Task<IActionResult> OnPostToCustomerAsync(int? id)
         {
             if (!ModelState.IsValid)
             {
                 return Page();
             }
 
-            Client = await _context.GetClientByIdAsync(id);
+            Customer = await _context.GetCustomerByIdAsync(id);
 
-            var user = await _userManager.FindByIdAsync(Client.ApplicationUserFk);
+            var user = await _userManager.FindByIdAsync(Customer.ApplicationUserFk);
             CurrentRole = await _userManager.GetRoleAsync(user);
 
             if (CurrentRole != RoleName.Default)
@@ -101,13 +100,13 @@ namespace DeliveryWebApp.WebUI.Pages.Admin
                 switch (CurrentRole)
                 {
                     case RoleName.Rider: // remove from table if rider
-                        var rider = await _context.GetRiderByClientIdAsync(id);
+                        var rider = await _context.GetRiderByCustomerIdAsync(id);
 
                         _context.Riders.Remove(rider);
                         break;
 
                     case RoleName.Restaurateur: // remove from table if restaurateur
-                        var restaurateur = await _context.GetRestaurateurByClientIdAsync(id);
+                        var restaurateur = await _context.GetRestaurateurByCustomerIdAsync(id);
 
                         _context.Restaurateurs.Remove(restaurateur);
                         break;
@@ -126,9 +125,9 @@ namespace DeliveryWebApp.WebUI.Pages.Admin
                 return Page();
             }
 
-            Client = await _context.GetClientByIdAsync(id);
+            Customer = await _context.GetCustomerByIdAsync(id);
 
-            var user = await _userManager.FindByIdAsync(Client.ApplicationUserFk);
+            var user = await _userManager.FindByIdAsync(Customer.ApplicationUserFk);
             CurrentRole = await _userManager.GetRoleAsync(user);
 
             if (CurrentRole != RoleName.Rider)
@@ -141,14 +140,14 @@ namespace DeliveryWebApp.WebUI.Pages.Admin
 
                 _context.Riders.Add(new Rider
                 {
-                    Client = Client,
+                    Customer = Customer,
                     DeliveryCredit = Input.DeliveryCredit,
                     OpenOrders = null
                 });
             }
             else // update only delivery credit
             {
-                var rider = await _context.GetRiderByClientIdAsync(id);
+                var rider = await _context.GetRiderByCustomerIdAsync(id);
 
                 rider.DeliveryCredit = Input.DeliveryCredit;
                 _context.Riders.Update(rider);
@@ -167,9 +166,9 @@ namespace DeliveryWebApp.WebUI.Pages.Admin
                 return Page();
             }
 
-            Client = await _context.GetClientByIdAsync(id);
+            Customer = await _context.GetCustomerByIdAsync(id);
 
-            var user = await _userManager.FindByIdAsync(Client.ApplicationUserFk);
+            var user = await _userManager.FindByIdAsync(Customer.ApplicationUserFk);
             CurrentRole = await _userManager.GetRoleAsync(user);
 
             if (CurrentRole != RoleName.Restaurateur)
@@ -181,7 +180,7 @@ namespace DeliveryWebApp.WebUI.Pages.Admin
 
                 _context.Restaurateurs.Add(new Domain.Entities.Restaurateur
                 {
-                    Client = Client,
+                    Customer = Customer,
                     Restaurant = null,
                     Reviews = null
                 });

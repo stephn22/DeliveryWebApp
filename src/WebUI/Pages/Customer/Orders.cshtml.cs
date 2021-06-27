@@ -14,7 +14,7 @@ using Microsoft.Extensions.Logging;
 
 namespace DeliveryWebApp.WebUI.Pages.Customer
 {
-    [Authorize(Policy = PolicyName.IsClient)]
+    [Authorize(Policy = PolicyName.IsCustomer)]
     public class OrdersModel : PageModel
     {
         private readonly ApplicationDbContext _context;
@@ -44,7 +44,7 @@ namespace DeliveryWebApp.WebUI.Pages.Customer
         private async Task GetOrderAsync(ApplicationUser user)
         {
             Order = await (from o in _context.Orders
-                         where o.Client.ApplicationUserFk == user.Id
+                         where o.Customer.ApplicationUserFk == user.Id
                          select o).FirstOrDefaultAsync();
 
             // Products = Order.Products;

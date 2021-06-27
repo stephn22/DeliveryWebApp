@@ -1,4 +1,3 @@
-using DeliveryWebApp.Application.Clients.Queries.GetClients;
 using DeliveryWebApp.Domain.Constants;
 using DeliveryWebApp.Domain.Entities;
 using DeliveryWebApp.Infrastructure.Identity;
@@ -15,7 +14,7 @@ using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Security.Claims;
 using System.Threading.Tasks;
-using DeliveryWebApp.Application.Clients.Extensions;
+using DeliveryWebApp.Application.Customers.Extensions;
 
 namespace DeliveryWebApp.WebUI.Pages.Admin
 {
@@ -56,7 +55,7 @@ namespace DeliveryWebApp.WebUI.Pages.Admin
             }
 
             // get client by request id
-            var client = await _context.GetClientByRequestIdAsync(id);
+            var client = await _context.GetCustomerByRequestIdAsync(id);
 
             // get request instance
             UserRequest = await (from r in _context.Requests
@@ -85,7 +84,7 @@ namespace DeliveryWebApp.WebUI.Pages.Admin
                 return BadRequest();
             }
 
-            var client = await _context.GetClientByRequestIdAsync(id);
+            var client = await _context.GetCustomerByRequestIdAsync(id);
             var appUserFk = client.ApplicationUserFk;
 
             ApplicationUser = await _userManager.FindByIdAsync(appUserFk);
@@ -97,14 +96,14 @@ namespace DeliveryWebApp.WebUI.Pages.Admin
                                  select r).FirstOrDefaultAsync();
 
             IsRider = UserRequest.Role.Equals(RoleName.Rider);
-            await _context.GetClientByRequestIdAsync(id);
+            await _context.GetCustomerByRequestIdAsync(id);
 
             // update tables
             if (IsRider)
             {
                 _context.Riders.Add(new Rider()
                 {
-                    Client = UserRequest.Client,
+                    Customer = UserRequest.Customer,
                     DeliveryCredit = Input.DeliveryCredit
                 });
 
@@ -116,7 +115,7 @@ namespace DeliveryWebApp.WebUI.Pages.Admin
             {
                 _context.Restaurateurs.Add(new Domain.Entities.Restaurateur
                 {
-                    Client = UserRequest.Client,
+                    Customer = UserRequest.Customer,
                 });
 
                 await _userManager.ReplaceClaimAsync(ApplicationUser, oldClaim,

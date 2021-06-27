@@ -4,7 +4,7 @@
 @inject IAuthorizationService AuthorizationService
 @{
     var hasExternalLogins = (await SignInManager.GetExternalAuthenticationSchemesAsync()).Any();
-    var isClient = (await AuthorizationService.AuthorizeAsync(User, PolicyName.IsClient)).Succeeded;
+    var isClient = (await AuthorizationService.AuthorizeAsync(User, PolicyName.IsCustomer)).Succeeded;
     var isAdmin = User.IsInRole(RoleName.Admin);
 }
 <ul class="nav nav-pills flex-column">

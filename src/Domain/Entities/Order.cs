@@ -8,8 +8,8 @@ namespace DeliveryWebApp.Domain.Entities
 {
     public class Order : BaseEntity
     {
-        public int? ClientId { get; set; }
-        public virtual Client Client { get; set; }
+        public int? CustomerId { get; set; }
+        public virtual Customer Customer { get; set; }
         public ICollection<Product> Products { get; set; }
         public DateTime Date { get; set; }
         public virtual Restaurant Restaurant { get; set; }

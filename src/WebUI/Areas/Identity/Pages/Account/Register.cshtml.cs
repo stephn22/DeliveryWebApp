@@ -126,8 +126,8 @@ namespace DeliveryWebApp.WebUI.Areas.Identity.Pages.Account
 
                     if (_userManager.Options.SignIn.RequireConfirmedAccount)
                     {
-                        // add to Clients table
-                        _context.Clients.Add(new Client
+                        // add to Customers table
+                        _context.Customers.Add(new Customer
                         {
                             ApplicationUserFk = user.Id,
                             Basket = null,

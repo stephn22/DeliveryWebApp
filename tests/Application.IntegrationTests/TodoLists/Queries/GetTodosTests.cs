@@ -4,7 +4,6 @@ using FluentAssertions;
 using NUnit.Framework;
 using System.Linq;
 using System.Threading.Tasks;
-using DeliveryWebApp.Application.Clients.Queries.GetClients;
 
 namespace DeliveryWebApp.Application.IntegrationTests.TodoLists.Queries
 {

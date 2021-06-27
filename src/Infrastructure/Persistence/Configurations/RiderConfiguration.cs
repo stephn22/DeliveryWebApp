@@ -17,9 +17,9 @@ namespace DeliveryWebApp.Infrastructure.Persistence.Configurations
         {
             builder.HasKey(u => u.Id);
 
-            //builder.HasOne(u => u.Client)
+            //builder.HasOne(u => u.Customer)
             //    .WithOne()
-            //    .HasForeignKey<Client>(u => u.Id);
+            //    .HasForeignKey<Customer>(u => u.Id);
 
             builder.Property(r => r.DeliveryCredit)
                 .IsRequired();

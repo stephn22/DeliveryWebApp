@@ -15,9 +15,9 @@ namespace DeliveryWebApp.Infrastructure.Persistence.Configurations
     {
         public void Configure(EntityTypeBuilder<Request> builder)
         {
-            //builder.HasOne(c => c.Client)
+            //builder.HasOne(c => c.Customer)
             //    .WithOne()
-            //    .HasForeignKey<Client>(c => c.Id);
+            //    .HasForeignKey<Customer>(c => c.Id);
 
             builder.Property(c => c.Role)
                 .IsRequired();

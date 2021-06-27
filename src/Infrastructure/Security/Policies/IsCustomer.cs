@@ -7,7 +7,7 @@ using Microsoft.AspNetCore.Authorization;
 
 namespace DeliveryWebApp.Infrastructure.Security.Policies
 {
-    public class IsClient : IAuthorizationRequirement
+    public class IsCustomer : IAuthorizationRequirement
     {
     }
 }

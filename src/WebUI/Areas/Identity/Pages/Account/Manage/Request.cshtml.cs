@@ -18,7 +18,7 @@ using Microsoft.Extensions.Logging;
 
 namespace DeliveryWebApp.WebUI.Areas.Identity.Pages.Account.Manage
 {
-    [Authorize(Policy = PolicyName.IsClient)]
+    [Authorize(Policy = PolicyName.IsCustomer)]
     public class RequestModel : PageModel
     {
         private readonly UserManager<ApplicationUser> _userManager;
@@ -38,7 +38,6 @@ namespace DeliveryWebApp.WebUI.Areas.Identity.Pages.Account.Manage
         public bool HasRequest { get; set; }
 
         public Request UserRequest { get; set; }
-        public Client Client { get; set; }
 
         [BindProperty] public InputModel Input { get; set; }
 
@@ -69,7 +68,7 @@ namespace DeliveryWebApp.WebUI.Areas.Identity.Pages.Account.Manage
             try
             {
                 UserRequest = await (from r in _context.Requests
-                    where r.Client.ApplicationUserFk == user.Id
+                    where r.Customer.ApplicationUserFk == user.Id
                     select r).FirstOrDefaultAsync();
             }
             catch (InvalidOperationException e)
@@ -96,7 +95,7 @@ namespace DeliveryWebApp.WebUI.Areas.Identity.Pages.Account.Manage
 
             UserRequest = new Request
             {
-                Client = await GetClientAsync(user),
+                Customer = await GetCustomerAsync(user),
                 Role = Input.Role,
                 Status = RequestStatus.Idle
             };
@@ -111,9 +110,9 @@ namespace DeliveryWebApp.WebUI.Areas.Identity.Pages.Account.Manage
             return RedirectToPage();
         }
 
-        private async Task<Client> GetClientAsync(ApplicationUser user)
+        private async Task<Customer> GetCustomerAsync(ApplicationUser user)
         {
-            return await (from c in _context.Clients
+            return await (from c in _context.Customers
                 where c.ApplicationUserFk == user.Id
                 select c).FirstOrDefaultAsync();
         }

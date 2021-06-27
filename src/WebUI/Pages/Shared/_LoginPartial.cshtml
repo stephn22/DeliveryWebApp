@@ -9,7 +9,7 @@
 @{
     var isRestaurateur = (await AuthorizationService.AuthorizeAsync(User, PolicyName.IsRestaurateur)).Succeeded;
     var isRider = (await AuthorizationService.AuthorizeAsync(User, PolicyName.IsRider)).Succeeded;
-    var isClient = (await AuthorizationService.AuthorizeAsync(User, PolicyName.IsClient)).Succeeded;
+    var isClient = (await AuthorizationService.AuthorizeAsync(User, PolicyName.IsCustomer)).Succeeded;
     var isAdmin = User.IsInRole(RoleName.Admin);
 }
 

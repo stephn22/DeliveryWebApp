@@ -1,7 +1,7 @@
 ﻿@page "{id:int?}"
 @using DeliveryWebApp.Infrastructure.Security
 @using IdentityServer4.Extensions
-@model DeliveryWebApp.WebUI.Pages.Admin.ClientDetailModel
+@model DeliveryWebApp.WebUI.Pages.Admin.CustomerDetailModel
 @{
     ViewData["Title"] = "Request Detail";
 }
@@ -30,7 +30,7 @@
 
 <hr />
 
-<h1>Detail of Client: @Model.Client.Id</h1>
+<h1>Detail of Customer: @Model.Customer.Id</h1>
 
 @* TODO: LOCALIZE *@
 
@@ -54,12 +54,12 @@
         <dd class="col-sm-10">
             @Html.DisplayFor(model => model.Email)
         </dd>
-        @if (!Model.Client.Addresses.IsNullOrEmpty())
+        @if (!Model.Customer.Addresses.IsNullOrEmpty())
         {
             <dt class="col-sm-2">
                 Addresses
             </dt>
-            @foreach (var address in Model.Client.Addresses)
+            @foreach (var address in Model.Customer.Addresses)
             {
                 <dd class="col-sm-10">
                     @Html.DisplayFor(model => address.ToString())
@@ -89,20 +89,20 @@
             @* Tabs *@
             <ul class="nav nav-tabs" id="tabs" role="tablist">
                 <li class="nav-item" role="presentation">
-                    <button class="nav-link active" id="client-tab" data-bs-toggle="tab" data-bs-target="#client" type="button" role="tab" aria-controls="client" aria-selected="true">
-                        <img src="/icons/person-circle.svg" alt="client" height="16" width="16" />
-                        To Client
+                    <button class="nav-link active" id="customer-tab" data-bs-toggle="tab" data-bs-target="#customer" type="button" role="tab" aria-controls="customer" aria-selected="true">
+                        <img src="/icons/person-circle.svg" alt="customer" height="16" width="16" />
+                        To Customer
                     </button>
                 </li>
                 <li class="nav-item" role="presentation">
                     <button class="nav-link" id="rider-tab" data-bs-toggle="tab" data-bs-target="#rider" type="button" role="tab" aria-controls="rider" aria-selected="false">
-                        <img src="/icons/truck.svg" alt="client" height="16" width="16" />
+                        <img src="/icons/truck.svg" alt="rider" height="16" width="16" />
                         To Rider
                     </button>
                 </li>
                 <li class="nav-item" role="presentation">
                     <button class="nav-link" id="restaurateur-tab" data-bs-toggle="tab" data-bs-target="#restaurateur" type="button" role="tab" aria-controls="restaurateur" aria-selected="false">
-                        <img src="/icons/shop.svg" alt="client" height="16" width="16" />
+                        <img src="/icons/shop.svg" alt="restaurateur" height="16" width="16" />
                         To Restaurateur
                     </button>
                 </li>
@@ -111,19 +111,19 @@
             @* Tabs content *@
             <div class="tab-content" id="tab-panes">
 
-                @* Client tab *@
-                <div class="tab-pane fade show active" id="client" role="tabpanel" aria-labelledby="client-tab">
+                @* Customer tab *@
+                <div class="tab-pane fade show active" id="customer" role="tabpanel" aria-labelledby="customer-tab">
 
                     @if (Model.CurrentRole == RoleName.Default)
                     {
-                        <p>This user is already a Client</p>
+                        <p>This user is already a Customer</p>
                     }
                     else
                     {
-                        <p>You are going to change this user role from <strong>@Model.CurrentRole</strong> to <strong>Client</strong></p>
+                        <p>You are going to change this user role from <strong>@Model.CurrentRole</strong> to <strong>Customer</strong></p>
                     }
 
-                    <form method="post" asp-page-handler="ToClient">
+                    <form method="post" asp-page-handler="ToCustomer">
                         <div class="form-group">
                             <button class="btn btn-primary" type="submit">
                                 <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-save" viewBox="0 0 16 16">
@@ -147,7 +147,7 @@
                     }
                     else
                     {
-                        <p>You are going to change this user role from <strong>@Model.CurrentRole</strong> to <strong>Client</strong></p>
+                        <p>You are going to change this user role from <strong>@Model.CurrentRole</strong> to <strong>Customer</strong></p>
                         <p>Insert delivery credit:</p>
                     }
 

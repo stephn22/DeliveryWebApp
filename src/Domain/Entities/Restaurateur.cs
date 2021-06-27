@@ -4,7 +4,7 @@ namespace DeliveryWebApp.Domain.Entities
 {
     public class Restaurateur : BaseEntity
     {
-        public virtual Client Client { get; set; } // a restaurateur is also a client
+        public virtual Customer Customer { get; set; } // a restaurateur is also a customer
         public virtual Restaurant Restaurant { get; set; }
         public ICollection<Review> Reviews { get; set; }
     }

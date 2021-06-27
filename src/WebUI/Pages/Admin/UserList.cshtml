@@ -12,17 +12,18 @@
 
 @* TODO: LOCALIZE *@
 @* TODO: JSGRID? *@
+@* TODO: add icons to modals *@
 
 <ul class="nav justify-content-center nav-pills mb-3" id="pills-tab" role="tablist">
     <li class="nav-item" role="presentation">
-        <button class="nav-link active" id="pills-clients-tab" data-bs-toggle="pill" data-bs-target="#pills-clients" type="button" role="tab" aria-controls="pills-clients" aria-selected="true">
+        <button class="nav-link active" id="pills-customers-tab" data-bs-toggle="pill" data-bs-target="#pills-customers" type="button" role="tab" aria-controls="pills-customers" aria-selected="true">
 
             <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-person-circle" viewBox="0 0 16 16">
                 <path d="M11 6a3 3 0 1 1-6 0 3 3 0 0 1 6 0z"/>
                 <path fill-rule="evenodd" d="M0 8a8 8 0 1 1 16 0A8 8 0 0 1 0 8zm8-7a7 7 0 0 0-5.468 11.37C3.242 11.226 4.805 10 8 10s4.757 1.225 5.468 2.37A7 7 0 0 0 8 1z"/>
             </svg>
 
-            Clients
+            Customers
         </button>
     </li>
     <li class="nav-item" role="presentation">
@@ -49,10 +50,10 @@
 
 <div class="tab-content text-center" id="pills-tabContent">
 
-@* Clients tab *@
-<div class="tab-pane fade show active" id="pills-clients" role="tabpanel" aria-labelledby="pills-clients-tab">
+@* Customers tab *@
+<div class="tab-pane fade show active" id="pills-customers" role="tabpanel" aria-labelledby="pills-customers-tab">
 
-    @if (Model.Clients.IsNullOrEmpty())
+    @if (Model.Customers.IsNullOrEmpty())
     {
         <div class="alert alert-secondary" role="alert">
             <p>There are no customers registered at the moment</p>
@@ -64,7 +65,7 @@
             <thead>
             <tr class="table-primary">
                 <th>
-                    @Html.DisplayNameFor(model => model.Clients[0].Id)
+                    @Html.DisplayNameFor(model => model.Customers[0].Id)
                 </th>
                 <th>
                     First Name
@@ -87,23 +88,23 @@
             </tr>
             </thead>
             <tbody>
-            @foreach (var item in Model.Clients)
+            @foreach (var item in Model.Customers)
             {
-                <tr id="tr-@item.Id">
+                <tr>
                     <td>
                         @Html.DisplayFor(modelItem => item.Id)
                     </td>
                     <td>
-                        @await Model.GetFNameAsync(item.Id, nameof(Model.Clients))
+                        @await Model.GetFNameAsync(item.Id, nameof(Model.Customers))
                     </td>
                     <td>
-                        @await Model.GetLNameAsync(item.Id, nameof(Model.Clients))
+                        @await Model.GetLNameAsync(item.Id, nameof(Model.Customers))
                     </td>
                     <td>
-                        @await Model.GetEmailByIdAsync(item.Id, nameof(Model.Clients))
+                        @await Model.GetEmailByIdAsync(item.Id, nameof(Model.Customers))
                     </td>
                     <td>
-                        <a class="btn" asp-page="/Admin/ClientDetail" asp-route-id="@item.Id" title="View details">
+                        <a class="btn" asp-page="/Admin/CustomerDetail" asp-route-id="@item.Id" title="View details">
                             <img src="/icons/eye.svg" alt="detail" height="16" width="16"/>
                         </a>
                     </td>
@@ -111,24 +112,24 @@
                         @if (await UserManager.IsLockedOutAsync(await UserManager.FindByIdAsync(item.ApplicationUserFk))) // user is disabled
                         {
                             <form method="post">
-                                <button asp-page-handler="UnblockClient" class="btn" title="Unblock user" type="submit" asp-route-id="@item.Id">
+                                <button asp-page-handler="UnblockCustomer" class="btn" title="Unblock user" type="submit" asp-route-id="@item.Id">
                                     <img src="/icons/shield-slash.svg" alt="blocked" height="16" width="16"/>
                                 </button>
                             </form>
                         }
                         else // not disabled
                         {
-                            <a class="btn" title="Block user" data-bs-toggle="modal" data-bs-target="#client-@item.Id-block-modal">
+                            <a class="btn" title="Block user" data-bs-toggle="modal" data-bs-target="#customer-@item.Id-block-modal">
                                 <img src="/icons/shield.svg" alt="enabled" height="16" width="16"/>
                             </a>
 
                         @* Vertically centered modal to confirm action *@
 
-                            <div class="modal fade show" id="client-@item.Id-block-modal" aria-labelledby="client-@item.Id-block-modal-title" aria-modal="true" role="dialog">
+                            <div class="modal fade show" id="customer-@item.Id-block-modal" aria-labelledby="customer-@item.Id-block-modal-title" aria-modal="true" role="dialog">
                                 <div class="modal-dialog modal-dialog-centered">
                                     <div class="modal-content">
                                         <div class="modal-header">
-                                            <h5 class="modal-title" id="client-@item.Id-block-modal-title">Block user @await Model.GetEmailByIdAsync(item.Id, nameof(Model.Clients))</h5>
+                                            <h5 class="modal-title" id="customer-@item.Id-block-modal-title">Block user @await Model.GetEmailByIdAsync(item.Id, nameof(Model.Customers))</h5>
                                             <button class="btn-close" data-bs-dismiss="modal" aria-label="close"></button>
                                         </div>
                                         <div class="modal-body">
@@ -138,7 +139,7 @@
                                             <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
 
                                             <form method="post">
-                                                <button type="submit" class="btn btn-primary" value="BlockClient" asp-page-handler="BlockClient" asp-route-id="@item.Id">Confirm</button>
+                                                <button type="submit" class="btn btn-primary" value="BlockCustomer" asp-page-handler="BlockCustomer" asp-route-id="@item.Id">Confirm</button>
                                             </form>
 
                                         </div>
@@ -149,17 +150,17 @@
 
                     </td>
                     <td>
-                        <a class="btn" title="Delete user" data-bs-toggle="modal" data-bs-target="#client-@item.Id-delete-modal">
+                        <a class="btn" title="Delete user" data-bs-toggle="modal" data-bs-target="#customer-@item.Id-delete-modal">
                             <img src="/icons/trash.svg" alt="delete" height="16" width="16"/>
                         </a>
 
                         @* Vertically centered modal to confirm action *@
 
-                        <div class="modal fade show" id="client-@item.Id-delete-modal" aria-labelledby="client-@item.Id-delete-modal-title" aria-modal="true" role="dialog">
+                        <div class="modal fade show" id="customer-@item.Id-delete-modal" aria-labelledby="customer-@item.Id-delete-modal-title" aria-modal="true" role="dialog">
                             <div id="" class="modal-dialog modal-dialog-centered">
                                 <div class="modal-content">
                                     <div class="modal-header">
-                                        <h5 class="modal-title" id="client-@item.Id-delete-modal-title">Delete user @await Model.GetEmailByIdAsync(item.Id, nameof(Model.Clients))</h5>
+                                        <h5 class="modal-title" id="customer-@item.Id-delete-modal-title">Delete user @await Model.GetEmailByIdAsync(item.Id, nameof(Model.Customers))</h5>
                                         <button class="btn-close" data-bs-dismiss="modal" aria-label="close"></button>
                                     </div>
                                     <div class="modal-body">
@@ -169,7 +170,7 @@
                                         <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
 
                                         <form method="post">
-                                            <button type="submit" class="btn btn-primary" value="DeleteClient" asp-page-handler="DeleteClient" asp-route-id="@item.Id">Confirm</button>
+                                            <button type="submit" class="btn btn-primary" value="DeleteCustomer" asp-page-handler="DeleteCustomer" asp-route-id="@item.Id">Confirm</button>
                                         </form>
 
                                     </div>
@@ -252,7 +253,7 @@
                     </td>
                     <td>
 
-                        @if (await UserManager.IsLockedOutAsync(await UserManager.FindByIdAsync(item.Client.ApplicationUserFk))) // user is disabled
+                        @if (await UserManager.IsLockedOutAsync(await UserManager.FindByIdAsync(item.Customer.ApplicationUserFk))) // user is disabled
                         {
                             <form method="post">
                                 <button class="btn" asp-page-handler="UnblockRider" type="submit" title="Unblock user" asp-route-id="@item.Id">
@@ -272,7 +273,7 @@
                                 <div class="modal-dialog modal-dialog-centered">
                                     <div class="modal-content">
                                         <div class="modal-header">
-                                            <h5 class="modal-title" id="rider-@item.Id-block-modal-title">Block user @await Model.GetEmailByIdAsync(item.Id, nameof(Model.Clients))</h5>
+                                            <h5 class="modal-title" id="rider-@item.Id-block-modal-title">Block user @await Model.GetEmailByIdAsync(item.Id, nameof(Model.Customers))</h5>
                                             <button class="btn-close" data-bs-dismiss="modal" aria-label="close"></button>
                                         </div>
                                         <div class="modal-body">
@@ -303,7 +304,7 @@
                             <div id="" class="modal-dialog modal-dialog-centered">
                                 <div class="modal-content">
                                     <div class="modal-header">
-                                        <h5 class="modal-title" id="rider-@item.Id-delete-modal-title">Delete user @await Model.GetEmailByIdAsync(item.Id, nameof(Model.Clients))</h5>
+                                        <h5 class="modal-title" id="rider-@item.Id-delete-modal-title">Delete user @await Model.GetEmailByIdAsync(item.Id, nameof(Model.Customers))</h5>
                                         <button class="btn-close" data-bs-dismiss="modal" aria-label="close"></button>
                                     </div>
                                     <div class="modal-body">
@@ -396,7 +397,7 @@
                     </td>
                     <td>
 
-                        @if (await UserManager.IsLockedOutAsync(await UserManager.FindByIdAsync(item.Client.ApplicationUserFk)))
+                        @if (await UserManager.IsLockedOutAsync(await UserManager.FindByIdAsync(item.Customer.ApplicationUserFk)))
                         {
                             <form method="post">
                                 <button class="btn" type="submit" asp-page-handler="UnblockRestaurateur" title="Unblock user" asp-route-id="@item.Id">
@@ -416,7 +417,7 @@
                                 <div class="modal-dialog modal-dialog-centered">
                                     <div class="modal-content">
                                         <div class="modal-header">
-                                            <h5 class="modal-title" id="restaurateur-@item.Id-block-modal-title">Block user @await Model.GetEmailByIdAsync(item.Id, nameof(Model.Clients))</h5>
+                                            <h5 class="modal-title" id="restaurateur-@item.Id-block-modal-title">Block user @await Model.GetEmailByIdAsync(item.Id, nameof(Model.Customers))</h5>
                                             <button class="btn-close" data-bs-dismiss="modal" aria-label="close"></button>
                                         </div>
                                         <div class="modal-body">
@@ -447,7 +448,7 @@
                             <div id="" class="modal-dialog modal-dialog-centered">
                                 <div class="modal-content">
                                     <div class="modal-header">
-                                        <h5 class="modal-title" id="rider-@item.Id-delete-modal-title">Delete user @await Model.GetEmailByIdAsync(item.Id, nameof(Model.Clients))</h5>
+                                        <h5 class="modal-title" id="rider-@item.Id-delete-modal-title">Delete user @await Model.GetEmailByIdAsync(item.Id, nameof(Model.Customers))</h5>
                                         <button class="btn-close" data-bs-dismiss="modal" aria-label="close"></button>
                                     </div>
                                     <div class="modal-body">

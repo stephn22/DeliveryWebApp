@@ -10,6 +10,6 @@ namespace DeliveryWebApp.Domain.Entities
     {
         public string Role { get; set; }
         public string Status { get; set; }
-        public virtual Client Client { get; set; }
+        public virtual Customer Customer { get; set; }
     }
 }

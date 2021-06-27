@@ -4,7 +4,7 @@ namespace DeliveryWebApp.Domain.Entities
 {
     public class Rider : BaseEntity
     {
-        public virtual Client Client { get; set; } // a rider is also a client
+        public virtual Customer Customer { get; set; } // a rider is also a customer
         public double DeliveryCredit { get; set; }
         public ICollection<Order> OpenOrders { get; set; }
 
