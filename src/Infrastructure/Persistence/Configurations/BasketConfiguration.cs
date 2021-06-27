@@ -1,14 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using DeliveryWebApp.Application.TodoLists.Queries.GetTodos;
-using DeliveryWebApp.Domain.Entities;
-using DeliveryWebApp.Infrastructure.Identity;
-using DeliveryWebApp.Infrastructure.Persistence.Configurations.Constants;
-using Microsoft.AspNetCore.Components.Web.Virtualization;
-using Microsoft.AspNetCore.Identity;
+﻿using DeliveryWebApp.Domain.Entities;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 

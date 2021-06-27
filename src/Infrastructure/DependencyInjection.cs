@@ -30,7 +30,7 @@ namespace DeliveryWebApp.Infrastructure
 
             services.AddSession(options =>
             {
-                options.IdleTimeout = TimeSpan.FromMinutes(10);
+                options.IdleTimeout = TimeSpan.FromMinutes(15);
             });
 
             services.AddMemoryCache();

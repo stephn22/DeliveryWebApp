@@ -67,8 +67,7 @@ namespace DeliveryWebApp.Infrastructure.Services.Utilities
 
         public static async Task UnblockUser(this UserManager<ApplicationUser> userManager, ApplicationUser user)
         {
-            var now = new DateTimeService().Now;
-            await userManager.SetLockoutEndDateAsync(user, now);
+            await userManager.SetLockoutEndDateAsync(user, null);
         }
     }
 }
