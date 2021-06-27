@@ -59,13 +59,13 @@ namespace DeliveryWebApp.Infrastructure.Services.Utilities
             return lName;
         }
 
-        public static async Task BlockUserById(this UserManager<ApplicationUser> userManager, ApplicationUser user)
+        public static async Task BlockUser(this UserManager<ApplicationUser> userManager, ApplicationUser user)
         {
             var lockoutEndDate = new DateTime(2999, 01, 01);
             await userManager.SetLockoutEndDateAsync(user, lockoutEndDate);
         }
 
-        public static async Task UnblockUserById(this UserManager<ApplicationUser> userManager, ApplicationUser user)
+        public static async Task UnblockUser(this UserManager<ApplicationUser> userManager, ApplicationUser user)
         {
             var now = new DateTimeService().Now;
             await userManager.SetLockoutEndDateAsync(user, now);

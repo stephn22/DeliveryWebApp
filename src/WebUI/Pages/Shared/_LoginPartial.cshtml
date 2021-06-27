@@ -24,13 +24,19 @@
 
                 <ul class="dropdown-menu">
                     <li>
-                        <a class="dropdown-item" asp-area="Identity" asp-page="/Account/Manage/Index">Profile</a>
+                        <a class="dropdown-item" asp-area="Identity" asp-page="/Account/Manage/Index">
+                            <img src="/icons/person.svg" alt="profile" height="16" width="16" />
+                            Profile
+                        </a>
                     </li>
 
                     @if (isRestaurateur)
                     {
                         <li>
-                            <a class="dropdown-item" asp-page="/Restaurateur/RestaurantDashboard">Dashboard</a>
+                            <a class="dropdown-item" asp-page="/Restaurateur/RestaurantDashboard">
+                                <img src="/icons/shop.svg" alt="shop" height="16" width="16" />
+                                Dashboard
+                            </a>
                         </li>
                         @*<li>
                             <a class="dropdown-item">Products</a>
@@ -39,34 +45,58 @@
                     @if (isRider)
                     {
                         <li>
-                            <a class="dropdown-item">Credit</a>
+                            <a class="dropdown-item">
+                                <img src="/icons/piggy-bank.svg" alt="piggy-bank" height="16" width="16" />
+                                Credit
+                            </a>
                         </li>
                         <li>
-                            <a class="dropdown-item">Open Orders</a>
+                            <a class="dropdown-item">
+                                <img src="/icons/inbox.svg" alt="inbox" />
+                                Open Orders
+                            </a>
                         </li>
                         <li>
-                            <a class="dropdown-item">Delivery History</a>
+                            <a class="dropdown-item">
+                                <img src="/icons/clock-history.svg" alt="clock-history" height="16" width="16" />
+                                Delivery History
+                            </a>
                         </li>
                     }
                     @if (isClient)
                     {
                         <li>
-                            <a class="dropdown-item" asp-page="/Customer/Orders">Order History</a>
+                            <a class="dropdown-item" asp-page="/Customer/Orders">
+                                <img src="/icons/clock-history.svg" alt="clock-history" height="16" width="16" />
+                                Order History
+                            </a>
                         </li>
                         <li>
-                            <a class="dropdown-item" asp-area="Identity" asp-page="/Account/Manage/Request">Role request</a>
+                            <a class="dropdown-item" asp-area="Identity" asp-page="/Account/Manage/Request">
+                                <img src="/icons/person-badge.svg" alt="person-badge" height="16" width="16" />
+                                Role request
+                            </a>
                         </li>
                     }
                     @if (isAdmin)
                     {
                         <li>
-                            <a class="dropdown-item" asp-page="/Admin/Requests">User Requests</a>
+                            <a class="dropdown-item" asp-page="/Admin/Requests">
+                                <img src="/icons/person-badge.svg" alt="person-badge" height="16" width="16" />
+                                User Requests
+                            </a>
                         </li>
                         <li>
-                            <a class="dropdown-item" asp-page="/Admin/UserList">User List</a>
+                            <a class="dropdown-item" asp-page="/Admin/UserList">
+                                <img src="/icons/people.svg" alt="people" height="16" width="16" />
+                                User List
+                            </a>
                         </li>
                         <li>
-                            <a class="dropdown-item" asp-page="/Admin/Orders">Orders</a>
+                            <a class="dropdown-item" asp-page="/Admin/Orders">
+                                <img src="/icons/box-seam.svg" alt="box-seam" height="16" width="16" />
+                                Orders
+                            </a>
                         </li>
                     }
                 </ul>
