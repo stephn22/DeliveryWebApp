@@ -11,10 +11,9 @@ namespace DeliveryWebApp.Infrastructure.Security.Policies
     {
         protected override Task HandleRequirementAsync(AuthorizationHandlerContext context, IsEnabled requirement)
         {
-            if ((context.User.HasClaim(ClaimName.Role, RoleName.Restaurateur) ||
+            if (context.User.HasClaim(ClaimName.Role, RoleName.Restaurateur) ||
                 context.User.HasClaim(ClaimName.Role, RoleName.Rider) ||
-                context.User.HasClaim(ClaimName.Role, RoleName.Default)) &&
-                context.User.HasClaim(ClaimName.Enabled, ClaimValue.Enabled))
+                context.User.HasClaim(ClaimName.Role, RoleName.Default))
             {
                 context.Succeed(requirement);
             }

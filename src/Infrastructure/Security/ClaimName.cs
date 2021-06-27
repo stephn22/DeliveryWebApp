@@ -11,6 +11,5 @@ namespace DeliveryWebApp.Infrastructure.Security
         public const string FName = "FName";
         public const string LName = "LName";
         public const string Role = "Role";
-        public const string Enabled = "Enabled";
     }
 }
