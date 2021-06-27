@@ -3,11 +3,14 @@ using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Threading.Tasks;
+using DeliveryWebApp.Application.Customers.Extensions;
+using DeliveryWebApp.Application.Requests.Commands.CreateRequest;
 using DeliveryWebApp.Domain.Constants;
 using DeliveryWebApp.Domain.Entities;
 using DeliveryWebApp.Infrastructure.Identity;
 using DeliveryWebApp.Infrastructure.Persistence;
 using DeliveryWebApp.Infrastructure.Security;
+using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
@@ -24,14 +27,16 @@ namespace DeliveryWebApp.WebUI.Areas.Identity.Pages.Account.Manage
         private readonly UserManager<ApplicationUser> _userManager;
         private readonly ILogger<RequestModel> _logger;
         private readonly ApplicationDbContext _context;
+        private readonly IMediator _mediator;
         private readonly SignInManager<ApplicationUser> _signInManager;
 
         public RequestModel(UserManager<ApplicationUser> userManager, ILogger<RequestModel> logger,
-            ApplicationDbContext context, SignInManager<ApplicationUser> signInManager)
+            ApplicationDbContext context, SignInManager<ApplicationUser> signInManager, IMediator mediator)
         {
             _userManager = userManager;
             _logger = logger;
             _context = context;
+            _mediator = mediator;
             _signInManager = signInManager;
         }
 
@@ -93,28 +98,20 @@ namespace DeliveryWebApp.WebUI.Areas.Identity.Pages.Account.Manage
                 return Page();
             }
 
-            UserRequest = new Request
+            var customer = await _context.Customers.FirstAsync(c => c.ApplicationUserFk == user.Id);
+
+            var requestId = await _mediator.Send(new CreateRequestCommand
             {
-                Customer = await GetCustomerAsync(user),
+                Customer = customer,
                 Role = Input.Role,
                 Status = RequestStatus.Idle
-            };
+            });
 
-            _context.Requests.Add(UserRequest);
-
-            await _context.SaveChangesAsync();
             await _signInManager.RefreshSignInAsync(user);
 
-            _logger.LogInformation("User posted their request successfully.");
+            _logger.LogInformation($"User posted their request successfully with id: {requestId}");
 
             return RedirectToPage();
-        }
-
-        private async Task<Customer> GetCustomerAsync(ApplicationUser user)
-        {
-            return await (from c in _context.Customers
-                where c.ApplicationUserFk == user.Id
-                select c).FirstOrDefaultAsync();
         }
     }
 }

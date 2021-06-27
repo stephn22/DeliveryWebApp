@@ -18,6 +18,7 @@ using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Security.Claims;
 using System.Threading.Tasks;
+using DeliveryWebApp.Application.Requests.Commands.UpdateRequest;
 
 namespace DeliveryWebApp.WebUI.Pages.Admin
 {
@@ -63,9 +64,7 @@ namespace DeliveryWebApp.WebUI.Pages.Admin
             var client = await _context.GetCustomerByRequestIdAsync(id);
 
             // get request instance
-            UserRequest = await (from r in _context.Requests
-                                 where r.Id == id
-                                 select r).FirstOrDefaultAsync();
+            UserRequest = await _context.Requests.FirstAsync(r => r.Id == id);
 
             var appUserFk = client.ApplicationUserFk;
 
@@ -98,9 +97,7 @@ namespace DeliveryWebApp.WebUI.Pages.Admin
 
             var oldClaim = await _userManager.GetClaimByTypeAsync(ApplicationUser, ClaimName.Role);
 
-            UserRequest = await (from r in _context.Requests
-                                 where r.Id == id
-                                 select r).FirstOrDefaultAsync();
+            UserRequest = await _context.Requests.FirstAsync(r => r.Id == id);
 
             IsRider = UserRequest.Role.Equals(RoleName.Rider);
 
@@ -133,10 +130,11 @@ namespace DeliveryWebApp.WebUI.Pages.Admin
                     new Claim(ClaimName.Role, RoleName.Restaurateur));
             }
 
-            UserRequest.Status = RequestStatus.Accepted;
-
-            // TODO MediatR -> update request table
-            _context.Requests.Update(UserRequest);
+            await _mediator.Send(new UpdateRequestCommand
+            {
+                Id = UserRequest.Id,
+                Status = RequestStatus.Accepted
+            });
 
             // TODO push notification to client
 
@@ -145,13 +143,14 @@ namespace DeliveryWebApp.WebUI.Pages.Admin
 
         public async Task<IActionResult> OnPostRejectAsync(int? id)
         {
-            UserRequest.Status = RequestStatus.Rejected;
+            UserRequest = await _context.Requests.FirstAsync(r => r.Id == id);
             Input.DeliveryCredit = 0.00;
 
-            // update request table
-            _context.Requests.Update(UserRequest);
-
-            await _context.SaveChangesAsync();
+            await _mediator.Send(new UpdateRequestCommand
+            {
+                Id = UserRequest.Id,
+                Status = RequestStatus.Rejected
+            });
 
             // TODO push notification to client
             return RedirectToPage("/Admin/Requests");
