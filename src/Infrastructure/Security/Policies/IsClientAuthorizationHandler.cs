@@ -7,9 +7,9 @@ using Microsoft.AspNetCore.Authorization;
 
 namespace DeliveryWebApp.Infrastructure.Security.Policies
 {
-    public class IsEnabledAuthorizationHandler : AuthorizationHandler<IsEnabled>
+    public class IsClientAuthorizationHandler : AuthorizationHandler<IsClient>
     {
-        protected override Task HandleRequirementAsync(AuthorizationHandlerContext context, IsEnabled requirement)
+        protected override Task HandleRequirementAsync(AuthorizationHandlerContext context, IsClient requirement)
         {
             if (context.User.HasClaim(ClaimName.Role, RoleName.Restaurateur) ||
                 context.User.HasClaim(ClaimName.Role, RoleName.Rider) ||

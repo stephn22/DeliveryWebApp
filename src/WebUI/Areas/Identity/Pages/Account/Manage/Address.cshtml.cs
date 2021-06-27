@@ -18,7 +18,7 @@ using Microsoft.Extensions.Logging;
 
 namespace DeliveryWebApp.WebUI.Areas.Identity.Pages.Account.Manage
 {
-    [Authorize(Policy = PolicyName.IsEnabled)]
+    [Authorize(Policy = PolicyName.IsClient)]
     public class AddressModel : PageModel
     {
         private readonly UserManager<ApplicationUser> _userManager;

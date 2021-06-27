@@ -14,7 +14,7 @@ using Microsoft.Extensions.Logging;
 
 namespace DeliveryWebApp.WebUI.Pages.Customer
 {
-    [Authorize(Policy = PolicyName.IsEnabled)]
+    [Authorize(Policy = PolicyName.IsClient)]
     public class OrdersModel : PageModel
     {
         private readonly ApplicationDbContext _context;

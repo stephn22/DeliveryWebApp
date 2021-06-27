@@ -157,8 +157,7 @@ namespace DeliveryWebApp.WebUI.Areas.Identity.Pages.Account
                         {
                             new Claim(ClaimName.FName, Input.FName),
                             new Claim(ClaimName.LName, Input.LName),
-                            new Claim(ClaimName.Role, RoleName.Default),
-                            new Claim(ClaimName.Enabled, ClaimValue.Enabled)
+                            new Claim(ClaimName.Role, RoleName.Default)
                         });
 
                         var userId = await _userManager.GetUserIdAsync(user);

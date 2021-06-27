@@ -110,8 +110,7 @@ namespace DeliveryWebApp.WebUI.Areas.Identity.Pages.Account
                     {
                         new Claim(ClaimName.FName, Input.FName),
                         new Claim(ClaimName.LName, Input.LName),
-                        new Claim(ClaimName.Role, RoleName.Default), // default user after registration
-                        new Claim(ClaimName.Enabled, ClaimValue.Enabled)
+                        new Claim(ClaimName.Role, RoleName.Default) // default user after registration
                     });
 
                     var code = await _userManager.GenerateEmailConfirmationTokenAsync(user);

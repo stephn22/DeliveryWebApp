@@ -4,7 +4,7 @@
 @inject IAuthorizationService AuthorizationService
 @{
     var hasExternalLogins = (await SignInManager.GetExternalAuthenticationSchemesAsync()).Any();
-    var isEnabled = (await AuthorizationService.AuthorizeAsync(User, PolicyName.IsEnabled)).Succeeded;
+    var isClient = (await AuthorizationService.AuthorizeAsync(User, PolicyName.IsClient)).Succeeded;
     var isAdmin = User.IsInRole(RoleName.Admin);
 }
 <ul class="nav nav-pills flex-column">
@@ -23,7 +23,7 @@
     <li class="nav-item">
         <a class="nav-link @ManageNavPages.ChangePasswordNavClass(ViewContext)" id="change-password" asp-page="./ChangePassword">Password</a>
     </li>
-    @if (hasExternalLogins && !isEnabled)
+    @if (hasExternalLogins && isClient)
     {
         <li id="external-logins" class="nav-item">
             <a id="external-login" class="nav-link @ManageNavPages.ExternalLoginsNavClass(ViewContext)" asp-page="./ExternalLogins">External logins</a>
@@ -32,7 +32,7 @@
     <li class="nav-item">
         <a class="nav-link @ManageNavPages.TwoFactorAuthenticationNavClass(ViewContext)" id="two-factor" asp-page="./TwoFactorAuthentication">Two-factor authentication</a>
     </li>
-    @if (isEnabled)
+    @if (isClient)
     {
         <li class="nav-item">
             <a class="nav-link @ManageNavPages.PersonalDataNavClass(ViewContext)" id="personal-data" asp-page="./PersonalData">Personal data</a>
