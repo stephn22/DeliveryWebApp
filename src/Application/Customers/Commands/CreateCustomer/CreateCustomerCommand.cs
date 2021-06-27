@@ -10,11 +10,11 @@ using MediatR;
 
 namespace DeliveryWebApp.Application.Customers.Commands.CreateCustomer
 {
-    public class CreateRestaurateurCommand : IRequest<int>
+    public class CreateCustomerCommand : IRequest<int>
     {
         public string ApplicationUserFk { get; set; }
 
-        public class CreateCustomerCommandHandler : IRequestHandler<CreateRestaurateurCommand, int>
+        public class CreateCustomerCommandHandler : IRequestHandler<CreateCustomerCommand, int>
         {
             private readonly IApplicationDbContext _context;
 
@@ -23,7 +23,7 @@ namespace DeliveryWebApp.Application.Customers.Commands.CreateCustomer
                 _context = context;
             }
 
-            public async Task<int> Handle(CreateRestaurateurCommand request, CancellationToken cancellationToken)
+            public async Task<int> Handle(CreateCustomerCommand request, CancellationToken cancellationToken)
             {
                 var entity = new Customer
                 {

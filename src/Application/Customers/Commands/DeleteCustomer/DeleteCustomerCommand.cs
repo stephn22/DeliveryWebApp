@@ -11,12 +11,12 @@ using MediatR;
 
 namespace DeliveryWebApp.Application.Customers.Commands.DeleteCustomer
 {
-    public class DeleteRestaurateurCommand : IRequest
+    public class DeleteCustomerCommand : IRequest
     {
         public int Id { get; set; }
     }
 
-    public class DeleteCustomerCommandHandler : IRequestHandler<DeleteRestaurateurCommand>
+    public class DeleteCustomerCommandHandler : IRequestHandler<DeleteCustomerCommand>
     {
         private readonly IApplicationDbContext _context;
 
@@ -25,7 +25,7 @@ namespace DeliveryWebApp.Application.Customers.Commands.DeleteCustomer
             _context = context;
         }
 
-        public async Task<Unit> Handle(DeleteRestaurateurCommand request, CancellationToken cancellationToken)
+        public async Task<Unit> Handle(DeleteCustomerCommand request, CancellationToken cancellationToken)
         {
             var entity = await _context.Customers.FindAsync(request.Id);
 
