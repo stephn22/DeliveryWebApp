@@ -1,6 +1,7 @@
 ﻿using DeliveryWebApp.Infrastructure.Identity;
 using DeliveryWebApp.Infrastructure.Security;
 using Microsoft.AspNetCore.Identity;
+using System;
 using System.Linq;
 using System.Security.Claims;
 using System.Threading.Tasks;
@@ -22,8 +23,8 @@ namespace DeliveryWebApp.Infrastructure.Services.Utilities
             ApplicationUser user, string claimType)
         {
             var c = (from claim in await userManager.GetClaimsAsync(user)
-                where claim.Type == claimType
-                select claim).First();
+                     where claim.Type == claimType
+                     select claim).First();
 
             return c;
         }
@@ -37,8 +38,8 @@ namespace DeliveryWebApp.Infrastructure.Services.Utilities
             }
 
             var fName = (from claim in await userManager.GetClaimsAsync(user)
-                where claim.Type == ClaimName.FName
-                select claim.Value).First();
+                         where claim.Type == ClaimName.FName
+                         select claim.Value).First();
 
             return fName;
         }
@@ -52,10 +53,22 @@ namespace DeliveryWebApp.Infrastructure.Services.Utilities
             }
 
             var lName = (from claim in await userManager.GetClaimsAsync(user)
-                where claim.Type == ClaimName.LName
-                select claim.Value).First();
+                         where claim.Type == ClaimName.LName
+                         select claim.Value).First();
 
             return lName;
+        }
+
+        public static async Task BlockUserById(this UserManager<ApplicationUser> userManager, ApplicationUser user)
+        {
+            var lockoutEndDate = new DateTime(2999, 01, 01);
+            await userManager.SetLockoutEndDateAsync(user, lockoutEndDate);
+        }
+
+        public static async Task UnblockUserById(this UserManager<ApplicationUser> userManager, ApplicationUser user)
+        {
+            var now = new DateTimeService().Now;
+            await userManager.SetLockoutEndDateAsync(user, now);
         }
     }
 }
