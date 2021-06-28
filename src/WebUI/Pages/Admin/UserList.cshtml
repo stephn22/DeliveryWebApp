@@ -68,6 +68,9 @@
                     @Html.DisplayNameFor(model => model.Customers[0].Id)
                 </th>
                 <th>
+                    Username
+                </th>
+                <th>
                     First Name
                 </th>
                 <th>
@@ -93,6 +96,9 @@
                 <tr>
                     <td>
                         @Html.DisplayFor(modelItem => item.Id)
+                    </td>
+                    <td>
+                        @await UserManager.GetUserNameAsync(await Model.GetUserAsync(item.Id, nameof(Model.Customers)))
                     </td>
                     <td>
                         @await Model.GetFNameAsync(item.Id, nameof(Model.Customers))
@@ -129,7 +135,7 @@
                                 <div class="modal-dialog modal-dialog-centered">
                                     <div class="modal-content">
                                         <div class="modal-header">
-                                            <h5 class="modal-title" id="customer-@item.Id-block-modal-title">Block user @await Model.GetEmailByIdAsync(item.Id, nameof(Model.Customers))</h5>
+                                            <h5 class="modal-title" id="customer-@item.Id-block-modal-title">Block user @await UserManager.GetUserNameAsync(await Model.GetUserAsync(item.Id, nameof(Model.Customers)))</h5>
                                             <button class="btn-close" data-bs-dismiss="modal" aria-label="close"></button>
                                         </div>
                                         <div class="modal-body">
@@ -199,32 +205,35 @@
     {
         <table class="table">
             <thead>
-            <tr class="table-primary">
-                <th>
-                    @Html.DisplayNameFor(model => model.Riders[0].Id)
-                </th>
-                <th>
-                    First Name
-                </th>
-                <th>
-                    Last Name
-                </th>
-                <th>
-                    Email
-                </th>
-                <th>
-                    Delivery Credit
-                </th>
-                <th>
-                    Details
-                </th>
-                <th>
-                    Block
-                </th>
-                <th>
-                    Delete
-                </th>
-            </tr>
+                <tr class="table-primary">
+                    <th>
+                        @Html.DisplayNameFor(model => model.Riders[0].Id)
+                    </th>
+                    <th>
+                        Username
+                    </th>
+                    <th>
+                        First Name
+                    </th>
+                    <th>
+                        Last Name
+                    </th>
+                    <th>
+                        Email
+                    </th>
+                    <th>
+                        Delivery Credit
+                    </th>
+                    <th>
+                        Details
+                    </th>
+                    <th>
+                        Block
+                    </th>
+                    <th>
+                        Delete
+                    </th>
+                </tr>
             </thead>
             <tbody>
             @foreach (var item in Model.Riders)
@@ -232,6 +241,9 @@
                 <tr>
                     <td>
                         @Html.DisplayFor(modelItem => item.Id)
+                    </td>
+                    <td>
+                        @await UserManager.GetUserNameAsync(await Model.GetUserAsync(item.Id, nameof(Model.Riders)))
                     </td>
                     <td>
                         @await Model.GetFNameAsync(item.Id, nameof(Model.Riders))
@@ -273,7 +285,7 @@
                                 <div class="modal-dialog modal-dialog-centered">
                                     <div class="modal-content">
                                         <div class="modal-header">
-                                            <h5 class="modal-title" id="rider-@item.Id-block-modal-title">Block user @await Model.GetEmailByIdAsync(item.Id, nameof(Model.Customers))</h5>
+                                            <h5 class="modal-title" id="rider-@item.Id-block-modal-title">Block user @await UserManager.GetUserNameAsync(await Model.GetUserAsync(item.Id, nameof(Model.Riders)))</h5>
                                             <button class="btn-close" data-bs-dismiss="modal" aria-label="close"></button>
                                         </div>
                                         <div class="modal-body">
@@ -304,7 +316,7 @@
                             <div id="" class="modal-dialog modal-dialog-centered">
                                 <div class="modal-content">
                                     <div class="modal-header">
-                                        <h5 class="modal-title" id="rider-@item.Id-delete-modal-title">Delete user @await Model.GetEmailByIdAsync(item.Id, nameof(Model.Customers))</h5>
+                                        <h5 class="modal-title" id="rider-@item.Id-delete-modal-title">Delete user @await UserManager.GetUserNameAsync(await Model.GetUserAsync(item.Id, nameof(Model.Riders)))</h5>
                                         <button class="btn-close" data-bs-dismiss="modal" aria-label="close"></button>
                                     </div>
                                     <div class="modal-body">
@@ -344,32 +356,35 @@
     {
         <table class="table">
             <thead>
-            <tr class="table-primary">
-                <th>
-                    @Html.DisplayNameFor(model => model.Restaurateurs[0].Id)
-                </th>
-                <th>
-                    First Name
-                </th>
-                <th>
-                    Last Name
-                </th>
-                <th>
-                    Email
-                </th>
-                <th>
-                    @Html.DisplayNameFor(model => model.Restaurateurs[0].Restaurant)
-                </th>
-                <th>
-                    Details
-                </th>
-                <th>
-                    Block
-                </th>
-                <th>
-                    Delete
-                </th>
-            </tr>
+                <tr class="table-primary">
+                    <th>
+                        @Html.DisplayNameFor(model => model.Restaurateurs[0].Id)
+                    </th>
+                    <th>
+                        Username
+                    </th>
+                    <th>
+                        First Name
+                    </th>
+                    <th>
+                        Last Name
+                    </th>
+                    <th>
+                        Email
+                    </th>
+                    <th>
+                        @Html.DisplayNameFor(model => model.Restaurateurs[0].Restaurant)
+                    </th>
+                    <th>
+                        Details
+                    </th>
+                    <th>
+                        Block
+                    </th>
+                    <th>
+                        Delete
+                    </th>
+                </tr>
             </thead>
             <tbody>
             @foreach (var item in Model.Restaurateurs)
@@ -377,6 +392,9 @@
                 <tr>
                     <td>
                         @Html.DisplayFor(modelItem => item.Id)
+                    </td>
+                    <td>
+                        @await UserManager.GetUserNameAsync(await Model.GetUserAsync(item.Id, nameof(Model.Restaurateurs)))
                     </td>
                     <td>
                         @await Model.GetFNameAsync(item.Id, nameof(Model.Restaurateurs))
@@ -417,7 +435,7 @@
                                 <div class="modal-dialog modal-dialog-centered">
                                     <div class="modal-content">
                                         <div class="modal-header">
-                                            <h5 class="modal-title" id="restaurateur-@item.Id-block-modal-title">Block user @await Model.GetEmailByIdAsync(item.Id, nameof(Model.Customers))</h5>
+                                            <h5 class="modal-title" id="restaurateur-@item.Id-block-modal-title">Block user @await UserManager.GetUserNameAsync(await Model.GetUserAsync(item.Id, nameof(Model.Restaurateurs)))</h5>
                                             <button class="btn-close" data-bs-dismiss="modal" aria-label="close"></button>
                                         </div>
                                         <div class="modal-body">
@@ -448,7 +466,7 @@
                             <div id="" class="modal-dialog modal-dialog-centered">
                                 <div class="modal-content">
                                     <div class="modal-header">
-                                        <h5 class="modal-title" id="rider-@item.Id-delete-modal-title">Delete user @await Model.GetEmailByIdAsync(item.Id, nameof(Model.Customers))</h5>
+                                        <h5 class="modal-title" id="rider-@item.Id-delete-modal-title">Delete user @await UserManager.GetUserNameAsync(await Model.GetUserAsync(item.Id, nameof(Model.Restaurateurs)))</h5>
                                         <button class="btn-close" data-bs-dismiss="modal" aria-label="close"></button>
                                     </div>
                                     <div class="modal-body">

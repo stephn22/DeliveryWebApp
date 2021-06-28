@@ -93,8 +93,6 @@ namespace DeliveryWebApp.WebUI.Pages.Admin
 
             ApplicationUser = await _userManager.FindByIdAsync(appUserFk);
 
-            // TODO MediatR
-
             var oldClaim = await _userManager.GetClaimByTypeAsync(ApplicationUser, ClaimName.Role);
 
             UserRequest = await _context.Requests.FirstAsync(r => r.Id == id);
