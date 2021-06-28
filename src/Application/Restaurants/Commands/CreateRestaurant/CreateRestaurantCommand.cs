@@ -16,7 +16,6 @@ namespace DeliveryWebApp.Application.Restaurants.Commands.CreateRestaurant
         public string Name { get; set; }
         public string Category { get; set; }
         public Address Address { get; set; }
-        public int RestaurateurId { get; set; }
         public Restaurateur Restaurateur { get; set; }
     }
 
@@ -37,8 +36,6 @@ namespace DeliveryWebApp.Application.Restaurants.Commands.CreateRestaurant
                 Category = request.Category,
                 LogoUrl = request.LogoUrl,
                 Name = request.Name,
-                Restaurateur = request.Restaurateur,
-                RestaurateurId = request.RestaurateurId
             };
 
             _context.Restaurants.Add(entity);
