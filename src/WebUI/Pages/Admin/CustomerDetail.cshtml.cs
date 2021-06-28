@@ -2,7 +2,7 @@ using DeliveryWebApp.Application.Common.Security;
 using DeliveryWebApp.Application.Customers.Extensions;
 using DeliveryWebApp.Application.Restaurateurs.Extensions;
 using DeliveryWebApp.Application.Riders.Extensions;
-using DeliveryWebApp.Domain.Entities;
+
 using DeliveryWebApp.Infrastructure.Identity;
 using DeliveryWebApp.Infrastructure.Persistence;
 using DeliveryWebApp.Infrastructure.Security;
@@ -15,6 +15,7 @@ using Microsoft.Extensions.Logging;
 using System.ComponentModel.DataAnnotations;
 using System.Security.Claims;
 using System.Threading.Tasks;
+using DeliveryWebApp.Application.Customers.Commands.DeleteCustomer;
 using DeliveryWebApp.Application.Restaurateurs.Commands.CreateRestaurateur;
 using DeliveryWebApp.Application.Restaurateurs.Commands.DeleteRestaurateur;
 using DeliveryWebApp.Application.Riders.Commands.CreateRider;
@@ -23,7 +24,6 @@ using DeliveryWebApp.Application.Riders.Commands.UpdateRider;
 
 namespace DeliveryWebApp.WebUI.Pages.Admin
 {
-    // TODO: Add delete and block button
     [Authorize(Roles = RoleName.Admin)]
     public class CustomerDetailModel : PageModel
     {
@@ -76,6 +76,59 @@ namespace DeliveryWebApp.WebUI.Pages.Admin
             CurrentRole = await _userManager.GetRoleAsync(user);
 
             return Page();
+        }
+
+        public async Task<IActionResult> OnPostBlockCustomerAsync(int? id)
+        {
+            if (!ModelState.IsValid)
+            {
+                return Page();
+            }
+
+            Customer = await _context.Customers.FindAsync(id);
+
+            var user = await _userManager.FindByIdAsync(Customer.ApplicationUserFk);
+
+            await _userManager.BlockUser(user);
+
+            return RedirectToPage("/Admin/UserList");
+        }
+
+        public async Task<IActionResult> OnPostUnblockCustomerAsync(int? id)
+        {
+            if (!ModelState.IsValid)
+            {
+                return Page();
+            }
+
+            Customer = await _context.Customers.FindAsync(id);
+
+            var user = await _userManager.FindByIdAsync(Customer.ApplicationUserFk);
+
+            await _userManager.UnblockUser(user);
+
+            return RedirectToPage("/Admin/UserList");
+        }
+
+        public async Task<IActionResult> OnPostDeleteUserAsync(int? id)
+        {
+            if (!ModelState.IsValid)
+            {
+                return Page();
+            }
+
+            Customer = await _context.Customers.FindAsync(id);
+
+            var user = await _userManager.FindByIdAsync(Customer.ApplicationUserFk);
+
+            await _userManager.DeleteAsync(user);
+
+            await _mediator.Send(new DeleteCustomerCommand
+            {
+                Id = Customer.Id
+            });
+
+            return RedirectToPage("/Admin/UserList");
         }
 
         public async Task<IActionResult> OnPostToCustomerAsync(int? id)
