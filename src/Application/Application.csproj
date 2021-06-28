@@ -19,13 +19,10 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="Addresses\Commands\" />
     <Folder Include="Addresses\Queries\" />
     <Folder Include="Customers\Commands\UpdateCustomer\" />
     <Folder Include="Restaurants\Commands\UpdateRestaurant\" />
-    <Folder Include="Restaurants\Extensions\" />
     <Folder Include="Restaurants\Queries\" />
-    <Folder Include="Restaurateurs\Commands\UpdateRestaurateur\" />
   </ItemGroup>
 
 </Project>
