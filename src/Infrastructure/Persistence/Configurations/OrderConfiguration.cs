@@ -8,15 +8,10 @@ namespace DeliveryWebApp.Infrastructure.Persistence.Configurations
     {
         public void Configure(EntityTypeBuilder<Order> builder)
         {
-            builder.HasMany(u => u.Products)
-                .WithOne()
-                .HasForeignKey(u => u.Id)
-                .OnDelete(DeleteBehavior.NoAction);
-
-            builder.HasOne(u => u.Restaurant)
-                .WithOne()
-                .HasForeignKey<Restaurant>(u => u.Id)
-                .OnDelete(DeleteBehavior.Cascade);
+            //builder.HasMany(u => u.Products)
+            //    .WithOne()
+            //    .HasForeignKey(u => u.Id)
+            //    .OnDelete(DeleteBehavior.NoAction);
 
             builder.Property(u => u.TotalPrice)
                 .IsRequired();

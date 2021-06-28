@@ -13,15 +13,20 @@ namespace DeliveryWebApp.Infrastructure.Persistence.Configurations
     {
         public void Configure(EntityTypeBuilder<Restaurant> builder)
         {
-            builder.HasMany(u => u.Products)
-                .WithOne()
-                .HasForeignKey(u => u.Id);
+            //builder.HasMany(u => u.Products)
+            //    .WithOne()
+            //    .HasForeignKey(u => u.Id);
 
             builder.Property(r => r.Name)
                 .IsRequired();
 
             builder.Property(r => r.LogoUrl)
                 .IsRequired();
+
+            //builder.HasOne(r => r.Restaurateur)
+            //    .WithOne()
+            //    .HasForeignKey<Restaurateur>(r => r.Id)
+            //    .OnDelete(DeleteBehavior.Cascade);
         }
     }
 }

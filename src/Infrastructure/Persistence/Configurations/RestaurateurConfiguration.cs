@@ -18,14 +18,6 @@ namespace DeliveryWebApp.Infrastructure.Persistence.Configurations
             //builder.HasOne(u => u.Customer)
             //    .WithOne()
             //    .HasForeignKey<Customer>(u => u.Id);
-
-            builder.HasMany(r => r.Reviews)
-                .WithOne(r => r.Restaurateur)
-                .HasForeignKey(r => r.RestaurateurId);
-
-            builder.HasOne(u => u.Restaurant)
-                .WithOne(c => c.Restaurateur)
-                .HasForeignKey<Restaurant>(u => u.RestaurateurId);
         }
     }
 }

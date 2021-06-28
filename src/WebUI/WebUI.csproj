@@ -50,8 +50,6 @@
 
   <ItemGroup>
     <Folder Include="Log\" />
-    <Folder Include="Resources\Logos\" />
-    <Folder Include="Resources\Products\" />
   </ItemGroup>
 
   <ItemGroup>
