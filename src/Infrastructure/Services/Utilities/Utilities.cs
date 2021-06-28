@@ -2,6 +2,8 @@
 using DeliveryWebApp.Infrastructure.Security;
 using Microsoft.AspNetCore.Identity;
 using System;
+using System.Collections.Generic;
+using System.Globalization;
 using System.Linq;
 using System.Security.Claims;
 using System.Threading.Tasks;
@@ -68,6 +70,35 @@ namespace DeliveryWebApp.Infrastructure.Services.Utilities
         public static async Task UnblockUser(this UserManager<ApplicationUser> userManager, ApplicationUser user)
         {
             await userManager.SetLockoutEndDateAsync(user, null);
+        }
+
+        public static IEnumerable<KeyValuePair<string, string>> CountryList()
+        {
+            var cultureList = new Dictionary<string, string>();
+
+            var cultureInfo = CultureInfo.GetCultures(CultureTypes.SpecificCultures);
+
+            foreach (var c in cultureInfo)
+            {
+                var regionInfo = new RegionInfo(0x0409);
+                try
+                {
+                    regionInfo = new RegionInfo(c.LCID);
+                }
+                catch (CultureNotFoundException e)
+                {
+                    regionInfo = new RegionInfo(0x0409); // English europe
+                }
+                finally
+                {
+                    if (!cultureList.ContainsKey(regionInfo.Name))
+                    {
+                        cultureList.Add(regionInfo.Name, regionInfo.EnglishName);
+                    }
+                }
+            }
+
+            return cultureList.OrderBy(p => p.Value);
         }
     }
 }

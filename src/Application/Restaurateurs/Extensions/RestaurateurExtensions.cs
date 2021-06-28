@@ -48,5 +48,15 @@ namespace DeliveryWebApp.Application.Restaurateurs.Extensions
                 throw;
             }
         }
+
+        public static async Task<Restaurateur> GetRestaurateurByApplicationUserFkAsync(
+            this IApplicationDbContext context, string applicationUserFk)
+        {
+            var restaurateur = await (from r in context.Restaurateurs
+                where r.Customer.ApplicationUserFk == applicationUserFk
+                select r).FirstAsync();
+
+            return restaurateur;
+        }
     }
 }
