@@ -1,13 +1,8 @@
-using System;
-using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations;
-using System.Globalization;
-using System.Linq;
-using System.Threading.Tasks;
 using DeliveryWebApp.Domain.Entities;
 using DeliveryWebApp.Infrastructure.Identity;
 using DeliveryWebApp.Infrastructure.Persistence;
 using DeliveryWebApp.Infrastructure.Security;
+using DeliveryWebApp.Infrastructure.Services.Utilities;
 using IdentityServer4.Extensions;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
@@ -15,6 +10,11 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.Extensions.Logging;
+using System;
+using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
+using System.Linq;
+using System.Threading.Tasks;
 
 namespace DeliveryWebApp.WebUI.Areas.Identity.Pages.Account.Manage
 {
@@ -39,7 +39,7 @@ namespace DeliveryWebApp.WebUI.Areas.Identity.Pages.Account.Manage
 
         public IQueryable<ICollection<Address>> Addresses { get; set; }
 
-        public SelectList Countries => new(CountryList(), "Key", "Value");
+        public SelectList Countries => new(Utilities.CountryList(), "Key", "Value");
         public bool HasAtLeastOneAddress { get; set; }
         public bool Edit { get; set; }
         public bool AddNew { get; set; }
@@ -79,7 +79,10 @@ namespace DeliveryWebApp.WebUI.Areas.Identity.Pages.Account.Manage
         public async Task<IActionResult> OnGetAsync()
         {
             var user = await _userManager.GetUserAsync(User);
-            if (user == null) return NotFound($"Unable to load user with ID '{_userManager.GetUserId(User)}'.");
+            if (user == null)
+            {
+                return NotFound($"Unable to load user with ID '{_userManager.GetUserId(User)}'.");
+            }
 
             LoadAddresses(user);
             return Page();
@@ -88,7 +91,10 @@ namespace DeliveryWebApp.WebUI.Areas.Identity.Pages.Account.Manage
         public async Task<IActionResult> OnPostAsync()
         {
             var user = await _userManager.GetUserAsync(User);
-            if (user == null) return NotFound($"Unable to load user with ID '{_userManager.GetUserId(User)}'.");
+            if (user == null)
+            {
+                return NotFound($"Unable to load user with ID '{_userManager.GetUserId(User)}'.");
+            }
 
             if (!ModelState.IsValid)
             {
@@ -100,43 +106,13 @@ namespace DeliveryWebApp.WebUI.Areas.Identity.Pages.Account.Manage
             return RedirectToPage();
         }
 
-        private IEnumerable<KeyValuePair<string, string>> CountryList()
-        {
-            var cultureList = new Dictionary<string, string>();
-
-            var cultureInfo = CultureInfo.GetCultures(CultureTypes.SpecificCultures);
-
-            foreach (var c in cultureInfo)
-            {
-                var regionInfo = new RegionInfo(0x0409);
-                try
-                {
-                    regionInfo = new RegionInfo(c.LCID);
-                }
-                catch (CultureNotFoundException e)
-                {
-                    regionInfo = new RegionInfo(0x0409); // English europe
-                    _logger.LogWarning($"{e.Message}: culture not found, using English(0x0409) by default");
-                }
-                finally
-                {
-                    if (!cultureList.ContainsKey(regionInfo.Name))
-                    {
-                        cultureList.Add(regionInfo.Name, regionInfo.EnglishName);
-                    }
-                }
-            }
-
-            return cultureList.OrderBy(p => p.Value);
-        }
-
         private void LoadAddresses(ApplicationUser user)
         {
             try
             {
                 Addresses = from c in _context.Customers
-                    where user.Id == c.ApplicationUserFk
-                    select c.Addresses;
+                            where user.Id == c.ApplicationUserFk
+                            select c.Addresses;
             }
             catch (InvalidOperationException e)
             {

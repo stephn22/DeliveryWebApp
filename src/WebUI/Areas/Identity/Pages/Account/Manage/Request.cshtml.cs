@@ -1,9 +1,3 @@
-using System;
-using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations;
-using System.Linq;
-using System.Threading.Tasks;
-using DeliveryWebApp.Application.Customers.Extensions;
 using DeliveryWebApp.Application.Requests.Commands.CreateRequest;
 using DeliveryWebApp.Domain.Constants;
 using DeliveryWebApp.Domain.Entities;
@@ -18,6 +12,11 @@ using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
+using System;
+using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
+using System.Linq;
+using System.Threading.Tasks;
 
 namespace DeliveryWebApp.WebUI.Areas.Identity.Pages.Account.Manage
 {
@@ -62,7 +61,10 @@ namespace DeliveryWebApp.WebUI.Areas.Identity.Pages.Account.Manage
         public async Task<IActionResult> OnGetAsync()
         {
             var user = await _userManager.GetUserAsync(User);
-            if (user == null) return NotFound($"Unable to load user with ID '{_userManager.GetUserId(User)}'.");
+            if (user == null)
+            {
+                return NotFound($"Unable to load user with ID '{_userManager.GetUserId(User)}'.");
+            }
 
             await LoadRequestAsync(user);
             return Page();
@@ -73,8 +75,8 @@ namespace DeliveryWebApp.WebUI.Areas.Identity.Pages.Account.Manage
             try
             {
                 UserRequest = await (from r in _context.Requests
-                    where r.Customer.ApplicationUserFk == user.Id
-                    select r).FirstOrDefaultAsync();
+                                     where r.Customer.ApplicationUserFk == user.Id
+                                     select r).FirstOrDefaultAsync();
             }
             catch (InvalidOperationException e)
             {
@@ -90,7 +92,10 @@ namespace DeliveryWebApp.WebUI.Areas.Identity.Pages.Account.Manage
         public async Task<IActionResult> OnPostAsync()
         {
             var user = await _userManager.GetUserAsync(User);
-            if (user == null) return NotFound($"Unable to load user with ID '{_userManager.GetUserId(User)}'.");
+            if (user == null)
+            {
+                return NotFound($"Unable to load user with ID '{_userManager.GetUserId(User)}'.");
+            }
 
             if (!ModelState.IsValid)
             {
