@@ -128,67 +128,75 @@ namespace DeliveryWebApp.WebUI.Pages.Restaurateur
             var user = await _userManager.GetUserAsync(User);
 
             Restaurateur = await _context.GetRestaurateurByApplicationUserFkAsync(user.Id);
+            Restaurant = Restaurateur.Restaurant;
 
             if (!ModelState.IsValid)
             {
                 // TODO load
                 return Page();
             }
-            // FIXME: Directory not created
-            var directory = Path.Combine($"/Resources/Uploads/Logos/{user.Id}/");
-            Directory.CreateDirectory(directory);
 
-            var file = Path.Combine(_environment.ContentRootPath, directory + Input.Logo.FileName);
-
-            using (var fileStream = new FileStream(file, FileMode.Create)) // FIXME: DirectoryNotFoundException
+            if (Restaurant == null) // first time for restaurateur
             {
-                await Input.Logo.CopyToAsync(fileStream);
+                var directory = Path.Combine($"Resources/Uploads/Logos/{user.Id}/");
+                Directory.CreateDirectory(directory);
+
+                var file = Path.Combine(_environment.ContentRootPath, directory + Input.Logo.FileName);
+
+                await using (var fileStream = new FileStream(file, FileMode.Create))
+                {
+                    await Input.Logo.CopyToAsync(fileStream);
+                }
+
+                var restaurantAddress = new Address
+                {
+                    AddressLine1 = Input.AddressLine1,
+                    AddressLine2 = Input.AddressLine2,
+                    City = Input.City,
+                    Country = Input.Country,
+                    Number = Input.Number,
+                    PostalCode = Input.PostalCode
+                };
+
+                // insert new address in context
+                var addressId = await _mediator.Send(new CreateAddressCommand
+                {
+                    AddressLine1 = restaurantAddress.AddressLine1,
+                    AddressLine2 = restaurantAddress.AddressLine2,
+                    City = restaurantAddress.City,
+                    Country = restaurantAddress.Country,
+                    Number = restaurantAddress.Number,
+                    PostalCode = restaurantAddress.PostalCode
+                });
+
+                _logger.LogInformation($"Created new address with id: {addressId}");
+
+                // insert new restaurant in context
+                var restaurantId = await _mediator.Send(new CreateRestaurantCommand
+                {
+                    Address = restaurantAddress,
+                    Category = Input.Category,
+                    LogoUrl = file,
+                    Name = Input.Name,
+                    Restaurateur = Restaurateur
+                });
+
+                var restaurant = await _context.Restaurants.FindAsync(restaurantId);
+
+                // update restaurateur with his new restaurant
+
+                await _mediator.Send(new UpdateRestaurateurCommand
+                {
+                    Id = Restaurateur.Id,
+                    Restaurant = restaurant
+                });
+
+                _logger.LogInformation($"Created new restaurant with id: {restaurantId}");
             }
-
-            var restaurantAddress = new Address
+            else
             {
-                AddressLine1 = Input.AddressLine1,
-                AddressLine2 = Input.AddressLine2,
-                City = Input.City,
-                Country = Input.Country,
-                Number = Input.Number,
-                PostalCode = Input.PostalCode
-            };
-
-            // insert new address in context
-            var addressId = await _mediator.Send(new CreateAddressCommand
-            {
-                AddressLine1 = restaurantAddress.AddressLine1,
-                AddressLine2 = restaurantAddress.AddressLine2,
-                City = restaurantAddress.City,
-                Country = restaurantAddress.Country,
-                Number = restaurantAddress.Number,
-                PostalCode = restaurantAddress.PostalCode
-            });
-
-            _logger.LogInformation($"Created new address with id: {addressId}");
-
-            // insert new restaurant in context
-            var restaurantId = await _mediator.Send(new CreateRestaurantCommand
-            {
-                Address = restaurantAddress,
-                Category = Input.Category,
-                LogoUrl = file,
-                Name = Input.Name,
-                Restaurateur = Restaurateur
-            });
-
-            var restaurant = await _context.Restaurants.FindAsync(restaurantId);
-
-            // update restaurateur with his new restaurant
-
-            await _mediator.Send(new UpdateRestaurateurCommand
-            {
-                Id = Restaurateur.Id,
-                Restaurant = restaurant
-            });
-
-            _logger.LogInformation($"Created new restaurant with id: {restaurantId}");
+                
+            }
 
             return RedirectToPage();
         }
