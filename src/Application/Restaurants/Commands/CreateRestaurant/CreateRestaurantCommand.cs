@@ -5,6 +5,7 @@ using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using DeliveryWebApp.Application.Common.Interfaces;
+using DeliveryWebApp.Application.Restaurateurs.Commands.UpdateRestaurateur;
 using DeliveryWebApp.Domain.Entities;
 using MediatR;
 
@@ -16,6 +17,7 @@ namespace DeliveryWebApp.Application.Restaurants.Commands.CreateRestaurant
         public string Name { get; set; }
         public string Category { get; set; }
         public Address Address { get; set; }
+        public Restaurateur Restaurateur { get; set; }
     }
 
     public class CreateRestaurantCommandHandler : IRequestHandler<CreateRestaurantCommand, int>
@@ -35,6 +37,7 @@ namespace DeliveryWebApp.Application.Restaurants.Commands.CreateRestaurant
                 Category = request.Category,
                 LogoUrl = request.LogoUrl,
                 Name = request.Name,
+                Restaurateur = request.Restaurateur,
             };
 
             _context.Restaurants.Add(entity);

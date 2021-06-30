@@ -11,7 +11,7 @@ namespace DeliveryWebApp.Application.Restaurateurs.Extensions
 {
     public static class RestaurateurExtensions
     {
-        public static async Task<Restaurateur> GetRestaurateurByIdAsync(this IApplicationDbContext context,
+        public static async Task<Restaurateur> GetRestaurateurAsync(this IApplicationDbContext context,
             int? restaurateurId)
         {
             try
@@ -23,10 +23,9 @@ namespace DeliveryWebApp.Application.Restaurateurs.Extensions
 
                 return await context.Restaurateurs.Where(r => r.Id == restaurateurId).FirstAsync();
             }
-            catch (NullReferenceException e)
+            catch (NullReferenceException)
             {
-                Console.WriteLine(e);
-                throw;
+                return null;
             }
         }
 
@@ -42,21 +41,31 @@ namespace DeliveryWebApp.Application.Restaurateurs.Extensions
 
                 return await context.Restaurateurs.Where(r => r.Customer.Id == customerId).FirstAsync();
             }
-            catch (NullReferenceException e)
+            catch (NullReferenceException)
             {
-                Console.WriteLine(e);
-                throw;
+                return null;
             }
         }
 
         public static async Task<Restaurateur> GetRestaurateurByApplicationUserFkAsync(
             this IApplicationDbContext context, string applicationUserFk)
         {
-            var restaurateur = await (from r in context.Restaurateurs
-                where r.Customer.ApplicationUserFk == applicationUserFk
-                select r).FirstAsync();
+            try
+            {
+                var customer = await (from c in context.Customers
+                    where c.ApplicationUserFk == applicationUserFk
+                    select c).FirstAsync();
 
-            return restaurateur;
+                var restaurateur = await (from r in context.Restaurateurs
+                    where r.Customer.Id == customer.Id
+                    select r).FirstAsync();
+
+                return restaurateur;
+            }
+            catch (InvalidOperationException)
+            {
+                return null;
+            }
         }
     }
 }

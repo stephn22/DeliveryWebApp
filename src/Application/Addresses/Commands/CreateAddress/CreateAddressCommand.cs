@@ -34,7 +34,7 @@ namespace DeliveryWebApp.Application.Addresses.Commands.CreateAddress
             var entity = new Address
             {
                 AddressLine1 = request.AddressLine1,
-                AddressLine2 = request.AddressLine1,
+                AddressLine2 = request.AddressLine2,
                 City = request.City,
                 Country = request.Country,
                 Number = request.Number,
