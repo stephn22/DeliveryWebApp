@@ -21,6 +21,8 @@ namespace DeliveryWebApp.Domain.Entities
         /// </summary>
         public string Status { get; set; }
 
+        public int CustomerId { get; set; }
+
         /// <summary>
         /// Customer instance
         /// </summary>
