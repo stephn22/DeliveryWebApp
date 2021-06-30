@@ -15,9 +15,9 @@ namespace DeliveryWebApp.Infrastructure.Persistence.Configurations
     {
         public void Configure(EntityTypeBuilder<Restaurateur> builder)
         {
-            //builder.HasOne(u => u.Customer)
+            //builder.HasOne(r => r.Customer)
             //    .WithOne()
-            //    .HasForeignKey<Customer>(u => u.Id);
+            //    .HasForeignKey<Customer>(c => c.Id);
         }
     }
 }
