@@ -2,9 +2,11 @@
 @using DeliveryWebApp.Infrastructure.Security
 @using Microsoft.AspNetCore.Authorization
 @using Microsoft.AspNetCore.Identity
+@using Microsoft.AspNetCore.Mvc.Localization
 @inject SignInManager<ApplicationUser> SignInManager
 @inject UserManager<ApplicationUser> UserManager
 @inject IAuthorizationService AuthorizationService
+@inject IViewLocalizer localizer
 
 @{
     var isRestaurateur = (await AuthorizationService.AuthorizeAsync(User, PolicyName.IsRestaurateur)).Succeeded;
@@ -26,7 +28,7 @@
                     <li>
                         <a class="dropdown-item" asp-area="Identity" asp-page="/Account/Manage/Index">
                             <img src="/icons/person.svg" alt="profile" height="16" width="16" />
-                            Profile
+                            @localizer["Profile"]
                         </a>
                     </li>
 
@@ -35,31 +37,31 @@
                         <li>
                             <a class="dropdown-item" asp-page="/Restaurateur/RestaurantDashboard">
                                 <img src="/icons/shop.svg" alt="shop" height="16" width="16" />
-                                Dashboard
+                                @localizer["Dashboard"]
                             </a>
                         </li>
                         @*<li>
-                            <a class="dropdown-item">Products</a>
-                        </li>*@
+                                <a class="dropdown-item">Products</a>
+                            </li>*@
                     }
                     @if (isRider)
                     {
                         <li>
                             <a class="dropdown-item">
                                 <img src="/icons/piggy-bank.svg" alt="piggy-bank" height="16" width="16" />
-                                Credit
+                                @localizer["Credit"]
                             </a>
                         </li>
                         <li>
                             <a class="dropdown-item">
                                 <img src="/icons/inbox.svg" alt="inbox" />
-                                Open Orders
+                                @localizer["Open Orders"]
                             </a>
                         </li>
                         <li>
                             <a class="dropdown-item">
                                 <img src="/icons/clock-history.svg" alt="clock-history" height="16" width="16" />
-                                Delivery History
+                                @localizer["Delivery History"]
                             </a>
                         </li>
                     }
@@ -68,13 +70,13 @@
                         <li>
                             <a class="dropdown-item" asp-page="/Customer/Orders">
                                 <img src="/icons/clock-history.svg" alt="clock-history" height="16" width="16" />
-                                Order History
+                                @localizer["Order History"]
                             </a>
                         </li>
                         <li>
                             <a class="dropdown-item" asp-area="Identity" asp-page="/Account/Manage/Request">
                                 <img src="/icons/person-badge.svg" alt="person-badge" height="16" width="16" />
-                                Role request
+                                @localizer["Role Request"]
                             </a>
                         </li>
                     }
@@ -83,19 +85,19 @@
                         <li>
                             <a class="dropdown-item" asp-page="/Admin/Requests">
                                 <img src="/icons/person-badge.svg" alt="person-badge" height="16" width="16" />
-                                User Requests
+                                @localizer["User Requests"]
                             </a>
                         </li>
                         <li>
                             <a class="dropdown-item" asp-page="/Admin/UserList">
                                 <img src="/icons/people.svg" alt="people" height="16" width="16" />
-                                User List
+                                @localizer["User List"]
                             </a>
                         </li>
                         <li>
                             <a class="dropdown-item" asp-page="/Admin/Orders">
                                 <img src="/icons/box-seam.svg" alt="box-seam" height="16" width="16" />
-                                Orders
+                                @localizer["Orders"]
                             </a>
                         </li>
                     }
@@ -107,8 +109,8 @@
                 <button type="submit" class="nav-link btn btn-link text-dark">
                     @* Logout img *@
                     <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor" class="bi bi-box-arrow-right" viewBox="0 0 16 16">
-                        <path fill-rule="evenodd" d="M10 12.5a.5.5 0 0 1-.5.5h-8a.5.5 0 0 1-.5-.5v-9a.5.5 0 0 1 .5-.5h8a.5.5 0 0 1 .5.5v2a.5.5 0 0 0 1 0v-2A1.5 1.5 0 0 0 9.5 2h-8A1.5 1.5 0 0 0 0 3.5v9A1.5 1.5 0 0 0 1.5 14h8a1.5 1.5 0 0 0 1.5-1.5v-2a.5.5 0 0 0-1 0v2z"/>
-                        <path fill-rule="evenodd" d="M15.854 8.354a.5.5 0 0 0 0-.708l-3-3a.5.5 0 0 0-.708.708L14.293 7.5H5.5a.5.5 0 0 0 0 1h8.793l-2.147 2.146a.5.5 0 0 0 .708.708l3-3z"/>
+                        <path fill-rule="evenodd" d="M10 12.5a.5.5 0 0 1-.5.5h-8a.5.5 0 0 1-.5-.5v-9a.5.5 0 0 1 .5-.5h8a.5.5 0 0 1 .5.5v2a.5.5 0 0 0 1 0v-2A1.5 1.5 0 0 0 9.5 2h-8A1.5 1.5 0 0 0 0 3.5v9A1.5 1.5 0 0 0 1.5 14h8a1.5 1.5 0 0 0 1.5-1.5v-2a.5.5 0 0 0-1 0v2z" />
+                        <path fill-rule="evenodd" d="M15.854 8.354a.5.5 0 0 0 0-.708l-3-3a.5.5 0 0 0-.708.708L14.293 7.5H5.5a.5.5 0 0 0 0 1h8.793l-2.147 2.146a.5.5 0 0 0 .708.708l3-3z" />
                     </svg>
                 </button>
             </form>
