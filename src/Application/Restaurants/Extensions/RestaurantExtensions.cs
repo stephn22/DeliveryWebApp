@@ -18,5 +18,14 @@ namespace DeliveryWebApp.Application.Restaurants.Extensions
                 where r.Id == restaurateurId
                 select r.Restaurant).FirstAsync();
         }
+
+        public static async Task<Address> GetRestaurantAddress(this IApplicationDbContext context,
+            Restaurant restaurant)
+        {
+            return await (from a in context.Addresses
+                where a.Id == restaurant.Address.Id
+                select a).FirstAsync();
+        }
+        
     }
 }

@@ -16,7 +16,6 @@ namespace DeliveryWebApp.Application.Restaurants.Commands.CreateRestaurant
         public string Name { get; set; }
         public string Category { get; set; }
         public Address Address { get; set; }
-        public Restaurateur Restaurateur { get; set; }
     }
 
     public class CreateRestaurantCommandHandler : IRequestHandler<CreateRestaurantCommand, int>
