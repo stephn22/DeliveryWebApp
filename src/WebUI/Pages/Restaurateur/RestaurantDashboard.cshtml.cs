@@ -25,6 +25,7 @@ using DeliveryWebApp.Application.Restaurants.Commands.CreateRestaurant;
 using DeliveryWebApp.Application.Restaurants.Extensions;
 using DeliveryWebApp.Application.Restaurateurs.Commands.UpdateRestaurateur;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Configuration;
 
 namespace DeliveryWebApp.WebUI.Pages.Restaurateur
 {
@@ -48,6 +49,7 @@ namespace DeliveryWebApp.WebUI.Pages.Restaurateur
         }
 
         public Restaurant Restaurant { get; set; }
+        public Address RestaurantAddress { get; set; }
         public Domain.Entities.Restaurateur Restaurateur { get; set; }
 
         public SelectList Countries => new(Utilities.CountryList(), "Key", "Value");
@@ -55,7 +57,7 @@ namespace DeliveryWebApp.WebUI.Pages.Restaurateur
         [BindProperty]
         public IEnumerable<SelectListItem> Categories => new[]
         {
-            new SelectListItem {Text = "Select a category", Value = ""},
+            new SelectListItem {Text = "Select a category", Value = "", Selected = true},
             new SelectListItem {Text = RestaurantCategory.FastFood, Value = RestaurantCategory.FastFood},
             new SelectListItem {Text = RestaurantCategory.Sushi, Value = RestaurantCategory.Sushi},
             new SelectListItem {Text = RestaurantCategory.Indian, Value = RestaurantCategory.Indian},
@@ -105,20 +107,28 @@ namespace DeliveryWebApp.WebUI.Pages.Restaurateur
             /*********************************************/
         }
 
+        private async Task LoadAsync(ApplicationUser user)
+        {
+            Restaurateur = await _context.GetRestaurateurByApplicationUserFkAsync(user.Id);
+
+            Restaurant = await _context.GetRestaurantByRestaurateurId(Restaurateur.Id);
+
+            RestaurantAddress = await _context.GetRestaurantAddress(Restaurant);
+
+            if (Restaurant != null)
+            {
+                foreach (var category in Categories)
+                {
+                    category.Selected = category.Value == Restaurant.Category;
+                }
+            }
+        }
+
         public async Task<IActionResult> OnGetAsync()
         {
             var user = await _userManager.GetUserAsync(User);
 
-            Restaurateur = await _context.GetRestaurateurByApplicationUserFkAsync(user.Id);
-
-            try
-            {
-                Restaurant = await _context.GetRestaurantByRestaurateurId(Restaurateur.Id);
-            }
-            catch (InvalidOperationException)
-            {
-                Restaurant = null;
-            }
+            await LoadAsync(user);
 
             return Page();
         }
@@ -127,18 +137,17 @@ namespace DeliveryWebApp.WebUI.Pages.Restaurateur
         {
             var user = await _userManager.GetUserAsync(User);
 
-            Restaurateur = await _context.GetRestaurateurByApplicationUserFkAsync(user.Id);
-            Restaurant = Restaurateur.Restaurant;
+            await LoadAsync(user);
 
             if (!ModelState.IsValid)
             {
-                // TODO load
+                await LoadAsync(user);
                 return Page();
             }
 
             if (Restaurant == null) // first time for restaurateur
             {
-                var directory = Path.Combine($"Resources/Uploads/Logos/{user.Id}/");
+                var directory = Path.Combine(@$"Resources\Uploads\Logos\{user.Id}\");
                 Directory.CreateDirectory(directory);
 
                 var file = Path.Combine(_environment.ContentRootPath, directory + Input.Logo.FileName);
@@ -148,7 +157,7 @@ namespace DeliveryWebApp.WebUI.Pages.Restaurateur
                     await Input.Logo.CopyToAsync(fileStream);
                 }
 
-                var restaurantAddress = new Address
+                RestaurantAddress = new Address
                 {
                     AddressLine1 = Input.AddressLine1,
                     AddressLine2 = Input.AddressLine2,
@@ -158,44 +167,30 @@ namespace DeliveryWebApp.WebUI.Pages.Restaurateur
                     PostalCode = Input.PostalCode
                 };
 
-                // insert new address in context
-                var addressId = await _mediator.Send(new CreateAddressCommand
-                {
-                    AddressLine1 = restaurantAddress.AddressLine1,
-                    AddressLine2 = restaurantAddress.AddressLine2,
-                    City = restaurantAddress.City,
-                    Country = restaurantAddress.Country,
-                    Number = restaurantAddress.Number,
-                    PostalCode = restaurantAddress.PostalCode
-                });
-
-                _logger.LogInformation($"Created new address with id: {addressId}");
-
                 // insert new restaurant in context
                 var restaurantId = await _mediator.Send(new CreateRestaurantCommand
                 {
-                    Address = restaurantAddress,
+                    Address = RestaurantAddress,
                     Category = Input.Category,
                     LogoUrl = file,
                     Name = Input.Name,
                     Restaurateur = Restaurateur
                 });
 
-                var restaurant = await _context.Restaurants.FindAsync(restaurantId);
+                //var restaurant = await _context.Restaurants.FindAsync(restaurantId);
 
-                // update restaurateur with his new restaurant
+                //// update restaurateur with his new restaurant
 
-                await _mediator.Send(new UpdateRestaurateurCommand
-                {
-                    Id = Restaurateur.Id,
-                    Restaurant = restaurant
-                });
+                //await _mediator.Send(new UpdateRestaurateurCommand
+                //{
+                //    Id = Restaurateur.Id,
+                //    Restaurant = restaurant
+                //});
 
                 _logger.LogInformation($"Created new restaurant with id: {restaurantId}");
             }
             else
             {
-                
             }
 
             return RedirectToPage();
