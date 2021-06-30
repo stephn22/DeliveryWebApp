@@ -14,17 +14,31 @@ namespace DeliveryWebApp.Application.Restaurants.Extensions
         public static async Task<Restaurant> GetRestaurantByRestaurateurId(this IApplicationDbContext context,
             int restaurateurId)
         {
-            return await (from r in context.Restaurants
-                where r.RestaurateurId == restaurateurId
-                select r).FirstAsync();
+            try
+            {
+                return await (from r in context.Restaurants
+                    where r.RestaurateurId == restaurateurId
+                    select r).FirstAsync();
+            }
+            catch (InvalidOperationException)
+            {
+                return null;
+            }
         }
 
         public static async Task<Address> GetRestaurantAddress(this IApplicationDbContext context,
             Restaurant restaurant)
         {
-            return await (from a in context.Addresses
-                where a.Id == restaurant.AddressId
-                select a).FirstAsync();
+            try
+            {
+                return await (from a in context.Addresses
+                    where a.Id == restaurant.AddressId
+                    select a).FirstAsync();
+            }
+            catch (InvalidOperationException)
+            {
+                return null;
+            }
         }
         
     }
