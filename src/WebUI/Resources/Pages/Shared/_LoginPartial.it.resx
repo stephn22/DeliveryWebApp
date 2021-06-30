@@ -117,22 +117,34 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
-  <data name="ConfirmationPwdError" xml:space="preserve">
-    <value>La password e conferma password non corrispondono</value>
+  <data name="Credit" xml:space="preserve">
+    <value>Credito</value>
   </data>
-  <data name="ConfirmPassword" xml:space="preserve">
-    <value>Conferma Password</value>
+  <data name="Dashboard" xml:space="preserve">
+    <value>Dashboard</value>
   </data>
-  <data name="Create new account." xml:space="preserve">
-    <value>Crea un nuovo account.</value>
+  <data name="Delivery History" xml:space="preserve">
+    <value>Cronologia consegne</value>
   </data>
-  <data name="ErrorPwd" xml:space="preserve">
-    <value>La password deve essere lunga minimo 6 caratteri e massimo 100</value>
+  <data name="Open Orders" xml:space="preserve">
+    <value>Ordini aperti</value>
   </data>
-  <data name="FName" xml:space="preserve">
-    <value>Nome</value>
+  <data name="Order History" xml:space="preserve">
+    <value>Cronologia Ordini</value>
   </data>
-  <data name="LName" xml:space="preserve">
-    <value>Cognome</value>
+  <data name="Orders" xml:space="preserve">
+    <value>Lista ordini</value>
+  </data>
+  <data name="Profile" xml:space="preserve">
+    <value>Profilo</value>
+  </data>
+  <data name="Role Request" xml:space="preserve">
+    <value>Cambio Utente</value>
+  </data>
+  <data name="User List" xml:space="preserve">
+    <value>Lista utenti</value>
+  </data>
+  <data name="User Requests" xml:space="preserve">
+    <value>Richieste cambio utente</value>
   </data>
 </root>
