@@ -1,4 +1,3 @@
-using System.Globalization;
 using DeliveryWebApp.Application;
 using DeliveryWebApp.Application.Common.Interfaces;
 using DeliveryWebApp.Infrastructure;
@@ -10,6 +9,8 @@ using Microsoft.AspNetCore.Localization;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using System.Collections.Generic;
+using System.Globalization;
 
 namespace DeliveryWebApp.WebUI
 {
@@ -35,12 +36,27 @@ namespace DeliveryWebApp.WebUI
             services.AddHealthChecks()
                 .AddDbContextCheck<ApplicationDbContext>();
 
-            services.AddRazorPages().AddDataAnnotationsLocalization();
-
             services.AddLocalization(options =>
             {
-                options.ResourcesPath = Configuration["ResourcePath"];
+                options.ResourcesPath = Configuration.GetSection("ResourcePath").Value;
             });
+
+            services.Configure<RequestLocalizationOptions>(options =>
+            {
+                var supportedCultures = new List<CultureInfo>
+                {
+                    new("en-US"),
+                    new("it")
+                };
+
+                options.DefaultRequestCulture = new RequestCulture("en-US");
+                options.SupportedCultures = supportedCultures;
+                options.SupportedUICultures = supportedCultures;
+            });
+
+            services.AddRazorPages()
+                .AddViewLocalization()
+                .AddDataAnnotationsLocalization();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -58,13 +74,10 @@ namespace DeliveryWebApp.WebUI
                 app.UseHsts();
             }
 
-            app.UseHttpsRedirection();
-            app.UseStaticFiles();
-
             var cultures = new[]
             {
-                new CultureInfo("en"),
-                new CultureInfo("en")
+                new CultureInfo("en-US"),
+                new CultureInfo("it")
             };
 
             var options = new RequestLocalizationOptions
@@ -75,6 +88,10 @@ namespace DeliveryWebApp.WebUI
             };
 
             app.UseRequestLocalization(options);
+
+
+            app.UseHttpsRedirection();
+            app.UseStaticFiles();
 
             app.UseRouting();
 
