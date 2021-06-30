@@ -11,7 +11,7 @@ namespace DeliveryWebApp.Application.Restaurateurs.Extensions
 {
     public static class RestaurateurExtensions
     {
-        public static async Task<Restaurateur> GetRestaurateurByIdAsync(this IApplicationDbContext context,
+        public static async Task<Restaurateur> GetRestaurateurAsync(this IApplicationDbContext context,
             int? restaurateurId)
         {
             try
@@ -23,29 +23,48 @@ namespace DeliveryWebApp.Application.Restaurateurs.Extensions
 
                 return await context.Restaurateurs.Where(r => r.Id == restaurateurId).FirstAsync();
             }
-            catch (NullReferenceException e)
+            catch (NullReferenceException)
             {
-                Console.WriteLine(e);
-                throw;
+                return null;
             }
         }
 
-        public static async Task<Restaurateur> GetRestaurateurByClientIdAsync(this IApplicationDbContext context,
-            int? clientId)
+        public static async Task<Restaurateur> GetRestaurateurByCustomerIdAsync(this IApplicationDbContext context,
+            int? customerId)
         {
             try
             {
-                if (clientId == null)
+                if (customerId == null)
                 {
                     throw new NullReferenceException();
                 }
 
-                return await context.Restaurateurs.Where(r => r.Client.Id == clientId).FirstAsync();
+                return await context.Restaurateurs.Where(r => r.Customer.Id == customerId).FirstAsync();
             }
-            catch (NullReferenceException e)
+            catch (NullReferenceException)
             {
-                Console.WriteLine(e);
-                throw;
+                return null;
+            }
+        }
+
+        public static async Task<Restaurateur> GetRestaurateurByApplicationUserFkAsync(
+            this IApplicationDbContext context, string applicationUserFk)
+        {
+            try
+            {
+                var customer = await (from c in context.Customers
+                    where c.ApplicationUserFk == applicationUserFk
+                    select c).FirstAsync();
+
+                var restaurateur = await (from r in context.Restaurateurs
+                    where r.Customer.Id == customer.Id
+                    select r).FirstAsync();
+
+                return restaurateur;
+            }
+            catch (InvalidOperationException)
+            {
+                return null;
             }
         }
     }

@@ -1,10 +1,13 @@
-using DeliveryWebApp.Application.Clients.Queries.GetClients;
+using DeliveryWebApp.Application.Customers.Extensions;
+using DeliveryWebApp.Application.Restaurateurs.Commands.CreateRestaurateur;
+using DeliveryWebApp.Application.Riders.Commands.CreateRider;
 using DeliveryWebApp.Domain.Constants;
 using DeliveryWebApp.Domain.Entities;
 using DeliveryWebApp.Infrastructure.Identity;
 using DeliveryWebApp.Infrastructure.Persistence;
 using DeliveryWebApp.Infrastructure.Security;
 using DeliveryWebApp.Infrastructure.Services.Utilities;
+using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
@@ -15,7 +18,7 @@ using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Security.Claims;
 using System.Threading.Tasks;
-using DeliveryWebApp.Application.Clients.Extensions;
+using DeliveryWebApp.Application.Requests.Commands.UpdateRequest;
 
 namespace DeliveryWebApp.WebUI.Pages.Admin
 {
@@ -25,12 +28,14 @@ namespace DeliveryWebApp.WebUI.Pages.Admin
         private readonly ApplicationDbContext _context;
         private readonly UserManager<ApplicationUser> _userManager;
         private readonly ILogger<RequestDetailModel> _logger;
+        private readonly IMediator _mediator;
 
-        public RequestDetailModel(ApplicationDbContext context, UserManager<ApplicationUser> userManager, ILogger<RequestDetailModel> logger)
+        public RequestDetailModel(ApplicationDbContext context, UserManager<ApplicationUser> userManager, ILogger<RequestDetailModel> logger, IMediator mediator)
         {
             _context = context;
             _userManager = userManager;
             _logger = logger;
+            _mediator = mediator;
         }
 
         public Request UserRequest { get; set; }
@@ -56,12 +61,10 @@ namespace DeliveryWebApp.WebUI.Pages.Admin
             }
 
             // get client by request id
-            var client = await _context.GetClientByRequestIdAsync(id);
+            var client = await _context.GetCustomerByRequestIdAsync(id);
 
             // get request instance
-            UserRequest = await (from r in _context.Requests
-                                 where r.Id == id
-                                 select r).FirstOrDefaultAsync();
+            UserRequest = await _context.Requests.FirstAsync(r => r.Id == id);
 
             var appUserFk = client.ApplicationUserFk;
 
@@ -85,28 +88,27 @@ namespace DeliveryWebApp.WebUI.Pages.Admin
                 return BadRequest();
             }
 
-            var client = await _context.GetClientByRequestIdAsync(id);
-            var appUserFk = client.ApplicationUserFk;
+            var customer = await _context.GetCustomerByRequestIdAsync(id);
+            var appUserFk = customer.ApplicationUserFk;
 
             ApplicationUser = await _userManager.FindByIdAsync(appUserFk);
 
             var oldClaim = await _userManager.GetClaimByTypeAsync(ApplicationUser, ClaimName.Role);
 
-            UserRequest = await (from r in _context.Requests
-                                 where r.Id == id
-                                 select r).FirstOrDefaultAsync();
+            UserRequest = await _context.Requests.FirstAsync(r => r.Id == id);
 
             IsRider = UserRequest.Role.Equals(RoleName.Rider);
-            await _context.GetClientByRequestIdAsync(id);
 
             // update tables
             if (IsRider)
             {
-                _context.Riders.Add(new Rider()
+                var entityId = await _mediator.Send(new CreateRiderCommand()
                 {
-                    Client = UserRequest.Client,
+                    Customer = customer,
                     DeliveryCredit = Input.DeliveryCredit
                 });
+
+                _logger.LogInformation($"Created new rider with id: {entityId}");
 
                 // change claim
                 await _userManager.ReplaceClaimAsync(ApplicationUser, oldClaim,
@@ -114,35 +116,39 @@ namespace DeliveryWebApp.WebUI.Pages.Admin
             }
             else
             {
-                _context.Restaurateurs.Add(new Domain.Entities.Restaurateur
+                var entityId = await _mediator.Send(new CreateRestaurateurCommand()
                 {
-                    Client = UserRequest.Client,
+                    Customer = customer,
+
                 });
+
+                _logger.LogInformation($"Created resturateur with id: {entityId}");
 
                 await _userManager.ReplaceClaimAsync(ApplicationUser, oldClaim,
                     new Claim(ClaimName.Role, RoleName.Restaurateur));
             }
 
-            UserRequest.Status = RequestStatus.Accepted;
-
-            // update request table
-            _context.Requests.Update(UserRequest);
+            await _mediator.Send(new UpdateRequestCommand
+            {
+                Id = UserRequest.Id,
+                Status = RequestStatus.Accepted
+            });
 
             // TODO push notification to client
 
-            await _context.SaveChangesAsync();
             return RedirectToPage("/Admin/Requests");
         }
 
         public async Task<IActionResult> OnPostRejectAsync(int? id)
         {
-            UserRequest.Status = RequestStatus.Rejected;
+            UserRequest = await _context.Requests.FirstAsync(r => r.Id == id);
             Input.DeliveryCredit = 0.00;
 
-            // update request table
-            _context.Requests.Update(UserRequest);
-
-            await _context.SaveChangesAsync();
+            await _mediator.Send(new UpdateRequestCommand
+            {
+                Id = UserRequest.Id,
+                Status = RequestStatus.Rejected
+            });
 
             // TODO push notification to client
             return RedirectToPage("/Admin/Requests");

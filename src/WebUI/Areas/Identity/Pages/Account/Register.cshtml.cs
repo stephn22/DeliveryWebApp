@@ -1,4 +1,16 @@
-﻿using System;
+﻿using DeliveryWebApp.Application.Customers.Commands.CreateCustomer;
+using DeliveryWebApp.Infrastructure.Identity;
+using DeliveryWebApp.Infrastructure.Persistence;
+using DeliveryWebApp.Infrastructure.Security;
+using MediatR;
+using Microsoft.AspNetCore.Authentication;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Identity.UI.Services;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.RazorPages;
+using Microsoft.AspNetCore.WebUtilities;
+using Microsoft.Extensions.Logging;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
@@ -6,19 +18,6 @@ using System.Security.Claims;
 using System.Text;
 using System.Text.Encodings.Web;
 using System.Threading.Tasks;
-using DeliveryWebApp.Domain.Entities;
-using Microsoft.AspNetCore.Authentication;
-using Microsoft.AspNetCore.Authorization;
-using DeliveryWebApp.Infrastructure.Identity;
-using DeliveryWebApp.Infrastructure.Persistence;
-using DeliveryWebApp.Infrastructure.Security;
-using Microsoft.AspNetCore.Identity;
-using Microsoft.AspNetCore.Identity.UI.Services;
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.RazorPages;
-using Microsoft.AspNetCore.WebUtilities;
-using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Logging;
 
 namespace DeliveryWebApp.WebUI.Areas.Identity.Pages.Account
 {
@@ -29,6 +28,7 @@ namespace DeliveryWebApp.WebUI.Areas.Identity.Pages.Account
         private readonly UserManager<ApplicationUser> _userManager;
         private readonly ApplicationDbContext _context;
         private readonly ILogger<RegisterModel> _logger;
+        private readonly IMediator _mediator;
         private readonly IEmailSender _emailSender;
 
         public RegisterModel(
@@ -36,12 +36,14 @@ namespace DeliveryWebApp.WebUI.Areas.Identity.Pages.Account
             SignInManager<ApplicationUser> signInManager,
             ApplicationDbContext context,
             ILogger<RegisterModel> logger,
+            IMediator mediator,
             IEmailSender emailSender)
         {
             _userManager = userManager;
             _signInManager = signInManager;
             _context = context;
             _logger = logger;
+            _mediator = mediator;
             _emailSender = emailSender;
         }
 
@@ -110,7 +112,7 @@ namespace DeliveryWebApp.WebUI.Areas.Identity.Pages.Account
                     {
                         new Claim(ClaimName.FName, Input.FName),
                         new Claim(ClaimName.LName, Input.LName),
-                        new Claim(ClaimName.Role, RoleName.Default), // default user after registration
+                        new Claim(ClaimName.Role, RoleName.Default) // default user after registration
                     });
 
                     var code = await _userManager.GenerateEmailConfirmationTokenAsync(user);
@@ -126,18 +128,11 @@ namespace DeliveryWebApp.WebUI.Areas.Identity.Pages.Account
 
                     if (_userManager.Options.SignIn.RequireConfirmedAccount)
                     {
-                        // add to Clients table
-                        _context.Clients.Add(new Client
+                        // add to Customers table
+                        await _mediator.Send(new CreateCustomerCommand
                         {
-                            ApplicationUserFk = user.Id,
-                            Basket = null,
-                            Addresses = null,
-                            Orders = null, 
-                            Reviews = null
-                            
+                            ApplicationUserFk = user.Id
                         });
-
-                        await _context.SaveChangesAsync();
 
                         return RedirectToPage("RegisterConfirmation", new { email = Input.Email, returnUrl = returnUrl });
                     }

@@ -237,3 +237,4 @@ _Pvt_Extensions
 /src/WebUI/Log
 .vscode
 *.db
+/src/WebUI/Resources/Uploads

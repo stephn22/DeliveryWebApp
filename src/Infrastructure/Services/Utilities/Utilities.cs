@@ -1,6 +1,9 @@
 ﻿using DeliveryWebApp.Infrastructure.Identity;
 using DeliveryWebApp.Infrastructure.Security;
 using Microsoft.AspNetCore.Identity;
+using System;
+using System.Collections.Generic;
+using System.Globalization;
 using System.Linq;
 using System.Security.Claims;
 using System.Threading.Tasks;
@@ -22,8 +25,8 @@ namespace DeliveryWebApp.Infrastructure.Services.Utilities
             ApplicationUser user, string claimType)
         {
             var c = (from claim in await userManager.GetClaimsAsync(user)
-                where claim.Type == claimType
-                select claim).First();
+                     where claim.Type == claimType
+                     select claim).First();
 
             return c;
         }
@@ -37,8 +40,8 @@ namespace DeliveryWebApp.Infrastructure.Services.Utilities
             }
 
             var fName = (from claim in await userManager.GetClaimsAsync(user)
-                where claim.Type == ClaimName.FName
-                select claim.Value).First();
+                         where claim.Type == ClaimName.FName
+                         select claim.Value).First();
 
             return fName;
         }
@@ -52,10 +55,52 @@ namespace DeliveryWebApp.Infrastructure.Services.Utilities
             }
 
             var lName = (from claim in await userManager.GetClaimsAsync(user)
-                where claim.Type == ClaimName.LName
-                select claim.Value).First();
+                         where claim.Type == ClaimName.LName
+                         select claim.Value).First();
 
             return lName;
+        }
+
+        public static async Task BlockUser(this UserManager<ApplicationUser> userManager, ApplicationUser user)
+        {
+            var lockoutEndDate = new DateTime(2999, 01, 01);
+            await userManager.SetLockoutEndDateAsync(user, lockoutEndDate);
+        }
+
+        public static async Task UnblockUser(this UserManager<ApplicationUser> userManager, ApplicationUser user)
+        {
+            await userManager.SetLockoutEndDateAsync(user, null);
+        }
+
+        public static IEnumerable<KeyValuePair<string, string>> CountryList()
+        {
+            var cultureList = new Dictionary<string, string>();
+
+            var cultureInfo = CultureInfo.GetCultures(CultureTypes.SpecificCultures);
+
+            foreach (var c in cultureInfo)
+            {
+                var regionInfo = new RegionInfo(0x0409);
+                try
+                {
+                    regionInfo = new RegionInfo(c.LCID);
+                }
+                catch (CultureNotFoundException e)
+                {
+                    regionInfo = new RegionInfo(0x0409); // English europe
+                }
+                finally
+                {
+                    if (!cultureList.ContainsKey(regionInfo.Name))
+                    {
+                        cultureList.Add(regionInfo.Name, regionInfo.EnglishName);
+                    }
+                }
+            }
+            // TODO: localize
+            cultureList.Add("", "-- Select Country --");
+
+            return cultureList.OrderBy(p => p.Value);
         }
     }
 }

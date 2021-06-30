@@ -27,16 +27,16 @@ namespace DeliveryWebApp.Application.Riders.Extensions
             }
         }
 
-        public static async Task<Rider> GetRiderByClientIdAsync(this IApplicationDbContext context, int? cliendId)
+        public static async Task<Rider> GetRiderByCustomerIdAsync(this IApplicationDbContext context, int? customerId)
         {
             try
             {
-                if (cliendId == null)
+                if (customerId == null)
                 {
                     throw new NullReferenceException();
                 }
 
-                return await context.Riders.Where(r => r.Client.Id == cliendId).FirstAsync();
+                return await context.Riders.Where(r => r.Customer.Id == customerId).FirstAsync();
             }
             catch (NullReferenceException e)
             {

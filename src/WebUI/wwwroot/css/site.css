@@ -18,13 +18,13 @@ a {
   border-color: #1861ac;
 }
 
-.btn-outline-dark {
+.btn-outline-primary {
     background-color: white;
     outline-color: #1861ac;
     border-color: #1861ac;
 }
 
-.btn-outline-dark:hover {
+.btn-primary-dark:hover {
     background-color: #1b6ec2;
     border-color: #1861ac;
 }
