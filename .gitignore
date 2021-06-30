@@ -236,5 +236,4 @@ _Pvt_Extensions
 /DeliveryWebApp.ndproj
 /src/WebUI/Log
 .vscode
-*.db
 /src/WebUI/Resources/Uploads
