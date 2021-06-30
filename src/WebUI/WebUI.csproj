@@ -9,7 +9,7 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <Content Remove="bundleconfig.json" />
+	  <Content Remove="bundleconfig.json" />
   </ItemGroup>
 
   <ItemGroup>
@@ -50,6 +50,7 @@
 
   <ItemGroup>
     <Folder Include="Log\" />
+    <Folder Include="Resources\Uploads\Logos\" />
   </ItemGroup>
 
   <ItemGroup>

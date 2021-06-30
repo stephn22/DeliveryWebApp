@@ -33,6 +33,7 @@ namespace DeliveryWebApp.WebUI.Pages.Customer
 
         public async Task<IActionResult> OnGetAsync()
         {
+            // TODO: mediatr
             var user = await _userManager.GetUserAsync(User);
             if (user == null) return NotFound($"Unable to load user with ID '{_userManager.GetUserId(User)}'.");
 
