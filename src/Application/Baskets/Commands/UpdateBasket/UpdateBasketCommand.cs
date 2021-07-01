@@ -40,6 +40,7 @@ namespace DeliveryWebApp.Application.Baskets.Commands.UpdateBasket
 
             entity.Products = products;
             entity.TotalPrice += request.Product.Price;
+            // TODO: Discount
 
             await _context.SaveChangesAsync(cancellationToken);
 
