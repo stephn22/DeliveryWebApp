@@ -18,11 +18,11 @@ namespace DeliveryWebApp.Application.Orders.Commands.CreateOrder
         public Restaurant Restaurant { get; set; }
     }
 
-    public class CreateOrderCommndHandler : IRequestHandler<CreateOrderCommand, int>
+    public class CreateOrderCommandHandler : IRequestHandler<CreateOrderCommand, int>
     {
         private readonly IApplicationDbContext _context;
 
-        public CreateOrderCommndHandler(IApplicationDbContext context)
+        public CreateOrderCommandHandler(IApplicationDbContext context)
         {
             _context = context;
         }
