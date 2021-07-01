@@ -30,7 +30,6 @@ namespace DeliveryWebApp.Application.Customers.Extensions
             }
             catch (NullReferenceException e)
             {
-                Console.WriteLine(e);
                 return null;
             }
         }
@@ -48,8 +47,7 @@ namespace DeliveryWebApp.Application.Customers.Extensions
             }
             catch (NullReferenceException e)
             {
-                Console.WriteLine(e);
-                throw;
+                return null;
             }
         }
     }

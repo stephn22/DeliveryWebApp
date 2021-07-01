@@ -20,8 +20,6 @@
 
   <ItemGroup>
     <Folder Include="Addresses\Extensions\" />
-    <Folder Include="Addresses\Queries\" />
-    <Folder Include="Customers\Commands\UpdateCustomer\" />
     <Folder Include="Restaurants\Queries\" />
   </ItemGroup>
 

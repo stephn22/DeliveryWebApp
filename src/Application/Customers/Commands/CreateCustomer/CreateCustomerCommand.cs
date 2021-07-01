@@ -27,7 +27,7 @@ namespace DeliveryWebApp.Application.Customers.Commands.CreateCustomer
             {
                 var entity = new Customer
                 {
-                    ApplicationUserFk = request.ApplicationUserFk
+                    ApplicationUserFk = request.ApplicationUserFk,
                 };
 
                 _context.Customers.Add(entity);
