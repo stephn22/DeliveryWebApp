@@ -19,7 +19,7 @@ namespace DeliveryWebApp.Application.Products.Commands.UpdateProducts
         public double? Price { get; set; }
         public string Name { get; set; }
         public string Category { get; set; }
-        public string ImageUrl { get; set; }
+        public byte[] Image { get; set; }
     }
 
     public class UpdateProductCommandHandler : IRequestHandler<UpdateProductCommand>
@@ -65,9 +65,9 @@ namespace DeliveryWebApp.Application.Products.Commands.UpdateProducts
                 entity.Name = request.Name;
             }
 
-            if (request.ImageUrl != null)
+            if (request.Image != null)
             {
-                entity.ImageUrl = request.ImageUrl;
+                entity.Image = request.Image;
             }
 
             await _context.SaveChangesAsync(cancellationToken);

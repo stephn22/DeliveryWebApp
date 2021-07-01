@@ -54,10 +54,11 @@ namespace DeliveryWebApp.WebUI.Pages.Customer
 
         private void GetProducts()
         {
+            // TODO: mediatr
             Products = Order.Products.Select(p => new Product
             {
                 Name = p.Name,
-                ImageUrl = p.ImageUrl,
+                Image = p.Image,
                 Price = p.Price,
                 Discount = p.Discount,
                 Category = p.Category

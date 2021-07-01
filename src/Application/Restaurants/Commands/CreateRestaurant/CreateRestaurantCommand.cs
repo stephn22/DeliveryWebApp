@@ -13,7 +13,7 @@ namespace DeliveryWebApp.Application.Restaurants.Commands.CreateRestaurant
 {
     public class CreateRestaurantCommand : IRequest<int>
     {
-        public string LogoUrl { get; set; }
+        public byte[] Logo { get; set; }
         public string Name { get; set; }
         public string Category { get; set; }
         public Address Address { get; set; }
@@ -35,7 +35,7 @@ namespace DeliveryWebApp.Application.Restaurants.Commands.CreateRestaurant
             {
                 Address = request.Address,
                 Category = request.Category,
-                LogoUrl = request.LogoUrl,
+                Logo = request.Logo,
                 Name = request.Name,
                 Restaurateur = request.Restaurateur,
                 Products = new List<Product>(),

@@ -13,7 +13,7 @@ namespace DeliveryWebApp.Application.Products.Commands.CreateProduct
     public class CreateProductCommand : IRequest<int>
     {
         public string Name { get; set; }
-        public string ImageUrl { get; set; }
+        public byte[] Image { get; set; }
         public double Price { get; set; }
         public int Discount { get; set; }
         public string Category { get; set; } // TODO: ?
@@ -34,7 +34,7 @@ namespace DeliveryWebApp.Application.Products.Commands.CreateProduct
             var entity = new Product
             {
                 Name = request.Name,
-                ImageUrl = request.ImageUrl,
+                Image = request.Image,
                 Price = request.Price,
                 Discount = request.Discount,
                 Category = request.Category,

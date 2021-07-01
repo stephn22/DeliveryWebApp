@@ -71,7 +71,7 @@
                                 {
                                 <tr>
                                     <td>
-                                        <img src="@product.ImageUrl" class="rounded mx-auto d-block img-fluid" alt="@product.Name" height="40" width="40">
+                                        <img src="@Convert.ToBase64String(product.Image)" class="rounded mx-auto d-block img-fluid" alt="@product.Name" height="40" width="40">
                                         @Html.DisplayFor(item => product.Name)
                                     </td>
                                     <td>
