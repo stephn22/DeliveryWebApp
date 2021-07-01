@@ -19,9 +19,12 @@ using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.IO;
 using System.Linq;
+using System.Net.Mime;
 using System.Threading.Tasks;
 using DeliveryWebApp.Application.Addresses.Commands.CreateAddress;
+using DeliveryWebApp.Application.Common.Exceptions;
 using DeliveryWebApp.Application.Restaurants.Commands.CreateRestaurant;
+using DeliveryWebApp.Application.Restaurants.Commands.UpdateRestaurant;
 using DeliveryWebApp.Application.Restaurants.Extensions;
 using DeliveryWebApp.Application.Restaurateurs.Commands.UpdateRestaurateur;
 using Microsoft.EntityFrameworkCore;
@@ -133,7 +136,70 @@ namespace DeliveryWebApp.WebUI.Pages.Restaurateur
             return Page();
         }
 
-        public async Task<IActionResult> OnPostAsync()
+        /// <summary>
+        /// Restaurant has changed name
+        /// </summary>
+        /// <param name="id">restaurant id</param>
+        /// <returns></returns>
+        public async Task<IActionResult> OnPostNewNameAsync(int id)
+        {
+            try
+            {
+                await _mediator.Send(new UpdateRestaurantCommand
+                {
+                    Id = id,
+                    Name = Input.Name
+                });
+            }
+            catch (NotFoundException e)
+            {
+                _logger.LogError(e.Message);
+                return NotFound();
+            }
+
+            return RedirectToPage();
+        }
+
+        public async Task<IActionResult> OnPostNewCategoryAsync(int id)
+        {
+            try
+            {
+                await _mediator.Send(new UpdateRestaurantCommand
+                {
+                    Id = id,
+                    Category = Input.Category
+                });
+            }
+            catch (NotFoundException e)
+            {
+                _logger.LogError(e.Message);
+                return NotFound();
+            }
+
+            return RedirectToPage();
+        }
+
+        public async Task UploadNewImageAsync()
+        {
+            if (Input != null)
+            {
+                byte[] bytes;
+
+                await using var fileStream = Input.Logo.OpenReadStream();
+                await using (var memoryStream = new MemoryStream())
+                {
+                    await fileStream.CopyToAsync(memoryStream);
+                    bytes = memoryStream.ToArray();
+                }
+
+                await _mediator.Send(new UpdateRestaurantCommand
+                {
+                    Logo = bytes
+                });
+            }
+        }
+
+        public async Task<IActionResult> OnPostNewRestaurantAsync()
         {
             var user = await _userManager.GetUserAsync(User);
 
@@ -145,53 +211,38 @@ namespace DeliveryWebApp.WebUI.Pages.Restaurateur
                 return Page();
             }
 
-            if (Restaurant == null) // first time for restaurateur
+            if (Input.Logo.Length <= 0) return Page();
+
+            byte[] bytes;
+
+            await using var fileStream = Input.Logo.OpenReadStream();
+            await using (var memoryStream = new MemoryStream())
             {
-                var directory = Path.Combine(@$"Resources\Uploads\Logos\{user.Id}\");
-                Directory.CreateDirectory(directory);
-
-                var file = Path.Combine(_environment.ContentRootPath, directory + Input.Logo.FileName);
-
-                await using (var fileStream = new FileStream(file, FileMode.Create))
-                {
-                    await Input.Logo.CopyToAsync(fileStream);
-                }
-
-                RestaurantAddress = new Address
-                {
-                    AddressLine1 = Input.AddressLine1,
-                    AddressLine2 = Input.AddressLine2,
-                    City = Input.City,
-                    Country = Input.Country,
-                    Number = Input.Number,
-                    PostalCode = Input.PostalCode
-                };
-
-                // insert new restaurant in context
-                var restaurantId = await _mediator.Send(new CreateRestaurantCommand
-                {
-                    Address = RestaurantAddress,
-                    Category = Input.Category,
-                    LogoUrl = file,
-                    Name = Input.Name,
-                    Restaurateur = Restaurateur
-                });
-
-                //var restaurant = await _context.Restaurants.FindAsync(restaurantId);
-
-                //// update restaurateur with his new restaurant
-
-                //await _mediator.Send(new UpdateRestaurateurCommand
-                //{
-                //    Id = Restaurateur.Id,
-                //    Restaurant = restaurant
-                //});
-
-                _logger.LogInformation($"Created new restaurant with id: {restaurantId}");
+                await fileStream.CopyToAsync(memoryStream);
+                bytes = memoryStream.ToArray();
             }
-            else
+
+            RestaurantAddress = new Address
             {
-            }
+                AddressLine1 = Input.AddressLine1,
+                AddressLine2 = Input.AddressLine2,
+                City = Input.City,
+                Country = Input.Country,
+                Number = Input.Number,
+                PostalCode = Input.PostalCode
+            };
+
+            // insert new restaurant in context
+            var restaurantId = await _mediator.Send(new CreateRestaurantCommand
+            {
+                Address = RestaurantAddress,
+                Category = Input.Category,
+                Logo = bytes,
+                Name = Input.Name,
+                Restaurateur = Restaurateur
+            });
+
+            _logger.LogInformation($"Created new restaurant with id: {restaurantId}");
 
             return RedirectToPage();
         }

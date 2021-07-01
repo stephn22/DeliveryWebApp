@@ -1,0 +1,39 @@
+﻿#img-uploaded {
+    height: 100%;
+    width: 100%;
+    object-fit: cover;
+}
+
+.img-dashboard {
+    height: 100%;
+    width: 100%;
+    object-fit: cover;
+}
+
+.edit-img-btn {
+    display: none;
+}
+
+.img-dashboard:hover + .edit-img-btn, .edit-img-btn:hover {
+    display: inline-block;
+}
+
+.form-group {
+    margin-top: 1rem;
+}
+
+.square {
+    position: relative;
+    height: 200px;
+    width: 200px;
+    object-fit: cover;
+}
+
+.square .edit-img-btn {
+    position: absolute;
+    transform: translate(-50%, -50%);
+    -ms-transform: translate(-50%, -50%);
+    cursor: pointer;
+    left: 50%;
+    top: 50%;
+}
