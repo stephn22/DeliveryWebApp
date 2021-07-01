@@ -14,6 +14,7 @@ namespace DeliveryWebApp.Application.Restaurants.Commands.UpdateRestaurant
     public class UpdateRestaurantCommand : IRequest
     {
         public int Id { get; set; }
+        public byte[] Logo { get; set; }
         public string Name { get; set; }
         public string Category { get; set; }
         public Address Address { get; set; }
@@ -35,6 +36,11 @@ namespace DeliveryWebApp.Application.Restaurants.Commands.UpdateRestaurant
             if (entity == null)
             {
                 throw new NotFoundException(nameof(Restaurant), request.Id);
+            }
+
+            if (request.Logo != null)
+            {
+                entity.Logo = request.Logo;
             }
 
             if (request.Name != null)
