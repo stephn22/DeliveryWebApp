@@ -20,7 +20,7 @@ namespace DeliveryWebApp.Infrastructure.Persistence.Configurations
             builder.Property(r => r.Name)
                 .IsRequired();
 
-            builder.Property(r => r.LogoUrl)
+            builder.Property(r => r.Logo)
                 .IsRequired();
 
             //builder.HasOne(r => r.Restaurateur)
