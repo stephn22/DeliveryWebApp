@@ -5,10 +5,13 @@ using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using DeliveryWebApp.Application.Common.Interfaces;
+using DeliveryWebApp.Application.Common.Security;
 using MediatR;
 
 namespace DeliveryWebApp.Application.Baskets.Commands.PurgeBasket
 {
+    [Authorize(Roles = "Administrator")]
+    [Authorize(Policy = "IsCustomer")]
     public class PurgeBasketCommand : IRequest
     {
         public int Id { get; set; }
