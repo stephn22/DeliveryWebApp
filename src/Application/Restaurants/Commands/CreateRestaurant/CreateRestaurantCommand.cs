@@ -38,6 +38,8 @@ namespace DeliveryWebApp.Application.Restaurants.Commands.CreateRestaurant
                 LogoUrl = request.LogoUrl,
                 Name = request.Name,
                 Restaurateur = request.Restaurateur,
+                Products = new List<Product>(),
+                Orders = new List<Order>()
             };
 
             _context.Restaurants.Add(entity);
