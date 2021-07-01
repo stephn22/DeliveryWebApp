@@ -11,6 +11,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using System.Collections.Generic;
 using System.Globalization;
+using DeliveryWebApp.Infrastructure.Services;
 
 namespace DeliveryWebApp.WebUI
 {
@@ -32,6 +33,7 @@ namespace DeliveryWebApp.WebUI
             services.AddDatabaseDeveloperPageExceptionFilter();
 
             services.AddSingleton<ICurrentUserService, CurrentUserService>();
+            services.AddSingleton<IdentityLocalizationService>();
 
             services.AddHealthChecks()
                 .AddDbContextCheck<ApplicationDbContext>();

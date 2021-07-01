@@ -33,6 +33,7 @@
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
     </PackageReference>
     <PackageReference Include="Microsoft.Extensions.Diagnostics.HealthChecks.EntityFrameworkCore" Version="5.0.7" />
+    <PackageReference Include="Microsoft.Extensions.Localization" Version="5.0.7" />
     <PackageReference Include="Microsoft.VisualStudio.Web.CodeGeneration.Design" Version="5.0.2" />
     <PackageReference Include="Newtonsoft.Json" Version="13.0.1" />
     <PackageReference Include="SendGrid" Version="9.24.0" />
@@ -41,6 +42,7 @@
     <PackageReference Include="Serilog.Settings.Configuration" Version="3.1.0" />
     <PackageReference Include="Serilog.Sinks.Console" Version="3.1.1" />
     <PackageReference Include="Serilog.Sinks.File" Version="5.0.0" />
+    <PackageReference Include="System.Text.Encodings.Web" Version="5.0.1" />
   </ItemGroup>
 
   <ItemGroup>
@@ -50,7 +52,6 @@
 
   <ItemGroup>
     <Folder Include="Log\" />
-    <Folder Include="Resources\Uploads\Logos\" />
   </ItemGroup>
 
   <ItemGroup>
@@ -99,6 +100,12 @@
     <None Include="wwwroot\lib\jsgrid-1.5.3\i18n\jsgrid-zh-tw.js" />
     <None Include="wwwroot\lib\jsgrid-1.5.3\jsgrid.js" />
     <None Include="wwwroot\lib\jsgrid-1.5.3\jsgrid.min.js" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <EmbeddedResource Update="Resources\Identity\Pages\Account\RegisterModel.it.resx">
+      <Generator>PublicResXFileCodeGenerator</Generator>
+    </EmbeddedResource>
   </ItemGroup>
 
 </Project>
