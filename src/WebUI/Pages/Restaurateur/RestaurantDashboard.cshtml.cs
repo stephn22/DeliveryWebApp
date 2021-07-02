@@ -1,4 +1,7 @@
-using System;
+using DeliveryWebApp.Application.Common.Exceptions;
+using DeliveryWebApp.Application.Restaurants.Commands.CreateRestaurant;
+using DeliveryWebApp.Application.Restaurants.Commands.UpdateRestaurant;
+using DeliveryWebApp.Application.Restaurants.Extensions;
 using DeliveryWebApp.Application.Restaurateurs.Extensions;
 using DeliveryWebApp.Domain.Constants;
 using DeliveryWebApp.Domain.Entities;
@@ -19,16 +22,8 @@ using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.IO;
 using System.Linq;
-using System.Net.Mime;
 using System.Threading.Tasks;
-using DeliveryWebApp.Application.Addresses.Commands.CreateAddress;
-using DeliveryWebApp.Application.Common.Exceptions;
-using DeliveryWebApp.Application.Restaurants.Commands.CreateRestaurant;
-using DeliveryWebApp.Application.Restaurants.Commands.UpdateRestaurant;
-using DeliveryWebApp.Application.Restaurants.Extensions;
-using DeliveryWebApp.Application.Restaurateurs.Commands.UpdateRestaurateur;
-using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Configuration;
+using DeliveryWebApp.Application.Products.Queries.GetProducts;
 
 namespace DeliveryWebApp.WebUI.Pages.Restaurateur
 {
@@ -54,6 +49,8 @@ namespace DeliveryWebApp.WebUI.Pages.Restaurateur
         public Restaurant Restaurant { get; set; }
         public Address RestaurantAddress { get; set; }
         public Domain.Entities.Restaurateur Restaurateur { get; set; }
+        public IList<Product> Products { get; set; }
+        public IList<Order> Orders { get; set; }
 
         public SelectList Countries => new(Utilities.CountryList(), "Key", "Value");
 
@@ -120,10 +117,12 @@ namespace DeliveryWebApp.WebUI.Pages.Restaurateur
 
             if (Restaurant != null)
             {
-                foreach (var category in Categories)
+                Products = await _mediator.Send(new GetProductsQuery
                 {
-                    category.Selected = category.Value == Restaurant.Category;
-                }
+                    RestaurantId = Restaurant.Id
+                });
+
+                Orders = Restaurant.Orders.ToList();
             }
         }
 
@@ -211,7 +210,10 @@ namespace DeliveryWebApp.WebUI.Pages.Restaurateur
                 return Page();
             }
 
-            if (Input.Logo.Length <= 0) return Page();
+            if (Input.Logo.Length <= 0)
+            {
+                return Page();
+            }
 
             byte[] bytes;
 
