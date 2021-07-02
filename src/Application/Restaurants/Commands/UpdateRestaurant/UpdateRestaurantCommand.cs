@@ -18,6 +18,7 @@ namespace DeliveryWebApp.Application.Restaurants.Commands.UpdateRestaurant
         public string Name { get; set; }
         public string Category { get; set; }
         public Address Address { get; set; }
+        public Product Product { get; set; }
     }
 
     public class UpdateRestaurantCommandHandler : IRequestHandler<UpdateRestaurantCommand>
@@ -56,6 +57,11 @@ namespace DeliveryWebApp.Application.Restaurants.Commands.UpdateRestaurant
             if (request.Address != null)
             {
                 entity.Address = request.Address;
+            }
+
+            if (request.Product != null)
+            {
+                entity.Products.Add(request.Product);
             }
 
             await _context.SaveChangesAsync(cancellationToken);
