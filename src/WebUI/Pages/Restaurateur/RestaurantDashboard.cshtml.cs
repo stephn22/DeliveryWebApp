@@ -1,4 +1,5 @@
 using DeliveryWebApp.Application.Common.Exceptions;
+using DeliveryWebApp.Application.Products.Queries.GetProducts;
 using DeliveryWebApp.Application.Restaurants.Commands.CreateRestaurant;
 using DeliveryWebApp.Application.Restaurants.Commands.UpdateRestaurant;
 using DeliveryWebApp.Application.Restaurants.Extensions;
@@ -21,9 +22,7 @@ using Microsoft.Extensions.Logging;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.IO;
-using System.Linq;
 using System.Threading.Tasks;
-using DeliveryWebApp.Application.Products.Queries.GetProducts;
 
 namespace DeliveryWebApp.WebUI.Pages.Restaurateur
 {
@@ -34,16 +33,13 @@ namespace DeliveryWebApp.WebUI.Pages.Restaurateur
         private readonly ILogger<RestaurantDashboardModel> _logger;
         private readonly IMediator _mediator;
         private readonly UserManager<ApplicationUser> _userManager;
-        private readonly IWebHostEnvironment _environment;
-
         public RestaurantDashboardModel(ApplicationDbContext context, ILogger<RestaurantDashboardModel> logger,
-            IMediator mediator, UserManager<ApplicationUser> userManager, IWebHostEnvironment environment)
+            IMediator mediator, UserManager<ApplicationUser> userManager)
         {
             _context = context;
             _logger = logger;
             _mediator = mediator;
             _userManager = userManager;
-            _environment = environment;
         }
 
         public Restaurant Restaurant { get; set; }
@@ -72,7 +68,10 @@ namespace DeliveryWebApp.WebUI.Pages.Restaurateur
         {
             [Required] [DataType(DataType.Upload)] public IFormFile Logo { get; set; }
 
-            [Required] [DataType(DataType.Text)] public string Name { get; set; }
+            [Required]
+            [DataType(DataType.Text)]
+            [StringLength(120, MinimumLength = 3)]
+            public string Name { get; set; }
 
             [DataType(DataType.Text)] public string Category { get; set; }
 
@@ -122,7 +121,7 @@ namespace DeliveryWebApp.WebUI.Pages.Restaurateur
                     RestaurantId = Restaurant.Id
                 });
 
-                Orders = Restaurant.Orders.ToList();
+                //Orders = Restaurant.Orders.ToList();
             }
         }
 
@@ -180,7 +179,7 @@ namespace DeliveryWebApp.WebUI.Pages.Restaurateur
 
         public async Task UploadNewImageAsync()
         {
-            if (Input != null)
+            if (Input != null) // TODO: check
             {
                 byte[] bytes;
 
