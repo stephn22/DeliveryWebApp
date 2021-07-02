@@ -1,8 +1,4 @@
-﻿"use strict"
-
-$(".collapse").onclick(function (event) {
-    event.stopPropagation();
-});
+﻿"use strict";
 
 function loadImage(input) {
     $("#spinner").append(`<div id="spinner-div" class="spinner-border text-primary text-start" role="status">
