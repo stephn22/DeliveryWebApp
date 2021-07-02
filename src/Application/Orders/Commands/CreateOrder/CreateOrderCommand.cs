@@ -29,7 +29,7 @@ namespace DeliveryWebApp.Application.Orders.Commands.CreateOrder
 
         public async Task<int> Handle(CreateOrderCommand request, CancellationToken cancellationToken)
         {
-            var totalPrice = request.Products.Sum(product => product.Price);
+            var totalPrice = Product.TotalPrice(request.Products.ToList());
 
             var entity = new Order
             {

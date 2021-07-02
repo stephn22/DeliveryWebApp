@@ -16,7 +16,7 @@ namespace DeliveryWebApp.Application.Products.Commands.CreateProduct
         public byte[] Image { get; set; }
         public double Price { get; set; }
         public int Discount { get; set; }
-        public string Category { get; set; } // TODO: ?
+        public string Category { get; set; }
         public int Quantity { get; set; }
     }
 

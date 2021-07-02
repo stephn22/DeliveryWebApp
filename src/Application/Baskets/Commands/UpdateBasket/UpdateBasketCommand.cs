@@ -39,8 +39,8 @@ namespace DeliveryWebApp.Application.Baskets.Commands.UpdateBasket
             var products = new Collection<Product> {request.Product};
 
             entity.Products = products;
-            entity.TotalPrice += request.Product.Price;
-            // TODO: Discount
+
+            entity.TotalPrice = Product.TotalPrice(products.ToList());
 
             await _context.SaveChangesAsync(cancellationToken);
 
