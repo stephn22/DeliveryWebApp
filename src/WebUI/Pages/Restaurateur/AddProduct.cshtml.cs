@@ -62,6 +62,7 @@ namespace DeliveryWebApp.WebUI.Pages.Restaurateur
             [DataType(DataType.Currency, ErrorMessage = "Value isn't a price")]
             public double Price { get; set; }
 
+            // TODO: Discount required?
             [Required]
             [RegularExpression("^[0-9][0-9]?$|^100$", ErrorMessage = "The {0} must be digits only from 0 to 100.")]
             [DisplayName("Discount (0 for no discount)")]

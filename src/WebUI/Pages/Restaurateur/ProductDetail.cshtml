@@ -1,0 +1,186 @@
+﻿@page "{id:int?}"
+@model DeliveryWebApp.WebUI.Pages.Restaurateur.ProductDetailModel
+@{
+    ViewData["Title"] = "Product Detail";
+}
+
+@section Head
+{
+    <style type="text/css">
+        .square {
+            position: relative;
+            height: 200px;
+            width: 200px;
+            object-fit: cover;
+        }
+
+        .product-img {
+            height: 200px;
+            width: 200px;
+            object-fit: cover;
+        }
+    </style>
+}
+
+
+<a asp-page="/Restaurateur/RestaurantDashboard" title="Back to dashboard" id="back">
+    <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" fill="black" class="bi bi-arrow-left" viewBox="0 0 16 16">
+        <path fill-rule="evenodd" d="M15 8a.5.5 0 0 0-.5-.5H2.707l3.147-3.146a.5.5 0 1 0-.708-.708l-4 4a.5.5 0 0 0 0 .708l4 4a.5.5 0 0 0 .708-.708L2.707 8.5H14.5A.5.5 0 0 0 15 8z" />
+    </svg>
+</a>
+
+<h1>Detail of Product: @Model.Product.Id</h1>
+
+@* TODO: culture and localize *@
+
+<div>
+    <div class="row">
+        <img class="rounded img-fluid square product-img " src="data:image/jpeg;base64,@Convert.ToBase64String(Model.Product.Image)" alt="product-img" />
+
+        <dl>
+            <dt class="col-sm-2">
+                @Html.DisplayNameFor(model => model.Product.Name)
+            </dt>
+            <dd class="col-sm-10">
+                <div class="form-group">
+                    <label asp-for="Input.Category"></label>
+                    <input class="form-control" asp-for="Input.Category" value="@Html.DisplayFor(model => model.Product.Name)" disabled readonly>
+                </div>
+
+                <form method="post">
+                    <div class="input-group col-md-8">
+                        <input class="form-control" asp-for="Input.Name" placeholder="New Name" aria-label="New Name" />
+                        <div class="input-group-append">
+                            <button class="btn btn-secondary" type="submit">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-pencil-square" viewBox="0 0 16 16">
+                                    <path d="M15.502 1.94a.5.5 0 0 1 0 .706L14.459 3.69l-2-2L13.502.646a.5.5 0 0 1 .707 0l1.293 1.293zm-1.75 2.456-2-2L4.939 9.21a.5.5 0 0 0-.121.196l-.805 2.414a.25.25 0 0 0 .316.316l2.414-.805a.5.5 0 0 0 .196-.12l6.813-6.814z" />
+                                    <path fill-rule="evenodd" d="M1 13.5A1.5 1.5 0 0 0 2.5 15h11a1.5 1.5 0 0 0 1.5-1.5v-6a.5.5 0 0 0-1 0v6a.5.5 0 0 1-.5.5h-11a.5.5 0 0 1-.5-.5v-11a.5.5 0 0 1 .5-.5H9a.5.5 0 0 0 0-1H2.5A1.5 1.5 0 0 0 1 2.5v11z" />
+                                </svg>
+                            </button>
+                        </div>
+                    </div>
+                </form>
+            </dd>
+            <dt class="col-sm-2">
+                @Html.DisplayNameFor(model => model.Product.Category)
+            </dt>
+            <dd class="col-sm-10">
+                <div class="form-group">
+                    <label asp-for="Input.Category"></label>
+                    <input class="form-control" asp-for="Input.Category" value="@Html.DisplayFor(model => model.Product.Category)" disabled readonly>
+                </div>
+
+                <form method="post">
+                    <div class="input-group col-md-8">
+                        <select class="form-select" aria-label="Select role" asp-for="Input.Category" aria-selected="true" asp-items="Model.Categories">
+                        </select>
+                        <span asp-validation-for="Input.Category" class="text-danger"></span>
+                        <div class="input-group-append">
+                            <button class="btn btn-secondary" type="submit" value="NewCategory">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-pencil-square" viewBox="0 0 16 16">
+                                    <path d="M15.502 1.94a.5.5 0 0 1 0 .706L14.459 3.69l-2-2L13.502.646a.5.5 0 0 1 .707 0l1.293 1.293zm-1.75 2.456-2-2L4.939 9.21a.5.5 0 0 0-.121.196l-.805 2.414a.25.25 0 0 0 .316.316l2.414-.805a.5.5 0 0 0 .196-.12l6.813-6.814z" />
+                                    <path fill-rule="evenodd" d="M1 13.5A1.5 1.5 0 0 0 2.5 15h11a1.5 1.5 0 0 0 1.5-1.5v-6a.5.5 0 0 0-1 0v6a.5.5 0 0 1-.5.5h-11a.5.5 0 0 1-.5-.5v-11a.5.5 0 0 1 .5-.5H9a.5.5 0 0 0 0-1H2.5A1.5 1.5 0 0 0 1 2.5v11z" />
+                                </svg>
+                            </button>
+                        </div>
+                    </div>
+                </form>
+            </dd>
+            <dt class="col-sm-2">
+                @Html.DisplayNameFor(model => model.Product.Price)
+            </dt>
+            <dd class="col-sm-10">
+                <div class="form-group">
+                    <label asp-for="Input.Category"></label>
+                    <input class="form-control" asp-for="Input.Category" value="@Html.DisplayFor(model => model.Product.Price)" disabled readonly>
+                </div>
+
+                <form method="post">
+                    <div class="input-group col-md-8">
+                        <input class="form-control" asp-for="Input.Price" placeholder="New Name" aria-label="New Name" />
+                        <div class="input-group-append">
+                            <button class="btn btn-secondary" type="submit">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-pencil-square" viewBox="0 0 16 16">
+                                    <path d="M15.502 1.94a.5.5 0 0 1 0 .706L14.459 3.69l-2-2L13.502.646a.5.5 0 0 1 .707 0l1.293 1.293zm-1.75 2.456-2-2L4.939 9.21a.5.5 0 0 0-.121.196l-.805 2.414a.25.25 0 0 0 .316.316l2.414-.805a.5.5 0 0 0 .196-.12l6.813-6.814z" />
+                                    <path fill-rule="evenodd" d="M1 13.5A1.5 1.5 0 0 0 2.5 15h11a1.5 1.5 0 0 0 1.5-1.5v-6a.5.5 0 0 0-1 0v6a.5.5 0 0 1-.5.5h-11a.5.5 0 0 1-.5-.5v-11a.5.5 0 0 1 .5-.5H9a.5.5 0 0 0 0-1H2.5A1.5 1.5 0 0 0 1 2.5v11z" />
+                                </svg>
+                            </button>
+                        </div>
+                    </div>
+                </form>
+            </dd>
+            <dt class="col-sm-2">
+                @Html.DisplayNameFor(model => model.Product.Discount)
+            </dt>
+            <dd class="col-sm-10">
+                <div class="form-group">
+                    <label asp-for="Input.Category"></label>
+                    <input class="form-control" asp-for="Input.Category" value="@Html.DisplayFor(model => model.Product.Discount)%" disabled readonly>
+                </div>
+
+                <form method="post">
+                    <div class="input-group col-md-8">
+                        <input class="form-control" asp-for="Input.Discount" placeholder="New Name" aria-label="New Name" />
+                        <div class="input-group-append">
+                            <button class="btn btn-secondary" type="submit">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-pencil-square" viewBox="0 0 16 16">
+                                    <path d="M15.502 1.94a.5.5 0 0 1 0 .706L14.459 3.69l-2-2L13.502.646a.5.5 0 0 1 .707 0l1.293 1.293zm-1.75 2.456-2-2L4.939 9.21a.5.5 0 0 0-.121.196l-.805 2.414a.25.25 0 0 0 .316.316l2.414-.805a.5.5 0 0 0 .196-.12l6.813-6.814z" />
+                                    <path fill-rule="evenodd" d="M1 13.5A1.5 1.5 0 0 0 2.5 15h11a1.5 1.5 0 0 0 1.5-1.5v-6a.5.5 0 0 0-1 0v6a.5.5 0 0 1-.5.5h-11a.5.5 0 0 1-.5-.5v-11a.5.5 0 0 1 .5-.5H9a.5.5 0 0 0 0-1H2.5A1.5 1.5 0 0 0 1 2.5v11z" />
+                                </svg>
+                            </button>
+                        </div>
+                    </div>
+                </form>
+            </dd>
+            <dt class="col-sm-2">
+                @Html.DisplayNameFor(model => model.Product.Quantity)
+            </dt>
+            <dd class="col-sm-10">
+                <div class="form-group">
+                    <label asp-for="Input.Category"></label>
+                    <input class="form-control" asp-for="Input.Category" value="@Html.DisplayFor(model => model.Product.Quantity)" disabled readonly>
+                </div>
+                
+                <form method="post">
+                    <div class="form-row">
+                        <div class="col-3">
+                            <p class="form-label">
+                                Quantity:
+                                <p id="range-output"> </p>
+                            </p>
+                            <input type="range" asp-for="Input.Quantity" class="form-range col-3" value="0" step="1" min="0" max="500" id="quantityRange">
+                        </div>
+                    </div>
+                    
+                    <button class="btn btn-outline-secondary" type="submit">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-pencil-square" viewBox="0 0 16 16">
+                            <path d="M15.502 1.94a.5.5 0 0 1 0 .706L14.459 3.69l-2-2L13.502.646a.5.5 0 0 1 .707 0l1.293 1.293zm-1.75 2.456-2-2L4.939 9.21a.5.5 0 0 0-.121.196l-.805 2.414a.25.25 0 0 0 .316.316l2.414-.805a.5.5 0 0 0 .196-.12l6.813-6.814z"/>
+                            <path fill-rule="evenodd" d="M1 13.5A1.5 1.5 0 0 0 2.5 15h11a1.5 1.5 0 0 0 1.5-1.5v-6a.5.5 0 0 0-1 0v6a.5.5 0 0 1-.5.5h-11a.5.5 0 0 1-.5-.5v-11a.5.5 0 0 1 .5-.5H9a.5.5 0 0 0 0-1H2.5A1.5 1.5 0 0 0 1 2.5v11z"/>
+                        </svg>
+                    </button>
+                </form>
+            </dd>
+        </dl>
+
+    </div>
+</div>
+
+@section Scripts
+{
+    <partial name="_ValidationScriptsPartial" />
+
+    <script defer type="text/javascript" src="/js/image-utilities.js"></script>
+
+    <script defer type="text/javascript">
+        "use strict";
+        const range = document.getElementById("quantityRange");
+        const output = document.getElementById("range-output");
+
+        output.innerHTML = range.value;
+
+        range.oninput = function() {
+            output.innerHTML = this.value;
+        }
+
+    </script>
+}
