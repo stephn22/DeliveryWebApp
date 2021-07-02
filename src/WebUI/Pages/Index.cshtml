@@ -12,18 +12,21 @@
     var isRestaurateur = (await AuthorizationService.AuthorizeAsync(User, PolicyName.IsRestaurateur)).Succeeded;
     var isRider = (await AuthorizationService.AuthorizeAsync(User, PolicyName.IsRider)).Succeeded;
     var isDefault = (await AuthorizationService.AuthorizeAsync(User, PolicyName.IsDefault)).Succeeded;
+    var isCustomer = (await AuthorizationService.AuthorizeAsync(User, PolicyName.IsCustomer)).Succeeded;
     var isAdmin = User.IsInRole(RoleName.Admin);
     ViewData["Title"] = localizer["Home page"];
 }
 
+<link rel="stylesheet" href="/css/index.css" type="text/css"/>
+
 <div class="text-center">
-    @* TODO: insert register as rider, add restaurant like ubereats *@
+    @* TODO: localize *@
     @if (isAdmin)
     {
         <h1 class="display-4">@localizer["Welcome Administrator"]</h1>
-        <img src="/icons/undraw_Profile_re_4a55.svg" alt="admin" height="520" width="520" class="text-center" />
+        <img src="/icons/undraw_Profile_re_4a55.svg" alt="admin" height="520" width="520" class="text-center"/>
     }
-    @if (isRider)
+    @*@if (isRider)
     {
         <h1 class="display-4">Welcome</h1>
     }
@@ -34,6 +37,72 @@
     @if (isDefault)
     {
         <h1 class="display-4">Welcome</h1>
+    }*@
+
+    @if (isCustomer)
+    {
+        <div id="myCarousel" class="carousel slide" data-bs-ride="carousel">
+            <div class="carousel-indicators">
+                <button type="button" data-bs-target="#myCarousel" data-bs-slide-to="0" class="active" aria-current="true" aria-label="Slide 1"></button>
+                <button type="button" data-bs-target="#myCarousel" data-bs-slide-to="1" aria-label="Slide 2"></button>
+                <button type="button" data-bs-target="#myCarousel" data-bs-slide-to="2" aria-label="Slide 3"></button>
+            </div>
+            <div class="carousel-inner">
+                <div class="carousel-item active">
+                    <svg class="bd-placeholder-img" width="100%" height="100%" xmlns="http://www.w3.org/2000/svg" aria-hidden="true" preserveAspectRatio="xMidYMid slice" focusable="false">
+                        <rect width="100%" height="100%" fill="#777"/>
+                    </svg>
+
+                    <div class="container">
+                        <div class="carousel-caption text-start">
+                            <h1>@localizer["Browse food vendors in your area"]</h1>
+                            <p>@localizer["Browse food vendors list, select one and start ordering food"]</p>
+                            <p>
+                                <a class="btn btn-lg btn-primary" asp-page="">@localizer["Browse"]</a>
+                            </p>
+                        </div>
+                    </div>
+                </div>
+                <div class="carousel-item">
+                    <svg class="bd-placeholder-img" width="100%" height="100%" xmlns="http://www.w3.org/2000/svg" aria-hidden="true" preserveAspectRatio="xMidYMid slice" focusable="false">
+                        <rect width="100%" height="100%" fill="#777"/>
+                    </svg>
+
+                    <div class="container">
+                        <div class="carousel-caption">
+                            <h1>@localizer["Become a rider"]</h1>
+                            <p>@localizer["Become a rider and start delivering food to customers"]</p>
+                            <p>
+                                <a class="btn btn-lg btn-primary" asp-page="">@localizer["Sign up today"]</a>
+                            </p>
+                        </div>
+                    </div>
+                </div>
+                <div class="carousel-item">
+                    <svg class="bd-placeholder-img" width="100%" height="100%" xmlns="http://www.w3.org/2000/svg" aria-hidden="true" preserveAspectRatio="xMidYMid slice" focusable="false">
+                        <rect width="100%" height="100%" fill="#777"/>
+                    </svg>
+
+                    <div class="container">
+                        <div class="carousel-caption text-end">
+                            <h1>@localizer["Become a restaurateur"]</h1>
+                            <p>@localizer["Become a restaurateur, register your restaurant and start the business"]</p>
+                            <p>
+                                <a class="btn btn-lg btn-primary" asp-page="">@localizer["Sign up"]</a>
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <button class="carousel-control-prev" type="button" data-bs-target="#myCarousel" data-bs-slide="prev">
+                <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+                <span class="visually-hidden">Previous</span>
+            </button>
+            <button class="carousel-control-next" type="button" data-bs-target="#myCarousel" data-bs-slide="next">
+                <span class="carousel-control-next-icon" aria-hidden="true"></span>
+                <span class="visually-hidden">Next</span>
+            </button>
+        </div>
     }
 
     @* TODO: Update this page *@
