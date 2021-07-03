@@ -29,14 +29,15 @@ namespace DeliveryWebApp.Application.IntegrationTests.Customers.Commands
                 ApplicationUserFk = "application-user-fk"
             };
 
-
-
             var itemId = await SendAsync(command);
 
             var customer = await FindAsync<Customer>(itemId);
 
             customer.Should().NotBeNull();
             customer.ApplicationUserFk.Should().Be(command.ApplicationUserFk);
+            customer.Addresses.Should().BeNullOrEmpty();
+            customer.Orders.Should().BeNullOrEmpty();
+            customer.Basket.Should().BeNull();
         }
     }
 }
