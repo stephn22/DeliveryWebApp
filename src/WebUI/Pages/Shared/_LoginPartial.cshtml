@@ -20,7 +20,7 @@
     {
         <li class="nav-item">
             <div class="btn-group">
-                <button type="button" class="btn btn-outline-primary dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false">
+                <button type="button" class="btn btn-outline-dark dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false">
                     @User.Identity.Name
                 </button>
 
@@ -35,7 +35,7 @@
                     @if (isRestaurateur)
                     {
                         <li>
-                            <a class="dropdown-item" asp-page="/Restaurateur/RestaurantDashboard">
+                            <a class="dropdown-item" asp-page="/RestaurateurPages/RestaurantDashboard">
                                 <img src="/icons/shop.svg" alt="shop" height="16" width="16" />
                                 @localizer["Dashboard"]
                             </a>
@@ -68,13 +68,13 @@
                     @if (isCustomer)
                     {
                         <li>
-                            <a class="dropdown-item" asp-page="/Customer/Basket">
+                            <a class="dropdown-item" asp-page="/CustomerPages/Basket">
                                 <img src="/icons/cart.svg" alt="cart" height="16" width="16"/>
                                 @localizer["Cart"]
                             </a>
                         </li>
                         <li>
-                            <a class="dropdown-item" asp-page="/Customer/Orders">
+                            <a class="dropdown-item" asp-page="/CustomerPages/Orders">
                                 <img src="/icons/clock-history.svg" alt="clock-history" height="16" width="16" />
                                 @localizer["Order History"]
                             </a>
@@ -89,19 +89,19 @@
                     @if (isAdmin)
                     {
                         <li>
-                            <a class="dropdown-item" asp-page="/Admin/Requests">
+                            <a class="dropdown-item" asp-page="/AdminPages/Requests">
                                 <img src="/icons/person-badge.svg" alt="person-badge" height="16" width="16" />
                                 @localizer["User Requests"]
                             </a>
                         </li>
                         <li>
-                            <a class="dropdown-item" asp-page="/Admin/UserList">
+                            <a class="dropdown-item" asp-page="/AdminPages/UserList">
                                 <img src="/icons/people.svg" alt="people" height="16" width="16" />
                                 @localizer["User List"]
                             </a>
                         </li>
                         <li>
-                            <a class="dropdown-item" asp-page="/Admin/Orders">
+                            <a class="dropdown-item" asp-page="/AdminPages/Orders">
                                 <img src="/icons/box-seam.svg" alt="box-seam" height="16" width="16" />
                                 @localizer["Orders"]
                             </a>

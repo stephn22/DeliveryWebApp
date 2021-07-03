@@ -1,6 +1,7 @@
 ﻿@page
 @using DeliveryWebApp.Infrastructure.Identity
 @using DeliveryWebApp.Infrastructure.Security
+@using IdentityServer4.Extensions
 @using Microsoft.AspNetCore.Authorization
 @using Microsoft.AspNetCore.Identity
 @using Microsoft.Extensions.Localization
@@ -13,6 +14,7 @@
     var isRider = (await AuthorizationService.AuthorizeAsync(User, PolicyName.IsRider)).Succeeded;
     var isDefault = (await AuthorizationService.AuthorizeAsync(User, PolicyName.IsDefault)).Succeeded;
     var isCustomer = (await AuthorizationService.AuthorizeAsync(User, PolicyName.IsCustomer)).Succeeded;
+    var isLogged = User.IsAuthenticated();
     var isAdmin = User.IsInRole(RoleName.Admin);
     ViewData["Title"] = localizer["Home page"];
 }
@@ -21,24 +23,26 @@
 
 <div class="text-center">
     
-    
-    <main class="px-3">
-        <h1>@localizer["Register or Log in"]</h1>
-        <p class="lead">
-            @localizer["Register or log in to start accessing features"]
-        </p>
-        <p class="lead">
+    @if (!isLogged)
+    {
+        <main class="px-3">
+            <h1>@localizer["Register or Log in"]</h1>
+            <p class="lead">
+                @localizer["Register or log in to start accessing features"]
+            </p>
+            <p class="lead">
 
-            <a class="btn btn-outline-dark rounded-pill" asp-area="Identity" asp-page="/Account/Register">
-                Register
-            </a>
+                <a class="btn btn-outline-dark rounded-pill" asp-area="Identity" asp-page="/Account/Register">
+                    Register
+                </a>
                 
-            <a class="btn btn-outline-dark rounded-pill" asp-area="Identity" asp-page="/Account/Login">
-                Login
-            </a>
-        </p>
-        <img src="/icons/undraw_healthy_options_sdo3.svg" alt="index-image" width="420" height="420"/>
-    </main>
+                <a class="btn btn-outline-dark rounded-pill" asp-area="Identity" asp-page="/Account/Login">
+                    Login
+                </a>
+            </p>
+            <img src="/icons/undraw_healthy_options_sdo3.svg" alt="index-image" width="420" height="420"/>
+        </main>
+    }
 
     @if (isAdmin)
     {
