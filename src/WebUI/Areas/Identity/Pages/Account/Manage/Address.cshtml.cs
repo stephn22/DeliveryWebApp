@@ -13,6 +13,7 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Threading.Tasks;
@@ -50,6 +51,10 @@ namespace DeliveryWebApp.WebUI.Areas.Identity.Pages.Account.Manage
 
         public class InputModel
         {
+            [DataType(DataType.Text)]
+            [DisplayName("Address")]
+            public string AddressGeoLoc { get; set; }
+
             [Required]
             [DataType(DataType.Text)]
             [Display(Name = "Address Line 1")]
