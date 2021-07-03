@@ -20,7 +20,7 @@
 
   <ItemGroup>
     <Folder Include="Addresses\Extensions\" />
-    <Folder Include="Restaurants\Queries\" />
+    <Folder Include="Restaurants\Queries\GetRestaurantsWithPagination\" />
   </ItemGroup>
 
 </Project>
