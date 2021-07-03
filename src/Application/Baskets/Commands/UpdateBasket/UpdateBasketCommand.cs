@@ -36,11 +36,11 @@ namespace DeliveryWebApp.Application.Baskets.Commands.UpdateBasket
                 throw new NotFoundException(nameof(Basket), request.BasketId);
             }
 
-            var products = new Collection<Product> {request.Product};
+            // if Products is null instantiate a new list
+            entity.Products ??= new List<Product>();
+            entity.Products.Add(request.Product);
 
-            entity.Products = products;
-
-            entity.TotalPrice = Product.TotalPrice(products.ToList());
+            entity.TotalPrice = Product.TotalPrice(entity.Products.ToList());
 
             await _context.SaveChangesAsync(cancellationToken);
 

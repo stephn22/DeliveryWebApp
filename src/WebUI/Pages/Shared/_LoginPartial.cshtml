@@ -11,7 +11,7 @@
 @{
     var isRestaurateur = (await AuthorizationService.AuthorizeAsync(User, PolicyName.IsRestaurateur)).Succeeded;
     var isRider = (await AuthorizationService.AuthorizeAsync(User, PolicyName.IsRider)).Succeeded;
-    var isClient = (await AuthorizationService.AuthorizeAsync(User, PolicyName.IsCustomer)).Succeeded;
+    var isCustomer = (await AuthorizationService.AuthorizeAsync(User, PolicyName.IsCustomer)).Succeeded;
     var isAdmin = User.IsInRole(RoleName.Admin);
 }
 
@@ -65,8 +65,14 @@
                             </a>
                         </li>
                     }
-                    @if (isClient)
+                    @if (isCustomer)
                     {
+                        <li>
+                            <a class="dropdown-item" asp-page="/Customer/Basket">
+                                <img src="/icons/cart.svg" alt="cart" height="16" width="16"/>
+                                @localizer["Cart"]
+                            </a>
+                        </li>
                         <li>
                             <a class="dropdown-item" asp-page="/Customer/Orders">
                                 <img src="/icons/clock-history.svg" alt="clock-history" height="16" width="16" />
