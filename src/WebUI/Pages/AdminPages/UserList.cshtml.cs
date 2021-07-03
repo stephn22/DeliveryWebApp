@@ -1,3 +1,8 @@
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
+using DeliveryWebApp.Application.Customers.Commands.DeleteCustomer;
+using DeliveryWebApp.Application.Customers.Queries.GetCustomers;
 using DeliveryWebApp.Application.Restaurateurs.Queries.GetRestaurateurs;
 using DeliveryWebApp.Application.Riders.Queries.GetRiders;
 using DeliveryWebApp.Domain.Entities;
@@ -11,13 +16,8 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.Extensions.Logging;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using DeliveryWebApp.Application.Customers.Commands.DeleteCustomer;
-using DeliveryWebApp.Application.Customers.Queries.GetCustomers;
 
-namespace DeliveryWebApp.WebUI.Pages.Admin
+namespace DeliveryWebApp.WebUI.Pages.AdminPages
 {
     [Authorize(Roles = RoleName.Admin)]
     public class UserListModel : PageModel

@@ -1,4 +1,8 @@
+using System.ComponentModel.DataAnnotations;
+using System.Security.Claims;
+using System.Threading.Tasks;
 using DeliveryWebApp.Application.Customers.Extensions;
+using DeliveryWebApp.Application.Requests.Commands.UpdateRequest;
 using DeliveryWebApp.Application.Restaurateurs.Commands.CreateRestaurateur;
 using DeliveryWebApp.Application.Riders.Commands.CreateRider;
 using DeliveryWebApp.Domain.Constants;
@@ -14,13 +18,8 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
-using System.ComponentModel.DataAnnotations;
-using System.Linq;
-using System.Security.Claims;
-using System.Threading.Tasks;
-using DeliveryWebApp.Application.Requests.Commands.UpdateRequest;
 
-namespace DeliveryWebApp.WebUI.Pages.Admin
+namespace DeliveryWebApp.WebUI.Pages.AdminPages
 {
     [Authorize(Roles = RoleName.Admin)]
     public class RequestDetailModel : PageModel

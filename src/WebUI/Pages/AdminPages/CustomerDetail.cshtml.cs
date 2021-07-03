@@ -1,8 +1,15 @@
+using System.ComponentModel.DataAnnotations;
+using System.Security.Claims;
+using System.Threading.Tasks;
 using DeliveryWebApp.Application.Common.Security;
-using DeliveryWebApp.Application.Customers.Extensions;
+using DeliveryWebApp.Application.Customers.Commands.DeleteCustomer;
+using DeliveryWebApp.Application.Restaurateurs.Commands.CreateRestaurateur;
+using DeliveryWebApp.Application.Restaurateurs.Commands.DeleteRestaurateur;
 using DeliveryWebApp.Application.Restaurateurs.Extensions;
+using DeliveryWebApp.Application.Riders.Commands.CreateRider;
+using DeliveryWebApp.Application.Riders.Commands.DeleteRider;
+using DeliveryWebApp.Application.Riders.Commands.UpdateRider;
 using DeliveryWebApp.Application.Riders.Extensions;
-
 using DeliveryWebApp.Infrastructure.Identity;
 using DeliveryWebApp.Infrastructure.Persistence;
 using DeliveryWebApp.Infrastructure.Security;
@@ -12,17 +19,8 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.Extensions.Logging;
-using System.ComponentModel.DataAnnotations;
-using System.Security.Claims;
-using System.Threading.Tasks;
-using DeliveryWebApp.Application.Customers.Commands.DeleteCustomer;
-using DeliveryWebApp.Application.Restaurateurs.Commands.CreateRestaurateur;
-using DeliveryWebApp.Application.Restaurateurs.Commands.DeleteRestaurateur;
-using DeliveryWebApp.Application.Riders.Commands.CreateRider;
-using DeliveryWebApp.Application.Riders.Commands.DeleteRider;
-using DeliveryWebApp.Application.Riders.Commands.UpdateRider;
 
-namespace DeliveryWebApp.WebUI.Pages.Admin
+namespace DeliveryWebApp.WebUI.Pages.AdminPages
 {
     [Authorize(Roles = RoleName.Admin)]
     public class CustomerDetailModel : PageModel
