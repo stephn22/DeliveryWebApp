@@ -7,12 +7,13 @@ using DeliveryWebApp.Domain.Entities;
 using DeliveryWebApp.Infrastructure.Persistence;
 using DeliveryWebApp.Infrastructure.Security;
 using MediatR;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.Extensions.Logging;
 
-namespace DeliveryWebApp.WebUI.Pages.Restaurateur
+namespace DeliveryWebApp.WebUI.Pages.RestaurateurPages
 {
     [Authorize(Policy = PolicyName.IsRestaurateur)]
     public class ProductDetailModel : PageModel
@@ -41,6 +42,10 @@ namespace DeliveryWebApp.WebUI.Pages.Restaurateur
             [Required]
             [DataType(DataType.Text)]
             public string Name { get; set; }
+
+            [Required]
+            [DataType(DataType.Upload)]
+            public IFormFile Image { get; set; }
 
             [Required]
             [DataType(DataType.Text)]

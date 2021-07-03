@@ -12,7 +12,6 @@ using DeliveryWebApp.Infrastructure.Security;
 using DeliveryWebApp.Infrastructure.Services.Utilities;
 using MediatR;
 using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
@@ -24,7 +23,7 @@ using System.ComponentModel.DataAnnotations;
 using System.IO;
 using System.Threading.Tasks;
 
-namespace DeliveryWebApp.WebUI.Pages.Restaurateur
+namespace DeliveryWebApp.WebUI.Pages.RestaurateurPages
 {
     [Authorize(Policy = PolicyName.IsRestaurateur)]
     public class RestaurantDashboardModel : PageModel
@@ -44,7 +43,7 @@ namespace DeliveryWebApp.WebUI.Pages.Restaurateur
 
         public Restaurant Restaurant { get; set; }
         public Address RestaurantAddress { get; set; }
-        public Domain.Entities.Restaurateur Restaurateur { get; set; }
+        public Restaurateur Restaurateur { get; set; }
         public IList<Product> Products { get; set; }
         public IList<Order> Orders { get; set; }
 

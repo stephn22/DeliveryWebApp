@@ -1,12 +1,4 @@
-using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.ComponentModel.DataAnnotations;
-using System.IO;
-using System.Linq;
-using System.Threading.Tasks;
 using DeliveryWebApp.Application.Common.Security;
-using DeliveryWebApp.Application.Products.Commands.CreateProduct;
 using DeliveryWebApp.Application.Restaurants.Commands.UpdateRestaurant;
 using DeliveryWebApp.Application.Restaurants.Extensions;
 using DeliveryWebApp.Application.Restaurateurs.Extensions;
@@ -21,8 +13,13 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.Extensions.Logging;
+using System.Collections.Generic;
+using System.ComponentModel;
+using System.ComponentModel.DataAnnotations;
+using System.IO;
+using System.Threading.Tasks;
 
-namespace DeliveryWebApp.WebUI.Pages.Restaurateur
+namespace DeliveryWebApp.WebUI.Pages.RestaurateurPages
 {
     [Authorize(Policy = PolicyName.IsRestaurateur)]
     public class AddProductModel : PageModel
@@ -42,7 +39,7 @@ namespace DeliveryWebApp.WebUI.Pages.Restaurateur
         }
 
         // TODO: Selectlist item for category
-        [BindProperty] public IEnumerable<SelectListItem> Categories  { get; set; }
+        [BindProperty] public IEnumerable<SelectListItem> Categories { get; set; }
 
         [BindProperty]
         public InputModel Input { get; set; }
