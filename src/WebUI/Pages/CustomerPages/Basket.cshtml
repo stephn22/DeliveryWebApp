@@ -1,0 +1,15 @@
+﻿@page
+@model DeliveryWebApp.WebUI.Pages.CustomerPages.BasketModel
+@{
+    ViewData["Title"] = "Basket";
+}
+
+@if (Model.Basket == null)
+{
+    <div class="alert alert-secondary" role="alert">
+        Your cart is empty
+    </div>
+    <div class="text-center">
+        <img src="/icons/undraw_empty_cart_co35.svg" alt="empty_cart" height="500" width="500"/>
+    </div>
+}

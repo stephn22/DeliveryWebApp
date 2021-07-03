@@ -1,18 +1,18 @@
-using DeliveryWebApp.Application.Common.Security;
-using DeliveryWebApp.Domain.Entities;
-using DeliveryWebApp.Infrastructure.Persistence;
-using DeliveryWebApp.Infrastructure.Security;
-using Microsoft.AspNetCore.Mvc.RazorPages;
-using Microsoft.EntityFrameworkCore;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using DeliveryWebApp.Application.Common.Security;
+using DeliveryWebApp.Domain.Entities;
 using DeliveryWebApp.Infrastructure.Identity;
+using DeliveryWebApp.Infrastructure.Persistence;
+using DeliveryWebApp.Infrastructure.Security;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.RazorPages;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 
-namespace DeliveryWebApp.WebUI.Pages.Customer
+namespace DeliveryWebApp.WebUI.Pages.CustomerPages
 {
     [Authorize(Policy = PolicyName.IsCustomer)]
     public class OrdersModel : PageModel
