@@ -14,7 +14,6 @@
     .map-btn { margin-top: 1rem; }
 </style>
 
-
 <h4>@ViewData["Title"]</h4>
 
 <partial name="_StatusMessage" for="StatusMessage"/>
@@ -50,75 +49,46 @@
         <p>Add your primary address</p>
 
         <form method="post">
-            <div class="form-group col-md-6">
-                <label asp-for="Input.AddressGeoLoc" class="form-label"></label>
-                <div class="input-group">
-                    <input class="form-control" asp-for="Input.AddressGeoLoc" id="address-geo-loc"/>
-                    <div class="form-group-append">
-                        <button class="btn btn-secondary" type="button" onclick="getLocation()">
-                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-geo-alt" viewBox="0 0 16 16">
-                                <path d="M12.166 8.94c-.524 1.062-1.234 2.12-1.96 3.07A31.493 31.493 0 0 1 8 14.58a31.481 31.481 0 0 1-2.206-2.57c-.726-.95-1.436-2.008-1.96-3.07C3.304 7.867 3 6.862 3 6a5 5 0 0 1 10 0c0 .862-.305 1.867-.834 2.94zM8 16s6-5.686 6-10A6 6 0 0 0 2 6c0 4.314 6 10 6 10z"/>
-                                <path d="M8 8a2 2 0 1 1 0-4 2 2 0 0 1 0 4zm0 1a3 3 0 1 0 0-6 3 3 0 0 0 0 6z"/>
-                            </svg>
-                        </button>
-                    </div>
+            <div class="form-row">
+                <div class="form-group col-md-6">
+                    <label asp-for="Input.AddressLine1"></label>
+                    <input class="form-control" asp-for="Input.AddressLine1" placeholder="Address Line 1">
+                    <span asp-validation-for="Input.AddressLine1" class="text-danger"></span>
+                </div>
+                <div class="form-group col-md-6">
+                    <label asp-for="Input.AddressLine2"></label>
+                    <input class="form-control" asp-for="Input.AddressLine2" placeholder="Address Line 2">
+                    <span asp-validation-for="Input.AddressLine2" class="text-danger"></span>
                 </div>
             </div>
-        </form>
 
-        <button class="btn btn-primary" type="button" data-bs-toggle="collapse" data-bs-target="#editAddress-0-Collapse" aria-epanded="false" aria-controls="editAddress-0-Collapse">
-            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-pencil-square" viewBox="0 0 16 16">
-                <path d="M15.502 1.94a.5.5 0 0 1 0 .706L14.459 3.69l-2-2L13.502.646a.5.5 0 0 1 .707 0l1.293 1.293zm-1.75 2.456-2-2L4.939 9.21a.5.5 0 0 0-.121.196l-.805 2.414a.25.25 0 0 0 .316.316l2.414-.805a.5.5 0 0 0 .196-.12l6.813-6.814z"/>
-                <path fill-rule="evenodd" d="M1 13.5A1.5 1.5 0 0 0 2.5 15h11a1.5 1.5 0 0 0 1.5-1.5v-6a.5.5 0 0 0-1 0v6a.5.5 0 0 1-.5.5h-11a.5.5 0 0 1-.5-.5v-11a.5.5 0 0 1 .5-.5H9a.5.5 0 0 0 0-1H2.5A1.5 1.5 0 0 0 1 2.5v11z"/>
-            </svg>
-            Edit manually
-        </button>
-
-        <div class="collapse" id="editAddress-0-Collapse">
-            <div class="card card-body">
-                <form method="post">
-                    <div class="form-row">
-                        <div class="form-group col-md-6">
-                            <label asp-for="Input.AddressLine1"></label>
-                            <input class="form-control" asp-for="Input.AddressLine1" placeholder="Address Line 1">
-                            <span asp-validation-for="Input.AddressLine1" class="text-danger"></span>
-                        </div>
-                        <div class="form-group col-md-6">
-                            <label asp-for="Input.AddressLine2"></label>
-                            <input class="form-control" asp-for="Input.AddressLine2" placeholder="Address Line 2">
-                            <span asp-validation-for="Input.AddressLine2" class="text-danger"></span>
-                        </div>
-                    </div>
-
-                    <div class="form-row">
-                        <div class="form-group col-2">
-                            <label asp-for="Input.Number"></label>
-                            <input class="form-control" asp-for="Input.Number" placeholder="1, 21B...">
-                            <span asp-validation-for="Input.Number" class="text-danger"></span>
-                        </div>
-                        <div class="form-group col-md-6">
-                            <label asp-for="Input.City"></label>
-                            <input class="form-control" asp-for="Input.City" placeholder="City">
-                            <span asp-validation-for="Input.City" class="text-danger"></span>
-                        </div>
-                    </div>
-                    <div class="form-row">
-                        <div class="form-group col-md-6">
-                            <label asp-for="Input.PostalCode"></label>
-                            <input class="form-control" asp-for="Input.PostalCode" placeholder="Postal Code: 20020...">
-                            <span asp-validation-for="Input.PostalCode" class="text-danger"></span>
-                        </div>
-                        <div class="form-group col-md-4">
-                            <label asp-for="Input.Country"></label>
-                            <select class="form-select" aria-label="Select country" asp-for="Input.Country" asp-items="Model.Countries">
-                            </select>
-                            <span asp-validation-for="Input.Country" class="text-danger"></span>
-                        </div>
-                    </div>
-                    <button type="submit" class="btn btn-primary">Submit</button>
-                </form>
+            <div class="form-row">
+                <div class="form-group col-2">
+                    <label asp-for="Input.Number"></label>
+                    <input class="form-control" asp-for="Input.Number" placeholder="1, 21B...">
+                    <span asp-validation-for="Input.Number" class="text-danger"></span>
+                </div>
+                <div class="form-group col-md-6">
+                    <label asp-for="Input.City"></label>
+                    <input class="form-control" asp-for="Input.City" placeholder="City">
+                    <span asp-validation-for="Input.City" class="text-danger"></span>
+                </div>
             </div>
-        </div>
+            <div class="form-row">
+                <div class="form-group col-md-6">
+                    <label asp-for="Input.PostalCode"></label>
+                    <input class="form-control" asp-for="Input.PostalCode" placeholder="Postal Code: 20020...">
+                    <span asp-validation-for="Input.PostalCode" class="text-danger"></span>
+                </div>
+                <div class="form-group col-md-4">
+                    <label asp-for="Input.Country"></label>
+                    <select class="form-select" aria-label="Select country" asp-for="Input.Country" asp-items="Model.Countries">
+                    </select>
+                    <span asp-validation-for="Input.Country" class="text-danger"></span>
+                </div>
+            </div>
+            <button type="submit" class="btn btn-primary">Submit</button>
+        </form>
     }
     else
     {
@@ -196,84 +166,55 @@
         <p>Add your secondary address</p>
 
         <form method="post">
-            <div class="form-group col-md-6">
-                <label asp-for="Input.AddressGeoLoc" class="form-label"></label>
-                <div class="input-group">
-                    <input class="form-control" asp-for="Input.AddressGeoLoc" id="address-geo-loc"/>
-                    <div class="form-group-append">
-                        <button class="btn btn-secondary" type="button" onclick="getLocation()">
-                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-geo-alt" viewBox="0 0 16 16">
-                                <path d="M12.166 8.94c-.524 1.062-1.234 2.12-1.96 3.07A31.493 31.493 0 0 1 8 14.58a31.481 31.481 0 0 1-2.206-2.57c-.726-.95-1.436-2.008-1.96-3.07C3.304 7.867 3 6.862 3 6a5 5 0 0 1 10 0c0 .862-.305 1.867-.834 2.94zM8 16s6-5.686 6-10A6 6 0 0 0 2 6c0 4.314 6 10 6 10z"/>
-                                <path d="M8 8a2 2 0 1 1 0-4 2 2 0 0 1 0 4zm0 1a3 3 0 1 0 0-6 3 3 0 0 0 0 6z"/>
-                            </svg>
-                        </button>
-                    </div>
+            <div class="form-row">
+                <div class="form-group col-md-6">
+                    <label asp-for="Input.AddressLine1"></label>
+                    <input class="form-control" asp-for="Input.AddressLine1" placeholder="Address Line 1">
+                    <span asp-validation-for="Input.AddressLine1" class="text-danger"></span>
+                </div>
+                <div class="form-group col-md-6">
+                    <label asp-for="Input.AddressLine2"></label>
+                    <input class="form-control" asp-for="Input.AddressLine2" placeholder="Address Line 2">
+                    <span asp-validation-for="Input.AddressLine2" class="text-danger"></span>
                 </div>
             </div>
-        </form>
 
-        <button class="btn btn-primary" type="button" data-bs-toggle="collapse" data-bs-target="#editAddress-1-Collapse" aria-epanded="false" aria-controls="editAddress-1-Collapse">
-            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-pencil-square" viewBox="0 0 16 16">
-                <path d="M15.502 1.94a.5.5 0 0 1 0 .706L14.459 3.69l-2-2L13.502.646a.5.5 0 0 1 .707 0l1.293 1.293zm-1.75 2.456-2-2L4.939 9.21a.5.5 0 0 0-.121.196l-.805 2.414a.25.25 0 0 0 .316.316l2.414-.805a.5.5 0 0 0 .196-.12l6.813-6.814z"/>
-                <path fill-rule="evenodd" d="M1 13.5A1.5 1.5 0 0 0 2.5 15h11a1.5 1.5 0 0 0 1.5-1.5v-6a.5.5 0 0 0-1 0v6a.5.5 0 0 1-.5.5h-11a.5.5 0 0 1-.5-.5v-11a.5.5 0 0 1 .5-.5H9a.5.5 0 0 0 0-1H2.5A1.5 1.5 0 0 0 1 2.5v11z"/>
-            </svg>
-            Edit manually
-        </button>
-
-        <div class="collapse" id="editAddress-1-Collapse">
-            <div class="card card-body">
-                <form method="post">
-                    <div class="form-row">
-                        <div class="form-group col-md-6">
-                            <label asp-for="Input.AddressLine1"></label>
-                            <input class="form-control" asp-for="Input.AddressLine1" placeholder="Address Line 1">
-                            <span asp-validation-for="Input.AddressLine1" class="text-danger"></span>
-                        </div>
-                        <div class="form-group col-md-6">
-                            <label asp-for="Input.AddressLine2"></label>
-                            <input class="form-control" asp-for="Input.AddressLine2" placeholder="Address Line 2">
-                            <span asp-validation-for="Input.AddressLine2" class="text-danger"></span>
-                        </div>
-                    </div>
-
-                    <div class="form-row">
-                        <div class="form-group col-2">
-                            <label asp-for="Input.Number"></label>
-                            <input class="form-control" asp-for="Input.Number" placeholder="1, 21B...">
-                            <span asp-validation-for="Input.Number" class="text-danger"></span>
-                        </div>
-                        <div class="form-group col-md-6">
-                            <label asp-for="Input.City"></label>
-                            <input class="form-control" asp-for="Input.City" placeholder="City">
-                            <span asp-validation-for="Input.City" class="text-danger"></span>
-                        </div>
-                    </div>
-                    <div class="form-row">
-                        <div class="form-group col-md-6">
-                            <label asp-for="Input.PostalCode"></label>
-                            <input class="form-control" asp-for="Input.PostalCode" placeholder="Postal Code: 20020...">
-                            <span asp-validation-for="Input.PostalCode" class="text-danger"></span>
-                        </div>
-                        <div class="form-group col-md-4">
-                            <label asp-for="Input.Country"></label>
-                            <select class="form-select" aria-label="Select country" asp-for="Input.Country" asp-items="Model.Countries">
-                            </select>
-                            <span asp-validation-for="Input.Country" class="text-danger"></span>
-                        </div>
-                    </div>
-                    <button type="submit" class="btn btn-primary">Submit</button>
-                </form>
+            <div class="form-row">
+                <div class="form-group col-2">
+                    <label asp-for="Input.Number"></label>
+                    <input class="form-control" asp-for="Input.Number" placeholder="1, 21B...">
+                    <span asp-validation-for="Input.Number" class="text-danger"></span>
+                </div>
+                <div class="form-group col-md-6">
+                    <label asp-for="Input.City"></label>
+                    <input class="form-control" asp-for="Input.City" placeholder="City">
+                    <span asp-validation-for="Input.City" class="text-danger"></span>
+                </div>
             </div>
-        </div>
+            <div class="form-row">
+                <div class="form-group col-md-6">
+                    <label asp-for="Input.PostalCode"></label>
+                    <input class="form-control" asp-for="Input.PostalCode" placeholder="Postal Code: 20020...">
+                    <span asp-validation-for="Input.PostalCode" class="text-danger"></span>
+                </div>
+                <div class="form-group col-md-4">
+                    <label asp-for="Input.Country"></label>
+                    <select class="form-select" aria-label="Select country" asp-for="Input.Country" asp-items="Model.Countries">
+                    </select>
+                    <span asp-validation-for="Input.Country" class="text-danger"></span>
+                </div>
+            </div>
+            <button type="submit" class="btn btn-primary">Submit</button>
+        </form>
     }
     else
     {
         <br/>
         <div class="form-group">
-            <input class="form-control" id="address-input-0" placeholder="Primary Address" value="@Model.Addresses[1].ToString()" disabled/>
+            <input class="form-control" id="address-input-1" placeholder="Primary Address" value="@Model.Addresses[1].ToString()" disabled/>
         </div>
         <br/>
-        <button class="btn btn-outline-secondary" type="button" data-bs-toggle="collapse" asp-all-route-data-bs-target="#address-1-collapse" aria-expanded="false" aria-controls="address-1-collapse">
+        <button class="btn btn-outline-secondary" data-bs-toggle="collapse" data-bs-target="#address-1-collapse" aria-expanded="false" aria-controls="address-1-collapse">
             <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-pencil-square" viewBox="0 0 16 16">
                 <path d="M15.502 1.94a.5.5 0 0 1 0 .706L14.459 3.69l-2-2L13.502.646a.5.5 0 0 1 .707 0l1.293 1.293zm-1.75 2.456-2-2L4.939 9.21a.5.5 0 0 0-.121.196l-.805 2.414a.25.25 0 0 0 .316.316l2.414-.805a.5.5 0 0 0 .196-.12l6.813-6.814z"/>
                 <path fill-rule="evenodd" d="M1 13.5A1.5 1.5 0 0 0 2.5 15h11a1.5 1.5 0 0 0 1.5-1.5v-6a.5.5 0 0 0-1 0v6a.5.5 0 0 1-.5.5h-11a.5.5 0 0 1-.5-.5v-11a.5.5 0 0 1 .5-.5H9a.5.5 0 0 0 0-1H2.5A1.5 1.5 0 0 0 1 2.5v11z"/>
@@ -342,39 +283,4 @@
 @section Scripts
 {
     <partial name="_ValidationScriptsPartial"/>
-
-    <script defer src="https://api.mapbox.com/mapbox-gl-js/plugins/mapbox-gl-geocoder/v4.7.0/mapbox-gl-geocoder.min.js"></script>
-    <script defer src="https://api.mapbox.com/mapbox-gl-js/v2.3.1/mapbox-gl.js"></script>
-
-    <script defer type="text/javascript">
-        mapboxgl.accessToken = 'pk.eyJ1Ijoic3RlY3JvdHRpMSIsImEiOiJja3Bna2kzbHYyaThoMm9ueHl1dzlnaTc1In0.EpALSOaDOmuM8XGS_IQzvA';
-
-        const address = document.getElementById("address-geo-loc");
-
-        function getLocation() {
-            if (navigator.geolocation) {
-                navigator.geolocation.getCurrentPosition(showPosition);
-            }
-        }
-
-        function showPosition(position) {
-
-            const geocodingClient = new MapboxGeocoder({
-                accessToken: mapboxgl.accessToken,
-                types: 'country,region,place,postcode,locality,neighborhood'
-            });
-
-            geocodingClient.reverseGeocode({
-                    query: [position.coords.latitude, position.coords.longitude]
-                })
-                .send()
-                .then(response => {
-                    // GeoJSON document with geocoding matches
-                    const match = response.body;
-
-                    address.value = match.place_name;
-                });
-
-        }
-    </script>
 }

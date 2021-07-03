@@ -47,14 +47,9 @@ namespace DeliveryWebApp.WebUI.Areas.Identity.Pages.Account.Manage
         public List<Address> Addresses { get; set; }
 
         public SelectList Countries => new(Utilities.CountryList(), "Key", "Value");
-        public bool HasAtLeastOneAddress { get; set; }
 
         public class InputModel
         {
-            [DataType(DataType.Text)]
-            [DisplayName("Address")]
-            public string AddressGeoLoc { get; set; }
-
             [Required]
             [DataType(DataType.Text)]
             [Display(Name = "Address Line 1")]
@@ -89,8 +84,7 @@ namespace DeliveryWebApp.WebUI.Areas.Identity.Pages.Account.Manage
             var user = await _userManager.GetUserAsync(User);
             if (user == null)
             {
-                _logger.LogError($"Unable to load user with ID '{_userManager.GetUserId(User)}'.");
-                return NotFound();
+                return NotFound($"Unable to load user with ID '{_userManager.GetUserId(User)}'.");
             }
 
             await LoadAddressesAsync(user);
