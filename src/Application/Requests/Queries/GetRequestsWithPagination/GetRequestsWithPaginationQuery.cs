@@ -11,6 +11,7 @@ using DeliveryWebApp.Application.Common.Mappings;
 using DeliveryWebApp.Application.Common.Models;
 using DeliveryWebApp.Domain.Entities;
 using MediatR;
+using Microsoft.Extensions.Logging;
 
 namespace DeliveryWebApp.Application.Requests.Queries.GetRequestsWithPagination
 {
@@ -25,19 +26,29 @@ namespace DeliveryWebApp.Application.Requests.Queries.GetRequestsWithPagination
     {
         private readonly IApplicationDbContext _context;
         private readonly IMapper _mapper;
+        private readonly ILogger<GetRequestsWithPaginationQuery> _logger;
 
-        public GetRequestsWithPaginationQueryHandler(IApplicationDbContext context, IMapper mapper)
+        public GetRequestsWithPaginationQueryHandler(IApplicationDbContext context, IMapper mapper, ILogger<GetRequestsWithPaginationQuery> logger)
         {
             _context = context;
             _mapper = mapper;
+            _logger = logger;
         }
 
         public async Task<PaginatedList<Request>> Handle(GetRequestsWithPaginationQuery request, CancellationToken cancellationToken)
         {
-            return await _context.Requests
-                .OrderBy(r => r.Id)
-                .ProjectTo<Request>(_mapper.ConfigurationProvider)
-                .PaginatedListAsync(request.PageNumber, request.PageSize);
+            try
+            {
+                return await _context.Requests
+                    .OrderBy(r => r.Id)
+                    .ProjectTo<Request>(_mapper.ConfigurationProvider)
+                    .PaginatedListAsync(request.PageNumber, request.PageSize);
+            }
+            catch (InvalidOperationException e)
+            {
+                _logger.LogWarning($"{nameof(Request)}, {e.Message}");
+                return null;
+            }
         }
     }
 }

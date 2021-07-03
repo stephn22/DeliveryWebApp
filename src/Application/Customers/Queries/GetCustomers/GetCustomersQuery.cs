@@ -1,10 +1,12 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
 using DeliveryWebApp.Application.Common.Interfaces;
 using DeliveryWebApp.Domain.Entities;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Logging;
 
 namespace DeliveryWebApp.Application.Customers.Queries.GetCustomers
 {
@@ -15,15 +17,26 @@ namespace DeliveryWebApp.Application.Customers.Queries.GetCustomers
     public class GetCustomersQueryHandler : IRequestHandler<GetCustomersQuery, List<Customer>>
     {
         private readonly IApplicationDbContext _context;
+        private readonly ILogger<GetCustomersQuery> _logger;
 
-        public GetCustomersQueryHandler(IApplicationDbContext context)
+        public GetCustomersQueryHandler(IApplicationDbContext context, ILogger<GetCustomersQuery> logger)
         {
             _context = context;
+            _logger = logger;
+
         }
 
         public async Task<List<Customer>> Handle(GetCustomersQuery request, CancellationToken cancellationToken)
         {
-            return await _context.Customers.ToListAsync(cancellationToken);
+            try
+            {
+                return await _context.Customers.ToListAsync(cancellationToken);
+            }
+            catch (InvalidOperationException e)
+            {
+                _logger.LogWarning($"{nameof(Customer)}, {e.Message}");
+                return null;
+            }
         }
     }
 }

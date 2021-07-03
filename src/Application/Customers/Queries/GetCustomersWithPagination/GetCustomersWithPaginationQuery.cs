@@ -1,4 +1,5 @@
-﻿using AutoMapper;
+﻿using System;
+using AutoMapper;
 using AutoMapper.QueryableExtensions;
 using DeliveryWebApp.Application.Common.Interfaces;
 using DeliveryWebApp.Application.Common.Mappings;
@@ -8,6 +9,7 @@ using MediatR;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
+using Microsoft.Extensions.Logging;
 
 namespace DeliveryWebApp.Application.Customers.Queries.GetCustomersWithPagination
 {
@@ -23,20 +25,30 @@ namespace DeliveryWebApp.Application.Customers.Queries.GetCustomersWithPaginatio
     {
         private readonly IApplicationDbContext _context;
         private readonly IMapper _mapper;
+        private readonly ILogger<GetCustomersWithPaginationQuery> _logger;
 
-        public GetCustomersWithPaginationQueryHandler(IApplicationDbContext context, IMapper mapper)
+        public GetCustomersWithPaginationQueryHandler(IApplicationDbContext context, IMapper mapper, ILogger<GetCustomersWithPaginationQuery> logger)
         {
             _context = context;
             _mapper = mapper;
+            _logger = logger;
         }
 
         public async Task<PaginatedList<Customer>> Handle(GetCustomersWithPaginationQuery request,
             CancellationToken cancellationToken)
         {
-            return await _context.Customers
-                .OrderBy(c => c.Id)
-                .ProjectTo<Customer>(_mapper.ConfigurationProvider)
-                .PaginatedListAsync(request.PageNumber, request.PageSize);
+            try
+            {
+                return await _context.Customers
+                    .OrderBy(c => c.Id)
+                    .ProjectTo<Customer>(_mapper.ConfigurationProvider)
+                    .PaginatedListAsync(request.PageNumber, request.PageSize);
+            }
+            catch (InvalidOperationException e)
+            {
+                _logger.LogWarning($"{nameof(Customer)}, {e.Message}");
+                return null;
+            }
         }
     }
 }

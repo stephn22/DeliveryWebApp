@@ -1,4 +1,5 @@
-﻿using AutoMapper;
+﻿using System;
+using AutoMapper;
 using AutoMapper.QueryableExtensions;
 using DeliveryWebApp.Application.Common.Interfaces;
 using DeliveryWebApp.Application.Common.Mappings;
@@ -8,6 +9,7 @@ using MediatR;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
+using Microsoft.Extensions.Logging;
 
 namespace DeliveryWebApp.Application.Orders.Queries.GetOrdersWithPagination
 {
@@ -23,29 +25,39 @@ namespace DeliveryWebApp.Application.Orders.Queries.GetOrdersWithPagination
     {
         private readonly IApplicationDbContext _context;
         private readonly IMapper _mapper;
+        private readonly ILogger<GetOrdersWithPaginationQuery> _logger;
 
-        public GetOrdersWithPaginationQueryHandler(IApplicationDbContext context, IMapper mapper)
+        public GetOrdersWithPaginationQueryHandler(IApplicationDbContext context, IMapper mapper, ILogger<GetOrdersWithPaginationQuery> logger)
         {
             _context = context;
             _mapper = mapper;
+            _logger = logger;
         }
 
         public async Task<PaginatedList<Order>> Handle(GetOrdersWithPaginationQuery request,
             CancellationToken cancellationToken)
         {
-            if (request.CustomerId == null)
+            try
             {
+                if (request.CustomerId == null)
+                {
+                    return await _context.Orders
+                        .OrderBy(o => o.Date)
+                        .ProjectTo<Order>(_mapper.ConfigurationProvider)
+                        .PaginatedListAsync(request.PageNumber, request.PageSize);
+                }
+
                 return await _context.Orders
+                    .Where(c => c.CustomerId == request.CustomerId)
                     .OrderBy(o => o.Date)
                     .ProjectTo<Order>(_mapper.ConfigurationProvider)
                     .PaginatedListAsync(request.PageNumber, request.PageSize);
             }
-
-            return await _context.Orders
-                .Where(c => c.CustomerId == request.CustomerId)
-                .OrderBy(o => o.Date)
-                .ProjectTo<Order>(_mapper.ConfigurationProvider)
-                .PaginatedListAsync(request.PageNumber, request.PageSize);
+            catch (InvalidOperationException e)
+            {
+                _logger.LogWarning($"{nameof(Order)}, {e.Message}");
+                return null;
+            }
         }
     }
 }

@@ -1,15 +1,14 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Collections.ObjectModel;
-using System.Linq;
-using System.Text;
-using System.Threading;
-using System.Threading.Tasks;
 using DeliveryWebApp.Application.Common.Exceptions;
 using DeliveryWebApp.Application.Common.Interfaces;
 using DeliveryWebApp.Domain.Entities;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading;
+using System.Threading.Tasks;
+using Microsoft.Extensions.Logging;
 
 namespace DeliveryWebApp.Application.Products.Queries.GetProducts
 {
@@ -22,29 +21,39 @@ namespace DeliveryWebApp.Application.Products.Queries.GetProducts
     public class GetProductsQueryHandler : IRequestHandler<GetProductsQuery, List<Product>>
     {
         private readonly IApplicationDbContext _context;
+        private readonly ILogger<GetProductsQuery> _logger;
 
-        public GetProductsQueryHandler(IApplicationDbContext context)
+        public GetProductsQueryHandler(IApplicationDbContext context, ILogger<GetProductsQuery> logger)
         {
             _context = context;
+            _logger = logger;
         }
 
         public async Task<List<Product>> Handle(GetProductsQuery request, CancellationToken cancellationToken)
         {
-            if (request.RestaurantId != null)
+            try
             {
-                return await (from r in _context.Restaurants
-                    where r.Id == request.RestaurantId
-                    select r.Products.ToList()).FirstAsync(cancellationToken); // TODO: check
-            }
+                if (request.RestaurantId != null)
+                {
+                    return await (from r in _context.Restaurants
+                        where r.Id == request.RestaurantId
+                        select r.Products.ToList()).FirstAsync(cancellationToken);
+                }
 
-            if (request.OrderId != null)
+                if (request.OrderId != null)
+                {
+                    return await (from o in _context.Orders
+                        where o.Id == request.OrderId
+                        select o.Products.ToList()).FirstAsync(cancellationToken);
+                }
+
+                return null;
+            }
+            catch (InvalidOperationException e)
             {
-                return await (from o in _context.Orders
-                    where o.Id == request.OrderId
-                    select o.Products.ToList()).FirstAsync(cancellationToken); // TODO: check
+                _logger.LogWarning($"{nameof(Product)}, {e.Message}");
+                return null;
             }
-
-            throw new NotFoundException();
         }
     }
 }
