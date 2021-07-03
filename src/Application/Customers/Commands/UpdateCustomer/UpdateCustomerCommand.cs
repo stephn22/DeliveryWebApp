@@ -37,8 +37,8 @@ namespace DeliveryWebApp.Application.Customers.Commands.UpdateCustomer
             {
                 throw new NotFoundException(nameof(Customer), request.Id);
             }
-            // instantiate new 
-            entity.Addresses = new List<Address>();
+            // if Addresses is null instantiate a new list
+            entity.Addresses ??= new List<Address>();
             entity.Addresses.Add(request.Address);
 
             await _context.SaveChangesAsync(cancellationToken);

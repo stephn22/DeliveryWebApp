@@ -61,14 +61,9 @@ namespace DeliveryWebApp.Application.Restaurants.Commands.UpdateRestaurant
 
             if (request.Product != null)
             {
-                if (entity.Products == null)
-                {
-                    entity.Products = new List<Product> {request.Product};
-                }
-                else
-                {
-                    entity.Products.Add(request.Product);
-                }
+                // if Products is null instantiate a new list
+                entity.Products ??= new List<Product>();
+                entity.Products.Add(request.Product);
             }
 
             await _context.SaveChangesAsync(cancellationToken);
