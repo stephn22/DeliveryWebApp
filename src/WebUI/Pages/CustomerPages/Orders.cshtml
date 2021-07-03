@@ -1,6 +1,7 @@
 ﻿@page
 @model DeliveryWebApp.WebUI.Pages.CustomerPages.OrdersModel
 @{
+    ViewData["Title"] = "Orders";
 }
 
 <div class="text-center">
@@ -71,7 +72,7 @@
                                 {
                                 <tr>
                                     <td>
-                                        <img src="@Convert.ToBase64String(product.Image)" class="rounded mx-auto d-block img-fluid" alt="@product.Name" height="40" width="40">
+                                        <img src="@Convert.ToBase64String(product.Image)" class="rounded mx-auto d-block img-fluid" alt="product_image" height="40" width="40">
                                         @Html.DisplayFor(item => product.Name)
                                     </td>
                                     <td>
