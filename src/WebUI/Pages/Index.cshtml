@@ -20,24 +20,43 @@
 <link rel="stylesheet" href="/css/index.css" type="text/css"/>
 
 <div class="text-center">
-    @* TODO: localize *@
+    
+    
+    <main class="px-3">
+        <h1>@localizer["Register or Log in"]</h1>
+        <p class="lead">
+            @localizer["Register or log in to start accessing features"]
+        </p>
+        <p class="lead">
+
+            <a class="btn btn-outline-dark rounded-pill" asp-area="Identity" asp-page="/Account/Register">
+                Register
+            </a>
+                
+            <a class="btn btn-outline-dark rounded-pill" asp-area="Identity" asp-page="/Account/Login">
+                Login
+            </a>
+        </p>
+        <img src="/icons/undraw_healthy_options_sdo3.svg" alt="index-image" width="420" height="420"/>
+    </main>
+
     @if (isAdmin)
     {
         <h1 class="display-4">@localizer["Welcome Administrator"]</h1>
         <img src="/icons/undraw_Profile_re_4a55.svg" alt="admin" height="520" width="520" class="text-center"/>
     }
     @*@if (isRider)
-    {
-        <h1 class="display-4">Welcome</h1>
-    }
-    @if (isRestaurateur)
-    {
-        <h1 class="display-4">Welcome</h1>
-    }
-    @if (isDefault)
-    {
-        <h1 class="display-4">Welcome</h1>
-    }*@
+        {
+            <h1 class="display-4">Welcome</h1>
+        }
+        @if (isRestaurateur)
+        {
+            <h1 class="display-4">Welcome</h1>
+        }
+        @if (isDefault)
+        {
+            <h1 class="display-4">Welcome</h1>
+        }*@
 
     @if (isCustomer)
     {
@@ -104,6 +123,4 @@
             </button>
         </div>
     }
-
-    @* TODO: Update this page *@
 </div>
