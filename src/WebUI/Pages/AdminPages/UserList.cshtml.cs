@@ -35,9 +35,9 @@ namespace DeliveryWebApp.WebUI.Pages.AdminPages
             _userManager = userManager;
         }
 
-        public IList<Domain.Entities.Customer> Customers { get; set; }
+        public IList<Customer> Customers { get; set; }
         public IList<Rider> Riders { get; set; }
-        public IList<Domain.Entities.Restaurateur> Restaurateurs { get; set; }
+        public IList<Restaurateur> Restaurateurs { get; set; }
 
         public async Task<IActionResult> OnGetAsync()
         {

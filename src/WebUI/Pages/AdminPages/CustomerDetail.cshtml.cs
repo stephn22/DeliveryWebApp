@@ -10,6 +10,7 @@ using DeliveryWebApp.Application.Riders.Commands.CreateRider;
 using DeliveryWebApp.Application.Riders.Commands.DeleteRider;
 using DeliveryWebApp.Application.Riders.Commands.UpdateRider;
 using DeliveryWebApp.Application.Riders.Extensions;
+using DeliveryWebApp.Domain.Entities;
 using DeliveryWebApp.Infrastructure.Identity;
 using DeliveryWebApp.Infrastructure.Persistence;
 using DeliveryWebApp.Infrastructure.Security;
@@ -39,7 +40,7 @@ namespace DeliveryWebApp.WebUI.Pages.AdminPages
             _mediator = mediator;
         }
 
-        public Domain.Entities.Customer Customer { get; set; }
+        public Customer Customer { get; set; }
         public string FName { get; set; }
         public string LName { get; set; }
         public string Email { get; set; }
