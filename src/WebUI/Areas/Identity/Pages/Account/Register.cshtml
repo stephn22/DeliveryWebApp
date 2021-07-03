@@ -1,8 +1,9 @@
 ﻿@page
 @using Microsoft.Extensions.Localization
 @using Microsoft.AspNetCore.Mvc.Localization
+@using DeliveryWebApp.Infrastructure.Services
 @model RegisterModel
-@inject IStringLocalizer<RegisterModel> localizer
+@inject IdentityLocalizationService localizer
 @{
     ViewData["Title"] = localizer["Register"];
 }
