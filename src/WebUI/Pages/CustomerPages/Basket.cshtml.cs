@@ -32,13 +32,18 @@ namespace DeliveryWebApp.WebUI.Pages.CustomerPages
 
         public Basket Basket { get; set; }
 
-        public async Task<IActionResult> OnGet()
+        public async Task<IActionResult> OnGetAsync()
         {
             var user = await _userManager.GetUserAsync(User);
 
             var customer = await _context.Customers.Where(c => c.ApplicationUserFk == user.Id).FirstAsync();
             Basket = customer.Basket;
 
+            return Page();
+        }
+
+        public async Task<IActionResult> OnPostAsync()
+        {
             return Page();
         }
     }

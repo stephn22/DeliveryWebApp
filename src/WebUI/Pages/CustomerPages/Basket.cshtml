@@ -1,7 +1,7 @@
 ﻿@page
 @model DeliveryWebApp.WebUI.Pages.CustomerPages.BasketModel
 @{
-    ViewData["Title"] = "Basket";
+    ViewData["Title"] = "Cart";
 }
 
 @if (Model.Basket == null)
@@ -11,5 +11,30 @@
     </div>
     <div class="text-center">
         <img src="/icons/undraw_empty_cart_co35.svg" alt="empty_cart" height="500" width="500"/>
+    </div>
+}
+else
+{
+    // TODO: jsgrid?
+    <div class="card">
+        <div class="row">
+            <div class="card-title">
+                <h4>@ViewData["Title"]</h4>
+            </div>
+        </div>
+        <hr/>
+        @foreach (var item in Model.Basket.Products)
+        {
+            <div class="row">
+                <div class="card-body">
+                    <div class="row">
+                        <div class="col">
+                            <img src="data:image/jpeg;base64,@Convert.ToBase64String(item.Image)" alt="product_img"/>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <hr/>
+        }
     </div>
 }
