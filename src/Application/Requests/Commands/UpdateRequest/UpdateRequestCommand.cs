@@ -7,13 +7,13 @@ using System.Threading.Tasks;
 
 namespace DeliveryWebApp.Application.Requests.Commands.UpdateRequest
 {
-    public class UpdateRequestCommand : IRequest
+    public class UpdateRequestCommand : IRequest<Request>
     {
         public int Id { get; set; }
         public string Status { get; set; }
     }
 
-    public class UpdateRequestCommandHandler : IRequestHandler<UpdateRequestCommand>
+    public class UpdateRequestCommandHandler : IRequestHandler<UpdateRequestCommand, Request>
     {
         private readonly IApplicationDbContext _context;
 
@@ -22,7 +22,7 @@ namespace DeliveryWebApp.Application.Requests.Commands.UpdateRequest
             _context = context;
         }
 
-        public async Task<Unit> Handle(UpdateRequestCommand request, CancellationToken cancellationToken)
+        public async Task<Request> Handle(UpdateRequestCommand request, CancellationToken cancellationToken)
         {
             var entity = await _context.Requests.FindAsync(request.Id);
 
@@ -35,7 +35,7 @@ namespace DeliveryWebApp.Application.Requests.Commands.UpdateRequest
 
             await _context.SaveChangesAsync(cancellationToken);
 
-            return Unit.Value;
+            return entity;
         }
     }
 }
