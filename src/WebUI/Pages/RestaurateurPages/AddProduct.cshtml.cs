@@ -114,7 +114,7 @@ namespace DeliveryWebApp.WebUI.Pages.RestaurateurPages
 
             });
 
-            return RedirectToPage("/Restaurateur/RestaurantDashboard");
+            return RedirectToPage("/RestaurateurPages/RestaurantDashboard");
         }
     }
 }
