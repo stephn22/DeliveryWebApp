@@ -11,7 +11,7 @@ using MediatR;
 
 namespace DeliveryWebApp.Application.Restaurants.Commands.UpdateRestaurant
 {
-    public class UpdateRestaurantCommand : IRequest
+    public class UpdateRestaurantCommand : IRequest<Restaurant>
     {
         public int Id { get; set; }
         public byte[] Logo { get; set; }
@@ -21,7 +21,7 @@ namespace DeliveryWebApp.Application.Restaurants.Commands.UpdateRestaurant
         public Product Product { get; set; }
     }
 
-    public class UpdateRestaurantCommandHandler : IRequestHandler<UpdateRestaurantCommand>
+    public class UpdateRestaurantCommandHandler : IRequestHandler<UpdateRestaurantCommand, Restaurant>
     {
         private readonly IApplicationDbContext _context;
 
@@ -30,7 +30,7 @@ namespace DeliveryWebApp.Application.Restaurants.Commands.UpdateRestaurant
             _context = context;
         }
 
-        public async Task<Unit> Handle(UpdateRestaurantCommand request, CancellationToken cancellationToken)
+        public async Task<Restaurant> Handle(UpdateRestaurantCommand request, CancellationToken cancellationToken)
         {
             var entity = await _context.Restaurants.FindAsync(request.Id);
 
@@ -68,7 +68,7 @@ namespace DeliveryWebApp.Application.Restaurants.Commands.UpdateRestaurant
 
             await _context.SaveChangesAsync(cancellationToken);
 
-            return Unit.Value;
+            return entity;
         }
     }
 }

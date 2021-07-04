@@ -11,7 +11,7 @@ using MediatR;
 
 namespace DeliveryWebApp.Application.Restaurants.Commands.CreateRestaurant
 {
-    public class CreateRestaurantCommand : IRequest<int>
+    public class CreateRestaurantCommand : IRequest<Restaurant>
     {
         public byte[] Logo { get; set; }
         public string Name { get; set; }
@@ -20,7 +20,7 @@ namespace DeliveryWebApp.Application.Restaurants.Commands.CreateRestaurant
         public Restaurateur Restaurateur { get; set; }
     }
 
-    public class CreateRestaurantCommandHandler : IRequestHandler<CreateRestaurantCommand, int>
+    public class CreateRestaurantCommandHandler : IRequestHandler<CreateRestaurantCommand, Restaurant>
     {
         private readonly IApplicationDbContext _context;
 
@@ -29,7 +29,7 @@ namespace DeliveryWebApp.Application.Restaurants.Commands.CreateRestaurant
             _context = context;
         }
 
-        public async Task<int> Handle(CreateRestaurantCommand request, CancellationToken cancellationToken)
+        public async Task<Restaurant> Handle(CreateRestaurantCommand request, CancellationToken cancellationToken)
         {
             var entity = new Restaurant
             {
@@ -46,7 +46,7 @@ namespace DeliveryWebApp.Application.Restaurants.Commands.CreateRestaurant
 
             await _context.SaveChangesAsync(cancellationToken);
 
-            return entity.Id;
+            return entity;
         }
     }
 }
