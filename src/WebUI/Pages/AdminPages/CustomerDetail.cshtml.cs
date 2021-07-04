@@ -247,7 +247,7 @@ namespace DeliveryWebApp.WebUI.Pages.AdminPages
             if (CurrentRole != RoleName.Restaurateur)
             {
                 var oldClaim = await _userManager.GetClaimByTypeAsync(user, ClaimName.Role);
-                await _userManager.ReplaceClaimAsync(user, oldClaim, new Claim(ClaimName.Role, RoleName.Rider));
+                await _userManager.ReplaceClaimAsync(user, oldClaim, new Claim(ClaimName.Role, RoleName.Restaurateur));
 
                 // update tables
 
