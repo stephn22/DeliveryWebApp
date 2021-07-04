@@ -21,6 +21,7 @@ using Microsoft.Extensions.Logging;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.IO;
+using System.Linq;
 using System.Threading.Tasks;
 
 namespace DeliveryWebApp.WebUI.Pages.RestaurateurPages
@@ -177,6 +178,12 @@ namespace DeliveryWebApp.WebUI.Pages.RestaurateurPages
             var user = await _userManager.GetUserAsync(User);
 
             await LoadAsync(user);
+
+            // if no category is selected
+            if (Categories.First(c => c.Value == "").Selected)
+            {
+                return Page();
+            }
 
             try
             {
