@@ -110,7 +110,7 @@
                         @await Model.GetEmailByIdAsync(item.Id, nameof(Model.Customers))
                     </td>
                     <td>
-                        <a class="btn" asp-page="/Admin/CustomerDetail" asp-route-id="@item.Id" title="View details">
+                        <a class="btn" asp-page="/AdminPages/CustomerDetail" asp-route-id="@item.Id" title="View details">
                             <img src="/icons/eye.svg" alt="detail" height="16" width="16"/>
                         </a>
                     </td>
@@ -259,7 +259,7 @@
                         @* TODO: editable *@
                     </td>
                     <td>
-                        <a class="btn" asp-page="#" asp-route-id="@item.Id" title="View details">
+                        <a class="btn" asp-page="/AdminPages/RiderDetail" asp-route-id="@item.Id" title="View details">
                             <img src="/icons/eye.svg" alt="detail" height="16" width="16"/>
                         </a>
                     </td>
@@ -409,7 +409,7 @@
                         <a asp-page="#" asp-route-id="@item.Id">Restaurant</a>
                     </td>
                     <td>
-                        <a class="btn" asp-page="#" asp-route-id="@item.Id" title="View details">
+                        <a class="btn" asp-page="/AdmiPages/RestaurateurDetail" asp-route-id="@item.Id" title="View details">
                             <img src="/icons/eye.svg" alt="detail" height="16" width="16"/>
                         </a>
                     </td>

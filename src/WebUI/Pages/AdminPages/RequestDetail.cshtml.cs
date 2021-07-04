@@ -135,7 +135,7 @@ namespace DeliveryWebApp.WebUI.Pages.AdminPages
 
             // TODO push notification to client
 
-            return RedirectToPage("/Admin/Requests");
+            return RedirectToPage("/AdminPages/Requests");
         }
 
         public async Task<IActionResult> OnPostRejectAsync(int? id)
@@ -150,7 +150,7 @@ namespace DeliveryWebApp.WebUI.Pages.AdminPages
             });
 
             // TODO push notification to client
-            return RedirectToPage("/Admin/Requests");
+            return RedirectToPage("/AdminPages/Requests");
         }
     }
 }

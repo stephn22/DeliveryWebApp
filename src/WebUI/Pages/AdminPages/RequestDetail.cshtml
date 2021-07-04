@@ -4,12 +4,20 @@
     ViewData["Title"] = "Request Detail";
 }
 
+<a asp-page="/AdminPages/Requests" title="Back to list" id="back">
+    <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" fill="black" class="bi bi-arrow-left" viewBox="0 0 16 16">
+        <path fill-rule="evenodd" d="M15 8a.5.5 0 0 0-.5-.5H2.707l3.147-3.146a.5.5 0 1 0-.708-.708l-4 4a.5.5 0 0 0 0 .708l4 4a.5.5 0 0 0 .708-.708L2.707 8.5H14.5A.5.5 0 0 0 15 8z" />
+    </svg>
+</a>
+
+<hr />
+
 <h1>Detail of Request: @Model.UserRequest.Id</h1>
 
 @*TODO: LOCALIZE*@
 <div>
     <h4>Request</h4>
-    <hr/>
+    <hr />
     <dl class="row">
         <dt class="col-sm-2">
             @Html.DisplayNameFor(model => model.UserRequest.Customer)
@@ -36,7 +44,7 @@
             <div class="form-group col-1">
                 <div class="input-group">
                     <label asp-for="Input.DeliveryCredit"></label>
-                    <input asp-for="Input.DeliveryCredit" class="form-control"/>
+                    <input asp-for="Input.DeliveryCredit" class="form-control" />
                     <div class="input-group-append">
                         <span class="input-group-text">€</span>
                     </div>
@@ -47,23 +55,18 @@
         <div class="form-group">
             <button type="submit" value="Accept" class="btn btn-outline-success" asp-page-handler="Accept">
                 <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-check2" viewBox="0 0 16 16">
-                    <path d="M13.854 3.646a.5.5 0 0 1 0 .708l-7 7a.5.5 0 0 1-.708 0l-3.5-3.5a.5.5 0 1 1 .708-.708L6.5 10.293l6.646-6.647a.5.5 0 0 1 .708 0z"/>
+                    <path d="M13.854 3.646a.5.5 0 0 1 0 .708l-7 7a.5.5 0 0 1-.708 0l-3.5-3.5a.5.5 0 1 1 .708-.708L6.5 10.293l6.646-6.647a.5.5 0 0 1 .708 0z" />
                 </svg>
                 Accept
             </button>
             <button type="submit" value="Reject" class="btn btn-outline-danger" asp-page-handler="Reject">
                 <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-x" viewBox="0 0 16 16">
-                    <path d="M4.646 4.646a.5.5 0 0 1 .708 0L8 7.293l2.646-2.647a.5.5 0 0 1 .708.708L8.707 8l2.647 2.646a.5.5 0 0 1-.708.708L8 8.707l-2.646 2.647a.5.5 0 0 1-.708-.708L7.293 8 4.646 5.354a.5.5 0 0 1 0-.708z"/>
+                    <path d="M4.646 4.646a.5.5 0 0 1 .708 0L8 7.293l2.646-2.647a.5.5 0 0 1 .708.708L8.707 8l2.647 2.646a.5.5 0 0 1-.708.708L8 8.707l-2.646 2.647a.5.5 0 0 1-.708-.708L7.293 8 4.646 5.354a.5.5 0 0 1 0-.708z" />
                 </svg>
                 Reject
             </button>
         </div>
     </form>
-</div>
-
-
-<div>
-    <a asp-page="/Admin/Requests">Back to List</a>
 </div>
 
 @section Scripts {

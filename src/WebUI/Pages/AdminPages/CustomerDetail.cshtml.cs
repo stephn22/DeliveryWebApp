@@ -90,7 +90,7 @@ namespace DeliveryWebApp.WebUI.Pages.AdminPages
 
             await _userManager.BlockUser(user);
 
-            return RedirectToPage("/Admin/UserList");
+            return RedirectToPage("/AdminPages/UserList");
         }
 
         public async Task<IActionResult> OnPostUnblockCustomerAsync(int? id)
@@ -106,7 +106,7 @@ namespace DeliveryWebApp.WebUI.Pages.AdminPages
 
             await _userManager.UnblockUser(user);
 
-            return RedirectToPage("/Admin/UserList");
+            return RedirectToPage("/AdminPages/UserList");
         }
 
         public async Task<IActionResult> OnPostDeleteUserAsync(int? id)
@@ -127,7 +127,7 @@ namespace DeliveryWebApp.WebUI.Pages.AdminPages
                 Id = Customer.Id
             });
 
-            return RedirectToPage("/Admin/UserList");
+            return RedirectToPage("/AdminPages/UserList");
         }
 
         public async Task<IActionResult> OnPostToCustomerAsync(int? id)
@@ -171,7 +171,7 @@ namespace DeliveryWebApp.WebUI.Pages.AdminPages
                 }
             }
 
-            return RedirectToPage("/Admin/UserList");
+            return RedirectToPage("/AdminPages/UserList");
         }
 
         public async Task<IActionResult> OnPostToRiderAsync(int? id)
@@ -211,7 +211,7 @@ namespace DeliveryWebApp.WebUI.Pages.AdminPages
                 });
             }
 
-            return RedirectToPage("/Admin/UserList");
+            return RedirectToPage("/AdminPages/UserList");
         }
 
         public async Task<IActionResult> OnPostToRestaurateurAsync(int? id)
@@ -239,7 +239,7 @@ namespace DeliveryWebApp.WebUI.Pages.AdminPages
                     Customer = Customer
                 });
             }
-            return RedirectToPage("/Admin/UserList");
+            return RedirectToPage("/AdminPages/UserList");
         }
     }
 }
