@@ -9,12 +9,12 @@ using System.Threading.Tasks;
 
 namespace DeliveryWebApp.Application.Customers.Commands.DeleteCustomer
 {
-    public class DeleteCustomerCommand : IRequest
+    public class DeleteCustomerCommand : IRequest<Customer>
     {
         public int Id { get; set; }
     }
 
-    public class DeleteCustomerCommandHandler : IRequestHandler<DeleteCustomerCommand>
+    public class DeleteCustomerCommandHandler : IRequestHandler<DeleteCustomerCommand, Customer>
     {
         private readonly IApplicationDbContext _context;
 
@@ -23,7 +23,7 @@ namespace DeliveryWebApp.Application.Customers.Commands.DeleteCustomer
             _context = context;
         }
 
-        public async Task<Unit> Handle(DeleteCustomerCommand request, CancellationToken cancellationToken)
+        public async Task<Customer> Handle(DeleteCustomerCommand request, CancellationToken cancellationToken)
         {
             var entity = await _context.Customers.FindAsync(request.Id);
 
@@ -40,7 +40,7 @@ namespace DeliveryWebApp.Application.Customers.Commands.DeleteCustomer
 
             await _context.SaveChangesAsync(cancellationToken);
 
-            return Unit.Value;
+            return entity;
         }
     }
 }

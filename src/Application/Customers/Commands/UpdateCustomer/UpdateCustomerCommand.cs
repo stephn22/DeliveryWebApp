@@ -14,13 +14,13 @@ namespace DeliveryWebApp.Application.Customers.Commands.UpdateCustomer
     /// <summary>
     /// Called when customer add address(es) for the first time
     /// </summary>
-    public class UpdateCustomerCommand : IRequest
+    public class UpdateCustomerCommand : IRequest<Customer>
     {
         public int Id { get; set; }
         public Address Address { get; set; }
     }
 
-    public class UpdateCustomerCommandHandler : IRequestHandler<UpdateCustomerCommand>
+    public class UpdateCustomerCommandHandler : IRequestHandler<UpdateCustomerCommand, Customer>
     {
         private readonly IApplicationDbContext _context;
 
@@ -29,7 +29,7 @@ namespace DeliveryWebApp.Application.Customers.Commands.UpdateCustomer
             _context = context;
         }
 
-        public async Task<Unit> Handle(UpdateCustomerCommand request, CancellationToken cancellationToken)
+        public async Task<Customer> Handle(UpdateCustomerCommand request, CancellationToken cancellationToken)
         {
             var entity = await _context.Customers.FindAsync(request.Id);
 
@@ -43,7 +43,7 @@ namespace DeliveryWebApp.Application.Customers.Commands.UpdateCustomer
 
             await _context.SaveChangesAsync(cancellationToken);
 
-            return Unit.Value;
+            return entity;
         }
     }
 }
