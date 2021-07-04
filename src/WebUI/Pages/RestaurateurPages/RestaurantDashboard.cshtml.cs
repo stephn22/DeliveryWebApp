@@ -25,6 +25,7 @@ using System.Threading.Tasks;
 
 namespace DeliveryWebApp.WebUI.Pages.RestaurateurPages
 {
+    // TODO: localize
     [Authorize(Policy = PolicyName.IsRestaurateur)]
     public class RestaurantDashboardModel : PageModel
     {
@@ -32,6 +33,7 @@ namespace DeliveryWebApp.WebUI.Pages.RestaurateurPages
         private readonly ILogger<RestaurantDashboardModel> _logger;
         private readonly IMediator _mediator;
         private readonly UserManager<ApplicationUser> _userManager;
+
         public RestaurantDashboardModel(ApplicationDbContext context, ILogger<RestaurantDashboardModel> logger,
             IMediator mediator, UserManager<ApplicationUser> userManager)
         {
@@ -46,6 +48,8 @@ namespace DeliveryWebApp.WebUI.Pages.RestaurateurPages
         public Restaurateur Restaurateur { get; set; }
         public IList<Product> Products { get; set; }
         public IList<Order> Orders { get; set; }
+
+        [TempData] public string StatusMessage { get; set; }
 
         public SelectList Countries => new(Utilities.CountryList(), "Key", "Value");
 
@@ -128,6 +132,11 @@ namespace DeliveryWebApp.WebUI.Pages.RestaurateurPages
         {
             var user = await _userManager.GetUserAsync(User);
 
+            if (user == null)
+            {
+                return NotFound($"Unable to load user with ID '{_userManager.GetUserId(User)}'.");
+            }
+
             await LoadAsync(user);
 
             return Page();
@@ -140,6 +149,10 @@ namespace DeliveryWebApp.WebUI.Pages.RestaurateurPages
         /// <returns></returns>
         public async Task<IActionResult> OnPostNewNameAsync(int id)
         {
+            var user = await _userManager.GetUserAsync(User);
+
+            await LoadAsync(user);
+
             try
             {
                 await _mediator.Send(new UpdateRestaurantCommand
@@ -151,14 +164,20 @@ namespace DeliveryWebApp.WebUI.Pages.RestaurateurPages
             catch (NotFoundException e)
             {
                 _logger.LogError(e.Message);
-                return NotFound();
             }
 
-            return RedirectToPage();
+            StatusMessage =
+                "Your restaurant name has been updated. It may take a few moments to update across the site.";
+
+            return Page();
         }
 
         public async Task<IActionResult> OnPostNewCategoryAsync(int id)
         {
+            var user = await _userManager.GetUserAsync(User);
+
+            await LoadAsync(user);
+
             try
             {
                 await _mediator.Send(new UpdateRestaurantCommand
@@ -170,16 +189,22 @@ namespace DeliveryWebApp.WebUI.Pages.RestaurateurPages
             catch (NotFoundException e)
             {
                 _logger.LogError(e.Message);
-                return NotFound();
             }
 
-            return RedirectToPage();
+            StatusMessage =
+                "Your restaurant category has been updated. It may take a few moments to update across the site.";
+
+            return Page();
         }
 
-        public async Task UploadNewImageAsync()
+        public async Task<IActionResult> OnPostUploadNewImageAsync()
         {
-            if (Input != null) // TODO: check
+            if (Input?.Logo != null)
             {
+                var user = await _userManager.GetUserAsync(User);
+
+                await LoadAsync(user);
+
                 byte[] bytes;
 
                 await using var fileStream = Input.Logo.OpenReadStream();
@@ -191,9 +216,15 @@ namespace DeliveryWebApp.WebUI.Pages.RestaurateurPages
 
                 await _mediator.Send(new UpdateRestaurantCommand
                 {
+                    Id = Restaurant.Id,
                     Logo = bytes
                 });
+
+                StatusMessage =
+                    "Your restaurant picture has been updated. It may take a few moments to update across the site.";
+
             }
+            return Page();
         }
 
         public async Task<IActionResult> OnPostNewRestaurantAsync()
@@ -243,6 +274,9 @@ namespace DeliveryWebApp.WebUI.Pages.RestaurateurPages
             });
 
             _logger.LogInformation($"Created new restaurant with id: {restaurantId}");
+
+            StatusMessage =
+                "Your restaurant has been created successfully";
 
             return RedirectToPage();
         }

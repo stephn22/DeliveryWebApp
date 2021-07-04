@@ -14,7 +14,7 @@ function readUrl(input) {
 
         $("#spinner-div").remove();
 
-        reader.onload = function (i) {
+        reader.onload = function(i) {
             $("#img-uploaded")
                 .attr("src", i.target.result)
                 .attr("hidden", false);
