@@ -1,4 +1,6 @@
+using System;
 using System.ComponentModel.DataAnnotations;
+using System.Linq;
 using System.Security.Claims;
 using System.Threading.Tasks;
 using DeliveryWebApp.Application.Common.Security;
@@ -19,6 +21,7 @@ using MediatR;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 
 namespace DeliveryWebApp.WebUI.Pages.AdminPages
@@ -192,6 +195,20 @@ namespace DeliveryWebApp.WebUI.Pages.AdminPages
 
                 await _userManager.ReplaceClaimAsync(user, oldClaim, new Claim(ClaimName.Role, RoleName.Rider));
 
+                try // if user was a restaurateur delete from table
+                {
+                    var restaurateur = await _context.Restaurateurs.Where(r => r.Customer.Id == Customer.Id).FirstAsync();
+
+                    await _mediator.Send(new DeleteRestaurateurCommand
+                    {
+                        Id = restaurateur.Id
+                    });
+                }
+                catch (InvalidOperationException)
+                {
+                    // otherwise do nothing
+                }
+
                 // update table
 
                 await _mediator.Send(new CreateRiderCommand
@@ -234,6 +251,20 @@ namespace DeliveryWebApp.WebUI.Pages.AdminPages
 
                 // update tables
 
+                try // if user was a rider, delete from table
+                {
+                    var rider = await _context.Riders.Where(r => r.CustomerId == Customer.Id).FirstAsync();
+
+                    await _mediator.Send(new DeleteRiderCommand
+                    {
+                        Id = rider.Id
+                    });
+                }
+                catch (InvalidOperationException)
+                {
+                    // otherwise do nothing
+                }
+                
                 await _mediator.Send(new CreateRestaurateurCommand
                 {
                     Customer = Customer
