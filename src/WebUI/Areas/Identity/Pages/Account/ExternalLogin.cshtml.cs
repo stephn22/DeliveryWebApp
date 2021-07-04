@@ -178,10 +178,12 @@ namespace DeliveryWebApp.WebUI.Areas.Identity.Pages.Account
                         {
                             // add to Customers table
 
-                            await _mediator.Send(new CreateCustomerCommand
+                            var customer = await _mediator.Send(new CreateCustomerCommand
                             {
                                 ApplicationUserFk = user.Id
                             });
+
+                            _logger.LogInformation($"Created customer with id '{customer.Id}'.");
                             
                             return RedirectToPage("./RegisterConfirmation", new { Email = Input.Email });
                         }
