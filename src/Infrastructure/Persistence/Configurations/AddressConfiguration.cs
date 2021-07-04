@@ -29,6 +29,11 @@ namespace DeliveryWebApp.Infrastructure.Persistence.Configurations
 
             builder.Property(c => c.Country)
                 .IsRequired();
+
+            builder.HasOne(a => a.Customer)
+                .WithMany(c => c.Addresses)
+                .HasForeignKey(a => a.CustomerId)
+                .OnDelete(DeleteBehavior.NoAction);
         }
     }
 }
