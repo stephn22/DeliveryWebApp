@@ -41,7 +41,7 @@ namespace DeliveryWebApp.WebUI.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<int>("CustomerId")
+                    b.Property<int?>("CustomerId")
                         .HasColumnType("int");
 
                     b.Property<string>("Number")
@@ -615,8 +615,7 @@ namespace DeliveryWebApp.WebUI.Migrations
                     b.HasOne("DeliveryWebApp.Domain.Entities.Customer", "Customer")
                         .WithMany("Addresses")
                         .HasForeignKey("CustomerId")
-                        .OnDelete(DeleteBehavior.NoAction)
-                        .IsRequired();
+                        .OnDelete(DeleteBehavior.NoAction);
 
                     b.Navigation("Customer");
                 });
