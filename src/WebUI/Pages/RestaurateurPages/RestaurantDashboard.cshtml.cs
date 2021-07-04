@@ -271,7 +271,7 @@ namespace DeliveryWebApp.WebUI.Pages.RestaurateurPages
             };
 
             // insert new restaurant in context
-            var restaurantId = await _mediator.Send(new CreateRestaurantCommand
+            var restaurant = await _mediator.Send(new CreateRestaurantCommand
             {
                 Address = RestaurantAddress,
                 Category = Input.Category,
@@ -280,7 +280,7 @@ namespace DeliveryWebApp.WebUI.Pages.RestaurateurPages
                 Restaurateur = Restaurateur
             });
 
-            _logger.LogInformation($"Created new restaurant with id: {restaurantId}");
+            _logger.LogInformation($"Created new restaurant with id: {restaurant.Id}");
 
             StatusMessage =
                 "Your restaurant has been created successfully";
