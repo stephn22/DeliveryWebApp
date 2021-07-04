@@ -28,12 +28,12 @@ namespace DeliveryWebApp.Application.Addresses.Queries.GetAddresses
 
         public async Task<List<Address>> Handle(GetAddressesQuery request, CancellationToken cancellationToken)
         {
-            // return list of addresses (2) of a customer
+            // return list of addresses (max 2) of a customer
             try
             {
-                return await (from c in _context.Customers
-                    where c.Id == request.CustomerId
-                    select c.Addresses.ToList()).FirstAsync(cancellationToken);
+                return await (from a in _context.Addresses
+                    where a.CustomerId == request.CustomerId
+                    select a).ToListAsync(cancellationToken);
             }
             catch (InvalidOperationException)
             {
