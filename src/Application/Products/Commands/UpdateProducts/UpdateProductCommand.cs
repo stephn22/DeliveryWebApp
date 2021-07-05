@@ -11,7 +11,7 @@ using MediatR;
 
 namespace DeliveryWebApp.Application.Products.Commands.UpdateProducts
 {
-    public class UpdateProductCommand : IRequest
+    public class UpdateProductCommand : IRequest<Product>
     {
         public int Id { get; set; }
         public int? Discount { get; set; }
@@ -22,7 +22,7 @@ namespace DeliveryWebApp.Application.Products.Commands.UpdateProducts
         public byte[] Image { get; set; }
     }
 
-    public class UpdateProductCommandHandler : IRequestHandler<UpdateProductCommand>
+    public class UpdateProductCommandHandler : IRequestHandler<UpdateProductCommand, Product>
     {
         private readonly IApplicationDbContext _context;
 
@@ -31,7 +31,7 @@ namespace DeliveryWebApp.Application.Products.Commands.UpdateProducts
             _context = context;
         }
 
-        public async Task<Unit> Handle(UpdateProductCommand request, CancellationToken cancellationToken)
+        public async Task<Product> Handle(UpdateProductCommand request, CancellationToken cancellationToken)
         {
             var entity = await _context.Products.FindAsync(request.Id);
 
@@ -72,7 +72,7 @@ namespace DeliveryWebApp.Application.Products.Commands.UpdateProducts
 
             await _context.SaveChangesAsync(cancellationToken);
 
-            return Unit.Value;
+            return entity;
         }
     }
 }
