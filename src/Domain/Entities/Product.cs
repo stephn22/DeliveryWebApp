@@ -14,6 +14,8 @@ namespace DeliveryWebApp.Domain.Entities
         public int Discount { get; set; }
         public string Category { get; set; }
         public int Quantity { get; set; }
+        public int RestaurantId { get; set; }
+        public Restaurant Restaurant { get; set; }
 
         public double ApplyDiscount()
         {
