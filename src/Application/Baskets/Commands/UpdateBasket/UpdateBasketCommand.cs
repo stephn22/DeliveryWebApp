@@ -9,12 +9,13 @@ using DeliveryWebApp.Application.Common.Exceptions;
 using DeliveryWebApp.Application.Common.Interfaces;
 using DeliveryWebApp.Domain.Entities;
 using MediatR;
+using Microsoft.EntityFrameworkCore;
 
 namespace DeliveryWebApp.Application.Baskets.Commands.UpdateBasket
 {
     public class UpdateBasketCommand : IRequest
     {
-        public int BasketId { get; set; }
+        public int CustomerId { get; set; }
         public Product Product { get; set; }
     }
 
@@ -29,11 +30,12 @@ namespace DeliveryWebApp.Application.Baskets.Commands.UpdateBasket
 
         public async Task<Unit> Handle(UpdateBasketCommand request, CancellationToken cancellationToken)
         {
-            var entity = await _context.Baskets.FindAsync(request.BasketId);
+            var entity = await _context.Baskets.Where(b => b.CustomerId == request.CustomerId)
+                .FirstAsync(cancellationToken);
 
             if (entity == null)
             {
-                throw new NotFoundException(nameof(Basket), request.BasketId);
+                throw new NotFoundException(nameof(Basket), request.CustomerId);
             }
 
             // if Products is null instantiate a new list
