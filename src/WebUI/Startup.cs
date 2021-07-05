@@ -27,6 +27,8 @@ namespace DeliveryWebApp.WebUI
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
+            services.AddControllers();
+
             services.AddApplication();
             services.AddInfrastructure(Configuration);
 
@@ -103,6 +105,7 @@ namespace DeliveryWebApp.WebUI
             app.UseEndpoints(endpoints =>
             {
                 endpoints.MapRazorPages();
+                endpoints.MapControllers();
             });
         }
     }
