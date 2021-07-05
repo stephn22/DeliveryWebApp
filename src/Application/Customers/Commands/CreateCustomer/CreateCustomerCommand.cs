@@ -13,6 +13,9 @@ namespace DeliveryWebApp.Application.Customers.Commands.CreateCustomer
     public class CreateCustomerCommand : IRequest<Customer>
     {
         public string ApplicationUserFk { get; set; }
+        public string FirstName { get; set; }
+        public string LastName { get; set; }
+        public string Email { get; set; }
 
         public class CreateCustomerCommandHandler : IRequestHandler<CreateCustomerCommand, Customer>
         {
@@ -28,6 +31,9 @@ namespace DeliveryWebApp.Application.Customers.Commands.CreateCustomer
                 var entity = new Customer
                 {
                     ApplicationUserFk = request.ApplicationUserFk,
+                    FirstName = request.FirstName,
+                    LastName = request.LastName,
+                    Email = request.Email,
                     Basket = new Basket(),
                     Reviews = new List<Review>(),
                     Orders = new List<Order>()
