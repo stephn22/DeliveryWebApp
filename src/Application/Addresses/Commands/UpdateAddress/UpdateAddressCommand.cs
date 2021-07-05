@@ -11,7 +11,7 @@ using MediatR;
 
 namespace DeliveryWebApp.Application.Addresses.Commands.UpdateAddress
 {
-    public class UpdateAddressCommand : IRequest
+    public class UpdateAddressCommand : IRequest<Address>
     {
         /// <summary>
         /// Address id
@@ -26,7 +26,7 @@ namespace DeliveryWebApp.Application.Addresses.Commands.UpdateAddress
         public string Country { get; set; }
     }
 
-    public class UpdateAddressCommandHandler : IRequestHandler<UpdateAddressCommand>
+    public class UpdateAddressCommandHandler : IRequestHandler<UpdateAddressCommand, Address>
     {
         private readonly IApplicationDbContext _context;
 
@@ -35,7 +35,7 @@ namespace DeliveryWebApp.Application.Addresses.Commands.UpdateAddress
             _context = context;
         }
 
-        public async Task<Unit> Handle(UpdateAddressCommand request, CancellationToken cancellationToken)
+        public async Task<Address> Handle(UpdateAddressCommand request, CancellationToken cancellationToken)
         {
             var entity = await _context.Addresses.FindAsync(request.Id);
 
@@ -76,7 +76,7 @@ namespace DeliveryWebApp.Application.Addresses.Commands.UpdateAddress
 
             await _context.SaveChangesAsync(cancellationToken);
 
-            return Unit.Value;
+            return entity;
         }
     }
 }
