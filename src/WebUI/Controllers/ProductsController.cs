@@ -12,7 +12,7 @@ namespace DeliveryWebApp.WebUI.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    public class ProductsController : Controller
+    public class ProductsController : ControllerBase
     {
         private readonly IMediator _mediator;
         private readonly IMapper _mapper;
