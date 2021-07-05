@@ -28,6 +28,9 @@ namespace DeliveryWebApp.Application.Customers.Commands.CreateCustomer
                 var entity = new Customer
                 {
                     ApplicationUserFk = request.ApplicationUserFk,
+                    Basket = new Basket(),
+                    Reviews = new List<Review>(),
+                    Orders = new List<Order>()
                 };
 
                 _context.Customers.Add(entity);
