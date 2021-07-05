@@ -11,7 +11,11 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using System.Collections.Generic;
 using System.Globalization;
+using System.Text.Json.Serialization;
+using AutoMapper;
+using DeliveryWebApp.Application.Common.Mappings;
 using DeliveryWebApp.Infrastructure.Services;
+using Newtonsoft.Json;
 
 namespace DeliveryWebApp.WebUI
 {
@@ -27,7 +31,8 @@ namespace DeliveryWebApp.WebUI
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
-            services.AddControllers();
+            services.AddControllers()
+                .AddNewtonsoftJson(options => options.SerializerSettings.ReferenceLoopHandling = ReferenceLoopHandling.Serialize);
 
             services.AddApplication();
             services.AddInfrastructure(Configuration);
@@ -59,6 +64,7 @@ namespace DeliveryWebApp.WebUI
             });
 
             services.AddRazorPages()
+                .AddNewtonsoftJson(options => options.SerializerSettings.ReferenceLoopHandling = ReferenceLoopHandling.Serialize)
                 .AddViewLocalization()
                 .AddDataAnnotationsLocalization();
         }
