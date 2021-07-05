@@ -10,7 +10,7 @@ using MediatR;
 
 namespace DeliveryWebApp.Application.Addresses.Commands.CreateAddress
 {
-    public class CreateAddressCommand : IRequest<int>
+    public class CreateAddressCommand : IRequest<Address>
     {
         public string AddressLine1 { get; set; }
         public string AddressLine2 { get; set; }
@@ -18,9 +18,10 @@ namespace DeliveryWebApp.Application.Addresses.Commands.CreateAddress
         public string City { get; set; }
         public string PostalCode { get; set; }
         public string Country { get; set; }
+        public int CustomerId { get; set; }
     }
 
-    public class CreateAddressCommandHandler : IRequestHandler<CreateAddressCommand, int>
+    public class CreateAddressCommandHandler : IRequestHandler<CreateAddressCommand, Address>
     {
         private readonly IApplicationDbContext _context;
 
@@ -29,7 +30,7 @@ namespace DeliveryWebApp.Application.Addresses.Commands.CreateAddress
             _context = context;
         }
 
-        public async Task<int> Handle(CreateAddressCommand request, CancellationToken cancellationToken)
+        public async Task<Address> Handle(CreateAddressCommand request, CancellationToken cancellationToken)
         {
             var entity = new Address
             {
@@ -38,14 +39,15 @@ namespace DeliveryWebApp.Application.Addresses.Commands.CreateAddress
                 City = request.City,
                 Country = request.Country,
                 Number = request.Number,
-                PostalCode = request.PostalCode
+                PostalCode = request.PostalCode,
+                CustomerId = request.CustomerId
             };
 
             _context.Addresses.Add(entity);
 
             await _context.SaveChangesAsync(cancellationToken);
 
-            return entity.Id;
+            return entity;
         }
     }
 }
