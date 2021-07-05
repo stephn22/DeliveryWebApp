@@ -5,44 +5,90 @@ using NUnit.Framework;
 using System;
 using System.Collections.Generic;
 using System.Runtime.Serialization;
+using DeliveryWebApp.Application.Addresses.Commands.CreateAddress;
+using DeliveryWebApp.Application.Addresses.Commands.UpdateAddress;
+using DeliveryWebApp.Application.Baskets.Commands.CreateBasket;
+using DeliveryWebApp.Application.Baskets.Commands.PurgeBasket;
+using DeliveryWebApp.Application.Baskets.Commands.UpdateBasket;
+using DeliveryWebApp.Application.Customers.Commands.CreateCustomer;
+using DeliveryWebApp.Application.Customers.Commands.DeleteCustomer;
+using DeliveryWebApp.Application.Customers.Commands.UpdateCustomer;
+using DeliveryWebApp.Application.Orders.Commands.CreateOrder;
+using DeliveryWebApp.Application.Orders.Commands.DeleteOrder;
+using DeliveryWebApp.Application.Orders.Commands.UpdateOrder;
+using DeliveryWebApp.Application.Products.Commands.CreateProduct;
+using DeliveryWebApp.Application.Products.Commands.DeleteProduct;
+using DeliveryWebApp.Application.Products.Commands.UpdateProducts;
+using DeliveryWebApp.Application.Requests.Commands.CreateRequest;
+using DeliveryWebApp.Application.Requests.Commands.DeleteRequest;
+using DeliveryWebApp.Application.Requests.Commands.UpdateRequest;
+using DeliveryWebApp.Application.Restaurants.Commands.CreateRestaurant;
+using DeliveryWebApp.Application.Restaurateurs.Commands.CreateRestaurateur;
+using DeliveryWebApp.Application.Restaurateurs.Commands.DeleteRestaurateur;
+using DeliveryWebApp.Application.Restaurateurs.Commands.UpdateRestaurateur;
+using DeliveryWebApp.Application.Riders.Commands.CreateRider;
+using DeliveryWebApp.Application.Riders.Commands.DeleteRider;
+using DeliveryWebApp.Application.Riders.Commands.UpdateRider;
+using DeliveryWebApp.Domain.Objects;
+using FluentAssertions;
+using Shouldly;
+using Xunit;
 
 namespace DeliveryWebApp.Application.UnitTests.Common.Mappings
 {
-    public class MappingTests
+    public class MappingTests : IClassFixture<MappingTestsFixture>
     {
         private readonly IConfigurationProvider _configuration;
         private readonly IMapper _mapper;
 
-        public MappingTests()
+        public MappingTests(MappingTestsFixture fixture)
         {
-            _configuration = new MapperConfiguration(cfg => { cfg.AddProfile<MappingProfile>(); });
-
-            _mapper = _configuration.CreateMapper();
+            _configuration = fixture.ConfigurationProvider;
+            _mapper = fixture.Mapper;
         }
 
-        [Test]
+        [Fact]
         public void ShouldHaveValidConfiguration()
         {
             _configuration.AssertConfigurationIsValid();
         }
 
-        [Test]
-        [TestCase(typeof(Product), typeof(Product))]
-        [TestCase(typeof(Product), typeof(Product))]
-        public void ShouldSupportMappingFromSourceToDestination(Type source, Type destination)
+        [Fact]
+        public void ShouldMapAddressToCreateAddressCommand()
         {
-            var instance = GetInstanceOf(source);
+            var entity = new CreateAddressCommand
+            {
+                AddressLine1 = "Via Verdi",
+                AddressLine2 = "",
+                City = "Milan",
+                Country = "Italy",
+                Number = "12",
+                PostalCode = "20090"
+            };
 
-            _mapper.Map(instance, source, destination);
+            var result = _mapper.Map<CreateAddressCommand>(entity);
+
+            result.ShouldNotBeNull();
+            result.ShouldBeOfType<CreateAddressCommand>();
         }
 
-        private object GetInstanceOf(Type type)
+        [Fact]
+        public void ShouldMapAddressToUpdateAddressCommand()
         {
-            return type.GetConstructor(Type.EmptyTypes) != null
-                ? Activator.CreateInstance(type)
-                : FormatterServices.GetUninitializedObject(type);
+            var entity = new UpdateAddressCommand
+            {
+                AddressLine1 = "Via Alessandro Manzoni", // new data
+                AddressLine2 = "",
+                City = "Milan",
+                Country = "Italy",
+                Number = "21", // new data
+                PostalCode = "20090"
+            };
 
-            // Type without parameterless constructor
+            var result = _mapper.Map<UpdateAddressCommand>(entity);
+
+            result.ShouldNotBeNull();
+            result.ShouldBeOfType<UpdateAddressCommand>();
         }
     }
 }
