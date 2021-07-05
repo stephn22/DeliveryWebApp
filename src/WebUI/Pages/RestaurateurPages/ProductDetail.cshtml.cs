@@ -1,11 +1,14 @@
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
+using System.IO;
 using System.Threading.Tasks;
 using DeliveryWebApp.Application.Common.Security;
+using DeliveryWebApp.Application.Products.Commands.UpdateProducts;
 using DeliveryWebApp.Domain.Entities;
 using DeliveryWebApp.Infrastructure.Persistence;
 using DeliveryWebApp.Infrastructure.Security;
+using DeliveryWebApp.WebUI.Migrations;
 using MediatR;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
@@ -73,6 +76,35 @@ namespace DeliveryWebApp.WebUI.Pages.RestaurateurPages
             Product = await _context.Products.FindAsync(id);
 
             return Page();
+        }
+
+
+        public async Task<IActionResult> OnPost(int id)
+        {
+            byte[] bytes = null;
+
+            if (Input.Image != null)
+            {
+                await using var fileStream = Input.Image.OpenReadStream();
+                await using var memoryStream = new MemoryStream();
+
+                await fileStream.CopyToAsync(memoryStream);
+                bytes = memoryStream.ToArray();
+            }
+            
+
+            await _mediator.Send(new UpdateProductCommand
+            {
+                Id = id,
+                Name = Input.Name,
+                Category = Input.Category,
+                Discount = Input.Discount,
+                Image = bytes ?? null,
+                Price = Input.Price,
+                Quantity = Input.Quantity
+            });
+
+            return RedirectToPage(routeValues: id);
         }
     }
 }
