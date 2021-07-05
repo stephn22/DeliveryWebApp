@@ -10,12 +10,12 @@ using MediatR;
 
 namespace DeliveryWebApp.Application.Baskets.Commands.CreateBasket
 {
-    public class CreateBasketCommand : IRequest<int>
+    public class CreateBasketCommand : IRequest<Basket>
     {
         public Customer Customer { get; set; }
     }
 
-    public class CreateBasketCommandHandler : IRequestHandler<CreateBasketCommand, int>
+    public class CreateBasketCommandHandler : IRequestHandler<CreateBasketCommand, Basket>
     {
         private readonly IApplicationDbContext _context;
 
@@ -24,7 +24,7 @@ namespace DeliveryWebApp.Application.Baskets.Commands.CreateBasket
             _context = context;
         }
 
-        public async Task<int> Handle(CreateBasketCommand request, CancellationToken cancellationToken)
+        public async Task<Basket> Handle(CreateBasketCommand request, CancellationToken cancellationToken)
         {
             var entity = new Basket
             {
@@ -36,7 +36,7 @@ namespace DeliveryWebApp.Application.Baskets.Commands.CreateBasket
 
             await _context.SaveChangesAsync(cancellationToken);
 
-            return entity.Id;
+            return entity;
         }
     }
 }

@@ -13,13 +13,13 @@ using Microsoft.EntityFrameworkCore;
 
 namespace DeliveryWebApp.Application.Baskets.Commands.UpdateBasket
 {
-    public class UpdateBasketCommand : IRequest
+    public class UpdateBasketCommand : IRequest<Basket>
     {
         public int CustomerId { get; set; }
         public Product Product { get; set; }
     }
 
-    public class UpdateBasketCommandHandler : IRequestHandler<UpdateBasketCommand>
+    public class UpdateBasketCommandHandler : IRequestHandler<UpdateBasketCommand, Basket>
     {
         private readonly IApplicationDbContext _context;
 
@@ -28,7 +28,7 @@ namespace DeliveryWebApp.Application.Baskets.Commands.UpdateBasket
             _context = context;
         }
 
-        public async Task<Unit> Handle(UpdateBasketCommand request, CancellationToken cancellationToken)
+        public async Task<Basket> Handle(UpdateBasketCommand request, CancellationToken cancellationToken)
         {
             var entity = await _context.Baskets.Where(b => b.CustomerId == request.CustomerId)
                 .FirstAsync(cancellationToken);
@@ -46,7 +46,7 @@ namespace DeliveryWebApp.Application.Baskets.Commands.UpdateBasket
 
             await _context.SaveChangesAsync(cancellationToken);
 
-            return Unit.Value;
+            return entity;
         }
     }
 }
