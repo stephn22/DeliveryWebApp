@@ -13,12 +13,12 @@ namespace DeliveryWebApp.WebUI.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    public class BasketController : ControllerBase
+    public class BasketsController : ControllerBase
     {
         private readonly IMediator _mediator;
         private readonly IMapper _mapper;
 
-        public BasketController(IMediator mediator, IMapper mapper)
+        public BasketsController(IMediator mediator, IMapper mapper)
         {
             _mediator = mediator;
             _mapper = mapper;
@@ -34,9 +34,9 @@ namespace DeliveryWebApp.WebUI.Controllers
         }
 
         [HttpPut]
-        public async Task<ActionResult<Basket>> Update(Product product)
+        public async Task<ActionResult<Basket>> Update(Basket request)
         {
-            return await _mediator.Send(_mapper.Map<UpdateBasketCommand>(product));
+            return await _mediator.Send(_mapper.Map<UpdateBasketCommand>(request));
         }
     }
 }
