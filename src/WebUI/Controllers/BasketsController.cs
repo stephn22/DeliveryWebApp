@@ -7,7 +7,10 @@ using AutoMapper;
 using DeliveryWebApp.Application.Baskets.Commands.UpdateBasket;
 using DeliveryWebApp.Application.Baskets.Queries;
 using DeliveryWebApp.Domain.Entities;
+using DeliveryWebApp.Domain.Objects;
 using MediatR;
+using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
 
 namespace DeliveryWebApp.WebUI.Controllers
 {
@@ -34,8 +37,21 @@ namespace DeliveryWebApp.WebUI.Controllers
         }
 
         [HttpPut]
-        public async Task<ActionResult<Basket>> Update(Basket request)
+        public async Task<ActionResult<Basket>> Update(JObject data)
         {
+            dynamic jsonData = data;
+
+            //JObject customerIdJson = jsonData.customerId;
+            JObject productJson = jsonData.product;
+
+            var product = productJson.ToObject<Product>();
+
+            var request = new AddToBasket
+            {
+                CustomerId = jsonData.customerId,
+                Product = product
+            };
+
             return await _mediator.Send(_mapper.Map<UpdateBasketCommand>(request));
         }
     }
