@@ -73,7 +73,13 @@ else
                                 type: "GET",
                                 url: "/api/restaurants",
                                 data: filter,
-                                dataType: "json"
+                                dataType: "json",
+                                success: function() {
+                                    console.log("Data received with success");
+                                },
+                                error: function() {
+                                    console.log("Error receiving data");
+                                }
                             });
                         }
                     },
