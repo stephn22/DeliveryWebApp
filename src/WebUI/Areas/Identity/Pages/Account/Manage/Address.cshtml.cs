@@ -23,8 +23,9 @@ using DeliveryWebApp.Application.Customers.Commands.UpdateCustomer;
 
 namespace DeliveryWebApp.WebUI.Areas.Identity.Pages.Account.Manage
 {
+    // TODO: delete address
     [Authorize(Policy = PolicyName.IsCustomer)]
-    public class AddressModel : PageModel
+    public partial class AddressModel : PageModel
     {
         private readonly UserManager<ApplicationUser> _userManager;
         private readonly ILogger<AddressModel> _logger;
@@ -45,6 +46,8 @@ namespace DeliveryWebApp.WebUI.Areas.Identity.Pages.Account.Manage
         [BindProperty] public InputModel Input { get; set; }
 
         public List<Address> Addresses { get; set; }
+
+        public Customer Customer { get; set; }
 
         public SelectList Countries => new(Utilities.CountryList(), "Key", "Value");
 
@@ -86,6 +89,8 @@ namespace DeliveryWebApp.WebUI.Areas.Identity.Pages.Account.Manage
             {
                 return NotFound($"Unable to load user with ID '{_userManager.GetUserId(User)}'.");
             }
+
+            Customer = await _context.Customers.Where(c => c.ApplicationUserFk == user.Id).FirstAsync();
 
             await LoadAddressesAsync(user);
             return Page();
