@@ -15,9 +15,9 @@
 
 @section Head
 {
-    <link rel="stylesheet" href="~/css/images.css" />
-    <link type="text/css" rel="stylesheet" href="~/lib/jsgrid-1.5.3/jsgrid.min.css" />
-    <link type="text/css" rel="stylesheet" href="~/lib/jsgrid-1.5.3/jsgrid-theme.min.css" />
+    <link rel="stylesheet" href="~/css/images.css"/>
+    <link type="text/css" rel="stylesheet" href="~/lib/jsgrid-1.5.3/jsgrid.min.css"/>
+    <link type="text/css" rel="stylesheet" href="~/lib/jsgrid-1.5.3/jsgrid-theme.min.css"/>
 
     <style type="text/css">
         .square {
@@ -31,7 +31,7 @@
 {
     <div class="alert alert-warning" role="alert">
         In order to buy from food vendors you have to register at least 1 address to your profile.
-        <br />
+        <br/>
         Go to your <a asp-area="Identity" asp-page="/Account/Manage/Address" class="alert-link">profile</a> to set one.
     </div>
 }
@@ -47,10 +47,15 @@ else
     {
         <div id="jsGrid"></div>
 
+    @section Scripts
+    {
+        <script defer="" type="text/javascript" src="~/lib/jsgrid-1.5.3/jsgrid.min.js"></script>
+        
         <script type="text/javascript">
             $(function () {
+
                 const url = "/api/restaurants";
-                let ajax = function (item, verb, json = true) {
+                let ajax = function(item, verb, json = true) {
                     return $.ajax({
                         type: verb,
                         url: url,
@@ -86,60 +91,7 @@ else
             });
 
         </script>
-
-        @*<table class="table">
-            <thead>
-            <tr class="table-primary">
-                <th>
-                    @Html.DisplayNameFor(model => model.Restaurants[0].Logo)
-                </th>
-                <th>
-                    <a asp-page="./RestaurantList" asp-route-sortOrder="@Model.NameSort">
-                        @Html.DisplayNameFor(model => model.Restaurants[0].Name)
-                    </a>
-                </th>
-                <th>
-                    <a asp-page="./RestaurantList" asp-route-sortOrder="@Model.CategorySort">
-                        @Html.DisplayNameFor(model => model.Restaurants[0].Category)
-                    </a>
-                </th>
-                <th>
-                    @Html.DisplayNameFor(model => model.Restaurants[0].Address)
-                </th>
-                <th>
-                    Distance
-                </th>
-                <th></th>
-            </tr>
-            </thead>
-            <tbody>
-            @foreach (var restaurant in Model.Restaurants)
-            {
-                <tr>
-                    <td>
-                        <img src="data:image/jpeg;base64,@Convert.ToBase64String(restaurant.Logo)" class="img-dashboard square img-fluid rounded" alt="restaurant_logo" height="40" width="40">
-                    </td>
-                    <td>
-                        @Html.DisplayFor(model => restaurant.Name)
-                    </td>
-                    <td>
-                        @Html.DisplayFor(model => restaurant.Category)
-                    </td>
-                    <td>
-                        @Html.DisplayFor(model => restaurant.Address)
-                    </td>
-                    <td>
-                        <!-- TODO: distance -->
-                    </td>
-                    <td></td>
-                </tr>
-            }
-            </tbody>
-        </table>*@
     }
-}
 
-@section Scripts
-{
-    <script defer="" type="text/javascript" src="~/lib/jsgrid-1.5.3/jsgrid.min.js"></script>
+    }
 }
