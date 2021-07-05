@@ -6,6 +6,7 @@ using Moq;
 using NUnit.Framework;
 using System.Threading;
 using System.Threading.Tasks;
+using Xunit;
 
 namespace DeliveryWebApp.Application.UnitTests.Common.Behaviours
 {
@@ -27,7 +28,7 @@ namespace DeliveryWebApp.Application.UnitTests.Common.Behaviours
             _identityService = new Mock<IIdentityService>();
         }
 
-        [Test]
+        [Fact]
         public async Task ShouldCallGetUserNameAsyncOnceIfAuthenticated()
         {
             _currentUserService.Setup(x => x.UserId).Returns("Administrator");
@@ -39,7 +40,7 @@ namespace DeliveryWebApp.Application.UnitTests.Common.Behaviours
             _identityService.Verify(i => i.GetUserNameAsync(It.IsAny<string>()), Times.Once);
         }
 
-        [Test]
+        [Fact]
         public async Task ShouldNotCallGetUserNameAsyncOnceIfUnauthenticated()
         {
             var requestLogger = new LoggingBehaviour<CreateCustomerCommand>(_logger.Object, _currentUserService.Object, _identityService.Object);
