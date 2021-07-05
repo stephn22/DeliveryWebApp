@@ -52,6 +52,9 @@ namespace DeliveryWebApp.WebUI.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<string>("StateProvince")
+                        .HasColumnType("nvarchar(max)");
+
                     b.HasKey("Id");
 
                     b.HasIndex("CustomerId");
@@ -296,7 +299,7 @@ namespace DeliveryWebApp.WebUI.Migrations
 
                     b.HasIndex("RestaurateurId");
 
-                    b.ToTable("Review");
+                    b.ToTable("Reviews");
                 });
 
             modelBuilder.Entity("DeliveryWebApp.Domain.Entities.Rider", b =>

@@ -10,8 +10,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace DeliveryWebApp.WebUI.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20210704080642_UpdateAddress")]
-    partial class UpdateAddress
+    [Migration("20210705211446_Init")]
+    partial class Init
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -54,6 +54,9 @@ namespace DeliveryWebApp.WebUI.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<string>("StateProvince")
+                        .HasColumnType("nvarchar(max)");
+
                     b.HasKey("Id");
 
                     b.HasIndex("CustomerId");
@@ -93,6 +96,15 @@ namespace DeliveryWebApp.WebUI.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<string>("Email")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("FirstName")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("LastName")
+                        .HasColumnType("nvarchar(max)");
+
                     b.HasKey("Id");
 
                     b.ToTable("Customers");
@@ -109,6 +121,9 @@ namespace DeliveryWebApp.WebUI.Migrations
                         .HasColumnType("int");
 
                     b.Property<DateTime>("Date")
+                        .HasColumnType("datetime2");
+
+                    b.Property<DateTime?>("DeliveryDate")
                         .HasColumnType("datetime2");
 
                     b.Property<int>("RestaurantId")
@@ -166,7 +181,7 @@ namespace DeliveryWebApp.WebUI.Migrations
                     b.Property<int>("Quantity")
                         .HasColumnType("int");
 
-                    b.Property<int?>("RestaurantId")
+                    b.Property<int>("RestaurantId")
                         .HasColumnType("int");
 
                     b.HasKey("Id");
@@ -286,7 +301,7 @@ namespace DeliveryWebApp.WebUI.Migrations
 
                     b.HasIndex("RestaurateurId");
 
-                    b.ToTable("Review");
+                    b.ToTable("Reviews");
                 });
 
             modelBuilder.Entity("DeliveryWebApp.Domain.Entities.Rider", b =>
@@ -666,9 +681,13 @@ namespace DeliveryWebApp.WebUI.Migrations
                         .WithMany("Products")
                         .HasForeignKey("OrderId");
 
-                    b.HasOne("DeliveryWebApp.Domain.Entities.Restaurant", null)
+                    b.HasOne("DeliveryWebApp.Domain.Entities.Restaurant", "Restaurant")
                         .WithMany("Products")
-                        .HasForeignKey("RestaurantId");
+                        .HasForeignKey("RestaurantId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Restaurant");
                 });
 
             modelBuilder.Entity("DeliveryWebApp.Domain.Entities.Request", b =>

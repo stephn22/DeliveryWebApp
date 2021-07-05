@@ -52,7 +52,10 @@ namespace DeliveryWebApp.WebUI.Migrations
                 {
                     Id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
-                    ApplicationUserFk = table.Column<string>(type: "nvarchar(max)", nullable: false)
+                    ApplicationUserFk = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    FirstName = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    LastName = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    Email = table.Column<string>(type: "nvarchar(max)", nullable: true)
                 },
                 constraints: table =>
                 {
@@ -216,6 +219,7 @@ namespace DeliveryWebApp.WebUI.Migrations
                     City = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     PostalCode = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     Country = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    StateProvince = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     CustomerId = table.Column<int>(type: "int", nullable: true)
                 },
                 constraints: table =>
@@ -225,8 +229,7 @@ namespace DeliveryWebApp.WebUI.Migrations
                         name: "FK_Addresses_Customers_CustomerId",
                         column: x => x.CustomerId,
                         principalTable: "Customers",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Restrict);
+                        principalColumn: "Id");
                 });
 
             migrationBuilder.CreateTable(
@@ -236,7 +239,7 @@ namespace DeliveryWebApp.WebUI.Migrations
                     Id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
                     TotalPrice = table.Column<double>(type: "float", nullable: false),
-                    CustomerId = table.Column<int>(type: "int", nullable: true)
+                    CustomerId = table.Column<int>(type: "int", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -246,7 +249,7 @@ namespace DeliveryWebApp.WebUI.Migrations
                         column: x => x.CustomerId,
                         principalTable: "Customers",
                         principalColumn: "Id",
-                        onDelete: ReferentialAction.Restrict);
+                        onDelete: ReferentialAction.Cascade);
                 });
 
             migrationBuilder.CreateTable(
@@ -257,13 +260,32 @@ namespace DeliveryWebApp.WebUI.Migrations
                         .Annotation("SqlServer:Identity", "1, 1"),
                     Role = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     Status = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    CustomerId = table.Column<int>(type: "int", nullable: true)
+                    CustomerId = table.Column<int>(type: "int", nullable: false)
                 },
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_Requests", x => x.Id);
                     table.ForeignKey(
                         name: "FK_Requests_Customers_CustomerId",
+                        column: x => x.CustomerId,
+                        principalTable: "Customers",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "Restaurateurs",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    CustomerId = table.Column<int>(type: "int", nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Restaurateurs", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_Restaurateurs_Customers_CustomerId",
                         column: x => x.CustomerId,
                         principalTable: "Customers",
                         principalColumn: "Id",
@@ -276,7 +298,7 @@ namespace DeliveryWebApp.WebUI.Migrations
                 {
                     Id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
-                    CustomerId = table.Column<int>(type: "int", nullable: true),
+                    CustomerId = table.Column<int>(type: "int", nullable: false),
                     DeliveryCredit = table.Column<double>(type: "float", nullable: false)
                 },
                 constraints: table =>
@@ -287,7 +309,7 @@ namespace DeliveryWebApp.WebUI.Migrations
                         column: x => x.CustomerId,
                         principalTable: "Customers",
                         principalColumn: "Id",
-                        onDelete: ReferentialAction.Restrict);
+                        onDelete: ReferentialAction.Cascade);
                 });
 
             migrationBuilder.CreateTable(
@@ -296,10 +318,11 @@ namespace DeliveryWebApp.WebUI.Migrations
                 {
                     Id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
-                    LogoUrl = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    Logo = table.Column<byte[]>(type: "varbinary(max)", nullable: false),
                     Name = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     Category = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    AddressId = table.Column<int>(type: "int", nullable: true)
+                    AddressId = table.Column<int>(type: "int", nullable: false),
+                    RestaurateurId = table.Column<int>(type: "int", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -309,7 +332,42 @@ namespace DeliveryWebApp.WebUI.Migrations
                         column: x => x.AddressId,
                         principalTable: "Addresses",
                         principalColumn: "Id",
-                        onDelete: ReferentialAction.Restrict);
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_Restaurants_Restaurateurs_RestaurateurId",
+                        column: x => x.RestaurateurId,
+                        principalTable: "Restaurateurs",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "Reviews",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    CustomerId = table.Column<int>(type: "int", nullable: false),
+                    Title = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    Text = table.Column<string>(type: "nvarchar(250)", maxLength: 250, nullable: false),
+                    Grade = table.Column<int>(type: "int", nullable: false),
+                    RestaurateurId = table.Column<int>(type: "int", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Reviews", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_Reviews_Customers_CustomerId",
+                        column: x => x.CustomerId,
+                        principalTable: "Customers",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_Reviews_Restaurateurs_RestaurateurId",
+                        column: x => x.RestaurateurId,
+                        principalTable: "Restaurateurs",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
                 });
 
             migrationBuilder.CreateTable(
@@ -318,11 +376,12 @@ namespace DeliveryWebApp.WebUI.Migrations
                 {
                     Id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
-                    CustomerId = table.Column<int>(type: "int", nullable: true),
+                    CustomerId = table.Column<int>(type: "int", nullable: false),
                     Date = table.Column<DateTime>(type: "datetime2", nullable: false),
-                    RestaurantId = table.Column<int>(type: "int", nullable: true),
+                    RestaurantId = table.Column<int>(type: "int", nullable: false),
                     TotalPrice = table.Column<double>(type: "float", nullable: false),
                     Status = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    DeliveryDate = table.Column<DateTime>(type: "datetime2", nullable: true),
                     RiderId = table.Column<int>(type: "int", nullable: true)
                 },
                 constraints: table =>
@@ -333,43 +392,17 @@ namespace DeliveryWebApp.WebUI.Migrations
                         column: x => x.CustomerId,
                         principalTable: "Customers",
                         principalColumn: "Id",
-                        onDelete: ReferentialAction.Restrict);
+                        onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
                         name: "FK_Orders_Restaurants_RestaurantId",
                         column: x => x.RestaurantId,
                         principalTable: "Restaurants",
                         principalColumn: "Id",
-                        onDelete: ReferentialAction.Restrict);
+                        onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
                         name: "FK_Orders_Riders_RiderId",
                         column: x => x.RiderId,
                         principalTable: "Riders",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Restrict);
-                });
-
-            migrationBuilder.CreateTable(
-                name: "Restaurateurs",
-                columns: table => new
-                {
-                    Id = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
-                    RestaurantId = table.Column<int>(type: "int", nullable: true),
-                    CustomerId = table.Column<int>(type: "int", nullable: true)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_Restaurateurs", x => x.Id);
-                    table.ForeignKey(
-                        name: "FK_Restaurateurs_Customers_CustomerId",
-                        column: x => x.CustomerId,
-                        principalTable: "Customers",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Restrict);
-                    table.ForeignKey(
-                        name: "FK_Restaurateurs_Restaurants_RestaurantId",
-                        column: x => x.RestaurantId,
-                        principalTable: "Restaurants",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Restrict);
                 });
@@ -381,14 +414,14 @@ namespace DeliveryWebApp.WebUI.Migrations
                     Id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
                     Name = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    ImageUrl = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    Image = table.Column<byte[]>(type: "varbinary(max)", nullable: true),
                     Price = table.Column<double>(type: "float", nullable: false),
                     Discount = table.Column<int>(type: "int", nullable: false),
                     Category = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     Quantity = table.Column<int>(type: "int", nullable: false),
+                    RestaurantId = table.Column<int>(type: "int", nullable: false),
                     BasketId = table.Column<int>(type: "int", nullable: true),
-                    OrderId = table.Column<int>(type: "int", nullable: true),
-                    RestaurantId = table.Column<int>(type: "int", nullable: true)
+                    OrderId = table.Column<int>(type: "int", nullable: true)
                 },
                 constraints: table =>
                 {
@@ -410,36 +443,7 @@ namespace DeliveryWebApp.WebUI.Migrations
                         column: x => x.RestaurantId,
                         principalTable: "Restaurants",
                         principalColumn: "Id",
-                        onDelete: ReferentialAction.Restrict);
-                });
-
-            migrationBuilder.CreateTable(
-                name: "Review",
-                columns: table => new
-                {
-                    Id = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
-                    CustomerId = table.Column<int>(type: "int", nullable: true),
-                    Title = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    Text = table.Column<string>(type: "nvarchar(250)", maxLength: 250, nullable: false),
-                    Grade = table.Column<int>(type: "int", nullable: false),
-                    RestaurateurId = table.Column<int>(type: "int", nullable: true)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_Review", x => x.Id);
-                    table.ForeignKey(
-                        name: "FK_Review_Customers_CustomerId",
-                        column: x => x.CustomerId,
-                        principalTable: "Customers",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Restrict);
-                    table.ForeignKey(
-                        name: "FK_Review_Restaurateurs_RestaurateurId",
-                        column: x => x.RestaurateurId,
-                        principalTable: "Restaurateurs",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Restrict);
+                        onDelete: ReferentialAction.Cascade);
                 });
 
             migrationBuilder.CreateIndex(
@@ -490,8 +494,7 @@ namespace DeliveryWebApp.WebUI.Migrations
                 name: "IX_Baskets_CustomerId",
                 table: "Baskets",
                 column: "CustomerId",
-                unique: true,
-                filter: "[CustomerId] IS NOT NULL");
+                unique: true);
 
             migrationBuilder.CreateIndex(
                 name: "IX_DeviceCodes_DeviceCode",
@@ -560,23 +563,24 @@ namespace DeliveryWebApp.WebUI.Migrations
                 column: "AddressId");
 
             migrationBuilder.CreateIndex(
+                name: "IX_Restaurants_RestaurateurId",
+                table: "Restaurants",
+                column: "RestaurateurId",
+                unique: true);
+
+            migrationBuilder.CreateIndex(
                 name: "IX_Restaurateurs_CustomerId",
                 table: "Restaurateurs",
                 column: "CustomerId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_Restaurateurs_RestaurantId",
-                table: "Restaurateurs",
-                column: "RestaurantId");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_Review_CustomerId",
-                table: "Review",
+                name: "IX_Reviews_CustomerId",
+                table: "Reviews",
                 column: "CustomerId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_Review_RestaurateurId",
-                table: "Review",
+                name: "IX_Reviews_RestaurateurId",
+                table: "Reviews",
                 column: "RestaurateurId");
 
             migrationBuilder.CreateIndex(
@@ -615,7 +619,7 @@ namespace DeliveryWebApp.WebUI.Migrations
                 name: "Requests");
 
             migrationBuilder.DropTable(
-                name: "Review");
+                name: "Reviews");
 
             migrationBuilder.DropTable(
                 name: "AspNetRoles");
@@ -630,16 +634,16 @@ namespace DeliveryWebApp.WebUI.Migrations
                 name: "Orders");
 
             migrationBuilder.DropTable(
-                name: "Restaurateurs");
+                name: "Restaurants");
 
             migrationBuilder.DropTable(
                 name: "Riders");
 
             migrationBuilder.DropTable(
-                name: "Restaurants");
+                name: "Addresses");
 
             migrationBuilder.DropTable(
-                name: "Addresses");
+                name: "Restaurateurs");
 
             migrationBuilder.DropTable(
                 name: "Customers");
