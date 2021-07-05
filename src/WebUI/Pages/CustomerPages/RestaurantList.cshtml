@@ -10,7 +10,6 @@
 }
 @* TODO: localize *@
 
-<script src="~/lib/jquery/dist/jquery-3.6.0.min.js"></script>
 
 
 @section Head
@@ -50,42 +49,38 @@ else
     @section Scripts
     {
         <script defer="" type="text/javascript" src="~/lib/jsgrid-1.5.3/jsgrid.min.js"></script>
-        
-        <script type="text/javascript">
-            $(function () {
 
-                const url = "/api/restaurants";
-                let ajax = function(item, verb, json = true) {
-                    return $.ajax({
-                        type: verb,
-                        url: url,
-                        data: json ? JSON.stringify(item) : item,
-                        dataType: "json",
-                        contentType: json ? "application/json" : "text/plain"
-                    });
-                }
+        <script type="text/javascript">
+            $(function() {
+
                 $("#jsGrid").jsGrid({
-                    height: "90%",
+                    height: "50%",
                     width: "100%",
+
                     filtering: true,
                     inserting: false,
                     editing: false,
                     sorting: true,
                     paging: true,
                     autoload: true,
-                    pageSize: 15,
+
+                    pageSize: 10,
                     pageButtonCount: 5,
-                    deleteConfirm: "Do you really want to delete the item?",
+
                     controller: {
-                        loadData: filter => ajax(filter, "GET", json = false),
-                        insertItem: item => ajax(item, "POST"),
-                        updateItem: item => ajax(item, "PUT"),
-                        deleteItem: item => ajax(item, "DELETE"),
+                        loadData: function(filter) {
+                            return $.ajax({
+                                type: "GET",
+                                url: "/api/restaurants",
+                                data: filter,
+                                dataType: "json"
+                            });
+                        }
                     },
+
                     fields: [
-                        { name: "name", type: "text", width: 150, title: "Name" },
-                        { name: "category", type: "text", width: 50, title: "Category" },
-                        { type: "control" }
+                        { name: "name", type: "text", width: 150, title: "Name"},
+                        { category: "category", type: "text", width: 150, title: "Category" }
                     ]
                 });
             });
