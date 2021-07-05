@@ -11,14 +11,14 @@ using MediatR;
 
 namespace DeliveryWebApp.Application.Orders.Commands.CreateOrder
 {
-    public class CreateOrderCommand : IRequest<int>
+    public class CreateOrderCommand : IRequest<Order>
     {
         public Customer Customer { get; set; }
         public ICollection<Product> Products { get; set; }
         public Restaurant Restaurant { get; set; }
     }
 
-    public class CreateOrderCommandHandler : IRequestHandler<CreateOrderCommand, int>
+    public class CreateOrderCommandHandler : IRequestHandler<CreateOrderCommand, Order>
     {
         private readonly IApplicationDbContext _context;
 
@@ -27,7 +27,7 @@ namespace DeliveryWebApp.Application.Orders.Commands.CreateOrder
             _context = context;
         }
 
-        public async Task<int> Handle(CreateOrderCommand request, CancellationToken cancellationToken)
+        public async Task<Order> Handle(CreateOrderCommand request, CancellationToken cancellationToken)
         {
             var totalPrice = Product.TotalPrice(request.Products.ToList());
 
@@ -45,7 +45,7 @@ namespace DeliveryWebApp.Application.Orders.Commands.CreateOrder
 
             await _context.SaveChangesAsync(cancellationToken);
 
-            return entity.Id;
+            return entity;
         }
     }
 }
