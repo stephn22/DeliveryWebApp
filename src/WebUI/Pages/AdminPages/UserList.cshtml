@@ -101,13 +101,13 @@
                         @await UserManager.GetUserNameAsync(await Model.GetUserAsync(item.Id, nameof(Model.Customers)))
                     </td>
                     <td>
-                        @await Model.GetFNameAsync(item.Id, nameof(Model.Customers))
+                        @Html.DisplayFor(modelItem => item.FirstName)
                     </td>
                     <td>
-                        @await Model.GetLNameAsync(item.Id, nameof(Model.Customers))
+                        @Html.DisplayFor(modelItem => item.LastName)
                     </td>
                     <td>
-                        @await Model.GetEmailByIdAsync(item.Id, nameof(Model.Customers))
+                        @Html.DisplayFor(modelItem => item.Email)
                     </td>
                     <td>
                         <a class="btn" asp-page="/AdminPages/CustomerDetail" asp-route-id="@item.Id" title="View details">
@@ -246,13 +246,13 @@
                         @await UserManager.GetUserNameAsync(await Model.GetUserAsync(item.Id, nameof(Model.Riders)))
                     </td>
                     <td>
-                        @await Model.GetFNameAsync(item.Id, nameof(Model.Riders))
+                        @Html.DisplayFor(modelItem => item.Customer.FirstName)
                     </td>
                     <td>
-                        @await Model.GetLNameAsync(item.Id, nameof(Model.Riders))
+                        @Html.DisplayFor(modelItem => item.Customer.LastName)
                     </td>
                     <td>
-                        @await Model.GetEmailByIdAsync(item.Id, nameof(Model.Riders))
+                        @Html.DisplayFor(modelItem => item.Customer.Email)
                     </td>
                     <td>
                         @Html.DisplayFor(modelItem => item.DeliveryCredit) €
@@ -397,13 +397,13 @@
                         @await UserManager.GetUserNameAsync(await Model.GetUserAsync(item.Id, nameof(Model.Restaurateurs)))
                     </td>
                     <td>
-                        @await Model.GetFNameAsync(item.Id, nameof(Model.Restaurateurs))
+                        @Html.DisplayFor(modelItem => item.Customer.FirstName)
                     </td>
                     <td>
-                        @await Model.GetLNameAsync(item.Id, nameof(Model.Restaurateurs))
+                        @Html.DisplayFor(modelItem => item.Customer.LastName)
                     </td>
                     <td>
-                        @await Model.GetEmailByIdAsync(item.Id, nameof(Model.Restaurateurs))
+                        @Html.DisplayFor(modelItem => item.Customer.Email)
                     </td>
                     <td>
                         <a asp-page="#" asp-route-id="@item.Id">Restaurant</a>

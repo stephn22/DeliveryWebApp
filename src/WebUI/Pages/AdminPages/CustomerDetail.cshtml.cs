@@ -44,9 +44,6 @@ namespace DeliveryWebApp.WebUI.Pages.AdminPages
         }
 
         public Customer Customer { get; set; }
-        public string FName { get; set; }
-        public string LName { get; set; }
-        public string Email { get; set; }
         public string CurrentRole { get; set; }
 
         [BindProperty] public InputModel Input { get; set; }
@@ -70,10 +67,6 @@ namespace DeliveryWebApp.WebUI.Pages.AdminPages
             Customer = await _context.Customers.FindAsync(id);
 
             var user = await _userManager.FindByIdAsync(Customer.ApplicationUserFk);
-
-            FName = await user.GetFNameAsync(_userManager);
-            LName = await user.GetLNameAsync(_userManager);
-            Email = await _userManager.GetEmailAsync(user);
 
             CurrentRole = await _userManager.GetRoleAsync(user);
 
