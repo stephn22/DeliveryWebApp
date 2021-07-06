@@ -10,7 +10,6 @@ namespace DeliveryWebApp.WebUI.Areas.Identity.Pages.Account.Manage
         public static string Email => "Email";
 
         public static string Address => "Address";
-        public static string PersonalInfo => "PersonalInfo";
 
         public static string ChangePassword => "ChangePassword";
 
@@ -29,8 +28,6 @@ namespace DeliveryWebApp.WebUI.Areas.Identity.Pages.Account.Manage
         public static string IndexNavClass(ViewContext viewContext) => PageNavClass(viewContext, Index);
 
         public static string EmailNavClass(ViewContext viewContext) => PageNavClass(viewContext, Email);
-
-        public static string PersonalInfoNavClass(ViewContext viewContext) => PageNavClass(viewContext, PersonalInfo);
 
         public static string AddressNavClass(ViewContext viewContext) => PageNavClass(viewContext, Address);
 
