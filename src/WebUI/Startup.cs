@@ -2,20 +2,18 @@ using DeliveryWebApp.Application;
 using DeliveryWebApp.Application.Common.Interfaces;
 using DeliveryWebApp.Infrastructure;
 using DeliveryWebApp.Infrastructure.Persistence;
+using DeliveryWebApp.Infrastructure.Services;
 using DeliveryWebApp.WebUI.Services;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Localization;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using Newtonsoft.Json;
 using System.Collections.Generic;
 using System.Globalization;
-using System.Text.Json.Serialization;
-using AutoMapper;
-using DeliveryWebApp.Application.Common.Mappings;
-using DeliveryWebApp.Infrastructure.Services;
-using Newtonsoft.Json;
 
 namespace DeliveryWebApp.WebUI
 {
@@ -31,9 +29,6 @@ namespace DeliveryWebApp.WebUI
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
-            services.AddControllers()
-                .AddNewtonsoftJson(options => options.SerializerSettings.ReferenceLoopHandling = ReferenceLoopHandling.Serialize);
-
             services.AddApplication();
             services.AddInfrastructure(Configuration);
 
@@ -44,6 +39,9 @@ namespace DeliveryWebApp.WebUI
 
             services.AddHealthChecks()
                 .AddDbContextCheck<ApplicationDbContext>();
+
+            services.AddControllers()
+                .AddNewtonsoftJson(options => options.SerializerSettings.ReferenceLoopHandling = ReferenceLoopHandling.Serialize);
 
             services.AddLocalization(options =>
             {
@@ -67,6 +65,12 @@ namespace DeliveryWebApp.WebUI
                 .AddNewtonsoftJson(options => options.SerializerSettings.ReferenceLoopHandling = ReferenceLoopHandling.Serialize)
                 .AddViewLocalization()
                 .AddDataAnnotationsLocalization();
+
+            // Customise default API behaviour
+            services.Configure<ApiBehaviorOptions>(options =>
+            {
+                options.SuppressModelStateInvalidFilter = true;
+            });
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

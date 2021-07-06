@@ -2,6 +2,7 @@ using DeliveryWebApp.Application.Baskets.Commands.UpdateBasket;
 using DeliveryWebApp.Application.Common.Security;
 using DeliveryWebApp.Application.Products.Queries.GetProducts;
 using DeliveryWebApp.Domain.Entities;
+using DeliveryWebApp.Domain.Objects;
 using DeliveryWebApp.Infrastructure.Identity;
 using DeliveryWebApp.Infrastructure.Persistence;
 using DeliveryWebApp.Infrastructure.Security;
@@ -10,10 +11,10 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Logging;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using Microsoft.Extensions.Logging;
 
 namespace DeliveryWebApp.WebUI.Pages.CustomerPages
 {
@@ -25,7 +26,8 @@ namespace DeliveryWebApp.WebUI.Pages.CustomerPages
         private readonly UserManager<ApplicationUser> _userManager;
         private readonly ILogger<RestaurantDetailModel> _logger;
 
-        public RestaurantDetailModel(ApplicationDbContext context, IMediator mediator, UserManager<ApplicationUser> userManager, ILogger<RestaurantDetailModel> logger)
+        public RestaurantDetailModel(ApplicationDbContext context, IMediator mediator,
+            UserManager<ApplicationUser> userManager, ILogger<RestaurantDetailModel> logger)
         {
             _context = context;
             _mediator = mediator;
@@ -33,6 +35,7 @@ namespace DeliveryWebApp.WebUI.Pages.CustomerPages
             _logger = logger;
         }
 
+        public Customer Customer { get; set; }
         public Restaurant Restaurant { get; set; }
         public List<Product> Products { get; set; }
 
@@ -42,6 +45,9 @@ namespace DeliveryWebApp.WebUI.Pages.CustomerPages
             {
                 return NotFound();
             }
+
+            var user = await _userManager.GetUserAsync(User);
+            Customer = await _context.Customers.Where(c => c.ApplicationUserFk == user.Id).FirstAsync();
 
             Restaurant = await _context.Restaurants.FindAsync(id);
             Products = await _mediator.Send(new GetProductsQuery
@@ -62,8 +68,11 @@ namespace DeliveryWebApp.WebUI.Pages.CustomerPages
 
             await _mediator.Send(new UpdateBasketCommand
             {
-                CustomerId = customer.Id,
-                Product = product
+                AddToBasket = new AddToBasket
+                {
+                    CustomerId = customer.Id,
+                    Product = product
+                }
             });
 
             _logger.LogInformation($"Added product with id {product.Id} to basket of user {user.Id}");

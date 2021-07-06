@@ -5,6 +5,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using AutoMapper;
 using DeliveryWebApp.Application.Addresses.Commands.CreateAddress;
+using DeliveryWebApp.Application.Addresses.Commands.DeleteAddress;
 using DeliveryWebApp.Application.Addresses.Queries.GetAddresses;
 using DeliveryWebApp.Domain.Entities;
 using MediatR;
@@ -56,8 +57,7 @@ namespace DeliveryWebApp.WebUI.Controllers
         [HttpDelete]
         public async Task<ActionResult<Address>> Delete(Address request)
         {
-            //TODO: implement DeleteAddressCommand
-            return null;
+            return await _mediator.Send(_mapper.Map<DeleteAddressCommand>(request));
         }
     }
 }
