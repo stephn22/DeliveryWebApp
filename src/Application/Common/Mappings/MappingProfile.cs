@@ -1,8 +1,6 @@
 ﻿using AutoMapper;
-using System;
-using System.Linq;
-using System.Reflection;
 using DeliveryWebApp.Application.Addresses.Commands.CreateAddress;
+using DeliveryWebApp.Application.Addresses.Commands.DeleteAddress;
 using DeliveryWebApp.Application.Addresses.Commands.UpdateAddress;
 using DeliveryWebApp.Application.Baskets.Commands.CreateBasket;
 using DeliveryWebApp.Application.Baskets.Commands.PurgeBasket;
@@ -29,6 +27,9 @@ using DeliveryWebApp.Application.Riders.Commands.DeleteRider;
 using DeliveryWebApp.Application.Riders.Commands.UpdateRider;
 using DeliveryWebApp.Domain.Entities;
 using DeliveryWebApp.Domain.Objects;
+using System;
+using System.Linq;
+using System.Reflection;
 
 namespace DeliveryWebApp.Application.Common.Mappings
 {
@@ -36,11 +37,11 @@ namespace DeliveryWebApp.Application.Common.Mappings
     {
         public MappingProfile()
         {
-            // FIXME: not working
-            //ApplyMappingsFromAssembly(Assembly.GetExecutingAssembly());
+            ApplyMappingsFromAssembly(Assembly.GetExecutingAssembly());
 
             CreateMap<Address, CreateAddressCommand>().ReverseMap();
             CreateMap<Address, UpdateAddressCommand>().ReverseMap();
+            CreateMap<Address, DeleteAddressCommand>().ReverseMap();
 
             CreateMap<Basket, CreateBasketCommand>().ReverseMap();
             CreateMap<Basket, PurgeBasketCommand>().ReverseMap();
