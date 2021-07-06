@@ -17,6 +17,7 @@ namespace DeliveryWebApp.Application.Addresses.Commands.CreateAddress
         public string Number { get; set; }
         public string City { get; set; }
         public string PostalCode { get; set; }
+        public string StateProvince { get; set; }
         public string Country { get; set; }
         public int CustomerId { get; set; }
     }
@@ -37,6 +38,7 @@ namespace DeliveryWebApp.Application.Addresses.Commands.CreateAddress
                 AddressLine1 = request.AddressLine1,
                 AddressLine2 = request.AddressLine2,
                 City = request.City,
+                StateProvince = request.StateProvince,
                 Country = request.Country,
                 Number = request.Number,
                 PostalCode = request.PostalCode,
