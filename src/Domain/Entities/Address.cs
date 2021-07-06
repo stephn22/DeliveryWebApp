@@ -20,7 +20,9 @@ namespace DeliveryWebApp.Domain.Entities
 
         public override string ToString()
         {
-            return AddressLine2 == null ? $"{AddressLine1}, {Number}, {City}, {PostalCode}, {Country}" : $"{AddressLine1}, {AddressLine2}, {Number}, {City}, {PostalCode}, {Country}";
+            return string.IsNullOrEmpty(AddressLine2)
+                ? $"{AddressLine1}, {Number}, {City}, {PostalCode}, {StateProvince}, {Country}"
+                : $"{AddressLine1}, {AddressLine2}, {Number}, {City}, {PostalCode}, {StateProvince}, {Country}";
         }
     }
 }
