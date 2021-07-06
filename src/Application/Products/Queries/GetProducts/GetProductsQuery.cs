@@ -35,9 +35,9 @@ namespace DeliveryWebApp.Application.Products.Queries.GetProducts
             {
                 if (request.RestaurantId != null)
                 {
-                    return await (from r in _context.Restaurants
-                        where r.Id == request.RestaurantId
-                        select r.Products.ToList()).FirstAsync(cancellationToken);
+                    return await (from p in _context.Products
+                        where p.RestaurantId == request.RestaurantId
+                        select p).ToListAsync(cancellationToken);
                 }
 
                 if (request.OrderId != null)

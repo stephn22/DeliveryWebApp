@@ -4,6 +4,9 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using AutoMapper;
+using DeliveryWebApp.Application.Products.Commands.CreateProduct;
+using DeliveryWebApp.Application.Products.Commands.DeleteProduct;
+using DeliveryWebApp.Application.Products.Commands.UpdateProducts;
 using DeliveryWebApp.Application.Products.Queries.GetProducts;
 using DeliveryWebApp.Domain.Entities;
 using MediatR;
@@ -23,6 +26,12 @@ namespace DeliveryWebApp.WebUI.Controllers
             _mapper = mapper;
         }
 
+        [HttpPost]
+        public async Task<ActionResult<Product>> Create(Product request)
+        {
+            return await _mediator.Send(_mapper.Map<CreateProductCommand>(request));
+        }
+
         /// <summary>
         /// Get the product list
         /// </summary>
@@ -31,7 +40,22 @@ namespace DeliveryWebApp.WebUI.Controllers
         [HttpGet]
         public async Task<List<Product>> Read(int id)
         {
-            return await _mediator.Send(_mapper.Map<GetProductsQuery>(id));
+            return await _mediator.Send(new GetProductsQuery
+            {
+                RestaurantId = id
+            });
+        }
+
+        [HttpPut]
+        public async Task<ActionResult<Product>> Update(Product request)
+        {
+            return await _mediator.Send(_mapper.Map<UpdateProductCommand>(request));
+        }
+
+        [HttpDelete]
+        public async Task<ActionResult<Product>> Delete(Product request)
+        {
+            return await _mediator.Send(_mapper.Map<DeleteProductCommand>(request));
         }
     }
 }
