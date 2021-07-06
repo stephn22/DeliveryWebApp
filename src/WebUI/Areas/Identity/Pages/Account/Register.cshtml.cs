@@ -125,7 +125,10 @@ namespace DeliveryWebApp.WebUI.Areas.Identity.Pages.Account
                         // add to Customers table
                         var customer = await _mediator.Send(new CreateCustomerCommand
                         {
-                            ApplicationUserFk = user.Id
+                            ApplicationUserFk = user.Id,
+                            Email = Input.Email,
+                            FirstName = Input.FName,
+                            LastName = Input.LName
                         });
 
                         _logger.LogInformation($"Created customer with id '{customer.Id}'.");
