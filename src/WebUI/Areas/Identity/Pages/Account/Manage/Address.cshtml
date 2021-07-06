@@ -1,6 +1,8 @@
 ﻿@page
 @using IdentityServer4.Extensions
+@using Newtonsoft.Json
 @using Serilog.Core
+@using DeliveryWebApp.Domain.Entities
 @model DeliveryWebApp.WebUI.Areas.Identity.Pages.Account.Manage.AddressModel
 @{
     ViewData["Title"] = "Your addresses";
@@ -11,378 +13,517 @@
         margin-top: 1rem;
         font-family: 'Roboto', sans-serif;
     }
+/*    .edit-btn {
+        margin-top: 0.5rem;
+    }*/
 
-    .map-btn { margin-top: 1rem; }
 </style>
 
 <h4>@ViewData["Title"]</h4>
 
 <partial name="_StatusMessage" for="StatusMessage"/>
 
-@*  FIXME *@
-
-
 <div class="container">
-<div class="row">
-<div class="col-md-12">
 
-@* Nav tabs *@
-<ul class="nav nav-tabs" id="tab-list" role="tablist">
-    <li class="nav-item" role="presentation">
-        <button class="nav-link active" id="address-tab-0" data-bs-toggle="tab" data-bs-target="#address0" type="button" role="tab" aria-controls="address0" aria-selected="true">
-            Primary Address
-        </button>
-    </li>
-    <li class="nav-item" role="presentation">
-        <button class="nav-link" id="address-tab-1" data-bs-toggle="tab" data-bs-target="#address1" type="button" role="tab" aria-controls="address1" aria-selected="false">
-            Secondary Address
-        </button>
-    </li>
-</ul>
+@if (Model.Addresses.IsNullOrEmpty())
+{
+    <p>Add your primary address</p>
 
-@* Tab panes *@
-<div class="tab-content" id="tab-content">
-
-@* Primary address *@
-    <div class="tab-pane fade show active" id="address0" role="tabpanel" aria-labelledby="address-tab-0">
-        @if (Model.Addresses.IsNullOrEmpty())
-        {
-            <p>Add your primary address</p>
-
-            <div class="form-group col-md-6">
-                <label class="form-label">Address</label>
-                <div class="input-group col-6">
-                    <input class="form-control" id="input-address-0" value="" />
-                    <div class="input-group-append">
-                        <button class="btn btn-outline-secondary" type="button" id="location-btn">
-                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-geo-alt" viewBox="0 0 16 16">
-                                <path d="M12.166 8.94c-.524 1.062-1.234 2.12-1.96 3.07A31.493 31.493 0 0 1 8 14.58a31.481 31.481 0 0 1-2.206-2.57c-.726-.95-1.436-2.008-1.96-3.07C3.304 7.867 3 6.862 3 6a5 5 0 0 1 10 0c0 .862-.305 1.867-.834 2.94zM8 16s6-5.686 6-10A6 6 0 0 0 2 6c0 4.314 6 10 6 10z" />
-                                <path d="M8 8a2 2 0 1 1 0-4 2 2 0 0 1 0 4zm0 1a3 3 0 1 0 0-6 3 3 0 0 0 0 6z" />
-                            </svg>
-                        </button>
-                    </div>
-                </div>
+    <div class="form-group col-md-7">
+        <label class="form-label">Primary Address</label>
+        <div class="input-group col-7">
+            <input class="form-control" id="input-address-0" value=""/>
+            <div class="input-group-append">
+                <button class="btn btn-outline-secondary" type="button" id="location-btn-addr-0">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-geo-alt" viewBox="0 0 16 16">
+                        <path d="M12.166 8.94c-.524 1.062-1.234 2.12-1.96 3.07A31.493 31.493 0 0 1 8 14.58a31.481 31.481 0 0 1-2.206-2.57c-.726-.95-1.436-2.008-1.96-3.07C3.304 7.867 3 6.862 3 6a5 5 0 0 1 10 0c0 .862-.305 1.867-.834 2.94zM8 16s6-5.686 6-10A6 6 0 0 0 2 6c0 4.314 6 10 6 10z"/>
+                        <path d="M8 8a2 2 0 1 1 0-4 2 2 0 0 1 0 4zm0 1a3 3 0 1 0 0-6 3 3 0 0 0 0 6z"/>
+                    </svg>
+                </button>
             </div>
-
-            <button id="save-btn" class="btn btn-primary" type="button">Save</button>
-
-            @section Scripts
-            {
-                <script src='https://api.mapbox.com/mapbox-gl-js/v2.3.1/mapbox-gl.js'></script>
-                <script src="https://unpkg.com/@@mapbox/mapbox-sdk/umd/mapbox-sdk.min.js"></script>
-                <script type="text/javascript">
-                    $(function() {
-                            //TODO: update view
-                            $("#location-btn").on("mousedown",
-                                function() {
-                                    navigator.geolocation.getCurrentPosition(getCoords);
-                                });
-
-                            function getCoords(position) {
-                                const accessToken = 'pk.eyJ1Ijoic3RlY3JvdHRpMSIsImEiOiJja3Bna2kzbHYyaThoMm9ueHl1dzlnaTc1In0.EpALSOaDOmuM8XGS_IQzvA';
-                                const url = `https://api.mapbox.com/geocoding/v5/mapbox.places/${position.coords.longitude},${position.coords.latitude}.json?limit=1&access_token=${accessToken}`;
-
-                                $.ajax({
-                                    type: "GET",
-                                    url: url,
-                                    dataType: "JSON",
-                                    contentType: "application/json; charset=utf-8",
-                                    success: function (data, status, xhr) {
-                                        $("#input-address-0").val(data.features[0].place_name);
-                                        /*window.alert(data.features[0].place_name);*/
-
-                                        $("#save-btn").on("click",
-                                            function() {
-                                                const addressObj = {
-                                                    addressLine1: data.features[0].text,
-                                                    addressLine2: "",
-                                                    number: data.features[0].address,
-                                                    postalCode: data.features[0].context[0].text,
-                                                    city: data.features[0].context[1].text,
-                                                    stateProvince: data.features[0].context[2].text,
-                                                    country: data.features[0].context[3].text,
-                                                    customerId: @Model.Customer.Id
-                                                };
-
-                                                $.ajax({
-                                                    type: "PUT",
-                                                    async: true,
-                                                    url: "/api/addresses",
-                                                    dataType: "JSON",
-                                                    data: JSON.stringify(addressObj),
-                                                    contentType: "application/json; charset=utf-8",
-                                                    success: function(data, status, xhr) {
-                                                        console.log(status);
-                                                    },
-                                                    error: function (jqXhr, textStatus, errorMessage) {
-                                                        console.log(errorMessage);
-                                                    }
-                                                });
-                                            });
-                                    },
-                                    error: function (jqXhr, textStatus, errorMessage) {
-                                        console.log(errorMessage);
-                                    }
-                                });
-                            }
-                        }
-                    );
-
-                </script>
-
-            }
-
-            <button class="btn btn-outline-secondary" data-bs-toggle="collapse" data-bs-target="#address-0-collapse" aria-expanded="false" aria-controls="address-0-collapse">
-                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-pencil-square" viewBox="0 0 16 16">
-                    <path d="M15.502 1.94a.5.5 0 0 1 0 .706L14.459 3.69l-2-2L13.502.646a.5.5 0 0 1 .707 0l1.293 1.293zm-1.75 2.456-2-2L4.939 9.21a.5.5 0 0 0-.121.196l-.805 2.414a.25.25 0 0 0 .316.316l2.414-.805a.5.5 0 0 0 .196-.12l6.813-6.814z" />
-                    <path fill-rule="evenodd" d="M1 13.5A1.5 1.5 0 0 0 2.5 15h11a1.5 1.5 0 0 0 1.5-1.5v-6a.5.5 0 0 0-1 0v6a.5.5 0 0 1-.5.5h-11a.5.5 0 0 1-.5-.5v-11a.5.5 0 0 1 .5-.5H9a.5.5 0 0 0 0-1H2.5A1.5 1.5 0 0 0 1 2.5v11z" />
-                </svg>
-                Edit manually
-            </button>
-
-            <div class="collapse" id="address-0-collapse">
-                <div class="card card-body">
-                    <form method="post" asp-page-handler="UpdateAddress" asp-route-id="@Model.Addresses[0].Id">
-
-                        <div class="form-row">
-                            <div class="form-group col-md-6">
-                                <label asp-for="Input.AddressLine1"></label>
-                                <input class="form-control" asp-for="Input.AddressLine1" placeholder="Address Line 1">
-                                <span asp-validation-for="Input.AddressLine1" class="text-danger"></span>
-                            </div>
-                            <div class="form-group col-md-6">
-                                <label asp-for="Input.AddressLine2"></label>
-                                <input class="form-control" asp-for="Input.AddressLine2" placeholder="Address Line 2">
-                                <span asp-validation-for="Input.AddressLine2" class="text-danger"></span>
-                            </div>
-                        </div>
-                        <div class="form-row">
-                            <div class="form-group col-2">
-                                <label asp-for="Input.Number"></label>
-                                <input class="form-control" asp-for="Input.Number" placeholder="1, 21B...">
-                                <span asp-validation-for="Input.Number" class="text-danger"></span>
-                            </div>
-                            <div class="form-group col-md-6">
-                                <label asp-for="Input.City"></label>
-                                <input class="form-control" asp-for="Input.City" placeholder="City">
-                                <span asp-validation-for="Input.City" class="text-danger"></span>
-                            </div>
-                        </div>
-                        <div class="form-row">
-                            <div class="form-group col-md-6">
-                                <label asp-for="Input.PostalCode"></label>
-                                <input class="form-control" asp-for="Input.PostalCode" placeholder="Postal Code: 20020...">
-                                <span asp-validation-for="Input.PostalCode" class="text-danger"></span>
-                            </div>
-                            <div class="form-group col-md-4">
-                                <label asp-for="Input.Country"></label>
-                                <select class="form-select" aria-label="Select country" asp-for="Input.Country" asp-items="Model.Countries">
-                                </select>
-                                <span asp-validation-for="Input.Country" class="text-danger"></span>
-                            </div>
-                        </div>
-
-                        <button type="submit" class="btn btn-primary" value="UpdateAddress">
-                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-save" viewBox="0 0 16 16">
-                                <path d="M2 1a1 1 0 0 0-1 1v12a1 1 0 0 0 1 1h12a1 1 0 0 0 1-1V2a1 1 0 0 0-1-1H9.5a1 1 0 0 0-1 1v7.293l2.646-2.647a.5.5 0 0 1 .708.708l-3.5 3.5a.5.5 0 0 1-.708 0l-3.5-3.5a.5.5 0 1 1 .708-.708L7.5 9.293V2a2 2 0 0 1 2-2H14a2 2 0 0 1 2 2v12a2 2 0 0 1-2 2H2a2 2 0 0 1-2-2V2a2 2 0 0 1 2-2h2.5a.5.5 0 0 1 0 1H2z" />
-                            </svg>
-                            Save
-                        </button>
-                    </form>
-                </div>
-            </div>
-        }
-        else
-        {
-            <br />
-            <div class="form-group">
-                <input class="form-control" id="address-input-0" placeholder="Primary Address" value="@Model.Addresses[0].ToString()" disabled />
-            </div>
-            <br />
-            <button class="btn btn-outline-secondary" data-bs-toggle="collapse" data-bs-target="#address-0-collapse" aria-expanded="false" aria-controls="address-0-collapse">
-                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-pencil-square" viewBox="0 0 16 16">
-                    <path d="M15.502 1.94a.5.5 0 0 1 0 .706L14.459 3.69l-2-2L13.502.646a.5.5 0 0 1 .707 0l1.293 1.293zm-1.75 2.456-2-2L4.939 9.21a.5.5 0 0 0-.121.196l-.805 2.414a.25.25 0 0 0 .316.316l2.414-.805a.5.5 0 0 0 .196-.12l6.813-6.814z" />
-                    <path fill-rule="evenodd" d="M1 13.5A1.5 1.5 0 0 0 2.5 15h11a1.5 1.5 0 0 0 1.5-1.5v-6a.5.5 0 0 0-1 0v6a.5.5 0 0 1-.5.5h-11a.5.5 0 0 1-.5-.5v-11a.5.5 0 0 1 .5-.5H9a.5.5 0 0 0 0-1H2.5A1.5 1.5 0 0 0 1 2.5v11z" />
-                </svg>
-            </button>
-
-            <div class="collapse" id="address-0-collapse">
-                <div class="card card-body">
-                    <form method="post" asp-page-handler="UpdateAddress" asp-route-id="@Model.Addresses[0].Id">
-
-                        <div class="form-row">
-                            <div class="form-group col-md-6">
-                                <label asp-for="Input.AddressLine1"></label>
-                                <input class="form-control" asp-for="Input.AddressLine1" placeholder="Address Line 1">
-                                <span asp-validation-for="Input.AddressLine1" class="text-danger"></span>
-                            </div>
-                            <div class="form-group col-md-6">
-                                <label asp-for="Input.AddressLine2"></label>
-                                <input class="form-control" asp-for="Input.AddressLine2" placeholder="Address Line 2">
-                                <span asp-validation-for="Input.AddressLine2" class="text-danger"></span>
-                            </div>
-                        </div>
-                        <div class="form-row">
-                            <div class="form-group col-2">
-                                <label asp-for="Input.Number"></label>
-                                <input class="form-control" asp-for="Input.Number" placeholder="1, 21B...">
-                                <span asp-validation-for="Input.Number" class="text-danger"></span>
-                            </div>
-                            <div class="form-group col-md-6">
-                                <label asp-for="Input.City"></label>
-                                <input class="form-control" asp-for="Input.City" placeholder="City">
-                                <span asp-validation-for="Input.City" class="text-danger"></span>
-                            </div>
-                        </div>
-                        <div class="form-row">
-                            <div class="form-group col-md-6">
-                                <label asp-for="Input.PostalCode"></label>
-                                <input class="form-control" asp-for="Input.PostalCode" placeholder="Postal Code: 20020...">
-                                <span asp-validation-for="Input.PostalCode" class="text-danger"></span>
-                            </div>
-                            <div class="form-group col-md-4">
-                                <label asp-for="Input.Country"></label>
-                                <select class="form-select" aria-label="Select country" asp-for="Input.Country" asp-items="Model.Countries">
-                                </select>
-                                <span asp-validation-for="Input.Country" class="text-danger"></span>
-                            </div>
-                        </div>
-
-                        <button type="submit" class="btn btn-primary" value="UpdateAddress">
-                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-save" viewBox="0 0 16 16">
-                                <path d="M2 1a1 1 0 0 0-1 1v12a1 1 0 0 0 1 1h12a1 1 0 0 0 1-1V2a1 1 0 0 0-1-1H9.5a1 1 0 0 0-1 1v7.293l2.646-2.647a.5.5 0 0 1 .708.708l-3.5 3.5a.5.5 0 0 1-.708 0l-3.5-3.5a.5.5 0 1 1 .708-.708L7.5 9.293V2a2 2 0 0 1 2-2H14a2 2 0 0 1 2 2v12a2 2 0 0 1-2 2H2a2 2 0 0 1-2-2V2a2 2 0 0 1 2-2h2.5a.5.5 0 0 1 0 1H2z" />
-                            </svg>
-                            Save
-                        </button>
-                    </form>
-                </div>
-            </div>
-        }
+        </div>
     </div>
 
-@* Secondary address *@
-<div class="tab-pane fade" id="address1" role="tabpanel" aria-labelledby="address-tab-1">
+    <button id="save-btn-0" class="btn btn-primary" type="button">Save</button>
 
-    @if (Model.Addresses.IsNullOrEmpty() || Model.Addresses.Count < 2) // has 1 address only
-    {
-        <p>Add your secondary address</p>
+    <button class="btn btn-outline-secondary edit-btn" data-bs-toggle="collapse" data-bs-target="#address-0-collapse" aria-expanded="false" aria-controls="address-0-collapse">
+        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-pencil-square" viewBox="0 0 16 16">
+            <path d="M15.502 1.94a.5.5 0 0 1 0 .706L14.459 3.69l-2-2L13.502.646a.5.5 0 0 1 .707 0l1.293 1.293zm-1.75 2.456-2-2L4.939 9.21a.5.5 0 0 0-.121.196l-.805 2.414a.25.25 0 0 0 .316.316l2.414-.805a.5.5 0 0 0 .196-.12l6.813-6.814z"/>
+            <path fill-rule="evenodd" d="M1 13.5A1.5 1.5 0 0 0 2.5 15h11a1.5 1.5 0 0 0 1.5-1.5v-6a.5.5 0 0 0-1 0v6a.5.5 0 0 1-.5.5h-11a.5.5 0 0 1-.5-.5v-11a.5.5 0 0 1 .5-.5H9a.5.5 0 0 0 0-1H2.5A1.5 1.5 0 0 0 1 2.5v11z"/>
+        </svg>
+        Edit
+    </button>
 
-        <form method="post">
-            <div class="form-row">
-                <div class="form-group col-md-6">
-                    <label asp-for="Input.AddressLine1"></label>
-                    <input class="form-control" asp-for="Input.AddressLine1" placeholder="Address Line 1">
-                    <span asp-validation-for="Input.AddressLine1" class="text-danger"></span>
-                </div>
-                <div class="form-group col-md-6">
-                    <label asp-for="Input.AddressLine2"></label>
-                    <input class="form-control" asp-for="Input.AddressLine2" placeholder="Address Line 2">
-                    <span asp-validation-for="Input.AddressLine2" class="text-danger"></span>
-                </div>
-            </div>
+    <div class="collapse" id="address-0-collapse">
+        <div class="card card-body">
+            <form method="post">
 
-            <div class="form-row">
-                <div class="form-group col-2">
-                    <label asp-for="Input.Number"></label>
-                    <input class="form-control" asp-for="Input.Number" placeholder="1, 21B...">
-                    <span asp-validation-for="Input.Number" class="text-danger"></span>
+                <div class="form-row">
+                    <div class="form-group col-md-6">
+                        <label asp-for="Input.AddressLine1"></label>
+                        <input class="form-control" asp-for="Input.AddressLine1" placeholder="Address Line 1">
+                        <span asp-validation-for="Input.AddressLine1" class="text-danger"></span>
+                    </div>
+                    <div class="form-group col-md-6">
+                        <label asp-for="Input.AddressLine2"></label>
+                        <input class="form-control" asp-for="Input.AddressLine2" placeholder="Address Line 2">
+                        <span asp-validation-for="Input.AddressLine2" class="text-danger"></span>
+                    </div>
                 </div>
-                <div class="form-group col-md-6">
-                    <label asp-for="Input.City"></label>
-                    <input class="form-control" asp-for="Input.City" placeholder="City">
-                    <span asp-validation-for="Input.City" class="text-danger"></span>
+                <div class="form-row">
+                    <div class="form-group col-2">
+                        <label asp-for="Input.Number"></label>
+                        <input class="form-control" asp-for="Input.Number" placeholder="1, 21B...">
+                        <span asp-validation-for="Input.Number" class="text-danger"></span>
+                    </div>
+                    <div class="form-group col-md-6">
+                        <label asp-for="Input.City"></label>
+                        <input class="form-control" asp-for="Input.City" placeholder="City">
+                        <span asp-validation-for="Input.City" class="text-danger"></span>
+                    </div>
+                    <div class="form-group col-md-6">
+                        <label asp-for="Input.PostalCode"></label>
+                        <input class="form-control" asp-for="Input.PostalCode" placeholder="Postal Code: 20020...">
+                        <span asp-validation-for="Input.PostalCode" class="text-danger"></span>
+                    </div>
                 </div>
-            </div>
-            <div class="form-row">
-                <div class="form-group col-md-6">
-                    <label asp-for="Input.PostalCode"></label>
-                    <input class="form-control" asp-for="Input.PostalCode" placeholder="Postal Code: 20020...">
-                    <span asp-validation-for="Input.PostalCode" class="text-danger"></span>
+                <div class="form-row">
+                    <div class="form-group col-md-6">
+                        <label asp-for="Input.StateProvince"></label>
+                        <input class="form-control" asp-for="Input.StateProvince" placeholder="CA, NY, ...">
+                        <span asp-validation-for="Input.StateProvince" class="text-danger"></span>
+                    </div>
+                    <div class="form-group col-md-4">
+                        <label asp-for="Input.Country"></label>
+                        <select class="form-select" aria-label="Select country" asp-for="Input.Country" asp-items="Model.Countries">
+                        </select>
+                        <span asp-validation-for="Input.Country" class="text-danger"></span>
+                    </div>
                 </div>
-                <div class="form-group col-md-4">
-                    <label asp-for="Input.Country"></label>
-                    <select class="form-select" aria-label="Select country" asp-for="Input.Country" asp-items="Model.Countries">
-                    </select>
-                    <span asp-validation-for="Input.Country" class="text-danger"></span>
-                </div>
-            </div>
-            <button type="submit" class="btn btn-primary">Submit</button>
-        </form>
-    }
-    else
-    {
-        <br/>
-        <div class="form-group">
-            <input class="form-control" id="address-input-1" placeholder="Primary Address" value="@Model.Addresses[1].ToString()" disabled/>
+
+                <button type="submit" class="btn btn-primary" value="UpdateAddress">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-save" viewBox="0 0 16 16">
+                        <path d="M2 1a1 1 0 0 0-1 1v12a1 1 0 0 0 1 1h12a1 1 0 0 0 1-1V2a1 1 0 0 0-1-1H9.5a1 1 0 0 0-1 1v7.293l2.646-2.647a.5.5 0 0 1 .708.708l-3.5 3.5a.5.5 0 0 1-.708 0l-3.5-3.5a.5.5 0 1 1 .708-.708L7.5 9.293V2a2 2 0 0 1 2-2H14a2 2 0 0 1 2 2v12a2 2 0 0 1-2 2H2a2 2 0 0 1-2-2V2a2 2 0 0 1 2-2h2.5a.5.5 0 0 1 0 1H2z"/>
+                    </svg>
+                    Save
+                </button>
+            </form>
         </div>
-        <br/>
-        <button class="btn btn-outline-secondary" data-bs-toggle="collapse" data-bs-target="#address-1-collapse" aria-expanded="false" aria-controls="address-1-collapse">
-            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-pencil-square" viewBox="0 0 16 16">
-                <path d="M15.502 1.94a.5.5 0 0 1 0 .706L14.459 3.69l-2-2L13.502.646a.5.5 0 0 1 .707 0l1.293 1.293zm-1.75 2.456-2-2L4.939 9.21a.5.5 0 0 0-.121.196l-.805 2.414a.25.25 0 0 0 .316.316l2.414-.805a.5.5 0 0 0 .196-.12l6.813-6.814z"/>
-                <path fill-rule="evenodd" d="M1 13.5A1.5 1.5 0 0 0 2.5 15h11a1.5 1.5 0 0 0 1.5-1.5v-6a.5.5 0 0 0-1 0v6a.5.5 0 0 1-.5.5h-11a.5.5 0 0 1-.5-.5v-11a.5.5 0 0 1 .5-.5H9a.5.5 0 0 0 0-1H2.5A1.5 1.5 0 0 0 1 2.5v11z"/>
-            </svg>
-        </button>
-
-        <div class="collapse" id="address-1-collapse">
-            <div class="card card-body">
-                <form method="post" asp-page-handler="UpdateAddress" asp-route-id="@Model.Addresses[1].Id">
-
-                    <div class="form-row">
-                        <div class="form-group col-md-6">
-                            <label asp-for="Input.AddressLine1"></label>
-                            <input class="form-control" asp-for="Input.AddressLine1" placeholder="Address Line 1">
-                            <span asp-validation-for="Input.AddressLine1" class="text-danger"></span>
-                        </div>
-                        <div class="form-group col-md-6">
-                            <label asp-for="Input.AddressLine2"></label>
-                            <input class="form-control" asp-for="Input.AddressLine2" placeholder="Address Line 2">
-                            <span asp-validation-for="Input.AddressLine2" class="text-danger"></span>
-                        </div>
-                    </div>
-                    <div class="form-row">
-                        <div class="form-group col-2">
-                            <label asp-for="Input.Number"></label>
-                            <input class="form-control" asp-for="Input.Number" placeholder="1, 21B...">
-                            <span asp-validation-for="Input.Number" class="text-danger"></span>
-                        </div>
-                        <div class="form-group col-md-6">
-                            <label asp-for="Input.City"></label>
-                            <input class="form-control" asp-for="Input.City" placeholder="City">
-                            <span asp-validation-for="Input.City" class="text-danger"></span>
-                        </div>
-                    </div>
-                    <div class="form-row">
-                        <div class="form-group col-md-6">
-                            <label asp-for="Input.PostalCode"></label>
-                            <input class="form-control" asp-for="Input.PostalCode" placeholder="Postal Code: 20020...">
-                            <span asp-validation-for="Input.PostalCode" class="text-danger"></span>
-                        </div>
-                        <div class="form-group col-md-4">
-                            <label asp-for="Input.Country"></label>
-                            <select class="form-select" aria-label="Select country" asp-for="Input.Country" asp-items="Model.Countries">
-                            </select>
-                            <span asp-validation-for="Input.Country" class="text-danger"></span>
-                        </div>
-                    </div>
-
-                    <button type="submit" class="btn btn-primary" value="UpdateAddress">
-                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-save" viewBox="0 0 16 16">
-                            <path d="M2 1a1 1 0 0 0-1 1v12a1 1 0 0 0 1 1h12a1 1 0 0 0 1-1V2a1 1 0 0 0-1-1H9.5a1 1 0 0 0-1 1v7.293l2.646-2.647a.5.5 0 0 1 .708.708l-3.5 3.5a.5.5 0 0 1-.708 0l-3.5-3.5a.5.5 0 1 1 .708-.708L7.5 9.293V2a2 2 0 0 1 2-2H14a2 2 0 0 1 2 2v12a2 2 0 0 1-2 2H2a2 2 0 0 1-2-2V2a2 2 0 0 1 2-2h2.5a.5.5 0 0 1 0 1H2z"/>
+    </div>
+}
+else
+{
+    <form method="post" asp-page-handler="DeleteAddress" asp-route-id="@Model.Addresses[0].Id">
+        <div class="form-group col-md-7">
+            <label class="form-label">Primary Address</label>
+            <div class="input-group col-7">
+                <input class="form-control" id="input-address-0" value="@Model.Addresses[0].ToString()" disabled/>
+                <div class="input-group-append">
+                    <button class="btn btn-outline-secondary" type="button" id="location-btn-addr-0">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-geo-alt" viewBox="0 0 16 16">
+                            <path d="M12.166 8.94c-.524 1.062-1.234 2.12-1.96 3.07A31.493 31.493 0 0 1 8 14.58a31.481 31.481 0 0 1-2.206-2.57c-.726-.95-1.436-2.008-1.96-3.07C3.304 7.867 3 6.862 3 6a5 5 0 0 1 10 0c0 .862-.305 1.867-.834 2.94zM8 16s6-5.686 6-10A6 6 0 0 0 2 6c0 4.314 6 10 6 10z"/>
+                            <path d="M8 8a2 2 0 1 1 0-4 2 2 0 0 1 0 4zm0 1a3 3 0 1 0 0-6 3 3 0 0 0 0 6z"/>
                         </svg>
-                        Save
                     </button>
-                </form>
+                </div>
+                <div class="input-group-append">
+                    <button class="btn btn-outline-secondary" type="submit" id="delete-btn-addr-0" value="DeleteAddress">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-trash" viewBox="0 0 16 16">
+                            <path d="M5.5 5.5A.5.5 0 0 1 6 6v6a.5.5 0 0 1-1 0V6a.5.5 0 0 1 .5-.5zm2.5 0a.5.5 0 0 1 .5.5v6a.5.5 0 0 1-1 0V6a.5.5 0 0 1 .5-.5zm3 .5a.5.5 0 0 0-1 0v6a.5.5 0 0 0 1 0V6z"/>
+                            <path fill-rule="evenodd" d="M14.5 3a1 1 0 0 1-1 1H13v9a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V4h-.5a1 1 0 0 1-1-1V2a1 1 0 0 1 1-1H6a1 1 0 0 1 1-1h2a1 1 0 0 1 1 1h3.5a1 1 0 0 1 1 1v1zM4.118 4 4 4.059V13a1 1 0 0 0 1 1h6a1 1 0 0 0 1-1V4.059L11.882 4H4.118zM2.5 3V2h11v1h-11z"/>
+                        </svg>
+                    </button>
+                </div>
             </div>
         </div>
-    }
+    </form>
+
+    <button id="save-btn-0" class="btn btn-primary" type="button">Save</button>
+
+    <button class="btn btn-outline-secondary edit-btn" data-bs-toggle="collapse" data-bs-target="#address-0-collapse" aria-expanded="false" aria-controls="address-0-collapse">
+        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-pencil-square" viewBox="0 0 16 16">
+            <path d="M15.502 1.94a.5.5 0 0 1 0 .706L14.459 3.69l-2-2L13.502.646a.5.5 0 0 1 .707 0l1.293 1.293zm-1.75 2.456-2-2L4.939 9.21a.5.5 0 0 0-.121.196l-.805 2.414a.25.25 0 0 0 .316.316l2.414-.805a.5.5 0 0 0 .196-.12l6.813-6.814z"/>
+            <path fill-rule="evenodd" d="M1 13.5A1.5 1.5 0 0 0 2.5 15h11a1.5 1.5 0 0 0 1.5-1.5v-6a.5.5 0 0 0-1 0v6a.5.5 0 0 1-.5.5h-11a.5.5 0 0 1-.5-.5v-11a.5.5 0 0 1 .5-.5H9a.5.5 0 0 0 0-1H2.5A1.5 1.5 0 0 0 1 2.5v11z"/>
+        </svg>
+        Edit
+    </button>
+
+    <div class="collapse" id="address-0-collapse">
+        <div class="card card-body">
+            <form method="post" asp-page-handler="UpdateAddress" asp-route-id="@Model.Addresses[0].Id">
+
+                <div class="form-row">
+                    <div class="form-group col-md-6">
+                        <label asp-for="Input.AddressLine1"></label>
+                        <input class="form-control" asp-for="Input.AddressLine1" placeholder="Address Line 1" value="@Model.Addresses[0].AddressLine1">
+                        <span asp-validation-for="Input.AddressLine1" class="text-danger"></span>
+                    </div>
+                    <div class="form-group col-md-6">
+                        <label asp-for="Input.AddressLine2"></label>
+                        <input class="form-control" asp-for="Input.AddressLine2" placeholder="Address Line 2" value="@Model.Addresses[0].AddressLine2">
+                        <span asp-validation-for="Input.AddressLine2" class="text-danger"></span>
+                    </div>
+                </div>
+                <div class="form-row">
+                    <div class="form-group col-2">
+                        <label asp-for="Input.Number"></label>
+                        <input class="form-control" asp-for="Input.Number" placeholder="1, 21B..." value="@Model.Addresses[0].Number">
+                        <span asp-validation-for="Input.Number" class="text-danger"></span>
+                    </div>
+                    <div class="form-group col-md-6">
+                        <label asp-for="Input.City"></label>
+                        <input class="form-control" asp-for="Input.City" placeholder="City" value="@Model.Addresses[0].City">
+                        <span asp-validation-for="Input.City" class="text-danger"></span>
+                    </div>
+                    <div class="form-group col-md-6">
+                        <label asp-for="Input.PostalCode"></label>
+                        <input class="form-control" asp-for="Input.PostalCode" placeholder="Postal Code: 20020..." value="@Model.Addresses[0].PostalCode">
+                        <span asp-validation-for="Input.PostalCode" class="text-danger"></span>
+                    </div>
+                </div>
+                <div class="form-row">
+                    <div class="form-group col-md-6">
+                        <label asp-for="Input.StateProvince"></label>
+                        <input class="form-control" asp-for="Input.StateProvince" placeholder="CA, NY, ..." value="@Model.Addresses[0].StateProvince">
+                        <span asp-validation-for="Input.StateProvince" class="text-danger"></span>
+                    </div>
+                    <div class="form-group col-md-4">
+                        <label asp-for="Input.Country"></label>
+                        <select class="form-select" aria-label="Select country" asp-for="Input.Country" asp-items="Model.Countries" aria-selected="@Model.Addresses[0].Country">
+                        </select>
+                        <span asp-validation-for="Input.Country" class="text-danger"></span>
+                    </div>
+                </div>
+
+                <button type="submit" class="btn btn-primary" value="UpdateAddress">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-save" viewBox="0 0 16 16">
+                        <path d="M2 1a1 1 0 0 0-1 1v12a1 1 0 0 0 1 1h12a1 1 0 0 0 1-1V2a1 1 0 0 0-1-1H9.5a1 1 0 0 0-1 1v7.293l2.646-2.647a.5.5 0 0 1 .708.708l-3.5 3.5a.5.5 0 0 1-.708 0l-3.5-3.5a.5.5 0 1 1 .708-.708L7.5 9.293V2a2 2 0 0 1 2-2H14a2 2 0 0 1 2 2v12a2 2 0 0 1-2 2H2a2 2 0 0 1-2-2V2a2 2 0 0 1 2-2h2.5a.5.5 0 0 1 0 1H2z"/>
+                    </svg>
+                    Save
+                </button>
+            </form>
+        </div>
+    </div>
+}
+
+<hr/>
+
+@if (Model.Addresses.IsNullOrEmpty() || Model.Addresses.Count == 1)
+{
+    <p>Add your secondary address</p>
+
+    <div class="form-group col-md-6">
+        <label class="form-label">Secondary Address</label>
+        <div class="input-group col-6">
+            <input class="form-control" id="input-address-1" value=""/>
+            <div class="input-group-append">
+                <button class="btn btn-outline-secondary" type="button" id="location-btn-addr-1">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-geo-alt" viewBox="0 0 16 16">
+                        <path d="M12.166 8.94c-.524 1.062-1.234 2.12-1.96 3.07A31.493 31.493 0 0 1 8 14.58a31.481 31.481 0 0 1-2.206-2.57c-.726-.95-1.436-2.008-1.96-3.07C3.304 7.867 3 6.862 3 6a5 5 0 0 1 10 0c0 .862-.305 1.867-.834 2.94zM8 16s6-5.686 6-10A6 6 0 0 0 2 6c0 4.314 6 10 6 10z"/>
+                        <path d="M8 8a2 2 0 1 1 0-4 2 2 0 0 1 0 4zm0 1a3 3 0 1 0 0-6 3 3 0 0 0 0 6z"/>
+                    </svg>
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <button id="save-btn-1" class="btn btn-primary" type="button">Save</button>
+
+    <button class="btn btn-outline-secondary edit-btn" data-bs-toggle="collapse" data-bs-target="#address-1-collapse" aria-expanded="false" aria-controls="address-1-collapse">
+        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-pencil-square" viewBox="0 0 16 16">
+            <path d="M15.502 1.94a.5.5 0 0 1 0 .706L14.459 3.69l-2-2L13.502.646a.5.5 0 0 1 .707 0l1.293 1.293zm-1.75 2.456-2-2L4.939 9.21a.5.5 0 0 0-.121.196l-.805 2.414a.25.25 0 0 0 .316.316l2.414-.805a.5.5 0 0 0 .196-.12l6.813-6.814z"/>
+            <path fill-rule="evenodd" d="M1 13.5A1.5 1.5 0 0 0 2.5 15h11a1.5 1.5 0 0 0 1.5-1.5v-6a.5.5 0 0 0-1 0v6a.5.5 0 0 1-.5.5h-11a.5.5 0 0 1-.5-.5v-11a.5.5 0 0 1 .5-.5H9a.5.5 0 0 0 0-1H2.5A1.5 1.5 0 0 0 1 2.5v11z"/>
+        </svg>
+        Edit
+    </button>
+
+    <div class="collapse" id="address-1-collapse">
+        <div class="card card-body">
+            <form method="post">
+
+                <div class="form-row">
+                    <div class="form-group col-md-6">
+                        <label asp-for="Input.AddressLine1"></label>
+                        <input class="form-control" asp-for="Input.AddressLine1" placeholder="Address Line 1">
+                        <span asp-validation-for="Input.AddressLine1" class="text-danger"></span>
+                    </div>
+                    <div class="form-group col-md-6">
+                        <label asp-for="Input.AddressLine2"></label>
+                        <input class="form-control" asp-for="Input.AddressLine2" placeholder="Address Line 2">
+                        <span asp-validation-for="Input.AddressLine2" class="text-danger"></span>
+                    </div>
+                </div>
+                <div class="form-row">
+                    <div class="form-group col-2">
+                        <label asp-for="Input.Number"></label>
+                        <input class="form-control" asp-for="Input.Number" placeholder="1, 21B...">
+                        <span asp-validation-for="Input.Number" class="text-danger"></span>
+                    </div>
+                    <div class="form-group col-md-6">
+                        <label asp-for="Input.City"></label>
+                        <input class="form-control" asp-for="Input.City" placeholder="City">
+                        <span asp-validation-for="Input.City" class="text-danger"></span>
+                    </div>
+                    <div class="form-group col-md-6">
+                        <label asp-for="Input.PostalCode"></label>
+                        <input class="form-control" asp-for="Input.PostalCode" placeholder="Postal Code: 20020...">
+                        <span asp-validation-for="Input.PostalCode" class="text-danger"></span>
+                    </div>
+                </div>
+                <div class="form-row">
+                    <div class="form-group col-md-6">
+                        <label asp-for="Input.StateProvince"></label>
+                        <input class="form-control" asp-for="Input.StateProvince" placeholder="CA, NY, ...">
+                        <span asp-validation-for="Input.StateProvince" class="text-danger"></span>
+                    </div>
+                    <div class="form-group col-md-4">
+                        <label asp-for="Input.Country"></label>
+                        <select class="form-select" aria-label="Select country" asp-for="Input.Country" asp-items="Model.Countries">
+                        </select>
+                        <span asp-validation-for="Input.Country" class="text-danger"></span>
+                    </div>
+                </div>
+
+                <button type="submit" class="btn btn-primary" value="UpdateAddress">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-save" viewBox="0 0 16 16">
+                        <path d="M2 1a1 1 0 0 0-1 1v12a1 1 0 0 0 1 1h12a1 1 0 0 0 1-1V2a1 1 0 0 0-1-1H9.5a1 1 0 0 0-1 1v7.293l2.646-2.647a.5.5 0 0 1 .708.708l-3.5 3.5a.5.5 0 0 1-.708 0l-3.5-3.5a.5.5 0 1 1 .708-.708L7.5 9.293V2a2 2 0 0 1 2-2H14a2 2 0 0 1 2 2v12a2 2 0 0 1-2 2H2a2 2 0 0 1-2-2V2a2 2 0 0 1 2-2h2.5a.5.5 0 0 1 0 1H2z"/>
+                    </svg>
+                    Save
+                </button>
+            </form>
+        </div>
+    </div>
+}
+else
+{
+    <form method="post" asp-page-handler="DeleteAddress" asp-route-id="@Model.Addresses[1].Id">
+        <div class="form-group col-md-6">
+            <label class="form-label">Secondary Address</label>
+            <div class="input-group col-6">
+                <input class="form-control" id="input-address-1" value="@Model.Addresses[1].ToString()" disabled/>
+                <div class="input-group-append">
+                    <button class="btn btn-outline-secondary" type="button" id="location-btn-addr-1">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-geo-alt" viewBox="0 0 16 16">
+                            <path d="M12.166 8.94c-.524 1.062-1.234 2.12-1.96 3.07A31.493 31.493 0 0 1 8 14.58a31.481 31.481 0 0 1-2.206-2.57c-.726-.95-1.436-2.008-1.96-3.07C3.304 7.867 3 6.862 3 6a5 5 0 0 1 10 0c0 .862-.305 1.867-.834 2.94zM8 16s6-5.686 6-10A6 6 0 0 0 2 6c0 4.314 6 10 6 10z"/>
+                            <path d="M8 8a2 2 0 1 1 0-4 2 2 0 0 1 0 4zm0 1a3 3 0 1 0 0-6 3 3 0 0 0 0 6z"/>
+                        </svg>
+                    </button>
+                </div>
+                <div class="input-group-append">
+                    <button class="btn btn-outline-secondary" type="submit" id="delete-btn-addr-1">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-trash" viewBox="0 0 16 16">
+                            <path d="M5.5 5.5A.5.5 0 0 1 6 6v6a.5.5 0 0 1-1 0V6a.5.5 0 0 1 .5-.5zm2.5 0a.5.5 0 0 1 .5.5v6a.5.5 0 0 1-1 0V6a.5.5 0 0 1 .5-.5zm3 .5a.5.5 0 0 0-1 0v6a.5.5 0 0 0 1 0V6z"/>
+                            <path fill-rule="evenodd" d="M14.5 3a1 1 0 0 1-1 1H13v9a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V4h-.5a1 1 0 0 1-1-1V2a1 1 0 0 1 1-1H6a1 1 0 0 1 1-1h2a1 1 0 0 1 1 1h3.5a1 1 0 0 1 1 1v1zM4.118 4 4 4.059V13a1 1 0 0 0 1 1h6a1 1 0 0 0 1-1V4.059L11.882 4H4.118zM2.5 3V2h11v1h-11z"/>
+                        </svg>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </form>
+
+    <button id="save-btn-1" class="btn btn-primary" type="button">Save</button>
+
+    <button class="btn btn-outline-secondary edit-btn" data-bs-toggle="collapse" data-bs-target="#address-1-collapse" aria-expanded="false" aria-controls="address-1-collapse">
+        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-pencil-square" viewBox="0 0 16 16">
+            <path d="M15.502 1.94a.5.5 0 0 1 0 .706L14.459 3.69l-2-2L13.502.646a.5.5 0 0 1 .707 0l1.293 1.293zm-1.75 2.456-2-2L4.939 9.21a.5.5 0 0 0-.121.196l-.805 2.414a.25.25 0 0 0 .316.316l2.414-.805a.5.5 0 0 0 .196-.12l6.813-6.814z"/>
+            <path fill-rule="evenodd" d="M1 13.5A1.5 1.5 0 0 0 2.5 15h11a1.5 1.5 0 0 0 1.5-1.5v-6a.5.5 0 0 0-1 0v6a.5.5 0 0 1-.5.5h-11a.5.5 0 0 1-.5-.5v-11a.5.5 0 0 1 .5-.5H9a.5.5 0 0 0 0-1H2.5A1.5 1.5 0 0 0 1 2.5v11z"/>
+        </svg>
+        Edit
+    </button>
+
+    <div class="collapse" id="address-1-collapse">
+        <div class="card card-body">
+            <form method="post" asp-page-handler="UpdateAddress" asp-route-id="@Model.Addresses[1].Id">
+
+                <div class="form-row">
+                    <div class="form-group col-md-6">
+                        <label asp-for="Input.AddressLine1"></label>
+                        <input class="form-control" asp-for="Input.AddressLine1" placeholder="Address Line 1" value="@Model.Addresses[1].AddressLine1">
+                        <span asp-validation-for="Input.AddressLine1" class="text-danger"></span>
+                    </div>
+                    <div class="form-group col-md-6">
+                        <label asp-for="Input.AddressLine2"></label>
+                        <input class="form-control" asp-for="Input.AddressLine2" placeholder="Address Line 2" value="@Model.Addresses[1].AddressLine2">
+                        <span asp-validation-for="Input.AddressLine2" class="text-danger"></span>
+                    </div>
+                </div>
+                <div class="form-row">
+                    <div class="form-group col-2">
+                        <label asp-for="Input.Number"></label>
+                        <input class="form-control" asp-for="Input.Number" placeholder="1, 21B..." value="@Model.Addresses[1].Number">
+                        <span asp-validation-for="Input.Number" class="text-danger"></span>
+                    </div>
+                    <div class="form-group col-md-6">
+                        <label asp-for="Input.City"></label>
+                        <input class="form-control" asp-for="Input.City" placeholder="City" value="@Model.Addresses[1].City">
+                        <span asp-validation-for="Input.City" class="text-danger"></span>
+                    </div>
+                    <div class="form-group col-md-6">
+                        <label asp-for="Input.PostalCode"></label>
+                        <input class="form-control" asp-for="Input.PostalCode" placeholder="Postal Code: 20020..." value="@Model.Addresses[1].PostalCode">
+                        <span asp-validation-for="Input.PostalCode" class="text-danger"></span>
+                    </div>
+                </div>
+                <div class="form-row">
+                    <div class="form-group col-md-6">
+                        <label asp-for="Input.StateProvince"></label>
+                        <input class="form-control" asp-for="Input.StateProvince" placeholder="CA, NY, ..." value="@Model.Addresses[1].StateProvince">
+                        <span asp-validation-for="Input.StateProvince" class="text-danger"></span>
+                    </div>
+                    <div class="form-group col-md-4">
+                        <label asp-for="Input.Country"></label>
+                        <select class="form-select" aria-label="Select country" asp-for="Input.Country" asp-items="Model.Countries" aria-selected="@Model.Addresses[1].Country">
+                        </select>
+                        <span asp-validation-for="Input.Country" class="text-danger"></span>
+                    </div>
+                </div>
+
+                <button type="submit" class="btn btn-primary" value="UpdateAddress">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-save" viewBox="0 0 16 16">
+                        <path d="M2 1a1 1 0 0 0-1 1v12a1 1 0 0 0 1 1h12a1 1 0 0 0 1-1V2a1 1 0 0 0-1-1H9.5a1 1 0 0 0-1 1v7.293l2.646-2.647a.5.5 0 0 1 .708.708l-3.5 3.5a.5.5 0 0 1-.708 0l-3.5-3.5a.5.5 0 1 1 .708-.708L7.5 9.293V2a2 2 0 0 1 2-2H14a2 2 0 0 1 2 2v12a2 2 0 0 1-2 2H2a2 2 0 0 1-2-2V2a2 2 0 0 1 2-2h2.5a.5.5 0 0 1 0 1H2z"/>
+                    </svg>
+                    Save
+                </button>
+            </form>
+        </div>
+    </div>
+}
 
 </div>
-</div>
-</div>
-</div>
-</div>
 
-@*@section Scripts
+@section Scripts
 {
     <partial name="_ValidationScriptsPartial"/>
-}*@
+
+    <script src='https://api.mapbox.com/mapbox-gl-js/v2.3.1/mapbox-gl.js'></script>
+    <script src="https://unpkg.com/@@mapbox/mapbox-sdk/umd/mapbox-sdk.min.js"></script>
+
+    <script type="text/javascript">
+        $(function() {
+
+                $("#location-btn-addr-0").on("mousedown",
+                    function() {
+                        navigator.geolocation.getCurrentPosition(getCoords0);
+                    });
+
+                function getCoords0(position) {
+                    const accessToken = 'pk.eyJ1Ijoic3RlY3JvdHRpMSIsImEiOiJja3Bna2kzbHYyaThoMm9ueHl1dzlnaTc1In0.EpALSOaDOmuM8XGS_IQzvA';
+                    const url = `https://api.mapbox.com/geocoding/v5/mapbox.places/${position.coords.longitude},${position.coords.latitude}.json?limit=1&access_token=${accessToken}`;
+
+                    $.ajax({
+                        type: "GET", // get reverse geocoding from mapbox api
+                        url: url,
+                        dataType: "JSON",
+                        contentType: "application/json; charset=utf-8",
+                        success: function(data, status, xhr) {
+                            $("#input-address-0").val(data.features[0].place_name);
+
+                            $("#save-btn-0").on("click",
+                                function() {
+                                    const addressObj = {
+                                        addressLine1: data.features[0].text,
+                                        addressLine2: "",
+                                        number: data.features[0].address,
+                                        postalCode: data.features[0].context[0].text,
+                                        city: data.features[0].context[1].text,
+                                        stateProvince: data.features[0].context[2].text,
+                                        country: data.features[0].context[3].text,
+                                        customerId: @Model.Customer.Id
+                                    };
+
+                                    $.ajax({
+                                        type: "PUT", // save into database
+                                        async: true,
+                                        url: "/api/addresses",
+                                        dataType: "JSON",
+                                        data: JSON.stringify(addressObj),
+                                        contentType: "application/json; charset=utf-8",
+                                        success: function(data, status, xhr) {
+                                            console.log(status);
+                                            @{
+                                                Model.StatusMessage = "Your address has been updated";
+                                            }
+                                            window.location.reload(true);
+                                        },
+                                        error: function(jqXhr, textStatus, errorMessage) {
+                                            console.log(errorMessage);
+                                        }
+                                    });
+                                });
+                        },
+                        error: function(jqXhr, textStatus, errorMessage) {
+                            console.log(errorMessage);
+                        }
+                    });
+                }
+
+                $("#location-btn-addr-1").on("mousedown",
+                    function() {
+                        navigator.geolocation.getCurrentPosition(getCoords1);
+                    });
+
+                function getCoords1(position) {
+                    const accessToken = 'pk.eyJ1Ijoic3RlY3JvdHRpMSIsImEiOiJja3Bna2kzbHYyaThoMm9ueHl1dzlnaTc1In0.EpALSOaDOmuM8XGS_IQzvA';
+                    const url = `https://api.mapbox.com/geocoding/v5/mapbox.places/${position.coords.longitude},${position.coords.latitude}.json?limit=1&access_token=${accessToken}`;
+
+                    $.ajax({
+                        type: "GET", // get reverse geocoding from mapbox api
+                        async: true,
+                        url: url,
+                        dataType: "JSON",
+                        contentType: "application/json; charset=utf-8",
+                        success: function(data, status, xhr) {
+                            $("#input-address-1").val(data.features[0].place_name);
+
+                            const addressObj = {
+                                addressLine1: data.features[0].text,
+                                addressLine2: "",
+                                number: data.features[0].address,
+                                postalCode: data.features[0].context[0].text,
+                                city: data.features[0].context[1].text,
+                                stateProvince: data.features[0].context[2].text,
+                                country: data.features[0].context[3].text
+                            };
+
+                            $("#save-btn-1").on("click",
+                                function() {
+                                    const addressObj = {
+                                        addressLine1: data.features[0].text,
+                                        addressLine2: "",
+                                        number: data.features[0].address,
+                                        postalCode: data.features[0].context[0].text,
+                                        city: data.features[0].context[1].text,
+                                        stateProvince: data.features[0].context[2].text,
+                                        country: data.features[0].context[3].text,
+                                        customerId: @Model.Customer.Id
+                                    };
+
+                                    $.ajax({
+                                        type: "PUT", // save into database
+                                        async: true,
+                                        url: "/api/addresses",
+                                        dataType: "JSON",
+                                        data: JSON.stringify(addressObj),
+                                        contentType: "application/json; charset=utf-8",
+                                        success: function(data, status, xhr) {
+                                            console.log(status);
+                                            @{
+                                                Model.StatusMessage = "Your address has been updated";
+                                            }
+                                            window.location.reload(true);
+                                        },
+                                        error: function(jqXhr, textStatus, errorMessage) {
+                                            console.log(errorMessage);
+                                        }
+                                    });
+                                });
+                        },
+                        error: function(jqXhr, textStatus, errorMessage) {
+                            console.log(errorMessage);
+                        }
+                    });
+                }
+            }
+        );
+    </script>
+}
