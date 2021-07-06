@@ -17,7 +17,6 @@ namespace DeliveryWebApp.Application.Customers.Commands.UpdateCustomer
         public string Fname { get; set; }
         public string LName { get; set; }
         public string Email { get; set; }
-        public Address Address { get; set; }
     }
 
     public class UpdateCustomerCommandHandler : IRequestHandler<UpdateCustomerCommand, Customer>
@@ -38,24 +37,20 @@ namespace DeliveryWebApp.Application.Customers.Commands.UpdateCustomer
                 throw new NotFoundException(nameof(Customer), request.Id);
             }
 
-            if (string.IsNullOrEmpty(request.Email))
+            if (!string.IsNullOrEmpty(request.Email))
             {
                 entity.Email = request.Email;
             }
 
-            if (string.IsNullOrEmpty(request.Fname))
+            if (!string.IsNullOrEmpty(request.Fname))
             {
                 entity.FirstName = request.Fname;
             }
 
-            if (string.IsNullOrEmpty(request.LName))
+            if (!string.IsNullOrEmpty(request.LName))
             {
                 entity.LastName = request.LName;
             }
-
-            // if Addresses is null instantiate a new list
-            entity.Addresses ??= new List<Address>();
-            entity.Addresses.Add(request.Address);
 
             await _context.SaveChangesAsync(cancellationToken);
 
