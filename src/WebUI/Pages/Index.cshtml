@@ -19,7 +19,27 @@
     ViewData["Title"] = localizer["Home page"];
 }
 
-<link rel="stylesheet" href="/css/index.css" type="text/css"/>
+@section Head
+{
+    <link rel="stylesheet" href="/css/index.css" type="text/css" />
+    
+    <style type="text/css">
+        h1 {
+            color: #228DF9;
+            font-family: "Roboto Medium";
+        }
+
+        p {
+            color: #073C8A;
+        }
+
+        .word {
+            font-family: "Roboto Light"
+        }
+    </style>
+}
+
+
 
 <div class="text-center">
     
@@ -49,18 +69,6 @@
         <h1 class="display-4">@localizer["Welcome Administrator"]</h1>
         <img src="/icons/undraw_Profile_re_4a55.svg" alt="admin" height="520" width="520" class="text-center"/>
     }
-    @*@if (isRider)
-        {
-            <h1 class="display-4">Welcome</h1>
-        }
-        @if (isRestaurateur)
-        {
-            <h1 class="display-4">Welcome</h1>
-        }
-        @if (isDefault)
-        {
-            <h1 class="display-4">Welcome</h1>
-        }*@
 
     @if (isCustomer)
     {
@@ -72,14 +80,12 @@
             </div>
             <div class="carousel-inner">
                 <div class="carousel-item active">
-                    <svg class="bd-placeholder-img" width="100%" height="100%" xmlns="http://www.w3.org/2000/svg" aria-hidden="true" preserveAspectRatio="xMidYMid slice" focusable="false">
-                        <rect width="100%" height="100%" fill="#777"/>
-                    </svg>
+                    <img src="/icons/undraw_Hamburger_8ge6.svg" alt="hamburger"/>
 
                     <div class="container">
                         <div class="carousel-caption text-start">
                             <h1>@localizer["Browse food vendors in your area"]</h1>
-                            <p>@localizer["Browse food vendors list, select one and start ordering food"]</p>
+                            <p class="word">@localizer["Browse food vendors list, select one and start ordering food"]</p>
                             <p>
                                 <a class="btn btn-lg btn-primary" asp-page="/CustomerPages/RestaurantList">@localizer["Browse"]</a>
                             </p>
@@ -87,42 +93,42 @@
                     </div>
                 </div>
                 <div class="carousel-item">
-                    <svg class="bd-placeholder-img" width="100%" height="100%" xmlns="http://www.w3.org/2000/svg" aria-hidden="true" preserveAspectRatio="xMidYMid slice" focusable="false">
-                        <rect width="100%" height="100%" fill="#777"/>
-                    </svg>
+                    <img src="/icons/undraw_map_1r69.svg" alt="deliveries"/>
 
                     <div class="container">
                         <div class="carousel-caption">
                             <h1>@localizer["Become a rider"]</h1>
-                            <p>@localizer["Become a rider and start delivering food to customers"]</p>
+                            <p class="word">@localizer["Become a rider and start delivering food to customers"]</p>
                             <p>
-                                <a class="btn btn-lg btn-primary" asp-page="">@localizer["Sign up today"]</a>
+                                <a class="btn btn-lg btn-primary" asp-area="Identity" asp-page="/Account/Manage/Request" >@localizer["Sign up today"]</a>
                             </p>
                         </div>
                     </div>
                 </div>
                 <div class="carousel-item">
-                    <svg class="bd-placeholder-img" width="100%" height="100%" xmlns="http://www.w3.org/2000/svg" aria-hidden="true" preserveAspectRatio="xMidYMid slice" focusable="false">
-                        <rect width="100%" height="100%" fill="#777"/>
-                    </svg>
+                    <img src="/icons/undraw_Chef_cu0r.svg" alt="chef"/>
 
                     <div class="container">
                         <div class="carousel-caption text-end">
                             <h1>@localizer["Become a restaurateur"]</h1>
-                            <p>@localizer["Become a restaurateur, register your restaurant and start the business"]</p>
+                            <p class="word">@localizer["Become a restaurateur, register your restaurant and start the business"]</p>
                             <p>
-                                <a class="btn btn-lg btn-primary" asp-page="">@localizer["Sign up"]</a>
+                                <a class="btn btn-lg btn-primary" asp-area="Identity" asp-page="/Account/Manage/Request">@localizer["Sign up"]</a>
                             </p>
                         </div>
                     </div>
                 </div>
             </div>
             <button class="carousel-control-prev" type="button" data-bs-target="#myCarousel" data-bs-slide="prev">
-                <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+                
+                    <img src="/icons/arrow-left.svg" alt="arrow_left" width="50" height="50"/>
+                
                 <span class="visually-hidden">Previous</span>
             </button>
             <button class="carousel-control-next" type="button" data-bs-target="#myCarousel" data-bs-slide="next">
-                <span class="carousel-control-next-icon" aria-hidden="true"></span>
+               
+                    <img src="/icons/arrow-right.svg" alt="arrow_right" width="50" height="50" />
+                
                 <span class="visually-hidden">Next</span>
             </button>
         </div>
