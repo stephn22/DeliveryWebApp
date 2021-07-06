@@ -42,6 +42,7 @@ namespace DeliveryWebApp.Infrastructure.Persistence
         public DbSet<Restaurateur> Restaurateurs { get; set; }
         public DbSet<Rider> Riders { get; set; }
         public DbSet<Request> Requests { get; set; }
+        public DbSet<Review> Reviews { get; set; }
 
         public override async Task<int> SaveChangesAsync(CancellationToken cancellationToken = new CancellationToken())
         {
