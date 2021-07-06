@@ -5,12 +5,16 @@ using System.Text;
 using System.Text.Encodings.Web;
 using System.Linq;
 using System.Threading.Tasks;
+using DeliveryWebApp.Application.Customers.Commands.UpdateCustomer;
 using DeliveryWebApp.Infrastructure.Identity;
+using DeliveryWebApp.Infrastructure.Persistence;
+using MediatR;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.UI.Services;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.AspNetCore.WebUtilities;
+using Microsoft.EntityFrameworkCore;
 
 namespace DeliveryWebApp.WebUI.Areas.Identity.Pages.Account.Manage
 {
@@ -19,15 +23,21 @@ namespace DeliveryWebApp.WebUI.Areas.Identity.Pages.Account.Manage
         private readonly UserManager<ApplicationUser> _userManager;
         private readonly SignInManager<ApplicationUser> _signInManager;
         private readonly IEmailSender _emailSender;
+        private readonly IMediator _mediator;
+        private readonly ApplicationDbContext _context;
 
         public EmailModel(
             UserManager<ApplicationUser> userManager,
             SignInManager<ApplicationUser> signInManager,
-            IEmailSender emailSender)
+            IEmailSender emailSender,
+            IMediator mediator,
+            ApplicationDbContext context)
         {
             _userManager = userManager;
             _signInManager = signInManager;
             _emailSender = emailSender;
+            _mediator = mediator;
+            _context = context;
         }
 
         public string Username { get; set; }
@@ -100,6 +110,15 @@ namespace DeliveryWebApp.WebUI.Areas.Identity.Pages.Account.Manage
                     pageHandler: null,
                     values: new { userId = userId, email = Input.NewEmail, code = code },
                     protocol: Request.Scheme);
+
+                var customer = await _context.Customers.Where(c => c.ApplicationUserFk == userId).FirstAsync();
+
+                await _mediator.Send(new UpdateCustomerCommand
+                {
+                    Id = customer.Id,
+                    Email = Input.NewEmail
+                });
+
                 await _emailSender.SendEmailAsync(
                     Input.NewEmail,
                     "Confirm your email",
