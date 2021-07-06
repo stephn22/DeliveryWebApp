@@ -44,12 +44,12 @@ namespace DeliveryWebApp.Application.Restaurants.Commands.UpdateRestaurant
                 entity.Logo = request.Logo;
             }
 
-            if (request.Name != null)
+            if (!string.IsNullOrEmpty(request.Name))
             {
                 entity.Name = request.Name;
             }
 
-            if (request.Category != null)
+            if (!string.IsNullOrEmpty(request.Category))
             {
                 entity.Category = request.Category;
             }

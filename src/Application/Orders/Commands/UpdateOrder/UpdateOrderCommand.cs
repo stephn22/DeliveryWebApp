@@ -41,7 +41,7 @@ namespace DeliveryWebApp.Application.Orders.Commands.UpdateOrder
                 entity.DeliveryDate = request.DeliveryDate;
             }
 
-            if (request.OrderStatus != null)
+            if (!string.IsNullOrEmpty(request.OrderStatus))
             {
                 entity.Status = request.OrderStatus;
             }

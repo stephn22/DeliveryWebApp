@@ -55,12 +55,12 @@ namespace DeliveryWebApp.Application.Products.Commands.UpdateProducts
                 entity.Price = (double) request.Price;
             }
 
-            if (request.Category != null)
+            if (!string.IsNullOrEmpty(request.Category))
             {
                 entity.Category = request.Category;
             }
 
-            if (request.Name != null)
+            if (!string.IsNullOrEmpty(request.Name))
             {
                 entity.Name = request.Name;
             }
