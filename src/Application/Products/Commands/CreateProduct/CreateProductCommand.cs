@@ -18,6 +18,7 @@ namespace DeliveryWebApp.Application.Products.Commands.CreateProduct
         public int Discount { get; set; }
         public string Category { get; set; }
         public int Quantity { get; set; }
+        public int RestaurantId { get; set; }
     }
 
     public class CreateProductCommandHandler : IRequestHandler<CreateProductCommand, Product>
@@ -38,7 +39,8 @@ namespace DeliveryWebApp.Application.Products.Commands.CreateProduct
                 Price = request.Price,
                 Discount = request.Discount,
                 Category = request.Category,
-                Quantity = request.Quantity
+                Quantity = request.Quantity,
+                RestaurantId = request.RestaurantId
             };
 
             _context.Products.Add(entity);
