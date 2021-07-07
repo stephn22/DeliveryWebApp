@@ -45,10 +45,12 @@ namespace DeliveryWebApp.WebUI.Migrations
                         .HasColumnType("int");
 
                     b.Property<double>("Latitude")
-                        .HasColumnType("float");
+                        .HasPrecision(11, 6)
+                        .HasColumnType("float(11)");
 
                     b.Property<double>("Longitude")
-                        .HasColumnType("float");
+                        .HasPrecision(11, 6)
+                        .HasColumnType("float(11)");
 
                     b.Property<string>("Number")
                         .IsRequired()

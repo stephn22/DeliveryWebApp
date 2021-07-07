@@ -9,14 +9,18 @@ namespace DeliveryWebApp.WebUI.Migrations
             migrationBuilder.AddColumn<double>(
                 name: "Latitude",
                 table: "Addresses",
-                type: "float",
+                type: "float(11)",
+                precision: 11,
+                scale: 6,
                 nullable: false,
                 defaultValue: 0.0);
 
             migrationBuilder.AddColumn<double>(
                 name: "Longitude",
                 table: "Addresses",
-                type: "float",
+                type: "float(11)",
+                precision: 11,
+                scale: 6,
                 nullable: false,
                 defaultValue: 0.0);
         }
