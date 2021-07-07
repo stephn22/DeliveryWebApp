@@ -32,20 +32,6 @@ namespace DeliveryWebApp.WebUI.Controllers
         [HttpPost]
         public async Task<ActionResult<Address>> Create(Address request)
         {
-            //dynamic json = data;
-            //var address = new Address
-            //{
-            //    AddressLine1 = json.addressLine1,
-            //    AddressLine2 = json.addressLine2,
-            //    Number = json.number,
-            //    PostalCode = json.postalCode,
-            //    City = json.city,
-            //    StateProvince = json.stateProvince,
-            //    Country = json.country,
-            //    CustomerId = json.customerId,
-            //    Customer = json.customer
-            //};
-
             return await _mediator.Send(_mapper.Map<CreateAddressCommand>(request));
         }
 

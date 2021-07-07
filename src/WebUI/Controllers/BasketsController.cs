@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using AutoMapper;
 using DeliveryWebApp.Application.Baskets.Commands.UpdateBasket;
 using DeliveryWebApp.Application.Baskets.Queries;
+using DeliveryWebApp.Application.Common.Security;
 using DeliveryWebApp.Domain.Entities;
 using DeliveryWebApp.Domain.Objects;
 using MediatR;
@@ -14,6 +15,7 @@ using Newtonsoft.Json.Linq;
 
 namespace DeliveryWebApp.WebUI.Controllers
 {
+    [Authorize]
     [Route("api/[controller]")]
     [ApiController]
     public class BasketsController : ControllerBase
