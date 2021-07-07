@@ -4,7 +4,6 @@ using System.Linq;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
-using AutoMapper;
 using DeliveryWebApp.Application.Common.Exceptions;
 using DeliveryWebApp.Application.Common.Interfaces;
 using DeliveryWebApp.Domain.Entities;
@@ -23,17 +22,17 @@ namespace DeliveryWebApp.Application.Addresses.Commands.UpdateAddress
         public string StateProvince { get; set; }
         public string PostalCode { get; set; }
         public string Country { get; set; }
+        public double Longitude { get; set; }
+        public double Latitude { get; set; }
     }
 
     public class UpdateAddressCommandHandler : IRequestHandler<UpdateAddressCommand, Address>
     {
         private readonly IApplicationDbContext _context;
-        private readonly IMapper _mapper;
 
-        public UpdateAddressCommandHandler(IApplicationDbContext context, IMapper mapper)
+        public UpdateAddressCommandHandler(IApplicationDbContext context)
         {
             _context = context;
-            _mapper = mapper;
         }
 
         public async Task<Address> Handle(UpdateAddressCommand request, CancellationToken cancellationToken)
@@ -49,9 +48,11 @@ namespace DeliveryWebApp.Application.Addresses.Commands.UpdateAddress
             entity.AddressLine2 = request.AddressLine2;
             entity.Number = request.Number;
             entity.City = request.City;
-            entity.PostalCode = entity.PostalCode;
-            entity.StateProvince = entity.StateProvince;
-            entity.Country = entity.Country;
+            entity.PostalCode = request.PostalCode;
+            entity.StateProvince = request.StateProvince;
+            entity.Country = request.Country;
+            entity.Latitude = request.Latitude;
+            entity.Longitude = request.Longitude;
 
             await _context.SaveChangesAsync(cancellationToken);
 
