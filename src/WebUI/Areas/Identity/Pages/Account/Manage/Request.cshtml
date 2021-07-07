@@ -11,6 +11,18 @@
 
 @* TODO: push notifications and localize and toasts*@
 
+<h6>If you want to become a rider or a restaurateur and manage your own restaurant, send a request to the system admin</h6>
+<br/>
+<form method="post">
+    <div class="form-group col-md-3">
+        <label asp-for="Input.Role"></label>
+        <select class="form-select" aria-label="Select role" asp-for="Input.Role" asp-items="Model.Roles">
+        </select>
+        <span asp-validation-for="Input.Role" class="text-danger"></span>
+    </div>
+    <button type="submit" class="btn btn-primary">Submit</button>
+</form>
+<hr/>
 @if (Model.UserRequest != null)
 {
     @switch (Model.UserRequest.Status)
@@ -39,22 +51,7 @@
         case RequestStatus.Rejected:
             <div class="alert alert-danger" role="alert">
                 <p>Your request to become a @Model.UserRequest.Role has been rejected :(</p>
-                @* TODO: Contact administrator? *@
             </div>
             break;
     }
-}
-else
-{
-    <h6>If you want to become a rider or a restaurateur and manage your own restaurant, send a request to the system admin</h6>
-    <br/>
-    <form method="post">
-        <div class="form-group col-md-3">
-            <label asp-for="Input.Role"></label>
-            <select class="form-select" aria-label="Select role" asp-for="Input.Role" asp-items="Model.Roles">
-            </select>
-            <span asp-validation-for="Input.Role" class="text-danger"></span>
-        </div>
-        <button type="submit" class="btn btn-primary">Submit</button>
-    </form>
 }

@@ -3,9 +3,11 @@ using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Threading.Tasks;
+using DeliveryWebApp.Application.Common.Security;
 using DeliveryWebApp.Application.Customers.Commands.UpdateCustomer;
 using DeliveryWebApp.Infrastructure.Identity;
 using DeliveryWebApp.Infrastructure.Persistence;
+using DeliveryWebApp.Infrastructure.Security;
 using MediatR;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
@@ -14,6 +16,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace DeliveryWebApp.WebUI.Areas.Identity.Pages.Account.Manage
 {
+    [Authorize]
     public partial class IndexModel : PageModel
     {
         private readonly UserManager<ApplicationUser> _userManager;
@@ -61,18 +64,23 @@ namespace DeliveryWebApp.WebUI.Areas.Identity.Pages.Account.Manage
         private async Task LoadAsync(ApplicationUser user)
         {
             var userName = await _userManager.GetUserNameAsync(user);
-            var phoneNumber = await _userManager.GetPhoneNumberAsync(user);
-
-            var customer = await _context.Customers.Where(c => c.ApplicationUserFk == user.Id).FirstAsync();
 
             Username = userName;
-            FName = customer.FirstName;
-            LName = customer.LastName;
 
-            Input = new InputModel
+            if (!User.IsInRole(RoleName.Admin))
             {
-                PhoneNumber = phoneNumber
-            };
+                var phoneNumber = await _userManager.GetPhoneNumberAsync(user);
+
+                var customer = await _context.Customers.Where(c => c.ApplicationUserFk == user.Id).FirstAsync();
+
+                FName = customer.FirstName;
+                LName = customer.LastName;
+
+                Input = new InputModel
+                {
+                    PhoneNumber = phoneNumber
+                };
+            }
         }
 
         public async Task<IActionResult> OnGetAsync()

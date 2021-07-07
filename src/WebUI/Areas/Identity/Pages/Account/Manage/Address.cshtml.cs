@@ -84,8 +84,8 @@ namespace DeliveryWebApp.WebUI.Areas.Identity.Pages.Account.Manage
 
             [Required] [DataType(DataType.Text)] public string Country { get; set; }
 
-            public double Latitude { get; set; }
-            public double Longitude { get; set; }
+            public float Latitude { get; set; }
+            public float Longitude { get; set; }
         }
 
         public async Task<IActionResult> OnGetAsync()
