@@ -23,6 +23,7 @@ using System.ComponentModel.DataAnnotations;
 using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
+using Microsoft.EntityFrameworkCore;
 
 namespace DeliveryWebApp.WebUI.Pages.RestaurateurPages
 {
@@ -49,6 +50,12 @@ namespace DeliveryWebApp.WebUI.Pages.RestaurateurPages
         public Restaurateur Restaurateur { get; set; }
         public IList<Product> Products { get; set; }
         public IList<Order> Orders { get; set; }
+
+        public string NameSort { get; set; }
+        public string CategorySort { get; set; }
+        public string PriceSort { get; set; }
+        public string DiscountSort { get; set; }
+        public string QuantitySort { get; set; }
 
         [TempData] public string StatusMessage { get; set; }
 
@@ -105,7 +112,15 @@ namespace DeliveryWebApp.WebUI.Pages.RestaurateurPages
             [Display(Name = "Postal Code")]
             public string PostalCode { get; set; }
 
+            [Required]
+            [DataType((DataType.Text))]
+            [Display(Name = "State/Province")]
+            public string StateProvince { get; set; }
+
             [Required] [DataType(DataType.Text)] public string Country { get; set; }
+
+            public double Longitude { get; set; }
+            public double Latitude { get; set; }
 
             /*********************************************/
         }
@@ -120,16 +135,16 @@ namespace DeliveryWebApp.WebUI.Pages.RestaurateurPages
 
             if (Restaurant != null)
             {
-                Products = await _mediator.Send(new GetProductsQuery
-                {
-                    RestaurantId = Restaurant.Id
-                });
+                //Products = await _mediator.Send(new GetProductsQuery
+                //{
+                //    RestaurantId = Restaurant.Id
+                //});
 
                 //Orders = Restaurant.Orders.ToList();
             }
         }
 
-        public async Task<IActionResult> OnGetAsync()
+        public async Task<IActionResult> OnGetAsync(string sortOrder)
         {
             var user = await _userManager.GetUserAsync(User);
 
@@ -139,6 +154,41 @@ namespace DeliveryWebApp.WebUI.Pages.RestaurateurPages
             }
 
             await LoadAsync(user);
+
+            NameSort = string.IsNullOrEmpty(sortOrder) ? "name_desc" : "";
+            CategorySort = string.IsNullOrEmpty(sortOrder) ? "category_desc" : "";
+            PriceSort = string.IsNullOrEmpty(sortOrder) ? "price_desc" : "";
+            DiscountSort = string.IsNullOrEmpty(sortOrder) ? "discount_desc" : "";
+            QuantitySort = string.IsNullOrEmpty(sortOrder) ? "quantity_desc" : "";
+
+            var products = from p in _context.Products
+                where p.RestaurantId == Restaurant.Id
+                select p;
+
+            switch (sortOrder)
+            {
+                case "name_desc":
+                    products = products.OrderByDescending(p => p.Name);
+                    break;
+
+                case "category_desc":
+                    products = products.OrderByDescending(p => p.Category);
+                    break;
+
+                case "price_desc":
+                    products = products.OrderByDescending(p => p.Price);
+                    break;
+
+                case "discount_desc":
+                    products = products.OrderByDescending(p => p.Discount);
+                    break;
+
+                case "quantity_desc":
+                    products = products.OrderByDescending(p => p.Quantity);
+                    break;
+            }
+
+            Products = await products.AsNoTracking().ToListAsync();
 
             return Page();
         }
@@ -151,6 +201,16 @@ namespace DeliveryWebApp.WebUI.Pages.RestaurateurPages
         public async Task<IActionResult> OnPostNewNameAsync(int id)
         {
             var user = await _userManager.GetUserAsync(User);
+
+            if (user == null)
+            {
+                return NotFound($"Unable to load user with ID '{_userManager.GetUserId(User)}'.");
+            }
+
+            if (!ModelState.IsValid)
+            {
+                return BadRequest();
+            }
 
             await LoadAsync(user);
 
@@ -206,31 +266,65 @@ namespace DeliveryWebApp.WebUI.Pages.RestaurateurPages
 
         public async Task<IActionResult> OnPostUploadNewImageAsync()
         {
-            if (Input?.Logo != null)
+            if (Input?.Logo == null) return Page();
+
+            var user = await _userManager.GetUserAsync(User);
+
+            if (user == null)
             {
-                var user = await _userManager.GetUserAsync(User);
-
-                await LoadAsync(user);
-
-                byte[] bytes;
-
-                await using var fileStream = Input.Logo.OpenReadStream();
-                await using (var memoryStream = new MemoryStream())
-                {
-                    await fileStream.CopyToAsync(memoryStream);
-                    bytes = memoryStream.ToArray();
-                }
-
-                await _mediator.Send(new UpdateRestaurantCommand
-                {
-                    Id = Restaurant.Id,
-                    Logo = bytes
-                });
-
-                StatusMessage =
-                    "Your restaurant picture has been updated. It may take a few moments to update across the site.";
-
+                return NotFound($"Unable to load user with ID '{_userManager.GetUserId(User)}'.");
             }
+
+            await LoadAsync(user);
+
+            byte[] bytes;
+
+            await using var fileStream = Input.Logo.OpenReadStream();
+            await using (var memoryStream = new MemoryStream())
+            {
+                await fileStream.CopyToAsync(memoryStream);
+                bytes = memoryStream.ToArray();
+            }
+
+            await _mediator.Send(new UpdateRestaurantCommand
+            {
+                Id = Restaurant.Id,
+                Logo = bytes
+            });
+
+            StatusMessage =
+                "Your restaurant picture has been updated. It may take a few moments to update across the site.";
+            return Page();
+        }
+
+        public async Task<IActionResult> OnPostNewAddressAsync(int id)
+        {
+            var user = await _userManager.GetUserAsync(User);
+
+            if (user == null)
+            {
+                return NotFound($"Unable to load user with ID '{_userManager.GetUserId(User)}'.");
+            }
+
+            await LoadAsync(user);
+
+            await _mediator.Send(new UpdateRestaurantCommand
+            {
+                Id = Restaurant.Id,
+                Address = new Address
+                {
+                    AddressLine1 = Input.AddressLine1,
+                    AddressLine2 = Input.AddressLine2,
+                    City = Input.City,
+                    Country = Input.Country,
+                    StateProvince = Input.StateProvince,
+                    Number = Input.Number,
+                    PostalCode = Input.PostalCode,
+                    Latitude = Input.Latitude,
+                    Longitude = Input.Longitude
+                }
+            });
+
             return Page();
         }
 
@@ -266,8 +360,11 @@ namespace DeliveryWebApp.WebUI.Pages.RestaurateurPages
                 AddressLine2 = Input.AddressLine2,
                 City = Input.City,
                 Country = Input.Country,
+                StateProvince = Input.StateProvince,
                 Number = Input.Number,
-                PostalCode = Input.PostalCode
+                PostalCode = Input.PostalCode,
+                Latitude = Input.Latitude,
+                Longitude = Input.Longitude
             };
 
             // insert new restaurant in context
