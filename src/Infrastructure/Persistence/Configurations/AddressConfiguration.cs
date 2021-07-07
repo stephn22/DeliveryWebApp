@@ -27,6 +27,14 @@ namespace DeliveryWebApp.Infrastructure.Persistence.Configurations
                 .WithMany(c => c.Addresses)
                 .HasForeignKey(a => a.CustomerId)
                 .OnDelete(DeleteBehavior.NoAction);
+
+            builder.Property(c => c.Latitude)
+                .IsRequired()
+                .HasPrecision(11, 6);
+            
+            builder.Property(c => c.Longitude)
+                .IsRequired()
+                .HasPrecision(11, 6);
         }
     }
 }
