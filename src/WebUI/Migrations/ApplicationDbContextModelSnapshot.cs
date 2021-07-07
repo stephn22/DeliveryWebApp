@@ -44,13 +44,11 @@ namespace DeliveryWebApp.WebUI.Migrations
                     b.Property<int?>("CustomerId")
                         .HasColumnType("int");
 
-                    b.Property<double>("Latitude")
-                        .HasPrecision(11, 6)
-                        .HasColumnType("float(11)");
+                    b.Property<float>("Latitude")
+                        .HasColumnType("real");
 
-                    b.Property<double>("Longitude")
-                        .HasPrecision(11, 6)
-                        .HasColumnType("float(11)");
+                    b.Property<float>("Longitude")
+                        .HasColumnType("real");
 
                     b.Property<string>("Number")
                         .IsRequired()

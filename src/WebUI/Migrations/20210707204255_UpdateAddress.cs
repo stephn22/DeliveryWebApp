@@ -6,23 +6,19 @@ namespace DeliveryWebApp.WebUI.Migrations
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
-            migrationBuilder.AddColumn<double>(
+            migrationBuilder.AddColumn<float>(
                 name: "Latitude",
                 table: "Addresses",
-                type: "float(11)",
-                precision: 11,
-                scale: 6,
+                type: "real",
                 nullable: false,
-                defaultValue: 0.0);
+                defaultValue: 0f);
 
-            migrationBuilder.AddColumn<double>(
+            migrationBuilder.AddColumn<float>(
                 name: "Longitude",
                 table: "Addresses",
-                type: "float(11)",
-                precision: 11,
-                scale: 6,
+                type: "real",
                 nullable: false,
-                defaultValue: 0.0);
+                defaultValue: 0f);
         }
 
         protected override void Down(MigrationBuilder migrationBuilder)

@@ -10,7 +10,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace DeliveryWebApp.WebUI.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20210707183400_UpdateAddress")]
+    [Migration("20210707204255_UpdateAddress")]
     partial class UpdateAddress
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -46,13 +46,11 @@ namespace DeliveryWebApp.WebUI.Migrations
                     b.Property<int?>("CustomerId")
                         .HasColumnType("int");
 
-                    b.Property<double>("Latitude")
-                        .HasPrecision(11, 6)
-                        .HasColumnType("float(11)");
+                    b.Property<float>("Latitude")
+                        .HasColumnType("real");
 
-                    b.Property<double>("Longitude")
-                        .HasPrecision(11, 6)
-                        .HasColumnType("float(11)");
+                    b.Property<float>("Longitude")
+                        .HasColumnType("real");
 
                     b.Property<string>("Number")
                         .IsRequired()
