@@ -83,6 +83,9 @@ namespace DeliveryWebApp.WebUI.Areas.Identity.Pages.Account.Manage
             public string StateProvince { get; set; }
 
             [Required] [DataType(DataType.Text)] public string Country { get; set; }
+
+            public double Latitude { get; set; }
+            public double Longitude { get; set; }
         }
 
         public async Task<IActionResult> OnGetAsync()
@@ -120,14 +123,72 @@ namespace DeliveryWebApp.WebUI.Areas.Identity.Pages.Account.Manage
             return RedirectToPage();
         }
 
-        public async Task OnPost()
+        public async Task<IActionResult> OnPost()
         {
             var user = await _userManager.GetUserAsync(User);
 
-            if (user != null && ModelState.IsValid)
+            if (user != null)
             {
                 await LoadAddressesAsync(user);
+                return Page();
             }
+
+            if (!ModelState.IsValid)
+            {
+                return BadRequest();
+            }
+
+            Customer = await _context.Customers.Where(c => c.ApplicationUserFk == user.Id).FirstAsync();
+
+            await _mediator.Send(new CreateAddressCommand
+            {
+                CustomerId = Customer.Id,
+                Customer = Customer,
+                AddressLine1 = Input.AddressLine1,
+                AddressLine2 = Input.AddressLine2,
+                City = Input.City,
+                Country = Input.Country,
+                Latitude = Input.Latitude,
+                Longitude = Input.Longitude,
+                Number = Input.Number,
+                PostalCode = Input.PostalCode,
+            });
+
+            return RedirectToPage();
+        }
+
+        public async Task<IActionResult> OnPostUpdateAddressAsync(int id)
+        {
+            var user = await _userManager.GetUserAsync(User);
+
+            if (user == null)
+            {
+                await LoadAddressesAsync(user);
+                return Page();
+            }
+
+            if (!ModelState.IsValid)
+            {
+                return BadRequest();
+            }
+
+            Customer = await _context.Customers.Where(c => c.ApplicationUserFk == user.Id).FirstAsync();
+
+            await _mediator.Send(new UpdateAddressCommand
+            {
+                Id = id,
+                AddressLine1 = Input.AddressLine1,
+                AddressLine2 = Input.AddressLine2,
+                City = Input.City,
+                Country = Input.Country,
+                Latitude = Input.Latitude,
+                Longitude = Input.Longitude,
+                Number = Input.Number,
+                PostalCode = Input.PostalCode,
+                StateProvince = Input.StateProvince
+            });
+
+            return RedirectToPage();
         }
 
         private async Task LoadAddressesAsync(ApplicationUser user)

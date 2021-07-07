@@ -22,6 +22,7 @@ namespace DeliveryWebApp.Application.Addresses.Commands.CreateAddress
         public double Longitude { get; set; }
         public double Latitude { get; set; }
         public int CustomerId { get; set; }
+        public Customer Customer { get; set; }
     }
 
     public class CreateAddressCommandHandler : IRequestHandler<CreateAddressCommand, Address>
@@ -46,7 +47,8 @@ namespace DeliveryWebApp.Application.Addresses.Commands.CreateAddress
                 PostalCode = request.PostalCode,
                 Latitude = request.Latitude,
                 Longitude = request.Longitude,
-                CustomerId = request.CustomerId
+                CustomerId = request.CustomerId,
+                Customer = request.Customer,
             };
 
             _context.Addresses.Add(entity);
