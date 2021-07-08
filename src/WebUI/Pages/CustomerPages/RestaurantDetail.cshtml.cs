@@ -2,7 +2,6 @@ using DeliveryWebApp.Application.Baskets.Commands.UpdateBasket;
 using DeliveryWebApp.Application.Common.Security;
 using DeliveryWebApp.Application.Products.Queries.GetProducts;
 using DeliveryWebApp.Domain.Entities;
-using DeliveryWebApp.Domain.Objects;
 using DeliveryWebApp.Infrastructure.Identity;
 using DeliveryWebApp.Infrastructure.Persistence;
 using DeliveryWebApp.Infrastructure.Security;
@@ -68,11 +67,8 @@ namespace DeliveryWebApp.WebUI.Pages.CustomerPages
 
             await _mediator.Send(new UpdateBasketCommand
             {
-                AddToBasket = new AddToBasket
-                {
-                    CustomerId = customer.Id,
-                    Product = product
-                }
+                CustomerId = customer.Id,
+                Product = product
             });
 
             _logger.LogInformation($"Added product with id {product.Id} to basket of user {user.Id}");
