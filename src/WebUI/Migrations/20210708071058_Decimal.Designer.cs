@@ -10,8 +10,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace DeliveryWebApp.WebUI.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20210707204255_UpdateAddress")]
-    partial class UpdateAddress
+    [Migration("20210708071058_Decimal")]
+    partial class Decimal
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -46,11 +46,13 @@ namespace DeliveryWebApp.WebUI.Migrations
                     b.Property<int?>("CustomerId")
                         .HasColumnType("int");
 
-                    b.Property<float>("Latitude")
-                        .HasColumnType("real");
+                    b.Property<decimal>("Latitude")
+                        .HasPrecision(18, 9)
+                        .HasColumnType("decimal(18,9)");
 
-                    b.Property<float>("Longitude")
-                        .HasColumnType("real");
+                    b.Property<decimal>("Longitude")
+                        .HasPrecision(18, 9)
+                        .HasColumnType("decimal(18,9)");
 
                     b.Property<string>("Number")
                         .IsRequired()
@@ -80,8 +82,9 @@ namespace DeliveryWebApp.WebUI.Migrations
                     b.Property<int>("CustomerId")
                         .HasColumnType("int");
 
-                    b.Property<double>("TotalPrice")
-                        .HasColumnType("float");
+                    b.Property<decimal>("TotalPrice")
+                        .HasPrecision(19, 4)
+                        .HasColumnType("Money");
 
                     b.HasKey("Id");
 
@@ -142,8 +145,9 @@ namespace DeliveryWebApp.WebUI.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<double>("TotalPrice")
-                        .HasColumnType("float");
+                    b.Property<decimal>("TotalPrice")
+                        .HasPrecision(19, 4)
+                        .HasColumnType("Money");
 
                     b.HasKey("Id");
 
@@ -176,13 +180,15 @@ namespace DeliveryWebApp.WebUI.Migrations
                         .HasColumnType("varbinary(max)");
 
                     b.Property<string>("Name")
+                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<int?>("OrderId")
                         .HasColumnType("int");
 
-                    b.Property<double>("Price")
-                        .HasColumnType("float");
+                    b.Property<decimal>("Price")
+                        .HasPrecision(19, 4)
+                        .HasColumnType("Money");
 
                     b.Property<int>("Quantity")
                         .HasColumnType("int");
@@ -320,8 +326,9 @@ namespace DeliveryWebApp.WebUI.Migrations
                     b.Property<int>("CustomerId")
                         .HasColumnType("int");
 
-                    b.Property<double>("DeliveryCredit")
-                        .HasColumnType("float");
+                    b.Property<decimal>("DeliveryCredit")
+                        .HasPrecision(19, 4)
+                        .HasColumnType("Money");
 
                     b.HasKey("Id");
 
