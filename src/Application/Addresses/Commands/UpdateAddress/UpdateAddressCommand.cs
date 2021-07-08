@@ -21,8 +21,8 @@ namespace DeliveryWebApp.Application.Addresses.Commands.UpdateAddress
         public string StateProvince { get; set; }
         public string PostalCode { get; set; }
         public string Country { get; set; }
-        public float Longitude { get; set; }
-        public float Latitude { get; set; }
+        public decimal Longitude { get; set; }
+        public decimal Latitude { get; set; }
     }
 
     public class UpdateAddressCommandHandler : IRequestHandler<UpdateAddressCommand, Address>

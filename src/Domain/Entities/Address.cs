@@ -15,8 +15,8 @@ namespace DeliveryWebApp.Domain.Entities
         public string PostalCode { get; set; }
         public string Country { get; set; }
         public string StateProvince { get; set; }
-        public float Longitude { get; set; }
-        public float Latitude { get; set; }
+        public decimal Longitude { get; set; }
+        public decimal Latitude { get; set; }
         public int? CustomerId { get; set; }
         public Customer Customer { get; set; }
 
