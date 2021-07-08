@@ -9,7 +9,7 @@ namespace DeliveryWebApp.Application.Riders.Commands.CreateRider
     public class CreateRiderCommand : IRequest<int>
     {
         public Customer Customer { get; set; }
-        public double DeliveryCredit { get; set; }
+        public decimal DeliveryCredit { get; set; }
 
         public class CreateRiderCommandHandler : IRequestHandler<CreateRiderCommand, int>
         {

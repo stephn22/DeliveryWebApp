@@ -26,7 +26,6 @@ using DeliveryWebApp.Application.Riders.Commands.CreateRider;
 using DeliveryWebApp.Application.Riders.Commands.DeleteRider;
 using DeliveryWebApp.Application.Riders.Commands.UpdateRider;
 using DeliveryWebApp.Domain.Entities;
-using DeliveryWebApp.Domain.Objects;
 using System;
 using System.Linq;
 using System.Reflection;
@@ -46,7 +45,6 @@ namespace DeliveryWebApp.Application.Common.Mappings
             CreateMap<Basket, CreateBasketCommand>().ReverseMap();
             CreateMap<Basket, PurgeBasketCommand>().ReverseMap();
             CreateMap<Basket, UpdateBasketCommand>().ReverseMap();
-            CreateMap<AddToBasket, UpdateBasketCommand>().ReverseMap();
 
             CreateMap<Customer, CreateCustomerCommand>().ReverseMap();
             CreateMap<Customer, DeleteCustomerCommand>().ReverseMap();

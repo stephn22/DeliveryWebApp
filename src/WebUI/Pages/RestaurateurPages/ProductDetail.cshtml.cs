@@ -66,8 +66,7 @@ namespace DeliveryWebApp.WebUI.Pages.RestaurateurPages
             public string Category { get; set; }
 
             [Required]
-            [DataType(DataType.Currency)]
-            public double Price { get; set; }
+            public decimal Price { get; set; }
 
             [Required]
             [RegularExpression("^[0-9][0-9]?$|^100$", ErrorMessage = "The {0} must be digits only from 0 to 100.")]

@@ -14,7 +14,7 @@ namespace DeliveryWebApp.Application.Riders.Commands.UpdateRider
     public class UpdateRiderCommand : IRequest
     {
         public int Id { get; set; }
-        public double DeliveryCredit { get; set; }
+        public decimal DeliveryCredit { get; set; }
     }
 
     public class UpdateRiderCommandHandler : IRequestHandler<UpdateRiderCommand>
