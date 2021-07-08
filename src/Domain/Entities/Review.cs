@@ -12,7 +12,7 @@ namespace DeliveryWebApp.Domain.Entities
         public virtual Customer Customer { get; set; }
         public string Title { get; set; }
         public string Text { get; set; }
-        public int Grade { get; set; }
+        public int Grade { get; set; } // TODO: 0-5?
         public int RestaurateurId { get; set; }
         public virtual Restaurateur Restaurateur { get; set; }
     }

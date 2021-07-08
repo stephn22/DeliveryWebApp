@@ -23,10 +23,6 @@ namespace DeliveryWebApp.Domain.Entities
 
         public int CustomerId { get; set; }
 
-        /// <summary>
-        /// Customer instance
-        /// </summary>
         public virtual Customer Customer { get; set; }
-        // TODO: cancellation?
     }
 }
