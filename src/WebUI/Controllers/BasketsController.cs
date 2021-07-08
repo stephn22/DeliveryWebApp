@@ -1,17 +1,11 @@
-﻿using Microsoft.AspNetCore.Mvc;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using AutoMapper;
+﻿using AutoMapper;
 using DeliveryWebApp.Application.Baskets.Commands.UpdateBasket;
 using DeliveryWebApp.Application.Baskets.Queries;
 using DeliveryWebApp.Application.Common.Security;
 using DeliveryWebApp.Domain.Entities;
-using DeliveryWebApp.Domain.Objects;
 using MediatR;
-using Newtonsoft.Json;
-using Newtonsoft.Json.Linq;
+using Microsoft.AspNetCore.Mvc;
+using System.Threading.Tasks;
 
 namespace DeliveryWebApp.WebUI.Controllers
 {
@@ -38,23 +32,14 @@ namespace DeliveryWebApp.WebUI.Controllers
             });
         }
 
-        [HttpPut]
-        public async Task<ActionResult<Basket>> Update(JObject data)
+        [HttpPut("{customerId:int}")]
+        public async Task<ActionResult<Basket>> Update(int customerId, Product request)
         {
-            dynamic jsonData = data;
-
-            //JObject customerIdJson = jsonData.customerId;
-            JObject productJson = jsonData.product;
-
-            var product = productJson.ToObject<Product>();
-
-            var request = new AddToBasket
+            return await _mediator.Send(new UpdateBasketCommand
             {
-                CustomerId = jsonData.customerId,
-                Product = product
-            };
-
-            return await _mediator.Send(_mapper.Map<UpdateBasketCommand>(request));
+                CustomerId = customerId,
+                Product = request
+            });
         }
     }
 }

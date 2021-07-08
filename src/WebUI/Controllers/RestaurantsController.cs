@@ -39,7 +39,7 @@ namespace DeliveryWebApp.WebUI.Controllers
         }
 
         [HttpGet("{addressId:int}")]
-        public async Task<Address> GetRestaurantAddress(int addressId)
+        public async Task<ActionResult<Address>> GetRestaurantAddress(int addressId)
         {
             return await _mediator.Send(new GetRestaurantAddressQuery
             {
