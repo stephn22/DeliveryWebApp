@@ -53,7 +53,7 @@ namespace DeliveryWebApp.WebUI.Pages.AdminPages
 
             [Required]
             [DataType(DataType.Currency)]
-            public double DeliveryCredit { get; set; }
+            public decimal DeliveryCredit { get; set; }
         }
 
         public async Task<IActionResult> OnGetAsync(int? id)

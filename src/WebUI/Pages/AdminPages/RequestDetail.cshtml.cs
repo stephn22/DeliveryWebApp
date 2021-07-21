@@ -49,7 +49,7 @@ namespace DeliveryWebApp.WebUI.Pages.AdminPages
             [Required]
             [DataType(DataType.Currency)]
             [Display(Name = "Delivery Credit")]
-            public double DeliveryCredit { get; set; } // TODO: Culture
+            public decimal DeliveryCredit { get; set; } // TODO: Culture
         }
 
         public async Task<IActionResult> OnGetAsync(int? id)
@@ -141,7 +141,7 @@ namespace DeliveryWebApp.WebUI.Pages.AdminPages
         public async Task<IActionResult> OnPostRejectAsync(int? id)
         {
             UserRequest = await _context.Requests.FirstAsync(r => r.Id == id);
-            Input.DeliveryCredit = 0.00;
+            Input.DeliveryCredit = 0.00M;
 
             await _mediator.Send(new UpdateRequestCommand
             {
