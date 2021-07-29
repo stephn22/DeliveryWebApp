@@ -25,12 +25,13 @@
     
     <style type="text/css">
         h1 {
-            color: #228DF9;
+            color: #2390FF;
             font-family: "Roboto Medium";
         }
 
         p {
-            color: #073C8A;
+            /* TODO: change color */
+            color: #1B6EC2;
         }
 
         .word {
@@ -110,11 +111,22 @@
 
                     <div class="container">
                         <div class="carousel-caption text-end">
-                            <h1>@localizer["Become a restaurateur"]</h1>
-                            <p class="word">@localizer["Become a restaurateur, register your restaurant and start the business"]</p>
-                            <p>
-                                <a class="btn btn-lg btn-primary" asp-area="Identity" asp-page="/Account/Manage/Request">@localizer["Sign up"]</a>
-                            </p>
+                            @if (isRestaurateur)
+                            {
+                                <h1>@localizer["Manage your restaurant"]</h1>
+                                <p class="word">@localizer["Manage your restaurant through the dashboard"]</p>
+                                <p>
+                                    <a class="btn btn-lg btn-primary" asp-page="/RestaurateurPages/RestaurantDashboard">@localizer["Dashboard"]</a>
+                                </p>
+                            }
+                            else
+                            {
+                                <h1>@localizer["Become a restaurateur"]</h1>
+                                <p class="word">@localizer["Become a restaurateur, register your restaurant and start the business"]</p>
+                                <p>
+                                    <a class="btn btn-lg btn-primary" asp-area="Identity" asp-page="/Account/Manage/Request">@localizer["Sign up"]</a>
+                                </p>
+                            }
                         </div>
                     </div>
                 </div>
