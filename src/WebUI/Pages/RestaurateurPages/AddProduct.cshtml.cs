@@ -57,7 +57,7 @@ namespace DeliveryWebApp.WebUI.Pages.RestaurateurPages
 
             [Required]
             [DataType(DataType.Currency, ErrorMessage = "Value isn't a price")]
-            public double Price { get; set; }
+            public decimal Price { get; set; }
 
             // TODO: Discount required?
             [Required]
@@ -86,17 +86,16 @@ namespace DeliveryWebApp.WebUI.Pages.RestaurateurPages
             var restaurateur = await _context.GetRestaurateurByApplicationUserFkAsync(user.Id);
             var restaurant = await _context.GetRestaurantByRestaurateurId(restaurateur.Id);
 
+            byte[] bytes = null;
 
-
-            byte[] bytes;
-
-            await using var fileStream = Input.Image.OpenReadStream();
-            await using (var memoryStream = new MemoryStream())
+            if (Input.Image != null)
             {
+                await using var fileStream = Input.Image.OpenReadStream();
+                await using var memoryStream = new MemoryStream();
                 await fileStream.CopyToAsync(memoryStream);
                 bytes = memoryStream.ToArray();
             }
-
+            
             var product = new Product
             {
                 Image = bytes,

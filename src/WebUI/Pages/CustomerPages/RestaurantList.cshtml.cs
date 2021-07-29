@@ -1,3 +1,4 @@
+using DeliveryWebApp.Application.Addresses.Queries.GetAddresses;
 using DeliveryWebApp.Domain.Entities;
 using DeliveryWebApp.Infrastructure.Identity;
 using DeliveryWebApp.Infrastructure.Persistence;
@@ -9,10 +10,12 @@ using Microsoft.EntityFrameworkCore;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using DeliveryWebApp.Application.Addresses.Queries.GetAddresses;
+using DeliveryWebApp.Application.Common.Security;
+using DeliveryWebApp.Infrastructure.Security;
 
 namespace DeliveryWebApp.WebUI.Pages.CustomerPages
 {
+    [Authorize(Policy = PolicyName.IsCustomer)]
     public class RestaurantListModel : PageModel
     {
         private readonly ApplicationDbContext _context;

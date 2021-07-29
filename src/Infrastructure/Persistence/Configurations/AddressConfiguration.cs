@@ -23,6 +23,14 @@ namespace DeliveryWebApp.Infrastructure.Persistence.Configurations
             builder.Property(c => c.Country)
                 .IsRequired();
 
+            builder.Property(a => a.Longitude)
+                .HasPrecision(18, 9)
+                .IsRequired();
+
+            builder.Property(a => a.Latitude)
+                .HasPrecision(18, 9)
+                .IsRequired();
+
             builder.HasOne(a => a.Customer)
                 .WithMany(c => c.Addresses)
                 .HasForeignKey(a => a.CustomerId)

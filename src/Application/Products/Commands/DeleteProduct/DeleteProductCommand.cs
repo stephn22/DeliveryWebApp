@@ -11,12 +11,12 @@ using MediatR;
 
 namespace DeliveryWebApp.Application.Products.Commands.DeleteProduct
 {
-    public class DeleteProductCommand : IRequest
+    public class DeleteProductCommand : IRequest<Product>
     {
         public int Id { get; set; }
     }
 
-    public class DeleteProductCommandHandler : IRequestHandler<DeleteProductCommand>
+    public class DeleteProductCommandHandler : IRequestHandler<DeleteProductCommand, Product>
     {
         private readonly IApplicationDbContext _context;
 
@@ -25,7 +25,7 @@ namespace DeliveryWebApp.Application.Products.Commands.DeleteProduct
             _context = context;
         }
 
-        public async Task<Unit> Handle(DeleteProductCommand request, CancellationToken cancellationToken)
+        public async Task<Product> Handle(DeleteProductCommand request, CancellationToken cancellationToken)
         {
             var entity = await _context.Products.FindAsync(request.Id);
 
@@ -38,7 +38,7 @@ namespace DeliveryWebApp.Application.Products.Commands.DeleteProduct
 
             await _context.SaveChangesAsync(cancellationToken);
 
-            return Unit.Value;
+            return entity;
         }
     }
 }

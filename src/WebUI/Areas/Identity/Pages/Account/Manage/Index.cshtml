@@ -1,0 +1,56 @@
+@page
+@using DeliveryWebApp.Infrastructure.Security
+@model IndexModel
+@{
+    ViewData["Title"] = "Profile";
+    ViewData["ActivePage"] = ManageNavPages.Index;
+
+    var isAdmin = User.IsInRole(RoleName.Admin);
+}
+
+<h4>@ViewData["Title"]</h4>
+<partial name="_StatusMessage" model="Model.StatusMessage" />
+<div class="row">
+    <div class="col-md-6">
+        <form id="profile-form" method="post">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <div class="form-group">
+                <label asp-for="Username"></label>
+                <input asp-for="Username" class="form-control" disabled />
+            </div>
+            @if (!isAdmin)
+            {
+                <div class="form-group">
+                    <label asp-for="FName">First Name</label>
+                    <input asp-for="FName" class="form-control" disabled />
+                </div>
+                <div class="form-group">
+                    <label asp-for="Input.NewFName"></label>
+                    <input asp-for="Input.NewFName" class="form-control" />
+                    <span asp-validation-for="Input.NewFName" class="text-danger"></span>
+                </div>
+
+                <div class="form-group">
+                    <label asp-for="LName">Last Name</label>
+                    <input asp-for="LName" class="form-control" disabled />
+                </div>
+                <div class="form-group">
+                    <label asp-for="Input.NewLName"></label>
+                    <input asp-for="Input.NewLName" class="form-control" />
+                    <span asp-validation-for="Input.NewLName" class="text-danger"></span>
+                </div>
+
+                <div class="form-group">
+                    <label asp-for="Input.PhoneNumber"></label>
+                    <input asp-for="Input.PhoneNumber" class="form-control" />
+                    <span asp-validation-for="Input.PhoneNumber" class="text-danger"></span>
+                </div>
+                <button id="update-profile-button" type="submit" class="btn btn-primary">Save</button>
+            }
+        </form>
+    </div>
+</div>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}

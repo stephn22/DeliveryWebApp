@@ -1,10 +1,20 @@
 ﻿@page
-@using DeliveryWebApp.Application.Restaurants.Commands.UpdateRestaurant
 @using IdentityServer4.Extensions
-@using MediatR
 @using Microsoft.Extensions.Configuration
 @inject IConfiguration configuration
 @model DeliveryWebApp.WebUI.Pages.RestaurateurPages.RestaurantDashboardModel
+@section Head
+{
+    <link type="text/css" rel="stylesheet" href="~/lib/jsgrid-1.5.3/jsgrid.min.css" />
+    <link type="text/css" rel="stylesheet" href="~/lib/jsgrid-1.5.3/jsgrid-theme.min.css" />
+
+    <link rel="stylesheet" href="/css/images.css" type="text/css" />
+
+    @* Google fonts *@
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@100;300;500&display=swap" rel="stylesheet">
+}
 @{
     ViewData["Title"] = "Dashboard";
 }
@@ -13,31 +23,23 @@
 
 <partial name="_StatusMessage" for="StatusMessage" />
 
-@section Head
-{
-    <link rel="stylesheet" href="/css/images.css" type="text/css"/>
 
-    @* Google fonts *@
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@100;300;500&display=swap" rel="stylesheet">
-}
 
 @if (Model.Restaurant == null)
 {
     // Create new restaurant
     <div class="text-start">
-        <hr/>
+        <hr />
         <h6>
-            <img src="/icons/shop.svg" alt="shop" height="32" width="32"/>
+            <img src="/icons/shop.svg" alt="shop" height="32" width="32" />
             Register your restaurant
         </h6>
-        <br/>
+        <br />
         <button id="begin" class="btn btn-primary" type="button" data-bs-toggle="collapse" data-bs-target="#collapseForm" aria-expanded="false" aria-controls="collapseForm">Begin</button>
 
         <div class="collapse" id="collapseForm">
             <div class="card card-body">
-                <form method="post" enctype="multipart/form-data" asp-page-handler="NewRestaurant">
+                <form method="post" enctype="multipart/form-data">
 
                     <div class="form-row">
                         <div class="mb-3">
@@ -67,46 +69,85 @@
 
                     @* Address *@
 
-                    <div class="form-row">
-                        <div class="form-group col-md-6">
-                            <label asp-for="Input.AddressLine1"></label>
-                            <input class="form-control" asp-for="Input.AddressLine1" placeholder="Address Line 1">
-                            <span asp-validation-for="Input.AddressLine1" class="text-danger"></span>
-                        </div>
-                        <div class="form-group col-md-6">
-                            <label asp-for="Input.AddressLine2"></label>
-                            <input class="form-control" asp-for="Input.AddressLine2" placeholder="Address Line 2">
-                            <span asp-validation-for="Input.AddressLine2" class="text-danger"></span>
-                        </div>
-                    </div>
-                    <div class="form-row">
-                        <div class="form-group col-md-1">
-                            <label asp-for="Input.Number"></label>
-                            <input class="form-control" asp-for="Input.Number" placeholder="1, 21B...">
-                            <span asp-validation-for="Input.Number" class="text-danger"></span>
-                        </div>
-                        <div class="form-group col-md-6">
-                            <label asp-for="Input.City"></label>
-                            <input class="form-control" asp-for="Input.City" placeholder="City">
-                            <span asp-validation-for="Input.City" class="text-danger"></span>
+                    <div class="form-group col-md-7">
+                        <label class="form-label">Address</label>
+                        <div class="input-group col-7">
+                            <input class="form-control" id="input-address" value="" />
+                            <div class="input-group-append">
+                                <button class="btn btn-outline-secondary" type="button" id="location-btn">
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-geo-alt" viewBox="0 0 16 16">
+                                        <path d="M12.166 8.94c-.524 1.062-1.234 2.12-1.96 3.07A31.493 31.493 0 0 1 8 14.58a31.481 31.481 0 0 1-2.206-2.57c-.726-.95-1.436-2.008-1.96-3.07C3.304 7.867 3 6.862 3 6a5 5 0 0 1 10 0c0 .862-.305 1.867-.834 2.94zM8 16s6-5.686 6-10A6 6 0 0 0 2 6c0 4.314 6 10 6 10z" />
+                                        <path d="M8 8a2 2 0 1 1 0-4 2 2 0 0 1 0 4zm0 1a3 3 0 1 0 0-6 3 3 0 0 0 0 6z" />
+                                    </svg>
+                                </button>
+                            </div>
                         </div>
                     </div>
-                    <div class="form-row">
-                        <div class="form-group col-md-6">
-                            <label asp-for="Input.PostalCode"></label>
-                            <input class="form-control" asp-for="Input.PostalCode" placeholder="Postal Code: 20020...">
-                            <span asp-validation-for="Input.PostalCode" class="text-danger"></span>
-                        </div>
-                        <div class="form-group col-md-4">
-                            <label asp-for="Input.Country"></label>
-                            <select class="form-select" aria-label="Select country" asp-for="Input.Country" asp-items="Model.Countries">
-                            </select>
-                            <span asp-validation-for="Input.Country" class="text-danger"></span>
+
+                    <button class="btn btn-outline-secondary edit-btn" data-bs-toggle="collapse" data-bs-target="#address-0-collapse" aria-expanded="false" aria-controls="address-0-collapse">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-pencil-square" viewBox="0 0 16 16">
+                            <path d="M15.502 1.94a.5.5 0 0 1 0 .706L14.459 3.69l-2-2L13.502.646a.5.5 0 0 1 .707 0l1.293 1.293zm-1.75 2.456-2-2L4.939 9.21a.5.5 0 0 0-.121.196l-.805 2.414a.25.25 0 0 0 .316.316l2.414-.805a.5.5 0 0 0 .196-.12l6.813-6.814z" />
+                            <path fill-rule="evenodd" d="M1 13.5A1.5 1.5 0 0 0 2.5 15h11a1.5 1.5 0 0 0 1.5-1.5v-6a.5.5 0 0 0-1 0v6a.5.5 0 0 1-.5.5h-11a.5.5 0 0 1-.5-.5v-11a.5.5 0 0 1 .5-.5H9a.5.5 0 0 0 0-1H2.5A1.5 1.5 0 0 0 1 2.5v11z" />
+                        </svg>
+                        Insert Manually
+                    </button>
+
+                    <div class="collapse" id="address-0-collapse">
+                        <div class="card card-body">
+
+                            <div class="form-row">
+                                <div class="form-group col-md-6">
+                                    <label asp-for="Input.AddressLine1"></label>
+                                    <input class="form-control" asp-for="Input.AddressLine1" placeholder="Address Line 1" id="addressline1">
+                                    <span asp-validation-for="Input.AddressLine1" class="text-danger"></span>
+                                </div>
+                                <div class="form-group col-md-6">
+                                    <label asp-for="Input.AddressLine2"></label>
+                                    <input class="form-control" asp-for="Input.AddressLine2" placeholder="Address Line 2" id="addressline2">
+                                    <span asp-validation-for="Input.AddressLine2" class="text-danger"></span>
+                                </div>
+                            </div>
+                            <div class="form-row">
+                                <div class="form-group col-md-1">
+                                    <label asp-for="Input.Number"></label>
+                                    <input class="form-control" asp-for="Input.Number" placeholder="1, 21B..." id="number">
+                                    <span asp-validation-for="Input.Number" class="text-danger"></span>
+                                </div>
+                                <div class="form-group col-md-6">
+                                    <label asp-for="Input.City"></label>
+                                    <input class="form-control" asp-for="Input.City" placeholder="City" id="city">
+                                    <span asp-validation-for="Input.City" class="text-danger"></span>
+                                </div>
+                            </div>
+                            <div class="form-row">
+                                <div class="form-group col-md-6">
+                                    <label asp-for="Input.StateProvince"></label>
+                                    <input class="form-control" asp-for="Input.StateProvince" placeholder="CA, NY, ..." id="stateprovince">
+                                    <span asp-validation-for="Input.StateProvince" class="text-danger"></span>
+                                </div>
+                                <div class="form-group col-md-6">
+                                    <label asp-for="Input.PostalCode"></label>
+                                    <input class="form-control" asp-for="Input.PostalCode" placeholder="Postal Code: 20020..." id="postalcode">
+                                    <span asp-validation-for="Input.PostalCode" class="text-danger"></span>
+                                </div>
+                                <div class="form-group col-md-4">
+                                    <label asp-for="Input.Country"></label>
+                                    <select class="form-select" aria-label="Select country" asp-for="Input.Country" asp-items="Model.Countries" id="country">
+                                    </select>
+                                    <span asp-validation-for="Input.Country" class="text-danger"></span>
+                                </div>
+                            </div>
+                            <div class="form-group col-md-6">
+                                <input class="form-control" asp-for="Input.Latitude" id="latitude" hidden>
+                            </div>
+                            <div class="form-group col-md-6">
+                                <input class="form-control" asp-for="Input.Longitude" id="longitude" hidden>
+                            </div>
+
                         </div>
                     </div>
 
                     <button type="submit" class="btn btn-primary" value="NewRestaurant">Submit</button>
-
                 </form>
 
             </div>
@@ -114,353 +155,488 @@
     </div>
 
     <div id="image" class="text-center">
-        <img src="/icons/undraw_Hamburger_8ge6.svg" alt="hamburger" height="225" width="225"/>
+        <img src="/icons/undraw_Hamburger_8ge6.svg" alt="hamburger" height="225" width="225" />
     </div>
 }
 else
 {
     <p style="font-family: 'Roboto', sans-serif; font-size: medium; font-size: 2rem">@Html.DisplayFor(modal => modal.Restaurant.Name)</p>
-    <hr/>
+    <hr />
     <div class="d-flex align-items-start">
-    <div class="nav flex-column nav-pills me-3" id="v-pills-tab" role="tablist" aria-orientation="vertical">
+        <div class="nav flex-column nav-pills me-3" id="v-pills-tab" role="tablist" aria-orientation="vertical">
 
-        <button class="nav-link active" id="v-pills-home-tab" data-bs-toggle="pill" data-bs-target="#v-pills-home" type="button" role="tab" aria-controls="v-pills-home" aria-selected="true">
-            Dashboard
-            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-shop" viewBox="0 0 16 16">
-                <path d="M2.97 1.35A1 1 0 0 1 3.73 1h8.54a1 1 0 0 1 .76.35l2.609 3.044A1.5 1.5 0 0 1 16 5.37v.255a2.375 2.375 0 0 1-4.25 1.458A2.371 2.371 0 0 1 9.875 8 2.37 2.37 0 0 1 8 7.083 2.37 2.37 0 0 1 6.125 8a2.37 2.37 0 0 1-1.875-.917A2.375 2.375 0 0 1 0 5.625V5.37a1.5 1.5 0 0 1 .361-.976l2.61-3.045zm1.78 4.275a1.375 1.375 0 0 0 2.75 0 .5.5 0 0 1 1 0 1.375 1.375 0 0 0 2.75 0 .5.5 0 0 1 1 0 1.375 1.375 0 1 0 2.75 0V5.37a.5.5 0 0 0-.12-.325L12.27 2H3.73L1.12 5.045A.5.5 0 0 0 1 5.37v.255a1.375 1.375 0 0 0 2.75 0 .5.5 0 0 1 1 0zM1.5 8.5A.5.5 0 0 1 2 9v6h1v-5a1 1 0 0 1 1-1h3a1 1 0 0 1 1 1v5h6V9a.5.5 0 0 1 1 0v6h.5a.5.5 0 0 1 0 1H.5a.5.5 0 0 1 0-1H1V9a.5.5 0 0 1 .5-.5zM4 15h3v-5H4v5zm5-5a1 1 0 0 1 1-1h2a1 1 0 0 1 1 1v3a1 1 0 0 1-1 1h-2a1 1 0 0 1-1-1v-3zm3 0h-2v3h2v-3z"/>
-            </svg>
-        </button>
-
-        <button class="nav-link" id="v-pills-products-tab" data-bs-toggle="pill" data-bs-target="#v-pills-products" type="button" role="tab" aria-controls="v-pills-product" aria-selected="false">
-            Products
-            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-box-seam" viewBox="0 0 16 16">
-                <path d="M8.186 1.113a.5.5 0 0 0-.372 0L1.846 3.5l2.404.961L10.404 2l-2.218-.887zm3.564 1.426L5.596 5 8 5.961 14.154 3.5l-2.404-.961zm3.25 1.7-6.5 2.6v7.922l6.5-2.6V4.24zM7.5 14.762V6.838L1 4.239v7.923l6.5 2.6zM7.443.184a1.5 1.5 0 0 1 1.114 0l7.129 2.852A.5.5 0 0 1 16 3.5v8.662a1 1 0 0 1-.629.928l-7.185 2.874a.5.5 0 0 1-.372 0L.63 13.09a1 1 0 0 1-.63-.928V3.5a.5.5 0 0 1 .314-.464L7.443.184z"/>
-            </svg>
-        </button>
-
-        <button class="nav-link" id="v-pills-orders-tab" data-bs-toggle="pill" data-bs-target="#v-pills-orders" type="button" role="tab" aria-controls="v-pills-orders" aria-selected="false">
-            Orders
-            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-mailbox" viewBox="0 0 16 16">
-                <path d="M4 4a3 3 0 0 0-3 3v6h6V7a3 3 0 0 0-3-3zm0-1h8a4 4 0 0 1 4 4v6a1 1 0 0 1-1 1H1a1 1 0 0 1-1-1V7a4 4 0 0 1 4-4zm2.646 1A3.99 3.99 0 0 1 8 7v6h7V7a3 3 0 0 0-3-3H6.646z"/>
-                <path d="M11.793 8.5H9v-1h5a.5.5 0 0 1 .5.5v1a.5.5 0 0 1-.5.5h-1a.5.5 0 0 1-.354-.146l-.853-.854zM5 7c0 .552-.448 0-1 0s-1 .552-1 0a1 1 0 0 1 2 0z"/>
-            </svg>
-        </button>
-    </div>
-    <div class="tab-content" id="v-pills-tabContent">
-
-    <div class="tab-pane fade show active" id="v-pills-home" role="tabpanel" aria-labelledby="v-pills-home-tab">
-
-        <div class="row">
-
-            <div class="col">
-
-                @* Logo *@
-                <form method="post" enctype="multipart/form-data" asp-page-handler="UploadNewImage">
-                    <div class="form-row square">
-                        <div class="col">
-                            <img id="dashboard-img" src="data:image/jpeg;base64,@Convert.ToBase64String(Model.Restaurant.Logo)" class="rounded img-fluid square img-dashboard" alt="">
-                            <button class="btn btn-secondary edit-img-btn" type="button" value="NewImage" onclick="openFiles();" id="upload-new-img">
-                                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-pencil-square" viewBox="0 0 16 16">
-                                    <path d="M15.502 1.94a.5.5 0 0 1 0 .706L14.459 3.69l-2-2L13.502.646a.5.5 0 0 1 .707 0l1.293 1.293zm-1.75 2.456-2-2L4.939 9.21a.5.5 0 0 0-.121.196l-.805 2.414a.25.25 0 0 0 .316.316l2.414-.805a.5.5 0 0 0 .196-.12l6.813-6.814z"/>
-                                    <path fill-rule="evenodd" d="M1 13.5A1.5 1.5 0 0 0 2.5 15h11a1.5 1.5 0 0 0 1.5-1.5v-6a.5.5 0 0 0-1 0v6a.5.5 0 0 1-.5.5h-11a.5.5 0 0 1-.5-.5v-11a.5.5 0 0 1 .5-.5H9a.5.5 0 0 0 0-1H2.5A1.5 1.5 0 0 0 1 2.5v11z"/>
-                                </svg>
-                            </button>
-                            <input type="file" id="new-img-input" style="display: none;" asp-for="Input.Logo" onchange="changeImage(this); this.form.submit();"/>
-                        </div>
-                    </div>
-
-                    <script type="text/javascript">
-                        function changeImage(input) {
-                            if (input.files && input.files[0]) {
-                                const reader = new FileReader();
-
-                                reader.onload = function(i) {
-                                    $("#dashboard-img")
-                                        .attr("src", i.target.result);
-                                };
-
-                                reader.readAsDataURL(input.files[0]);
-                            }
-                        }
-                    </script>
-
-                </form>
-
-            </div>
-
-            <div class="col-lg-10">
-
-                @* Name *@
-                <form method="post" asp-page-handler="NewName" asp-route-id="@Model.Restaurant.Id">
-                    <div class="form-group">
-                        <label asp-for="Input.Name"></label>
-                        <input class="form-control" asp-for="Input.Name" value="@Model.Restaurateur.Restaurant.Name" disabled readonly>
-                    </div>
-
-                    <div class="input-group">
-                        <input asp-for="Input.Name" class="form-control" placeholder="Restaurant new name" aria-label="Restaurant new name">
-                        <div class="input-group-append">
-                            <button class="btn btn-secondary" type="submit" value="NewName">
-                                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-pencil-square" viewBox="0 0 16 16">
-                                    <path d="M15.502 1.94a.5.5 0 0 1 0 .706L14.459 3.69l-2-2L13.502.646a.5.5 0 0 1 .707 0l1.293 1.293zm-1.75 2.456-2-2L4.939 9.21a.5.5 0 0 0-.121.196l-.805 2.414a.25.25 0 0 0 .316.316l2.414-.805a.5.5 0 0 0 .196-.12l6.813-6.814z"/>
-                                    <path fill-rule="evenodd" d="M1 13.5A1.5 1.5 0 0 0 2.5 15h11a1.5 1.5 0 0 0 1.5-1.5v-6a.5.5 0 0 0-1 0v6a.5.5 0 0 1-.5.5h-11a.5.5 0 0 1-.5-.5v-11a.5.5 0 0 1 .5-.5H9a.5.5 0 0 0 0-1H2.5A1.5 1.5 0 0 0 1 2.5v11z"/>
-                                </svg>
-                            </button>
-                        </div>
-                    </div>
-                </form>
-
-            </div>
-
-        </div>
-
-        <div class="row">
-
-
-            @* Category *@
-            <form method="post" asp-page-handler="NewCategory" asp-route-id="@Model.Restaurant.Id">
-                <div class="form-group">
-                    <label asp-for="Input.Category"></label>
-                    <input class="form-control" asp-for="Input.Category" value="@Model.Restaurateur.Restaurant.Category" disabled readonly>
-                </div>
-
-                <div class="input-group col-md-10">
-                    <select class="form-select" aria-label="Select category" asp-for="Input.Category" aria-selected="true" asp-items="Model.Categories">
-                    </select>
-                    <span asp-validation-for="Input.Category" class="text-danger"></span>
-                    <div class="input-group-append">
-                        <button class="btn btn-secondary" type="submit" value="NewCategory">
-                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-pencil-square" viewBox="0 0 16 16">
-                                <path d="M15.502 1.94a.5.5 0 0 1 0 .706L14.459 3.69l-2-2L13.502.646a.5.5 0 0 1 .707 0l1.293 1.293zm-1.75 2.456-2-2L4.939 9.21a.5.5 0 0 0-.121.196l-.805 2.414a.25.25 0 0 0 .316.316l2.414-.805a.5.5 0 0 0 .196-.12l6.813-6.814z"/>
-                                <path fill-rule="evenodd" d="M1 13.5A1.5 1.5 0 0 0 2.5 15h11a1.5 1.5 0 0 0 1.5-1.5v-6a.5.5 0 0 0-1 0v6a.5.5 0 0 1-.5.5h-11a.5.5 0 0 1-.5-.5v-11a.5.5 0 0 1 .5-.5H9a.5.5 0 0 0 0-1H2.5A1.5 1.5 0 0 0 1 2.5v11z"/>
-                            </svg>
-                        </button>
-                    </div>
-                </div>
-            </form>
-        </div>
-
-        <div class="row">
-
-            <div class="form-group">
-                <label>Address</label>
-                <div class="input-group col-lg-10">
-                    <input class="form-control" value="@Model.RestaurantAddress.ToString()" disabled readonly>
-                    <div class="input-group-append">
-                        <button type="button" class="btn btn-secondary" data-bs-toggle="collapse" data-bs-target="#edit-address-collapse" aria-expanded="false" aria-controls="edit-address-collapse">
-                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-pencil-square" viewBox="0 0 16 16">
-                                <path d="M15.502 1.94a.5.5 0 0 1 0 .706L14.459 3.69l-2-2L13.502.646a.5.5 0 0 1 .707 0l1.293 1.293zm-1.75 2.456-2-2L4.939 9.21a.5.5 0 0 0-.121.196l-.805 2.414a.25.25 0 0 0 .316.316l2.414-.805a.5.5 0 0 0 .196-.12l6.813-6.814z"/>
-                                <path fill-rule="evenodd" d="M1 13.5A1.5 1.5 0 0 0 2.5 15h11a1.5 1.5 0 0 0 1.5-1.5v-6a.5.5 0 0 0-1 0v6a.5.5 0 0 1-.5.5h-11a.5.5 0 0 1-.5-.5v-11a.5.5 0 0 1 .5-.5H9a.5.5 0 0 0 0-1H2.5A1.5 1.5 0 0 0 1 2.5v11z"/>
-                            </svg>
-                        </button>
-                    </div>
-                </div>
-            </div>
-
-        </div>
-
-        <div class="collapse" id="edit-address-collapse">
-            <div class="card card-body">
-                <div class="form-row">
-                    <div class="form-group col-md-6">
-                        <label asp-for="Input.AddressLine1"></label>
-                        <input class="form-control" asp-for="Input.AddressLine1" placeholder="Address Line 1">
-                        <span asp-validation-for="Input.AddressLine1" class="text-danger"></span>
-                    </div>
-                    <div class="form-group col-md-6">
-                        <label asp-for="Input.AddressLine2"></label>
-                        <input class="form-control" asp-for="Input.AddressLine2" placeholder="Address Line 2">
-                        <span asp-validation-for="Input.AddressLine2" class="text-danger"></span>
-                    </div>
-                </div>
-
-                <div class="form-row">
-                    <div class="form-group col-md-3">
-                        <label asp-for="Input.Number"></label>
-                        <input class="form-control" asp-for="Input.Number" placeholder="1, 21B...">
-                        <span asp-validation-for="Input.Number" class="text-danger"></span>
-                    </div>
-                    <div class="form-group col-md-6">
-                        <label asp-for="Input.City"></label>
-                        <input class="form-control" asp-for="Input.City" placeholder="City">
-                        <span asp-validation-for="Input.City" class="text-danger"></span>
-                    </div>
-                </div>
-
-                <div class="form-row">
-                    <div class="form-group col-md-6">
-                        <label asp-for="Input.PostalCode"></label>
-                        <input class="form-control" asp-for="Input.PostalCode" placeholder="Postal Code: 20020...">
-                        <span asp-validation-for="Input.PostalCode" class="text-danger"></span>
-                    </div>
-                    <div class="form-group col-md-7">
-                        <label asp-for="Input.Country"></label>
-                        <select class="form-select" aria-label="Select country" asp-for="Input.Country" asp-items="Model.Countries">
-                        </select>
-                        <span asp-validation-for="Input.Country" class="text-danger"></span>
-                    </div>
-                </div>
-            </div>
-        </div>
-
-
-    </div>
-
-    @* Products tab *@
-    <div class="tab-pane fade" id="v-pills-products" role="tabpanel" aria-labelledby="v-pills-products-tab">
-        <div class="text-start">
-            <a id="add-product-btn" class="btn rounded-pill btn-primary" type="button" asp-page="/RestaurateurPages/AddProduct">
-                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-plus-square-fill" viewBox="0 0 16 16">
-                    <path d="M2 0a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V2a2 2 0 0 0-2-2H2zm6.5 4.5v3h3a.5.5 0 0 1 0 1h-3v3a.5.5 0 0 1-1 0v-3h-3a.5.5 0 0 1 0-1h3v-3a.5.5 0 0 1 1 0z"/>
+            <button class="nav-link active" id="v-pills-home-tab" data-bs-toggle="pill" data-bs-target="#v-pills-home" type="button" role="tab" aria-controls="v-pills-home" aria-selected="true">
+                Dashboard
+                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-shop" viewBox="0 0 16 16">
+                    <path d="M2.97 1.35A1 1 0 0 1 3.73 1h8.54a1 1 0 0 1 .76.35l2.609 3.044A1.5 1.5 0 0 1 16 5.37v.255a2.375 2.375 0 0 1-4.25 1.458A2.371 2.371 0 0 1 9.875 8 2.37 2.37 0 0 1 8 7.083 2.37 2.37 0 0 1 6.125 8a2.37 2.37 0 0 1-1.875-.917A2.375 2.375 0 0 1 0 5.625V5.37a1.5 1.5 0 0 1 .361-.976l2.61-3.045zm1.78 4.275a1.375 1.375 0 0 0 2.75 0 .5.5 0 0 1 1 0 1.375 1.375 0 0 0 2.75 0 .5.5 0 0 1 1 0 1.375 1.375 0 1 0 2.75 0V5.37a.5.5 0 0 0-.12-.325L12.27 2H3.73L1.12 5.045A.5.5 0 0 0 1 5.37v.255a1.375 1.375 0 0 0 2.75 0 .5.5 0 0 1 1 0zM1.5 8.5A.5.5 0 0 1 2 9v6h1v-5a1 1 0 0 1 1-1h3a1 1 0 0 1 1 1v5h6V9a.5.5 0 0 1 1 0v6h.5a.5.5 0 0 1 0 1H.5a.5.5 0 0 1 0-1H1V9a.5.5 0 0 1 .5-.5zM4 15h3v-5H4v5zm5-5a1 1 0 0 1 1-1h2a1 1 0 0 1 1 1v3a1 1 0 0 1-1 1h-2a1 1 0 0 1-1-1v-3zm3 0h-2v3h2v-3z" />
                 </svg>
-                Product
-            </a>
+            </button>
+
+            <button class="nav-link" id="v-pills-products-tab" data-bs-toggle="pill" data-bs-target="#v-pills-products" type="button" role="tab" aria-controls="v-pills-product" aria-selected="false">
+                Products
+                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-box-seam" viewBox="0 0 16 16">
+                    <path d="M8.186 1.113a.5.5 0 0 0-.372 0L1.846 3.5l2.404.961L10.404 2l-2.218-.887zm3.564 1.426L5.596 5 8 5.961 14.154 3.5l-2.404-.961zm3.25 1.7-6.5 2.6v7.922l6.5-2.6V4.24zM7.5 14.762V6.838L1 4.239v7.923l6.5 2.6zM7.443.184a1.5 1.5 0 0 1 1.114 0l7.129 2.852A.5.5 0 0 1 16 3.5v8.662a1 1 0 0 1-.629.928l-7.185 2.874a.5.5 0 0 1-.372 0L.63 13.09a1 1 0 0 1-.63-.928V3.5a.5.5 0 0 1 .314-.464L7.443.184z" />
+                </svg>
+            </button>
+
+            <button class="nav-link" id="v-pills-orders-tab" data-bs-toggle="pill" data-bs-target="#v-pills-orders" type="button" role="tab" aria-controls="v-pills-orders" aria-selected="false">
+                Orders
+                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-mailbox" viewBox="0 0 16 16">
+                    <path d="M4 4a3 3 0 0 0-3 3v6h6V7a3 3 0 0 0-3-3zm0-1h8a4 4 0 0 1 4 4v6a1 1 0 0 1-1 1H1a1 1 0 0 1-1-1V7a4 4 0 0 1 4-4zm2.646 1A3.99 3.99 0 0 1 8 7v6h7V7a3 3 0 0 0-3-3H6.646z" />
+                    <path d="M11.793 8.5H9v-1h5a.5.5 0 0 1 .5.5v1a.5.5 0 0 1-.5.5h-1a.5.5 0 0 1-.354-.146l-.853-.854zM5 7c0 .552-.448 0-1 0s-1 .552-1 0a1 1 0 0 1 2 0z" />
+                </svg>
+            </button>
         </div>
-        <br/>
+        <div class="tab-content" id="v-pills-tabContent">
 
-        @if (Model.Products.IsNullOrEmpty())
-        {
-            <div class="alert alert-secondary" role="alert">
-                Your restaurant has no products yet.
+            <div class="tab-pane fade show active" id="v-pills-home" role="tabpanel" aria-labelledby="v-pills-home-tab">
+
+                <div class="row">
+
+                    <div class="col">
+
+                        @* Logo *@
+                        <form method="post" enctype="multipart/form-data" asp-page-handler="UploadNewImage">
+                            <div class="form-row square">
+                                <div class="col">
+                                    <img id="dashboard-img" src="data:image/jpeg;base64,@Convert.ToBase64String(Model.Restaurant.Logo)" class="rounded img-fluid square img-dashboard" alt="">
+                                    <button class="btn btn-secondary edit-img-btn" type="button" value="NewImage" onclick="openFiles();" id="upload-new-img">
+                                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-pencil-square" viewBox="0 0 16 16">
+                                            <path d="M15.502 1.94a.5.5 0 0 1 0 .706L14.459 3.69l-2-2L13.502.646a.5.5 0 0 1 .707 0l1.293 1.293zm-1.75 2.456-2-2L4.939 9.21a.5.5 0 0 0-.121.196l-.805 2.414a.25.25 0 0 0 .316.316l2.414-.805a.5.5 0 0 0 .196-.12l6.813-6.814z" />
+                                            <path fill-rule="evenodd" d="M1 13.5A1.5 1.5 0 0 0 2.5 15h11a1.5 1.5 0 0 0 1.5-1.5v-6a.5.5 0 0 0-1 0v6a.5.5 0 0 1-.5.5h-11a.5.5 0 0 1-.5-.5v-11a.5.5 0 0 1 .5-.5H9a.5.5 0 0 0 0-1H2.5A1.5 1.5 0 0 0 1 2.5v11z" />
+                                        </svg>
+                                    </button>
+                                    <input type="file" id="new-img-input" style="display: none;" asp-for="Input.Logo" onchange="changeImage(this);this.form.submit();" />
+                                </div>
+                            </div>
+
+                            <script type="text/javascript">
+                                function changeImage(input) {
+                                    if (input.files && input.files[0]) {
+                                        const reader = new FileReader();
+
+                                        reader.onload = function (i) {
+                                            $("#dashboard-img")
+                                                .attr("src", i.target.result);
+                                        };
+
+                                        reader.readAsDataURL(input.files[0]);
+                                    }
+                                }
+                            </script>
+
+                        </form>
+
+                    </div>
+
+                    <div class="col-lg-10">
+
+                        @* Name *@
+                        <form method="post" asp-page-handler="NewName" asp-route-id="@Model.Restaurant.Id">
+                            <div class="form-group">
+                                <label asp-for="Input.Name"></label>
+                                <input class="form-control" asp-for="Input.Name" value="@Model.Restaurateur.Restaurant.Name" disabled readonly>
+                            </div>
+
+                            <div class="input-group">
+                                <input asp-for="Input.Name" class="form-control" placeholder="Restaurant new name" aria-label="Restaurant new name">
+                                <div class="input-group-append">
+                                    <button class="btn btn-secondary" type="submit" value="NewName">
+                                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-pencil-square" viewBox="0 0 16 16">
+                                            <path d="M15.502 1.94a.5.5 0 0 1 0 .706L14.459 3.69l-2-2L13.502.646a.5.5 0 0 1 .707 0l1.293 1.293zm-1.75 2.456-2-2L4.939 9.21a.5.5 0 0 0-.121.196l-.805 2.414a.25.25 0 0 0 .316.316l2.414-.805a.5.5 0 0 0 .196-.12l6.813-6.814z" />
+                                            <path fill-rule="evenodd" d="M1 13.5A1.5 1.5 0 0 0 2.5 15h11a1.5 1.5 0 0 0 1.5-1.5v-6a.5.5 0 0 0-1 0v6a.5.5 0 0 1-.5.5h-11a.5.5 0 0 1-.5-.5v-11a.5.5 0 0 1 .5-.5H9a.5.5 0 0 0 0-1H2.5A1.5 1.5 0 0 0 1 2.5v11z" />
+                                        </svg>
+                                    </button>
+                                </div>
+                            </div>
+                        </form>
+
+                    </div>
+
+                </div>
+
+                <div class="row">
+
+
+                    @* Category *@
+                    <form method="post" asp-page-handler="NewCategory" asp-route-id="@Model.Restaurant.Id">
+                        <div class="form-group">
+                            <label asp-for="Input.Category"></label>
+                            <input class="form-control" asp-for="Input.Category" value="@Model.Restaurateur.Restaurant.Category" disabled readonly>
+                        </div>
+
+                        <div class="input-group col-md-10">
+                            <select class="form-select" aria-label="Select category" asp-for="Input.Category" aria-selected="true" asp-items="Model.Categories">
+                            </select>
+                            <span asp-validation-for="Input.Category" class="text-danger"></span>
+                            <div class="input-group-append">
+                                <button class="btn btn-secondary" type="submit" value="NewCategory">
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-pencil-square" viewBox="0 0 16 16">
+                                        <path d="M15.502 1.94a.5.5 0 0 1 0 .706L14.459 3.69l-2-2L13.502.646a.5.5 0 0 1 .707 0l1.293 1.293zm-1.75 2.456-2-2L4.939 9.21a.5.5 0 0 0-.121.196l-.805 2.414a.25.25 0 0 0 .316.316l2.414-.805a.5.5 0 0 0 .196-.12l6.813-6.814z" />
+                                        <path fill-rule="evenodd" d="M1 13.5A1.5 1.5 0 0 0 2.5 15h11a1.5 1.5 0 0 0 1.5-1.5v-6a.5.5 0 0 0-1 0v6a.5.5 0 0 1-.5.5h-11a.5.5 0 0 1-.5-.5v-11a.5.5 0 0 1 .5-.5H9a.5.5 0 0 0 0-1H2.5A1.5 1.5 0 0 0 1 2.5v11z" />
+                                    </svg>
+                                </button>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+
+                <form method="post" asp-page-handler="UpdateAddress">
+                    <div class="row">
+                        <div class="form-group">
+                            <label>Address</label>
+                            <div class="input-group col-lg-10">
+                                <input class="form-control" value="@Model.RestaurantAddress.ToString()" disabled readonly>
+                                <div class="input-group-append">
+                                    <button type="button" class="btn btn-secondary" data-bs-toggle="collapse" data-bs-target="#edit-address-collapse" aria-expanded="false" aria-controls="edit-address-collapse">
+                                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-pencil-square" viewBox="0 0 16 16">
+                                            <path d="M15.502 1.94a.5.5 0 0 1 0 .706L14.459 3.69l-2-2L13.502.646a.5.5 0 0 1 .707 0l1.293 1.293zm-1.75 2.456-2-2L4.939 9.21a.5.5 0 0 0-.121.196l-.805 2.414a.25.25 0 0 0 .316.316l2.414-.805a.5.5 0 0 0 .196-.12l6.813-6.814z" />
+                                            <path fill-rule="evenodd" d="M1 13.5A1.5 1.5 0 0 0 2.5 15h11a1.5 1.5 0 0 0 1.5-1.5v-6a.5.5 0 0 0-1 0v6a.5.5 0 0 1-.5.5h-11a.5.5 0 0 1-.5-.5v-11a.5.5 0 0 1 .5-.5H9a.5.5 0 0 0 0-1H2.5A1.5 1.5 0 0 0 1 2.5v11z" />
+                                        </svg>
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="collapse" id="edit-address-collapse">
+                        <div class="card card-body">
+                            <div class="form-row">
+                                <div class="form-group col-md-6">
+                                    <label asp-for="Input.AddressLine1"></label>
+                                    <input class="form-control" asp-for="Input.AddressLine1" value="@Model.RestaurantAddress.AddressLine1" placeholder="Address Line 1" id="update-addressline1">
+                                    <span asp-validation-for="Input.AddressLine1" class="text-danger"></span>
+                                </div>
+                                <div class="form-group col-md-6">
+                                    <label asp-for="Input.AddressLine2"></label>
+                                    <input class="form-control" asp-for="Input.AddressLine2" value="@Model.RestaurantAddress.AddressLine2" placeholder="Address Line 2" id="update-addressline2">
+                                    <span asp-validation-for="Input.AddressLine2" class="text-danger"></span>
+                                </div>
+                            </div>
+
+                            <div class="form-row">
+                                <div class="form-group col-md-3">
+                                    <label asp-for="Input.Number"></label>
+                                    <input class="form-control" asp-for="Input.Number" value="@Model.RestaurantAddress.Number" placeholder="1, 21B..." id="update-number">
+                                    <span asp-validation-for="Input.Number" class="text-danger"></span>
+                                </div>
+                                <div class="form-group col-md-6">
+                                    <label asp-for="Input.City"></label>
+                                    <input class="form-control" asp-for="Input.City" value="@Model.RestaurantAddress.City" placeholder="City" id="update-city">
+                                    <span asp-validation-for="Input.City" class="text-danger"></span>
+                                </div>
+                            </div>
+
+                            <div class="form-row">
+                                <div class="form-group col-md-6">
+                                    <label asp-for="Input.PostalCode"></label>
+                                    <input class="form-control" asp-for="Input.PostalCode" value="@Model.RestaurantAddress.PostalCode" placeholder="Postal Code: 20020..." id="update-postalcode">
+                                    <span asp-validation-for="Input.PostalCode" class="text-danger"></span>
+                                </div>
+                                <div class="form-group col-md-6">
+                                    <label asp-for="Input.StateProvince"></label>
+                                    <input class="form-control" asp-for="Input.StateProvince" value="@Model.RestaurantAddress.StateProvince" placeholder="CA, NY, ..." id="update-stateprovince">
+                                    <span asp-validation-for="Input.StateProvince" class="text-danger"></span>
+                                </div>
+                                <div class="form-group col-md-7">
+                                    <label asp-for="Input.Country"></label>
+                                    <select class="form-select" aria-label="Select country" asp-for="Input.Country" asp-items="Model.Countries" aria-selected="@Model.RestaurantAddress.Country" id="update-country">
+                                    </select>
+                                    <span asp-validation-for="Input.Country" class="text-danger"></span>
+                                </div>
+                            </div>
+                            <div class="form-group col-md-6">
+                                <input class="form-control" asp-for="Input.Latitude" id="update-latitude" hidden>
+                            </div>
+                            <div class="form-group col-md-6">
+                                <input class="form-control" asp-for="Input.Longitude" id="update-longitude" hidden>
+                            </div>
+                        </div>
+
+                        <button type="submit" class="btn btn-primary" id="save-btn">Save</button>
+                    </div>
+
+                </form>
             </div>
-        }
-        else
-        {
-            <table class="table">
-                <thead>
-                <tr class="table-primary">
-                    <th>
-                        @Html.DisplayNameFor(model => model.Products[0].Image)
-                    </th>
-                    <th>
-                        @Html.DisplayNameFor(model => model.Products[0].Name)
-                    </th>
-                    <th>
-                        @Html.DisplayNameFor(model => model.Products[0].Quantity)
-                    </th>
-                    <th>
-                        @Html.DisplayNameFor(model => model.Products[0].Price)
-                    </th>
-                    <th>
-                        @Html.DisplayNameFor(model => model.Products[0].Discount)
-                    </th>
-                    <th>
-                        @Html.DisplayNameFor(model => model.Products[0].Category)
-                    </th>
-                    <th></th>
-                </tr>
-                </thead>
-                <tbody>
-                @foreach (var product in Model.Products)
+
+            @* Products tab *@
+            <div class="tab-pane fade" id="v-pills-products" role="tabpanel" aria-labelledby="v-pills-products-tab">
+                <div class="text-start">
+                    <a id="add-product-btn" class="btn rounded-pill btn-primary" type="button" asp-page="/RestaurateurPages/AddProduct">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-plus-square-fill" viewBox="0 0 16 16">
+                            <path d="M2 0a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V2a2 2 0 0 0-2-2H2zm6.5 4.5v3h3a.5.5 0 0 1 0 1h-3v3a.5.5 0 0 1-1 0v-3h-3a.5.5 0 0 1 0-1h3v-3a.5.5 0 0 1 1 0z" />
+                        </svg>
+                        Product
+                    </a>
+                </div>
+                <br />
+
+                @if (Model.Products.IsNullOrEmpty())
                 {
-                    <tr>
-                        <td>
-                            <img class="img-dashboard square rounded img-fluid" style="height: 60px; width: 60px" src="data:image/jpeg;base64,@Convert.ToBase64String(product.Image)" alt=""/>
-                        </td>
-                        <td>
-                            @Html.DisplayFor(model => product.Name)
-                        </td>
-                        <td>
-                            @Html.DisplayFor(model => product.Quantity)
-                        </td>
-                        <td>
-                            @Html.DisplayFor(model => product.Price)
-                        </td>
-                        <td>
-                            @Html.DisplayFor(model => product.Discount)
-                        </td>
-                        <td>
-                            @Html.DisplayFor(model => product.Category)
-                        </td>
-                        <td>
-                            <a asp-page="/RestaurateurPages/ProductDetail" asp-route-id="@product.Id">Details</a>
-                        </td>
-                    </tr>
+                    <div class="alert alert-secondary" role="alert">
+                        Your restaurant has no products yet.
+                    </div>
                 }
-                </tbody>
-            </table>
-        }
+                else
+                {
+                    @*<div id="jsGrid"></div>*@
 
-    </div>
+                    <table class="table">
+                        <thead>
+                            <tr class="table-primary">
+                                <th>
+                                    @Html.DisplayNameFor(model => model.Products[0].Image)
+                                </th>
+                                <th>
+                                    @Html.DisplayNameFor(model => model.Products[0].Name)
+                                </th>
+                                <th>
+                                    @Html.DisplayNameFor(model => model.Products[0].Quantity)
+                                </th>
+                                <th>
+                                    @Html.DisplayNameFor(model => model.Products[0].Price)
+                                </th>
+                                <th>
+                                    @Html.DisplayNameFor(model => model.Products[0].Discount)
+                                </th>
+                                <th>
+                                    @Html.DisplayNameFor(model => model.Products[0].Category)
+                                </th>
+                                <th></th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach (var product in Model.Products)
+                            {
+                                <tr>
+                                    <td>
+                                        @if (!product.Image.IsNullOrEmpty())
+                                        {
+                                            <img class="img-dashboard square rounded img-fluid" style="height: 60px; width: 60px" src="data:image/jpeg;base64,@Convert.ToBase64String(product.Image)" alt="" />
+                                        }
+                                    </td>
+                                    <td>
+                                        @Html.DisplayFor(model => product.Name)
+                                    </td>
+                                    <td>
+                                        @Html.DisplayFor(model => product.Quantity)
+                                    </td>
+                                    <td>
+                                        @product.Price €
+                                    </td>
+                                    <td>
+                                        @Html.DisplayFor(model => product.Discount) %
+                                    </td>
+                                    <td>
+                                        @Html.DisplayFor(model => product.Category)
+                                    </td>
+                                    <td>
+                                        <a asp-page="/RestaurateurPages/ProductDetail" asp-route-id="@product.Id">Details</a>
+                                    </td>
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+                }
 
-    @* Orders *@
-    <div class="tab-pane fade" id="v-pills-orders" role="tabpanel" aria-labelledby="v-pills-orders-tab">
-
-        @if (Model.Orders.IsNullOrEmpty())
-        {
-            <div class=" alert alert-secondary" role="alert">
-                Your restaurant has no orders yet.
             </div>
-        }
-        else
-        {
-            // TODO: open orders vs delivered
-            @*<table class="table">
-                <thead>
-                    <tr class="table-primary">
-                        <th>
-                            @Html.DisplayNameFor(model => model.Orders[0].Id)
-                        </th>
-                        <th>
-                            @Html.DisplayNameFor(model => model.Orders[0].Customer)
-                        </th>
-                        <th>
-                            @Html.DisplayNameFor(model => model.Orders[0].Date)
-                        </th>
-                        <th>
-                            @Html.DisplayNameFor(model => model.Orders[0].)
-                        </th>
-                        <th>
-                            @Html.DisplayNameFor(model => model.Products[0].Discount)
-                        </th>
-                        <th>
-                            @Html.DisplayNameFor(model => model.Products[0].Category)
-                        </th>
-                        <th></th>
-                    </tr>
-                </thead>
-                <tbody>
-                    @foreach (var product in Model.Products)
-                    {
-                        <tr>
-                            <td>
-                                <img src="data:image/jpeg;base64,@Convert.ToBase64String(Model.Restaurant.Logo)" alt="" />
-                            </td>
-                            <td>
-                                @Html.DisplayFor(model => product.Name)
-                            </td>
-                            <td>
-                                @Html.DisplayFor(model => product.Quantity)
-                            </td>
-                            <td>
-                                @Html.DisplayFor(model => product.Price)
-                            </td>
-                            <td>
-                                @Html.DisplayFor(model => product.Discount)
-                            </td>
-                            <td>
-                                @Html.DisplayFor(model => product.Category)
-                            </td>
-                            <td>
-                                <a asp-page="">Details</a>
-                            </td>
-                        </tr>
-                    }
-                </tbody>
-            </table>*@
-        }
 
-    </div>
-    </div>
+            @* Orders *@
+            <div class="tab-pane fade" id="v-pills-orders" role="tabpanel" aria-labelledby="v-pills-orders-tab">
+
+                @if (Model.Orders.IsNullOrEmpty())
+                {
+                    <div class=" alert alert-secondary" role="alert">
+                        Your restaurant has no orders yet.
+                    </div>
+                }
+                else
+                {
+                    // TODO: open orders vs delivered
+                    @*<table class="table">
+                            <thead>
+                                <tr class="table-primary">
+                                    <th>
+                                        @Html.DisplayNameFor(model => model.Orders[0].Id)
+                                    </th>
+                                    <th>
+                                        @Html.DisplayNameFor(model => model.Orders[0].Customer)
+                                    </th>
+                                    <th>
+                                        @Html.DisplayNameFor(model => model.Orders[0].Date)
+                                    </th>
+                                    <th>
+                                        @Html.DisplayNameFor(model => model.Orders[0].)
+                                    </th>
+                                    <th>
+                                        @Html.DisplayNameFor(model => model.Products[0].Discount)
+                                    </th>
+                                    <th>
+                                        @Html.DisplayNameFor(model => model.Products[0].Category)
+                                    </th>
+                                    <th></th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @foreach (var product in Model.Products)
+                                {
+                                    <tr>
+                                        <td>
+                                            <img src="data:image/jpeg;base64,@Convert.ToBase64String(Model.Restaurant.Logo)" alt="" />
+                                        </td>
+                                        <td>
+                                            @Html.DisplayFor(model => product.Name)
+                                        </td>
+                                        <td>
+                                            @Html.DisplayFor(model => product.Quantity)
+                                        </td>
+                                        <td>
+                                            @Html.DisplayFor(model => product.Price)
+                                        </td>
+                                        <td>
+                                            @Html.DisplayFor(model => product.Discount)
+                                        </td>
+                                        <td>
+                                            @Html.DisplayFor(model => product.Category)
+                                        </td>
+                                        <td>
+                                            <a asp-page="">Details</a>
+                                        </td>
+                                    </tr>
+                                }
+                            </tbody>
+                        </table>*@
+                }
+            </div>
+        </div>
     </div>
 }
 
 @section Scripts
 {
+    <script type="text/javascript" src="~/lib/jsgrid-1.5.3/jsgrid.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/feather-icons@4.28.0/dist/feather.min.js" integrity="sha384-uO3SXW5IuS1ZpFPKugNNWqTZRRglnUJK6UAZ/gxOX80nxEkN9NcGZTftn6RzhGWE" crossorigin="anonymous"></script>
     <script src="https://cdn.jsdelivr.net/npm/chart.js@2.9.4/dist/Chart.min.js" integrity="sha384-zNy6FEbO50N+Cg5wap8IKA4M/ZnLJgzc6w2NqACZaK0u0FXfOWRRJOnQtpZun8ha" crossorigin="anonymous"></script>
 
     <script defer src="/js/image-utilities.js" type="text/javascript"></script>
 
-    <partial name="_ValidationScriptsPartial"/>
+    <partial name="_ValidationScriptsPartial" />
+
+    <script type="text/javascript" language="javascript">
+        $(function() {
+            @*const url = "/api/products";
+
+            const ajax = function (item, verb, json = true) {
+
+                if (verb === "POST") {
+                    item.restaurantId = @Model.Restaurant.Id;
+                }
+
+                return $.ajax({
+                    type: verb,
+                    url: url,
+                    data: json ? JSON.stringify(item) : item,
+                    dataType: "JSON",
+                    contentType: json ? "application/json" : "text/plain",
+                });
+            };
+
+            $("#jsGrid").jsGrid({
+                height: "90%",
+                width: "100%",
+
+                filtering: true,
+                inserting: true,
+                editing: true,
+                sorting: true,
+                paging: true,
+                autoload: true,
+
+                pageSize: 15,
+                pageButtonCount: 5,
+
+                deleteConfirm: "Do you really want to delete this?", //TODO: localize
+
+                controller: {
+                    loadData: filter => ajax(filter = { id: @Model.Restaurant.Id }, "GET", json = false),
+                    insertItem: item => ajax(item, "POST"),
+                    updateItem: item => ajax(item, "PUT"),
+                    deleteItem: item => ajax(item, "DELETE")
+                },
+                fields: [
+                    { name: "name", type: "text", width: 150, title: "Name" },
+                    /*{ name: "image", type: "text", width: 30, title: "Image"},*/
+                    { name: "price", type: "number", width: 50, title: "Price" },
+                    { name: "discount", type: "number", width: 50, title: "Discount" },
+                    { name: "category", type: "text", width: 150, title: "Category" },
+                    { name: "quantity", type: "number", width: 50, title: "Quantity" },
+                    { type: "control" }
+                ]
+            });*@
+
+            // LOCATION
+
+            $("#location-btn").on("mousedown",
+                function() {
+                    navigator.geolocation.getCurrentPosition(getCoords);
+                });
+
+            $("#save-btn").on("mousedown",
+                function() {
+                    const accessToken = 'pk.eyJ1Ijoic3RlY3JvdHRpMSIsImEiOiJja3Bna2kzbHYyaThoMm9ueHl1dzlnaTc1In0.EpALSOaDOmuM8XGS_IQzvA';
+                    const query = `${$("#update-addressline1").val()}, ${$("#update-addressline2").val()}, ${$("#update-number").val()}, ${$("#update-city").val()}, ${$("#update-postalcode").val()}, ${$("#update-stateprovince").val()}, ${$("#update-country option:selected").val()}`;
+
+                    const url = `https://api.mapbox.com/geocoding/v5/mapbox.places/${query}.json?limit=1&access_token=${accessToken}`;
+
+                    $.ajax({
+                        type: "GET",
+                        url: url,
+                        dataType: "JSON",
+                        contentType: "application/json; charset=utf-8",
+                        success: function(data, status, xhr) {
+                            const [longitude, latitude] = data.features[0].center;
+                            console.log(latitude);
+                            $("#update-longitude").val(longitude);
+                            $("#update-latitude").val(latitude);
+                        },
+                        error: function() {
+                            console.log("Error");
+                        }
+                    });
+                });
+
+            function getCoords(position) {
+                const accessToken = 'pk.eyJ1Ijoic3RlY3JvdHRpMSIsImEiOiJja3Bna2kzbHYyaThoMm9ueHl1dzlnaTc1In0.EpALSOaDOmuM8XGS_IQzvA';
+                const url = `https://api.mapbox.com/geocoding/v5/mapbox.places/${position.coords.longitude},${position.coords.latitude}.json?limit=1&access_token=${accessToken}`;
+
+                $.ajax({
+                    type: "GET",
+                    async: true,
+                    url: url,
+                    dataType: "JSON",
+                    contentType: "application/json; charset=utf-8",
+                    success: function(data, status, xhr) {
+                        $("#input-address").val(data.features[0].place_name);
+
+                        console.log(position.coords.latitude);
+                        console.log(position.coords.longitude);
+
+                        // set inputs
+                        $("#addressline1").val(data.features[0].text);
+                        $("#addressline2").val("");
+                        $("#number").val(data.features[0].address);
+                        $("#postalcode").val(data.features[0].context[0].text);
+                        $("#city").val(data.features[0].context[1].text);
+                        $("#stateprovince").val(data.features[0].context[2].text);
+                        $("#country option:selected").val(data.features[0].context[3].text);
+                        $("#latitude").val(position.coords.latitude);
+                        $("#longitude").val(position.coords.longitude);
+                    },
+                    error: function() {
+                        console.log("Error");
+                    }
+                });
+            }
+        });
+    </script>
 }

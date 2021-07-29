@@ -27,7 +27,8 @@ namespace DeliveryWebApp.WebUI.Pages.AdminPages
         private readonly UserManager<ApplicationUser> _userManager;
         private readonly IMediator _mediator;
 
-        public UserListModel(ApplicationDbContext context, ILogger<UserListModel> logger, IMediator mediator, UserManager<ApplicationUser> userManager)
+        public UserListModel(ApplicationDbContext context, ILogger<UserListModel> logger, IMediator mediator,
+            UserManager<ApplicationUser> userManager)
         {
             _context = context;
             _logger = logger;
@@ -214,48 +215,5 @@ namespace DeliveryWebApp.WebUI.Pages.AdminPages
             return null;
         }
 
-        public async Task<string> GetFNameAsync(int id, string listName)
-        {
-            var user = await GetUserAsync(id, listName);
-
-            if (user == null)
-            {
-                return "";
-            }
-
-            var fName = (from claim in await _userManager.GetClaimsAsync(user)
-                         where claim.Type == ClaimName.FName
-                         select claim.Value).First();
-
-            return fName;
-        }
-
-        public async Task<string> GetLNameAsync(int id, string listName)
-        {
-            var user = await GetUserAsync(id, listName);
-
-            if (user == null)
-            {
-                return "";
-            }
-
-            var lName = (from claim in await _userManager.GetClaimsAsync(user)
-                         where claim.Type == ClaimName.LName
-                         select claim.Value).First();
-
-            return lName;
-        }
-
-        public async Task<string> GetEmailByIdAsync(int id, string listname)
-        {
-            var user = await GetUserAsync(id, listname);
-
-            if (user == null)
-            {
-                return "";
-            }
-
-            return await _userManager.GetEmailAsync(user);
-        }
     }
 }

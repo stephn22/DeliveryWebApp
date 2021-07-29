@@ -44,12 +44,23 @@ namespace DeliveryWebApp.WebUI.Migrations
                     b.Property<int?>("CustomerId")
                         .HasColumnType("int");
 
+                    b.Property<decimal>("Latitude")
+                        .HasPrecision(18, 9)
+                        .HasColumnType("decimal(18,9)");
+
+                    b.Property<decimal>("Longitude")
+                        .HasPrecision(18, 9)
+                        .HasColumnType("decimal(18,9)");
+
                     b.Property<string>("Number")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("PostalCode")
                         .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("StateProvince")
                         .HasColumnType("nvarchar(max)");
 
                     b.HasKey("Id");
@@ -69,8 +80,9 @@ namespace DeliveryWebApp.WebUI.Migrations
                     b.Property<int>("CustomerId")
                         .HasColumnType("int");
 
-                    b.Property<double>("TotalPrice")
-                        .HasColumnType("float");
+                    b.Property<decimal>("TotalPrice")
+                        .HasPrecision(19, 4)
+                        .HasColumnType("Money");
 
                     b.HasKey("Id");
 
@@ -91,6 +103,15 @@ namespace DeliveryWebApp.WebUI.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<string>("Email")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("FirstName")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("LastName")
+                        .HasColumnType("nvarchar(max)");
+
                     b.HasKey("Id");
 
                     b.ToTable("Customers");
@@ -109,6 +130,9 @@ namespace DeliveryWebApp.WebUI.Migrations
                     b.Property<DateTime>("Date")
                         .HasColumnType("datetime2");
 
+                    b.Property<DateTime?>("DeliveryDate")
+                        .HasColumnType("datetime2");
+
                     b.Property<int>("RestaurantId")
                         .HasColumnType("int");
 
@@ -119,8 +143,9 @@ namespace DeliveryWebApp.WebUI.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<double>("TotalPrice")
-                        .HasColumnType("float");
+                    b.Property<decimal>("TotalPrice")
+                        .HasPrecision(19, 4)
+                        .HasColumnType("Money");
 
                     b.HasKey("Id");
 
@@ -153,18 +178,20 @@ namespace DeliveryWebApp.WebUI.Migrations
                         .HasColumnType("varbinary(max)");
 
                     b.Property<string>("Name")
+                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<int?>("OrderId")
                         .HasColumnType("int");
 
-                    b.Property<double>("Price")
-                        .HasColumnType("float");
+                    b.Property<decimal>("Price")
+                        .HasPrecision(19, 4)
+                        .HasColumnType("Money");
 
                     b.Property<int>("Quantity")
                         .HasColumnType("int");
 
-                    b.Property<int?>("RestaurantId")
+                    b.Property<int>("RestaurantId")
                         .HasColumnType("int");
 
                     b.HasKey("Id");
@@ -284,7 +311,7 @@ namespace DeliveryWebApp.WebUI.Migrations
 
                     b.HasIndex("RestaurateurId");
 
-                    b.ToTable("Review");
+                    b.ToTable("Reviews");
                 });
 
             modelBuilder.Entity("DeliveryWebApp.Domain.Entities.Rider", b =>
@@ -297,8 +324,9 @@ namespace DeliveryWebApp.WebUI.Migrations
                     b.Property<int>("CustomerId")
                         .HasColumnType("int");
 
-                    b.Property<double>("DeliveryCredit")
-                        .HasColumnType("float");
+                    b.Property<decimal>("DeliveryCredit")
+                        .HasPrecision(19, 4)
+                        .HasColumnType("Money");
 
                     b.HasKey("Id");
 
@@ -664,9 +692,13 @@ namespace DeliveryWebApp.WebUI.Migrations
                         .WithMany("Products")
                         .HasForeignKey("OrderId");
 
-                    b.HasOne("DeliveryWebApp.Domain.Entities.Restaurant", null)
+                    b.HasOne("DeliveryWebApp.Domain.Entities.Restaurant", "Restaurant")
                         .WithMany("Products")
-                        .HasForeignKey("RestaurantId");
+                        .HasForeignKey("RestaurantId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Restaurant");
                 });
 
             modelBuilder.Entity("DeliveryWebApp.Domain.Entities.Request", b =>

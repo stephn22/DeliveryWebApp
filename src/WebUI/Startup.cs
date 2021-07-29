@@ -2,16 +2,18 @@ using DeliveryWebApp.Application;
 using DeliveryWebApp.Application.Common.Interfaces;
 using DeliveryWebApp.Infrastructure;
 using DeliveryWebApp.Infrastructure.Persistence;
+using DeliveryWebApp.Infrastructure.Services;
 using DeliveryWebApp.WebUI.Services;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Localization;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using Newtonsoft.Json;
 using System.Collections.Generic;
 using System.Globalization;
-using DeliveryWebApp.Infrastructure.Services;
 
 namespace DeliveryWebApp.WebUI
 {
@@ -38,6 +40,9 @@ namespace DeliveryWebApp.WebUI
             services.AddHealthChecks()
                 .AddDbContextCheck<ApplicationDbContext>();
 
+            services.AddControllers()
+                .AddNewtonsoftJson(options => options.SerializerSettings.ReferenceLoopHandling = ReferenceLoopHandling.Serialize);
+
             services.AddLocalization(options =>
             {
                 options.ResourcesPath = Configuration.GetSection("ResourcePath").Value;
@@ -57,10 +62,15 @@ namespace DeliveryWebApp.WebUI
             });
 
             services.AddRazorPages()
+                .AddNewtonsoftJson(options => options.SerializerSettings.ReferenceLoopHandling = ReferenceLoopHandling.Serialize)
                 .AddViewLocalization()
                 .AddDataAnnotationsLocalization();
 
-            services.AddControllers();
+            // Customise default API behaviour
+            services.Configure<ApiBehaviorOptions>(options =>
+            {
+                options.SuppressModelStateInvalidFilter = true;
+            });
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

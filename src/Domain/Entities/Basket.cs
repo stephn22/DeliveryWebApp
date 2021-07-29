@@ -10,7 +10,7 @@ namespace DeliveryWebApp.Domain.Entities
     {
         public ICollection<Product> Products { get; set; }
 
-        public double TotalPrice { get; set; }
+        public decimal TotalPrice { get; set; }
 
         public int CustomerId { get; set; }
         public virtual Customer Customer { get; set; }

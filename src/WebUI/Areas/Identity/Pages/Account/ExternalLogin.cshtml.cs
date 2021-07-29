@@ -154,12 +154,8 @@ namespace DeliveryWebApp.WebUI.Areas.Identity.Pages.Account
                     {
                         _logger.LogInformation("SendGridUser created an account using {Name} provider.", info.LoginProvider);
 
-                        await _userManager.AddClaimsAsync(user, new[]
-                        {
-                            new Claim(ClaimName.FName, Input.FName),
-                            new Claim(ClaimName.LName, Input.LName),
-                            new Claim(ClaimName.Role, RoleName.Default)
-                        });
+                        // Claim - default user after registration
+                        await _userManager.AddClaimAsync(user, new Claim(ClaimName.Role, RoleName.Default));
 
                         var userId = await _userManager.GetUserIdAsync(user);
                         var code = await _userManager.GenerateEmailConfirmationTokenAsync(user);
@@ -180,7 +176,10 @@ namespace DeliveryWebApp.WebUI.Areas.Identity.Pages.Account
 
                             var customer = await _mediator.Send(new CreateCustomerCommand
                             {
-                                ApplicationUserFk = user.Id
+                                ApplicationUserFk = user.Id,
+                                Email = Input.Email,
+                                FirstName = Input.FName,
+                                LastName = Input.LName
                             });
 
                             _logger.LogInformation($"Created customer with id '{customer.Id}'.");

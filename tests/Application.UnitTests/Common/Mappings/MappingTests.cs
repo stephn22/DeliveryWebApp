@@ -1,48 +1,64 @@
 ﻿using AutoMapper;
-using DeliveryWebApp.Application.Common.Mappings;
-using DeliveryWebApp.Domain.Entities;
-using NUnit.Framework;
-using System;
-using System.Collections.Generic;
-using System.Runtime.Serialization;
+using DeliveryWebApp.Application.Addresses.Commands.CreateAddress;
+using DeliveryWebApp.Application.Addresses.Commands.UpdateAddress;
+using Shouldly;
+using Xunit;
 
 namespace DeliveryWebApp.Application.UnitTests.Common.Mappings
 {
-    public class MappingTests
+    public class MappingTests : IClassFixture<MappingTestsFixture>
     {
         private readonly IConfigurationProvider _configuration;
         private readonly IMapper _mapper;
 
-        public MappingTests()
+        public MappingTests(MappingTestsFixture fixture)
         {
-            _configuration = new MapperConfiguration(cfg => { cfg.AddProfile<MappingProfile>(); });
-
-            _mapper = _configuration.CreateMapper();
+            _configuration = fixture.ConfigurationProvider;
+            _mapper = fixture.Mapper;
         }
 
-        [Test]
+        [Fact]
         public void ShouldHaveValidConfiguration()
         {
             _configuration.AssertConfigurationIsValid();
         }
 
-        [Test]
-        [TestCase(typeof(Product), typeof(Product))]
-        [TestCase(typeof(Product), typeof(Product))]
-        public void ShouldSupportMappingFromSourceToDestination(Type source, Type destination)
+        [Fact]
+        public void ShouldMapAddressToCreateAddressCommand()
         {
-            var instance = GetInstanceOf(source);
+            var entity = new CreateAddressCommand
+            {
+                AddressLine1 = "Via Verdi",
+                AddressLine2 = "",
+                City = "Milan",
+                Country = "Italy",
+                Number = "12",
+                PostalCode = "20090"
+            };
 
-            _mapper.Map(instance, source, destination);
+            var result = _mapper.Map<CreateAddressCommand>(entity);
+
+            result.ShouldNotBeNull();
+            result.ShouldBeOfType<CreateAddressCommand>();
         }
 
-        private object GetInstanceOf(Type type)
+        [Fact]
+        public void ShouldMapAddressToUpdateAddressCommand()
         {
-            return type.GetConstructor(Type.EmptyTypes) != null
-                ? Activator.CreateInstance(type)
-                : FormatterServices.GetUninitializedObject(type);
+            var entity = new UpdateAddressCommand
+            {
+                AddressLine1 = "Via Alessandro Manzoni", // new data
+                AddressLine2 = "",
+                City = "Milan",
+                Country = "Italy",
+                Number = "21", // new data
+                PostalCode = "20090"
+            };
 
-            // Type without parameterless constructor
+            var result = _mapper.Map<UpdateAddressCommand>(entity);
+
+            result.ShouldNotBeNull();
+            result.ShouldBeOfType<UpdateAddressCommand>();
         }
     }
 }

@@ -23,6 +23,8 @@ using System.ComponentModel.DataAnnotations;
 using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
+using DeliveryWebApp.Application.Addresses.Commands.UpdateAddress;
+using Microsoft.EntityFrameworkCore;
 
 namespace DeliveryWebApp.WebUI.Pages.RestaurateurPages
 {
@@ -105,7 +107,15 @@ namespace DeliveryWebApp.WebUI.Pages.RestaurateurPages
             [Display(Name = "Postal Code")]
             public string PostalCode { get; set; }
 
+            [Required]
+            [DataType((DataType.Text))]
+            [Display(Name = "State/Province")]
+            public string StateProvince { get; set; }
+
             [Required] [DataType(DataType.Text)] public string Country { get; set; }
+
+            public decimal Longitude { get; set; }
+            public decimal Latitude { get; set; }
 
             /*********************************************/
         }
@@ -129,7 +139,7 @@ namespace DeliveryWebApp.WebUI.Pages.RestaurateurPages
             }
         }
 
-        public async Task<IActionResult> OnGetAsync()
+        public async Task<IActionResult> OnGetAsync(string sortOrder)
         {
             var user = await _userManager.GetUserAsync(User);
 
@@ -151,6 +161,11 @@ namespace DeliveryWebApp.WebUI.Pages.RestaurateurPages
         public async Task<IActionResult> OnPostNewNameAsync(int id)
         {
             var user = await _userManager.GetUserAsync(User);
+
+            if (user == null)
+            {
+                return NotFound($"Unable to load user with ID '{_userManager.GetUserId(User)}'.");
+            }
 
             await LoadAsync(user);
 
@@ -177,13 +192,12 @@ namespace DeliveryWebApp.WebUI.Pages.RestaurateurPages
         {
             var user = await _userManager.GetUserAsync(User);
 
-            await LoadAsync(user);
-
-            // if no category is selected
-            if (Categories.First(c => c.Value == "").Selected)
+            if (user == null)
             {
-                return Page();
+                return NotFound();
             }
+
+            await LoadAsync(user);
 
             try
             {
@@ -206,50 +220,76 @@ namespace DeliveryWebApp.WebUI.Pages.RestaurateurPages
 
         public async Task<IActionResult> OnPostUploadNewImageAsync()
         {
-            if (Input?.Logo != null)
-            {
-                var user = await _userManager.GetUserAsync(User);
+            if (Input?.Logo == null) return Page();
 
-                await LoadAsync(user);
-
-                byte[] bytes;
-
-                await using var fileStream = Input.Logo.OpenReadStream();
-                await using (var memoryStream = new MemoryStream())
-                {
-                    await fileStream.CopyToAsync(memoryStream);
-                    bytes = memoryStream.ToArray();
-                }
-
-                await _mediator.Send(new UpdateRestaurantCommand
-                {
-                    Id = Restaurant.Id,
-                    Logo = bytes
-                });
-
-                StatusMessage =
-                    "Your restaurant picture has been updated. It may take a few moments to update across the site.";
-
-            }
-            return Page();
-        }
-
-        public async Task<IActionResult> OnPostNewRestaurantAsync()
-        {
             var user = await _userManager.GetUserAsync(User);
+
+            if (user == null)
+            {
+                return NotFound($"Unable to load user with ID '{_userManager.GetUserId(User)}'.");
+            }
 
             await LoadAsync(user);
 
-            if (!ModelState.IsValid)
+            byte[] bytes;
+
+            await using var fileStream = Input.Logo.OpenReadStream();
+            await using (var memoryStream = new MemoryStream())
             {
-                await LoadAsync(user);
-                return Page();
+                await fileStream.CopyToAsync(memoryStream);
+                bytes = memoryStream.ToArray();
             }
 
-            if (Input.Logo.Length <= 0)
+            await _mediator.Send(new UpdateRestaurantCommand
             {
-                return Page();
+                Id = Restaurant.Id,
+                Logo = bytes
+            });
+
+            StatusMessage =
+                "Your restaurant picture has been updated. It may take a few moments to update across the site.";
+            return Page();
+        }
+
+        public async Task<IActionResult> OnPostUpdateAddressAsync()
+        {
+            var user = await _userManager.GetUserAsync(User);
+
+            if (user == null)
+            {
+                return NotFound($"Unable to load user with ID '{_userManager.GetUserId(User)}'.");
             }
+
+            await LoadAsync(user);
+
+
+            await _mediator.Send(new UpdateAddressCommand
+            {
+                Id = RestaurantAddress.Id,
+                AddressLine1 = Input.AddressLine1,
+                AddressLine2 = Input.AddressLine2,
+                City = Input.City,
+                Country = Input.Country,
+                StateProvince = Input.StateProvince,
+                Number = Input.Number,
+                PostalCode = Input.PostalCode,
+                Latitude = Input.Latitude,
+                Longitude = Input.Longitude
+            });
+
+            return Page();
+        }
+
+        public async Task<IActionResult> OnPostAsync()
+        {
+            var user = await _userManager.GetUserAsync(User);
+
+            if (user == null)
+            {
+                return NotFound();
+            }
+
+            await LoadAsync(user);
 
             byte[] bytes;
 
@@ -266,8 +306,11 @@ namespace DeliveryWebApp.WebUI.Pages.RestaurateurPages
                 AddressLine2 = Input.AddressLine2,
                 City = Input.City,
                 Country = Input.Country,
+                StateProvince = Input.StateProvince,
                 Number = Input.Number,
-                PostalCode = Input.PostalCode
+                PostalCode = Input.PostalCode,
+                Latitude = Input.Latitude,
+                Longitude = Input.Longitude
             };
 
             // insert new restaurant in context

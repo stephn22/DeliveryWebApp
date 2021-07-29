@@ -18,13 +18,14 @@ using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Threading.Tasks;
 using DeliveryWebApp.Application.Addresses.Commands.CreateAddress;
+using DeliveryWebApp.Application.Addresses.Commands.DeleteAddress;
 using DeliveryWebApp.Application.Addresses.Commands.UpdateAddress;
 using DeliveryWebApp.Application.Customers.Commands.UpdateCustomer;
 
 namespace DeliveryWebApp.WebUI.Areas.Identity.Pages.Account.Manage
 {
     [Authorize(Policy = PolicyName.IsCustomer)]
-    public class AddressModel : PageModel
+    public partial class AddressModel : PageModel
     {
         private readonly UserManager<ApplicationUser> _userManager;
         private readonly ILogger<AddressModel> _logger;
@@ -45,6 +46,8 @@ namespace DeliveryWebApp.WebUI.Areas.Identity.Pages.Account.Manage
         [BindProperty] public InputModel Input { get; set; }
 
         public List<Address> Addresses { get; set; }
+
+        public Customer Customer { get; set; }
 
         public SelectList Countries => new(Utilities.CountryList(), "Key", "Value");
 
@@ -76,7 +79,13 @@ namespace DeliveryWebApp.WebUI.Areas.Identity.Pages.Account.Manage
 
             [Required]
             [DataType(DataType.Text)]
-            public string Country { get; set; }
+            [Display(Name = "State/Province")]
+            public string StateProvince { get; set; }
+
+            [Required] [DataType(DataType.Text)] public string Country { get; set; }
+
+            public decimal Latitude { get; set; }
+            public decimal Longitude { get; set; }
         }
 
         public async Task<IActionResult> OnGetAsync()
@@ -87,11 +96,12 @@ namespace DeliveryWebApp.WebUI.Areas.Identity.Pages.Account.Manage
                 return NotFound($"Unable to load user with ID '{_userManager.GetUserId(User)}'.");
             }
 
+            Customer = await _context.Customers.Where(c => c.ApplicationUserFk == user.Id).FirstAsync();
+
             await LoadAddressesAsync(user);
             return Page();
         }
-
-        public async Task<IActionResult> OnPostUpdateAddressAsync(int id)
+        public async Task<IActionResult> OnPostDeleteAddressAsync(int id)
         {
             var user = await _userManager.GetUserAsync(User);
             if (user == null)
@@ -100,11 +110,69 @@ namespace DeliveryWebApp.WebUI.Areas.Identity.Pages.Account.Manage
                 return NotFound();
             }
 
-            if (!ModelState.IsValid)
+            Customer = await _context.Customers.Where(c => c.ApplicationUserFk == user.Id).FirstAsync();
+
+            await _mediator.Send(new DeleteAddressCommand
+            {
+                Id = id
+            });
+
+            _logger.LogInformation($"Deleted address with id '{id}'.");
+            StatusMessage = "Your address has been deleted";
+
+            return RedirectToPage();
+        }
+
+        public async Task<IActionResult> OnPost()
+        {
+            var user = await _userManager.GetUserAsync(User);
+
+            if (user != null)
             {
                 await LoadAddressesAsync(user);
                 return Page();
             }
+
+            if (!ModelState.IsValid)
+            {
+                return BadRequest();
+            }
+
+            Customer = await _context.Customers.Where(c => c.ApplicationUserFk == user.Id).FirstAsync();
+
+            await _mediator.Send(new CreateAddressCommand
+            {
+                CustomerId = Customer.Id,
+                Customer = Customer,
+                AddressLine1 = Input.AddressLine1,
+                AddressLine2 = Input.AddressLine2,
+                City = Input.City,
+                Country = Input.Country,
+                Latitude = Input.Latitude,
+                Longitude = Input.Longitude,
+                Number = Input.Number,
+                PostalCode = Input.PostalCode,
+            });
+
+            return RedirectToPage();
+        }
+
+        public async Task<IActionResult> OnPostUpdateAddressAsync(int id)
+        {
+            var user = await _userManager.GetUserAsync(User);
+
+            if (user == null)
+            {
+                await LoadAddressesAsync(user);
+                return Page();
+            }
+
+            if (!ModelState.IsValid)
+            {
+                return BadRequest();
+            }
+
+            Customer = await _context.Customers.Where(c => c.ApplicationUserFk == user.Id).FirstAsync();
 
             await _mediator.Send(new UpdateAddressCommand
             {
@@ -113,69 +181,24 @@ namespace DeliveryWebApp.WebUI.Areas.Identity.Pages.Account.Manage
                 AddressLine2 = Input.AddressLine2,
                 City = Input.City,
                 Country = Input.Country,
+                Latitude = Input.Latitude,
+                Longitude = Input.Longitude,
                 Number = Input.Number,
-                PostalCode = Input.PostalCode
+                PostalCode = Input.PostalCode,
+                StateProvince = Input.StateProvince
             });
 
-            _logger.LogInformation($"Updated address with id '{id}'.");
-            StatusMessage = "Your address has been updated";
-
-            return RedirectToPage();
-        }
-
-        /// <summary>
-        /// Called when customer add new address for the first time
-        /// </summary>
-        /// <returns></returns>
-        public async Task<IActionResult> OnPostAsync()
-        {
-            var user = await _userManager.GetUserAsync(User);
-            if (user == null)
-            {
-                _logger.LogError($"Unable to load user with ID '{_userManager.GetUserId(User)}'.");
-                return NotFound();
-            }
-
-            if (!ModelState.IsValid)
-            {
-                await LoadAddressesAsync(user);
-                return Page();
-            }
-
-            var customer = await (from c in _context.Customers
-                where c.ApplicationUserFk == user.Id
-                select c).FirstAsync();
-
-            var address = new Address
-            {
-                AddressLine1 = Input.AddressLine1,
-                AddressLine2 = Input.AddressLine2,
-                City = Input.City,
-                Country = Input.Country,
-                Number = Input.Number,
-                PostalCode = Input.PostalCode
-            };
-
-            await _mediator.Send(new UpdateCustomerCommand
-            {
-                Id = customer.Id,
-                Address = address
-            });
-
-            StatusMessage = "Your address has been updated";
             return RedirectToPage();
         }
 
         private async Task LoadAddressesAsync(ApplicationUser user)
-        {
-            var customer = await (from c in _context.Customers
-                                   where c.ApplicationUserFk == user.Id
-                                   select c).FirstAsync();
-
-            Addresses = await _mediator.Send(new GetAddressesQuery
             {
-                CustomerId = customer.Id
-            });
+                Customer = await _context.Customers.Where(c => c.ApplicationUserFk == user.Id).FirstAsync();
+
+                Addresses = await _mediator.Send(new GetAddressesQuery
+                {
+                    CustomerId = Customer.Id
+                });
+            }
         }
-    }
 }

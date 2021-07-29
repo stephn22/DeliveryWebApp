@@ -11,22 +11,21 @@ using MediatR;
 
 namespace DeliveryWebApp.Application.Addresses.Commands.UpdateAddress
 {
-    public class UpdateAddressCommand : IRequest
+    public class UpdateAddressCommand : IRequest<Address>
     {
-        /// <summary>
-        /// Address id
-        /// </summary>
         public int Id { get; set; }
-
         public string AddressLine1 { get; set; }
         public string AddressLine2 { get; set; }
         public string Number { get; set; }
         public string City { get; set; }
+        public string StateProvince { get; set; }
         public string PostalCode { get; set; }
         public string Country { get; set; }
+        public decimal Longitude { get; set; }
+        public decimal Latitude { get; set; }
     }
 
-    public class UpdateAddressCommandHandler : IRequestHandler<UpdateAddressCommand>
+    public class UpdateAddressCommandHandler : IRequestHandler<UpdateAddressCommand, Address>
     {
         private readonly IApplicationDbContext _context;
 
@@ -35,7 +34,7 @@ namespace DeliveryWebApp.Application.Addresses.Commands.UpdateAddress
             _context = context;
         }
 
-        public async Task<Unit> Handle(UpdateAddressCommand request, CancellationToken cancellationToken)
+        public async Task<Address> Handle(UpdateAddressCommand request, CancellationToken cancellationToken)
         {
             var entity = await _context.Addresses.FindAsync(request.Id);
 
@@ -44,39 +43,19 @@ namespace DeliveryWebApp.Application.Addresses.Commands.UpdateAddress
                 throw new NotFoundException(nameof(Address), request.Id);
             }
 
-            if (request.AddressLine1 != null)
-            {
-                entity.AddressLine1 = request.AddressLine1;
-            }
-
-            if (request.AddressLine2 != null)
-            {
-                entity.AddressLine2 = request.AddressLine2;
-            }
-
-            if (request.Number != null)
-            {
-                entity.Number = request.Number;
-            }
-
-            if (request.City != null)
-            {
-                entity.City = request.City;
-            }
-
-            if (request.PostalCode != null)
-            {
-                entity.PostalCode = request.PostalCode;
-            }
-
-            if (request.Country != null)
-            {
-                entity.Country = request.Country;
-            }
+            entity.AddressLine1 = request.AddressLine1;
+            entity.AddressLine2 = request.AddressLine2;
+            entity.Number = request.Number;
+            entity.City = request.City;
+            entity.PostalCode = request.PostalCode;
+            entity.StateProvince = request.StateProvince;
+            entity.Country = request.Country;
+            entity.Latitude = request.Latitude;
+            entity.Longitude = request.Longitude;
 
             await _context.SaveChangesAsync(cancellationToken);
 
-            return Unit.Value;
+            return entity;
         }
     }
 }

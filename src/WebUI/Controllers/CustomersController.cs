@@ -8,12 +8,15 @@ using MediatR;
 using Microsoft.AspNetCore.Mvc;
 using System.Collections.Generic;
 using System.Threading.Tasks;
+using DeliveryWebApp.Application.Common.Security;
+using Newtonsoft.Json.Linq;
 
 namespace DeliveryWebApp.WebUI.Controllers
 {
+    [Authorize]
     [Route("api/[controller]")]
     [ApiController]
-    public class CustomersController : Controller
+    public class CustomersController : ControllerBase
     {
         private readonly IMediator _mediator;
         private readonly IMapper _mapper;

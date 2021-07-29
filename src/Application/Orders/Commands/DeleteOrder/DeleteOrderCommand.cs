@@ -11,12 +11,12 @@ using MediatR;
 
 namespace DeliveryWebApp.Application.Orders.Commands.DeleteOrder
 {
-    public class DeleteOrderCommand : IRequest
+    public class DeleteOrderCommand : IRequest<Order>
     {
         public int Id { get; set; }
     }
 
-    public class DeleteOrderCommandHandler : IRequestHandler<DeleteOrderCommand>
+    public class DeleteOrderCommandHandler : IRequestHandler<DeleteOrderCommand, Order>
     {
         private readonly IApplicationDbContext _context;
 
@@ -25,7 +25,7 @@ namespace DeliveryWebApp.Application.Orders.Commands.DeleteOrder
             _context = context;
         }
 
-        public async Task<Unit> Handle(DeleteOrderCommand request, CancellationToken cancellationToken)
+        public async Task<Order> Handle(DeleteOrderCommand request, CancellationToken cancellationToken)
         {
             var entity = await _context.Orders.FindAsync(request.Id);
 
@@ -38,7 +38,7 @@ namespace DeliveryWebApp.Application.Orders.Commands.DeleteOrder
 
             await _context.SaveChangesAsync(cancellationToken);
 
-            return Unit.Value;
+            return entity;
         }
     }
 }

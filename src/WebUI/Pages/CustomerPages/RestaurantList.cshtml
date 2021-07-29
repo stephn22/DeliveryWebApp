@@ -15,14 +15,188 @@
 @section Head
 {
     <link rel="stylesheet" href="~/css/images.css"/>
-    <link type="text/css" rel="stylesheet" href="~/lib/jsgrid-1.5.3/jsgrid.min.css"/>
-    <link type="text/css" rel="stylesheet" href="~/lib/jsgrid-1.5.3/jsgrid-theme.min.css"/>
+    <link rel="stylesheet" href="https://api.mapbox.com/mapbox-gl-js/plugins/mapbox-gl-geocoder/v4.7.0/mapbox-gl-geocoder.css" type="text/css"/>
+    <link href="https://api.tiles.mapbox.com/mapbox-gl-js/v2.3.1/mapbox-gl.css" rel="stylesheet"/>
 
     <style type="text/css">
         .square {
             height: 80px;
             width: 80px;
         }
+
+        body {
+            color: #404040;
+            font: 400 15px/22px 'Source Sans Pro', 'Helvetica Neue', Sans-serif;
+            margin: 0;
+            padding: 0;
+            -webkit-font-smoothing: antialiased;
+        }
+
+        * {
+            -webkit-box-sizing: border-box;
+            -moz-box-sizing: border-box;
+            box-sizing: border-box;
+        }
+
+        .sidebar {
+            position: absolute;
+            width: 33.3333%;
+            height: 100%;
+            top: 0;
+            left: 0;
+            overflow: hidden;
+            border-right: 1px solid rgba(0, 0, 0, 0.25);
+        }
+
+        .pad2 { padding: 20px; }
+
+        .mapboxgl-ctrl-geocoder {
+            border: 0;
+            border-radius: 0;
+            position: relative;
+            top: 0;
+            width: 800px;
+            margin-top: 0;
+        }
+
+        .mapboxgl-ctrl-geocoder > div {
+            min-width: 100%;
+            margin-left: 0;
+        }
+
+        .map {
+            position: absolute;
+            left: 33.3333%;
+            width: 66.6666%;
+            top: 0;
+            bottom: 0;
+        }
+
+        h1 {
+            font-size: 22px;
+            margin: 0;
+            font-weight: 400;
+            line-height: 20px;
+            padding: 20px 2px;
+        }
+
+        a {
+            color: #404040;
+            text-decoration: none;
+        }
+
+        a:hover { color: #101010; }
+
+        .heading {
+            background: #fff;
+            border-bottom: 1px solid #eee;
+            min-height: 60px;
+            line-height: 60px;
+            padding: 0 10px;
+            background-color: #00853e;
+            color: #fff;
+        }
+
+        .listings {
+            height: 100%;
+            overflow: auto;
+            padding-bottom: 60px;
+        }
+
+        .listings .item {
+            display: block;
+            border-bottom: 1px solid #eee;
+            padding: 10px;
+            text-decoration: none;
+        }
+
+        .listings .item:last-child { border-bottom: none; }
+
+        .listings .item .title {
+            display: block;
+            color: #00853e;
+            font-weight: 700;
+        }
+
+        .listings .item .title small { font-weight: 400; }
+
+        .listings .item.active .title,
+        .listings .item .title:hover { color: #8cc63f; }
+
+        .listings .item.active { background-color: #f8f8f8; }
+
+        ::-webkit-scrollbar {
+            width: 3px;
+            height: 3px;
+            border-left: 0;
+            background: rgba(0, 0, 0, 0.1);
+        }
+
+        ::-webkit-scrollbar-track { background: none; }
+
+        ::-webkit-scrollbar-thumb {
+            background: #00853e;
+            border-radius: 0;
+        }
+
+        .marker {
+            border: none;
+            cursor: pointer;
+            height: 56px;
+            width: 56px;
+            background-image: url('./img/marker.png');
+            background-color: rgba(0, 0, 0, 0);
+        }
+
+        .clearfix { display: block; }
+
+        .clearfix:after {
+            content: '.';
+            display: block;
+            height: 0;
+            clear: both;
+            visibility: hidden;
+        }
+
+        /* Marker tweaks */
+
+        .mapboxgl-popup { padding-bottom: 50px; }
+
+        .mapboxgl-popup-close-button { display: none; }
+
+        .mapboxgl-popup-content {
+            font: 400 15px/22px 'Source Sans Pro', 'Helvetica Neue', Sans-serif;
+            padding: 0;
+            width: 180px;
+        }
+
+        .mapboxgl-popup-content-wrapper { padding: 1%; }
+
+        .mapboxgl-popup-content h3 {
+            background: #91c949;
+            color: #fff;
+            margin: 0;
+            display: block;
+            padding: 10px;
+            border-radius: 3px 3px 0 0;
+            font-weight: 700;
+            margin-top: -15px;
+        }
+
+        .mapboxgl-popup-content h4 {
+            margin: 0;
+            display: block;
+            padding: 10px 10px 10px 10px;
+            font-weight: 400;
+        }
+
+        .mapboxgl-popup-content div { padding: 10px; }
+
+        .mapboxgl-container .leaflet-marker-icon { cursor: pointer; }
+
+        .mapboxgl-popup-anchor-top > .mapboxgl-popup-content { margin-top: 15px; }
+
+        .mapboxgl-popup-anchor-top > .mapboxgl-popup-tip { border-bottom-color: #91c949; }
     </style>
 }
 
@@ -44,55 +218,253 @@ else
     }
     else
     {
-        <div id="jsGrid"></div>
+        <div class="sidebar">
+            <div class="heading">
+                <h1>Browse food vendors</h1>
+            </div>
+            <div id="listings" class="listings"></div>
+        </div>
+        <div id="map" class="map"></div>
 
-    @section Scripts
-    {
-        <script defer="" type="text/javascript" src="~/lib/jsgrid-1.5.3/jsgrid.min.js"></script>
+@section Scripts
+{
+    @* Geocoder plugin *@
+    <script src="https://api.mapbox.com/mapbox-gl-js/plugins/mapbox-gl-geocoder/v4.7.0/mapbox-gl-geocoder.min.js"></script>
+    <script src="https://api.tiles.mapbox.com/mapbox-gl-js/v2.3.1/mapbox-gl.js"></script>
 
-        <script type="text/javascript">
-            $(function() {
+    @* Turf.js plugin *@
+    <script src="https://npmcdn.com/@@turf/turf/turf.min.js"></script>
 
-                $("#jsGrid").jsGrid({
-                    height: "50%",
-                    width: "100%",
+    <script defer async type="text/javascript">
 
-                    filtering: true,
-                    inserting: false,
-                    editing: false,
-                    sorting: true,
-                    paging: true,
-                    autoload: true,
+        $(function() {
+            if (!('remove' in Element.prototype)) {
+                Element.prototype.remove = function() {
+                    if (this.parentNode) {
+                        this.parentNode.removeChild(this);
+                    }
+                };
+            }
 
-                    pageSize: 10,
-                    pageButtonCount: 5,
+            mapboxgl.accessToken = 'pk.eyJ1Ijoic3RlY3JvdHRpMSIsImEiOiJja3Bna2kzbHYyaThoMm9ueHl1dzlnaTc1In0.EpALSOaDOmuM8XGS_IQzvA';
 
-                    controller: {
-                        loadData: function(filter) {
-                            return $.ajax({
-                                type: "GET",
-                                url: "/api/restaurants",
-                                data: filter,
-                                dataType: "json",
-                                success: function() {
-                                    console.log("Data received with success");
+            $.ajax({
+                type: "GET", // get restaurants
+                url: "/api/restaurants",
+                dataType: "JSON",
+                contentType: "application/json; charset=utf-8",
+                success: function(data, status, xhr) {
+                    navigator.geolocation.getCurrentPosition(showMap);
+
+                    // TODO
+
+                    let stores = {
+                        "type": "FeatureCollection",
+                        "features": []
+                    }
+
+                    for (let i = 0; i < data.length; i++) {
+                        let addr = getRestaurantAddress(data[i].addressId);
+
+                        stores.add["features"] = [
+                            {
+                                "type": "Feature",
+                                "geometry": {
+                                    "type": "Point",
+                                    "coordinates": [addr.longitude, addr.latitude]
                                 },
-                                error: function() {
-                                    console.log("Error receiving data");
+                                "properties": {
+                                    "address": `${addr.addressLine1}, ${addr.number}`,
+                                    "city": addr.city,
+                                    "country": addr.country,
+                                    "postalCode": addr.postalCode,
+                                    "state": addr.stateProvince
                                 }
+                            }
+                        ];
+                    }
+
+                    function showMap(center) {
+                        const map = new mapboxgl.Map({
+                            container: 'map',
+                            style: 'mapbox://styles/mapbox/streets-v11',
+                            center: [center.coords.longitude, center.coords.latitude],
+                            zoom: 12,
+                            scrollZoom: false
+                        });
+
+                        map.on('load',
+                            function(e) {
+
+                                map.addSource('places',
+                                    {
+                                        'type': 'geojson',
+                                        'data': stores
+                                    });
+
+                                const geocoder = new MapboxGeocoder({
+                                    accessToken: mapboxgl.accessToken,
+                                    mapboxgl: mapboxgl,
+                                    marker: true,
+                                    bbox: [-77.210763, 38.803367, -76.853675, 39.052643]
+                                });
+
+                                map.addControl(geocoder, 'top-left');
+
+                                geocoder.on('result',
+                                    function(ev) {
+                                        const searchResult = ev.result.geometry;
+                                    });
                             });
-                        }
-                    },
+                    }
 
-                    fields: [
-                        { name: "name", type: "text", width: 150, title: "Name"},
-                        { category: "category", type: "text", width: 150, title: "Category" }
-                    ]
-                });
+                    function buildLocationList(data) {
+                        data.features.forEach(function(store, i) {
+                            let prop = store.properties;
+
+                            let listings = document.getElementById("listings");
+
+                            let listing = listings.appendChild(document.createElement("div"));
+                            listing.id = `listing-${prop.id}`;
+                            listing.className = "item";
+
+                            let link = listing.appendChild(document.createElement("a"));
+                            link.href = "#";
+                            link.className = "title";
+                            link.id = `link-${prop.id}`;
+                            link.innerHTML = prop.address;
+
+                            let details = listing.appendChild(document.createElement("div"));
+                            details.innerHTML = prop.city;
+
+                            link.addEventListener("click",
+                                function(e) {
+                                    for (let i = 0; i < data.features.length; i++) {
+                                        if (this.id === `link-${data.features[i].properties.id}`) {
+                                            let clickedListing = data.features[i];
+                                            flyToStore(clickedListing);
+                                            createPopUp(clickedListing);
+                                        }
+                                    }
+
+                                    let activeItem = document.getElementsByClassName("active");
+                                    if (activeItem[0]) {
+                                        activeItem[0].classList.remove('active');
+                                    }
+                                    this.parentNode.classList.add('active');
+                                });
+                        });
+                    }
+
+                    function flyToStore(currentFeature) {
+                        map.flyTo({
+                            center: currentFeature.geometry.coordinates,
+                            zoom: 15
+                        });
+                    }
+
+                    function createPopUp(currentFeature) {
+                        var popUps = document.getElementsByClassName('mapboxgl-popup');
+                        if (popUps[0]) popUps[0].remove();
+                        var popup = new mapboxgl.Popup({ closeOnClick: false })
+                            .setLngLat(currentFeature.geometry.coordinates)
+                            .setHTML(
+                                '<h3>Sweetgreen</h3>' +
+                                '<h4>' +
+                                currentFeature.properties.address +
+                                '</h4>'
+                            )
+                            .addTo(map);
+                    }
+
+                    /**
+                     * Get address fo restaurant
+                     * @@param id addressId
+                     */
+                    function getRestaurantAddress(id) {
+                        $.ajax({
+                            type: "GET",
+                            url: `/api/restaurants/${id}`,
+                            dataType: "JSON",
+                            contentType: "application/json; charset=utf-8",
+                            success: function(data, status, xhr) {
+                                return {
+                                    addressLine1: data.addressLine1,
+                                    addressLine2: data.addressLine2,
+                                    number: data.number,
+                                    city: data.city,
+                                    postalCode: data.postalCode,
+                                    country: data.country,
+                                    stateProvince: data.stateProvince,
+                                    longitude: data.longitude,
+                                    latitude: data.latitude
+                                }
+                            },
+                            error: function() {
+                                console.log("Error");
+                            }
+                        });
+                    }
+                },
+                error: function() {
+                    console.log("Error");
+                }
             });
+        });
 
-        </script>
-    }
+    </script>
+}
 
+@*<table class="table">
+                <thead>
+                    <tr class="table-primary">
+                        <th>
+                            @Html.DisplayNameFor(model => model.Restaurants[0].Logo)
+                        </th>
+                        <th>
+                            <a asp-page="./RestaurantList" asp-route-sortOrder="@Model.NameSort">
+                                @Html.DisplayNameFor(model => model.Restaurants[0].Name)
+                            </a>
+                        </th>
+                        <th>
+                            <a asp-page="./RestaurantList" asp-route-sortOrder="@Model.CategorySort">
+                                @Html.DisplayNameFor(model => model.Restaurants[0].Category)
+                            </a>
+                        </th>
+                        <th>
+                            @Html.DisplayNameFor(model => model.Restaurants[0].Address)
+                        </th>
+                        <th>
+                            Distance
+                        </th>
+                        <th></th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var restaurant in Model.Restaurants)
+                    {
+                        <tr>
+                            <td>
+                                <img src="data:image/jpeg;base64,@Convert.ToBase64String(restaurant.Logo)" class="img-dashboard square img-fluid rounded" alt="restaurant_logo" height="40" width="40">
+                            </td>
+                            <td>
+                                @Html.DisplayFor(model => restaurant.Name)
+                            </td>
+                            <td>
+                                @Html.DisplayFor(model => restaurant.Category)
+                            </td>
+                            <td>
+                                @Html.DisplayFor(model => restaurant.Address)
+                            </td>
+                            <td>
+
+                            </td>
+                            <td>
+                                <a asp-page="/CustomerPages/RestaurantDetail" asp-route-id="@restaurant.Id">Details</a>
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>*@
     }
 }

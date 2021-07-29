@@ -22,6 +22,8 @@ namespace DeliveryWebApp.Infrastructure.Persistence.Configurations
             //    .HasForeignKey<Customer>(u => u.Id);
 
             builder.Property(r => r.DeliveryCredit)
+                .HasPrecision(19, 4)
+                .HasColumnType(PropertyName.Money)
                 .IsRequired();
 
             //builder.HasMany(u => u.OpenOrders)

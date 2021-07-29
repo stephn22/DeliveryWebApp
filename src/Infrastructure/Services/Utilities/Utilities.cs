@@ -31,36 +31,6 @@ namespace DeliveryWebApp.Infrastructure.Services.Utilities
             return c;
         }
 
-        public static async Task<string> GetFNameAsync(this ApplicationUser user,
-            UserManager<ApplicationUser> userManager)
-        {
-            if (user == null)
-            {
-                return "";
-            }
-
-            var fName = (from claim in await userManager.GetClaimsAsync(user)
-                         where claim.Type == ClaimName.FName
-                         select claim.Value).First();
-
-            return fName;
-        }
-
-        public static async Task<string> GetLNameAsync(this ApplicationUser user,
-            UserManager<ApplicationUser> userManager)
-        {
-            if (user == null)
-            {
-                return "";
-            }
-
-            var lName = (from claim in await userManager.GetClaimsAsync(user)
-                         where claim.Type == ClaimName.LName
-                         select claim.Value).First();
-
-            return lName;
-        }
-
         public static async Task BlockUser(this UserManager<ApplicationUser> userManager, ApplicationUser user)
         {
             var lockoutEndDate = new DateTime(2999, 01, 01);

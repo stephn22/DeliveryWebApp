@@ -11,18 +11,18 @@ using MediatR;
 
 namespace DeliveryWebApp.Application.Products.Commands.UpdateProducts
 {
-    public class UpdateProductCommand : IRequest
+    public class UpdateProductCommand : IRequest<Product>
     {
         public int Id { get; set; }
         public int? Discount { get; set; }
         public int? Quantity { get; set; }
-        public double? Price { get; set; }
+        public decimal? Price { get; set; }
         public string Name { get; set; }
         public string Category { get; set; }
         public byte[] Image { get; set; }
     }
 
-    public class UpdateProductCommandHandler : IRequestHandler<UpdateProductCommand>
+    public class UpdateProductCommandHandler : IRequestHandler<UpdateProductCommand, Product>
     {
         private readonly IApplicationDbContext _context;
 
@@ -31,7 +31,7 @@ namespace DeliveryWebApp.Application.Products.Commands.UpdateProducts
             _context = context;
         }
 
-        public async Task<Unit> Handle(UpdateProductCommand request, CancellationToken cancellationToken)
+        public async Task<Product> Handle(UpdateProductCommand request, CancellationToken cancellationToken)
         {
             var entity = await _context.Products.FindAsync(request.Id);
 
@@ -52,15 +52,15 @@ namespace DeliveryWebApp.Application.Products.Commands.UpdateProducts
 
             if (request.Price != null)
             {
-                entity.Price = (double) request.Price;
+                entity.Price = (decimal) request.Price;
             }
 
-            if (request.Category != null)
+            if (!string.IsNullOrEmpty(request.Category))
             {
                 entity.Category = request.Category;
             }
 
-            if (request.Name != null)
+            if (!string.IsNullOrEmpty(request.Name))
             {
                 entity.Name = request.Name;
             }
@@ -72,7 +72,7 @@ namespace DeliveryWebApp.Application.Products.Commands.UpdateProducts
 
             await _context.SaveChangesAsync(cancellationToken);
 
-            return Unit.Value;
+            return entity;
         }
     }
 }

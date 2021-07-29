@@ -11,13 +11,12 @@ using MediatR;
 
 namespace DeliveryWebApp.Application.Customers.Commands.UpdateCustomer
 {
-    /// <summary>
-    /// Called when customer add address(es) for the first time
-    /// </summary>
     public class UpdateCustomerCommand : IRequest<Customer>
     {
         public int Id { get; set; }
-        public Address Address { get; set; }
+        public string Fname { get; set; }
+        public string LName { get; set; }
+        public string Email { get; set; }
     }
 
     public class UpdateCustomerCommandHandler : IRequestHandler<UpdateCustomerCommand, Customer>
@@ -37,9 +36,21 @@ namespace DeliveryWebApp.Application.Customers.Commands.UpdateCustomer
             {
                 throw new NotFoundException(nameof(Customer), request.Id);
             }
-            // if Addresses is null instantiate a new list
-            entity.Addresses ??= new List<Address>();
-            entity.Addresses.Add(request.Address);
+
+            if (!string.IsNullOrEmpty(request.Email))
+            {
+                entity.Email = request.Email;
+            }
+
+            if (!string.IsNullOrEmpty(request.Fname))
+            {
+                entity.FirstName = request.Fname;
+            }
+
+            if (!string.IsNullOrEmpty(request.LName))
+            {
+                entity.LastName = request.LName;
+            }
 
             await _context.SaveChangesAsync(cancellationToken);
 

@@ -106,14 +106,8 @@ namespace DeliveryWebApp.WebUI.Areas.Identity.Pages.Account
                 {
                     _logger.LogInformation("User created a new account with password.");
 
-                    // Claims
-
-                    await _userManager.AddClaimsAsync(user, new[]
-                    {
-                        new Claim(ClaimName.FName, Input.FName),
-                        new Claim(ClaimName.LName, Input.LName),
-                        new Claim(ClaimName.Role, RoleName.Default) // default user after registration
-                    });
+                    // Claim - default user after registration
+                    await _userManager.AddClaimAsync(user, new Claim(ClaimName.Role, RoleName.Default));
 
                     var code = await _userManager.GenerateEmailConfirmationTokenAsync(user);
                     code = WebEncoders.Base64UrlEncode(Encoding.UTF8.GetBytes(code));
@@ -131,7 +125,10 @@ namespace DeliveryWebApp.WebUI.Areas.Identity.Pages.Account
                         // add to Customers table
                         var customer = await _mediator.Send(new CreateCustomerCommand
                         {
-                            ApplicationUserFk = user.Id
+                            ApplicationUserFk = user.Id,
+                            Email = Input.Email,
+                            FirstName = Input.FName,
+                            LastName = Input.LName
                         });
 
                         _logger.LogInformation($"Created customer with id '{customer.Id}'.");

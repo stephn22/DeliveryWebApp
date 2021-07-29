@@ -10,17 +10,18 @@ using MediatR;
 
 namespace DeliveryWebApp.Application.Products.Commands.CreateProduct
 {
-    public class CreateProductCommand : IRequest<int>
+    public class CreateProductCommand : IRequest<Product>
     {
         public string Name { get; set; }
         public byte[] Image { get; set; }
-        public double Price { get; set; }
+        public decimal Price { get; set; }
         public int Discount { get; set; }
         public string Category { get; set; }
         public int Quantity { get; set; }
+        public int RestaurantId { get; set; }
     }
 
-    public class CreateProductCommandHandler : IRequestHandler<CreateProductCommand, int>
+    public class CreateProductCommandHandler : IRequestHandler<CreateProductCommand, Product>
     {
         private readonly IApplicationDbContext _context;
 
@@ -29,7 +30,7 @@ namespace DeliveryWebApp.Application.Products.Commands.CreateProduct
             _context = context;
         }
 
-        public async Task<int> Handle(CreateProductCommand request, CancellationToken cancellationToken)
+        public async Task<Product> Handle(CreateProductCommand request, CancellationToken cancellationToken)
         {
             var entity = new Product
             {
@@ -38,14 +39,15 @@ namespace DeliveryWebApp.Application.Products.Commands.CreateProduct
                 Price = request.Price,
                 Discount = request.Discount,
                 Category = request.Category,
-                Quantity = request.Quantity
+                Quantity = request.Quantity,
+                RestaurantId = request.RestaurantId
             };
 
             _context.Products.Add(entity);
 
             await _context.SaveChangesAsync(cancellationToken);
 
-            return entity.Id;
+            return entity;
         }
     }
 }

@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using DeliveryWebApp.Application.Common.Security;
@@ -31,6 +32,7 @@ namespace DeliveryWebApp.WebUI.Pages.CustomerPages
         }
 
         public Basket Basket { get; set; }
+        public List<Product> Products { get; set; }
 
         public async Task<IActionResult> OnGetAsync()
         {
@@ -38,12 +40,8 @@ namespace DeliveryWebApp.WebUI.Pages.CustomerPages
 
             var customer = await _context.Customers.Where(c => c.ApplicationUserFk == user.Id).FirstAsync();
             Basket = customer.Basket;
+            Products = Basket.Products.ToList();
 
-            return Page();
-        }
-
-        public async Task<IActionResult> OnPostAsync()
-        {
             return Page();
         }
     }
