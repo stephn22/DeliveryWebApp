@@ -1,0 +1,52 @@
+﻿@page
+@model DeliveryWebApp.WebUI.Pages.RiderPages.OrdersModel
+@{
+    ViewData["Title"] = "Orders";
+}
+
+@section Head
+{
+    <link href="~/lib/jsgrid-1.5.3/jsgrid.min.css" rel="stylesheet"/>
+    <link href="~/lib/jsgrid-1.5.3/jsgrid-theme.min.css" rel="stylesheet"/>
+}
+
+<div id="jsGrid"></div>
+
+@section Scripts
+{
+    <script src="~/lib/jsgrid-1.5.3/jsgrid.min.js"></script>
+
+    <script>
+        $(function() {
+            $("#jsGrid").jsGrid({
+                height: "50%",
+                width: "100%",
+
+                filtering: true,
+                inserting: false,
+                editing: false,
+                sorting: true,
+                paging: true,
+                autoload: true,
+
+                pageSize: 10,
+                pageButtonCount: 5,
+
+                controller: {
+                    loadData: function(filter) {
+                        return $.ajax({
+                            type: "GET",
+                            url: "api/orders",
+                            data: filter,
+                            dataType: "JSON"
+                        });
+                    }
+                },
+
+                fields: [
+                    { name: "id", type: "number", width: 150 },
+                ]
+            });
+        });
+    </script>
+}
