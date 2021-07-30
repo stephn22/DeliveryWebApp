@@ -1,21 +1,23 @@
-﻿function loadImage(input: HTMLInputElement) {
+﻿"use strict";
+
+function loadImage(input) {
     $("#spinner").append(`<div id="spinner-div" class="spinner-border text-primary text-start" role="status">
                                         <span class="visually-hidden">Loading...</span>
                                     </div>`);
 
-    setTimeout(() => readUrl(input), 200);
+    setTimeout(readUrl(input), 200);
 }
 
-function readUrl(input: HTMLInputElement) {
+function readUrl(input) {
     if (input.files && input.files[0]) {
         const reader = new FileReader();
 
         $("#spinner-div").remove();
 
-        reader.onload = function (i) {
+        reader.onload = function(i) {
             $("#img-uploaded")
-                .attr("src", i.target.result.toString)
-                /*.attr("hidden", false)*/
+                .attr("src", i.target.result)
+                .attr("hidden", false);
         };
 
 
