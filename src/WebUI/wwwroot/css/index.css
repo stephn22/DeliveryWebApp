@@ -6,6 +6,34 @@
     user-select: none;
 }
 
+h1 {
+    color: #2390FF;
+    font-family: "Roboto Medium";
+}
+
+p {
+    color: white;
+    font: bold;
+}
+
+.btn-primary {
+    border-color: #2390FF;
+    border-radius: 25px;
+}
+
+.btn-primary:hover {
+    background-color: #0847A3
+}
+
+.carousel-item {
+    background: rgba(0, 0, 0, 0.32);
+    border-radius: 25px;
+}
+
+.word {
+    font-family: "Roboto Light"
+}
+
 @media (min-width: 768px) {
      .bd-placeholder-img-lg {
          font-size: 3.5rem;

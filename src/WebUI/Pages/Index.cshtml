@@ -22,28 +22,10 @@
 @section Head
 {
     <link rel="stylesheet" href="/css/index.css" type="text/css" />
-    
-    <style type="text/css">
-        h1 {
-            color: #2390FF;
-            font-family: "Roboto Medium";
-        }
-
-        p {
-            /* TODO: change color */
-            color: #1B6EC2;
-        }
-
-        .word {
-            font-family: "Roboto Light"
-        }
-    </style>
 }
 
-
-
 <div class="text-center">
-    
+
     @if (!isLogged)
     {
         <main class="px-3">
@@ -56,19 +38,19 @@
                 <a class="btn btn-outline-dark rounded-pill" asp-area="Identity" asp-page="/Account/Register">
                     Register
                 </a>
-                
+
                 <a class="btn btn-outline-dark rounded-pill" asp-area="Identity" asp-page="/Account/Login">
                     Login
                 </a>
             </p>
-            <img src="/icons/undraw_healthy_options_sdo3.svg" alt="index-image" width="420" height="420"/>
+            <img src="/icons/undraw_healthy_options_sdo3.svg" alt="index-image" width="420" height="420" />
         </main>
     }
 
     @if (isAdmin)
     {
         <h1 class="display-4">@localizer["Welcome Administrator"]</h1>
-        <img src="/icons/undraw_Profile_re_4a55.svg" alt="admin" height="520" width="520" class="text-center"/>
+        <img src="/icons/undraw_Profile_re_4a55.svg" alt="admin" height="520" width="520" class="text-center" />
     }
 
     @if (isCustomer)
@@ -81,7 +63,7 @@
             </div>
             <div class="carousel-inner">
                 <div class="carousel-item active">
-                    <img src="/icons/undraw_Hamburger_8ge6.svg" alt="hamburger"/>
+                    <img src="/icons/undraw_Hamburger_8ge6.svg" alt="hamburger" />
 
                     <div class="container">
                         <div class="carousel-caption text-start">
@@ -94,20 +76,20 @@
                     </div>
                 </div>
                 <div class="carousel-item">
-                    <img src="/icons/undraw_map_1r69.svg" alt="deliveries"/>
+                    <img src="/icons/undraw_map_1r69.svg" alt="deliveries" />
 
                     <div class="container">
                         <div class="carousel-caption">
                             <h1>@localizer["Become a rider"]</h1>
-                            <p class="word">@localizer["Become a rider and start delivering food to customers"]</p>
+                            <p class="word" style="color: black">@localizer["Become a rider and start delivering food to customers"]</p>
                             <p>
-                                <a class="btn btn-lg btn-primary" asp-area="Identity" asp-page="/Account/Manage/Request" >@localizer["Sign up today"]</a>
+                                <a class="btn btn-lg btn-primary" asp-area="Identity" asp-page="/Account/Manage/Request">@localizer["Sign up today"]</a>
                             </p>
                         </div>
                     </div>
                 </div>
                 <div class="carousel-item">
-                    <img src="/icons/undraw_Chef_cu0r.svg" alt="chef"/>
+                    <img src="/icons/undraw_Chef_cu0r.svg" alt="chef" />
 
                     <div class="container">
                         <div class="carousel-caption text-end">
@@ -132,15 +114,15 @@
                 </div>
             </div>
             <button class="carousel-control-prev" type="button" data-bs-target="#myCarousel" data-bs-slide="prev">
-                
-                    <img src="/icons/arrow-left.svg" alt="arrow_left" width="50" height="50"/>
-                
+
+                <img src="/icons/arrow-left.svg" alt="arrow_left" width="50" height="50" />
+
                 <span class="visually-hidden">Previous</span>
             </button>
             <button class="carousel-control-next" type="button" data-bs-target="#myCarousel" data-bs-slide="next">
-               
-                    <img src="/icons/arrow-right.svg" alt="arrow_right" width="50" height="50" />
-                
+
+                <img src="/icons/arrow-right.svg" alt="arrow_right" width="50" height="50" />
+
                 <span class="visually-hidden">Next</span>
             </button>
         </div>
