@@ -22,6 +22,11 @@ namespace DeliveryWebApp.Infrastructure.Persistence.Configurations
             builder.Property(r => r.Text)
                 .HasMaxLength(250)
                 .IsRequired();
+
+            builder.HasOne(u => u.Restaurateur)
+                .WithOne()
+                .HasForeignKey<Restaurateur>(r => r.Id)
+                .OnDelete(DeleteBehavior.NoAction);
         }
     }
 }

@@ -16,6 +16,5 @@ namespace DeliveryWebApp.Domain.Entities
         public int RestaurateurId { get; set; }
         public virtual Restaurateur Restaurateur { get; set; }
         public ICollection<Product> Products { get; set; }
-        public ICollection<Order> Orders { get; set; }
     }
 }

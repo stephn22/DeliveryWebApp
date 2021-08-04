@@ -1,12 +1,9 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading;
-using System.Threading.Tasks;
-using DeliveryWebApp.Application.Common.Interfaces;
+﻿using DeliveryWebApp.Application.Common.Interfaces;
 using DeliveryWebApp.Domain.Entities;
 using MediatR;
+using System.Collections.Generic;
+using System.Threading;
+using System.Threading.Tasks;
 
 namespace DeliveryWebApp.Application.Customers.Commands.CreateCustomer
 {
@@ -35,8 +32,6 @@ namespace DeliveryWebApp.Application.Customers.Commands.CreateCustomer
                     LastName = request.LastName,
                     Email = request.Email,
                     Basket = new Basket(),
-                    Reviews = new List<Review>(),
-                    Orders = new List<Order>()
                 };
 
                 _context.Customers.Add(entity);

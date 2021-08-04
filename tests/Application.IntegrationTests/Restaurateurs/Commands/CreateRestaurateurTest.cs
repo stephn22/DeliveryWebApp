@@ -1,14 +1,10 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using DeliveryWebApp.Application.Common.Exceptions;
+﻿using DeliveryWebApp.Application.Common.Exceptions;
 using DeliveryWebApp.Application.Restaurateurs.Commands.CreateRestaurateur;
 using DeliveryWebApp.Domain.Entities;
 using FluentAssertions;
 using NUnit.Framework;
 using NUnit.Framework.Internal;
+using System.Threading.Tasks;
 
 namespace DeliveryWebApp.Application.IntegrationTests.Restaurateurs.Commands
 {
@@ -46,7 +42,6 @@ namespace DeliveryWebApp.Application.IntegrationTests.Restaurateurs.Commands
             restaurateur.Should().NotBeNull();
             restaurateur.Should().Be(command.Customer);
             restaurateur.Restaurant.Should().BeNull();
-            restaurateur.Reviews.Should().BeNullOrEmpty();
         }
     }
 }

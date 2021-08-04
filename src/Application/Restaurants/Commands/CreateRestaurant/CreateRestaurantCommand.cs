@@ -1,13 +1,9 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading;
-using System.Threading.Tasks;
-using DeliveryWebApp.Application.Common.Interfaces;
-using DeliveryWebApp.Application.Restaurateurs.Commands.UpdateRestaurateur;
+﻿using DeliveryWebApp.Application.Common.Interfaces;
 using DeliveryWebApp.Domain.Entities;
 using MediatR;
+using System.Collections.Generic;
+using System.Threading;
+using System.Threading.Tasks;
 
 namespace DeliveryWebApp.Application.Restaurants.Commands.CreateRestaurant
 {
@@ -39,7 +35,6 @@ namespace DeliveryWebApp.Application.Restaurants.Commands.CreateRestaurant
                 Name = request.Name,
                 Restaurateur = request.Restaurateur,
                 Products = new List<Product>(),
-                Orders = new List<Order>()
             };
 
             _context.Restaurants.Add(entity);
