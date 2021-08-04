@@ -1,1 +1,80 @@
-﻿test
+﻿@page "{id:int?}"
+@model DeliveryWebApp.WebUI.Pages.RestaurateurPages.RestaurantOrdersModel
+@{
+    ViewData["Title"] = "Restaurant Orders";
+}
+@section Head {
+    <link type="text/css" rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/jsgrid/1.5.3/jsgrid.min.css" />
+    <link type="text/css" rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/jsgrid/1.5.3/jsgrid-theme.min.css" />
+}
+
+<div id="jsGrid"></div>
+
+@section Scripts {
+    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/jsgrid/1.5.3/jsgrid.min.js"></script>
+
+    <script>
+        $(function () {
+            const url = "/api/orders";
+
+            const ajax = function (item, verb, json = true) {
+
+                if (verb === "POST") {
+                    item.restaurantId = @Model.Id;
+                }
+
+                return $.ajax({
+                    type: verb,
+                    url: url,
+                    data: json ? JSON.stringify(item) : item,
+                    dataType: "JSON",
+                    contentType: json ? "application/json" : "text/plain",
+                });
+            };
+
+            $("#jsGrid").jsGrid({
+                height: "90%",
+                width: "100%",
+
+                filtering: true,
+                inserting: false,
+                editing: false,
+                sorting: true,
+                paging: true,
+                autoload: true,
+
+                pageSize: 15,
+                pageButtonCount: 5,
+
+                deleteConfirm: "Do you really want to delete this?", //TODO: localize?
+
+                controller: {
+                    loadData: function (filter) {
+                        const id = @Model.Id;
+
+                        return $.ajax({
+                            type: "GET",
+                            url: `${url}/${id}`,
+                            data: filter,
+                            dataType: "json"
+
+                        });
+                    },
+                    insertItem: item => ajax(item, "POST"),
+                    updateItem: item => ajax(item, "PUT"),
+                    deleteItem: item => ajax(item, "DELETE"),
+                },
+                // TODO: date type
+                fields: [
+                    { name: "customerId", type: "text", width: 150, title: "CustomerId" },
+                    /*{ name: "image", type: "text", width: 30, title: "Image"},*/
+                    { name: "date", type: "number", width: 50, title: "Date" },
+                    { name: "totalPrice", type: "number", width: 50, title: "Total Price" },
+                    { name: "status", type: "text", width: 150, title: "Status" },
+                    { name: "deliveryDate", type: "number", width: 50, title: "deliveryDate" },
+                    { type: "control" }
+                ]
+            });
+        });
+    </script>
+}

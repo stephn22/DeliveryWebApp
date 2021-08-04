@@ -55,14 +55,14 @@ namespace DeliveryWebApp.WebUI.Pages.CustomerPages
         private void GetProducts()
         {
             // TODO: mediatr
-            Products = Order.Products.Select(p => new Product
-            {
-                Name = p.Name,
-                Image = p.Image,
-                Price = p.Price,
-                Discount = p.Discount,
-                Category = p.Category
-            }).ToList();
+            //Products = Order.Products.Select(p => new Product
+            //{
+            //    Name = p.Name,
+            //    Image = p.Image,
+            //    Price = p.Price,
+            //    Discount = p.Discount,
+            //    Category = p.Category
+            //}).ToList();
         }
     }
 }
