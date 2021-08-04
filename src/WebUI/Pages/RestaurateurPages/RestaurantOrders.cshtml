@@ -1,80 +1,70 @@
 ﻿@page "{id:int?}"
+@using IdentityServer4.Extensions
 @model DeliveryWebApp.WebUI.Pages.RestaurateurPages.RestaurantOrdersModel
 @{
     ViewData["Title"] = "Restaurant Orders";
 }
 @section Head {
-    <link type="text/css" rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/jsgrid/1.5.3/jsgrid.min.css" />
-    <link type="text/css" rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/jsgrid/1.5.3/jsgrid-theme.min.css" />
+    <link rel="stylesheet" href="/css/images.css" type="text/css" />
 }
 
-<div id="jsGrid"></div>
-
-@section Scripts {
-    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/jsgrid/1.5.3/jsgrid.min.js"></script>
-
-    <script>
-        $(function () {
-            const url = "/api/orders";
-
-            const ajax = function (item, verb, json = true) {
-
-                if (verb === "POST") {
-                    item.restaurantId = @Model.Id;
+@if (Model.Orders.IsNullOrEmpty())
+{
+    <div class=" alert alert-secondary" role="alert">
+        Your restaurant has no orders yet.
+    </div>
+}
+else
+{
+    <table class="table">
+            <thead>
+                <tr class="table-primary">
+                    <th>
+                        @Html.DisplayNameFor(model => model.Orders[0].Id)
+                    </th>
+                    <th>
+                        @Html.DisplayNameFor(model => model.Orders[0].Customer)
+                    </th>
+                    <th>
+                        @Html.DisplayNameFor(model => model.Orders[0].Date)
+                    </th>
+                    <th>
+                        @Html.DisplayNameFor(model => model.Orders[0].Status)
+                    </th>
+                    <th>
+                        @Html.DisplayNameFor(model => model.Orders[0].TotalPrice)
+                    </th>
+                    <th></th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var order in Model.Orders)
+                {
+                    <tr>
+                        <td>
+                            <img src="data:image/jpeg;base64,@Convert.ToBase64String(Model.Restaurant.Logo)" alt="" />
+                        </td>
+                        <td>
+                            @Html.DisplayFor(model => order.Id)
+                        </td>
+                        <td>
+                            @* TODO: EMAIL? *@
+                        </td>
+                        <td>
+                            @* TODO: Localize *@
+                            @Html.DisplayFor(model => order.Date)
+                        </td>
+                        <td>
+                            @Html.DisplayFor(model => order.Status)
+                        </td>
+                        <td>
+                            @Html.DisplayFor(model => order.TotalPrice)
+                        </td>
+                        <td>
+                            <a asp-page="">Details</a>
+                        </td>
+                    </tr>
                 }
-
-                return $.ajax({
-                    type: verb,
-                    url: url,
-                    data: json ? JSON.stringify(item) : item,
-                    dataType: "JSON",
-                    contentType: json ? "application/json" : "text/plain",
-                });
-            };
-
-            $("#jsGrid").jsGrid({
-                height: "90%",
-                width: "100%",
-
-                filtering: true,
-                inserting: false,
-                editing: false,
-                sorting: true,
-                paging: true,
-                autoload: true,
-
-                pageSize: 15,
-                pageButtonCount: 5,
-
-                deleteConfirm: "Do you really want to delete this?", //TODO: localize?
-
-                controller: {
-                    loadData: function (filter) {
-                        const id = @Model.Id;
-
-                        return $.ajax({
-                            type: "GET",
-                            url: `${url}/${id}`,
-                            data: filter,
-                            dataType: "json"
-
-                        });
-                    },
-                    insertItem: item => ajax(item, "POST"),
-                    updateItem: item => ajax(item, "PUT"),
-                    deleteItem: item => ajax(item, "DELETE"),
-                },
-                // TODO: date type
-                fields: [
-                    { name: "customerId", type: "text", width: 150, title: "CustomerId" },
-                    /*{ name: "image", type: "text", width: 30, title: "Image"},*/
-                    { name: "date", type: "number", width: 50, title: "Date" },
-                    { name: "totalPrice", type: "number", width: 50, title: "Total Price" },
-                    { name: "status", type: "text", width: 150, title: "Status" },
-                    { name: "deliveryDate", type: "number", width: 50, title: "deliveryDate" },
-                    { type: "control" }
-                ]
-            });
-        });
-    </script>
+            </tbody>
+        </table>
 }
