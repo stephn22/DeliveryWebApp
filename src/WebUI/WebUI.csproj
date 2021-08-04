@@ -86,21 +86,6 @@
     <None Include="wwwroot\lib\bootstrap\dist\js\bootstrap.min.js" />
     <None Include="wwwroot\lib\bootstrap\dist\js\bootstrap.min.js.map" />
     <None Include="wwwroot\lib\bootstrap\LICENSE" />
-    <None Include="wwwroot\lib\jsgrid-1.5.3\i18n\jsgrid-de.js" />
-    <None Include="wwwroot\lib\jsgrid-1.5.3\i18n\jsgrid-es.js" />
-    <None Include="wwwroot\lib\jsgrid-1.5.3\i18n\jsgrid-fr.js" />
-    <None Include="wwwroot\lib\jsgrid-1.5.3\i18n\jsgrid-he.js" />
-    <None Include="wwwroot\lib\jsgrid-1.5.3\i18n\jsgrid-ja.js" />
-    <None Include="wwwroot\lib\jsgrid-1.5.3\i18n\jsgrid-ka.js" />
-    <None Include="wwwroot\lib\jsgrid-1.5.3\i18n\jsgrid-pl.js" />
-    <None Include="wwwroot\lib\jsgrid-1.5.3\i18n\jsgrid-pt-br.js" />
-    <None Include="wwwroot\lib\jsgrid-1.5.3\i18n\jsgrid-pt.js" />
-    <None Include="wwwroot\lib\jsgrid-1.5.3\i18n\jsgrid-ru.js" />
-    <None Include="wwwroot\lib\jsgrid-1.5.3\i18n\jsgrid-tr.js" />
-    <None Include="wwwroot\lib\jsgrid-1.5.3\i18n\jsgrid-zh-cn.js" />
-    <None Include="wwwroot\lib\jsgrid-1.5.3\i18n\jsgrid-zh-tw.js" />
-    <None Include="wwwroot\lib\jsgrid-1.5.3\jsgrid.js" />
-    <None Include="wwwroot\lib\jsgrid-1.5.3\jsgrid.min.js" />
   </ItemGroup>
 
   <ItemGroup>
