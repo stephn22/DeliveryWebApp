@@ -39,7 +39,7 @@ namespace DeliveryWebApp.Application.Restaurateurs.Extensions
                     throw new NullReferenceException();
                 }
 
-                return await context.Restaurateurs.Where(r => r.Customer.Id == customerId).FirstAsync();
+                return await context.Restaurateurs.Where(r => r.Id == customerId).FirstAsync();
             }
             catch (NullReferenceException)
             {
@@ -57,7 +57,7 @@ namespace DeliveryWebApp.Application.Restaurateurs.Extensions
                     select c).FirstAsync();
 
                 var restaurateur = await (from r in context.Restaurateurs
-                    where r.Customer.Id == customer.Id
+                    where r.Id == customer.Id
                     select r).FirstAsync();
 
                 return restaurateur;

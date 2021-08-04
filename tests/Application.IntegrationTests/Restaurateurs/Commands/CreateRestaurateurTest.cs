@@ -44,7 +44,7 @@ namespace DeliveryWebApp.Application.IntegrationTests.Restaurateurs.Commands
             var restaurateur = await FindAsync<Restaurateur>(itemId);
 
             restaurateur.Should().NotBeNull();
-            restaurateur.Customer.Should().Be(command.Customer);
+            restaurateur.Should().Be(command.Customer);
             restaurateur.Restaurant.Should().BeNull();
             restaurateur.Reviews.Should().BeNullOrEmpty();
         }

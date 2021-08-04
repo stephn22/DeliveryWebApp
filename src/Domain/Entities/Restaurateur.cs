@@ -2,10 +2,9 @@
 
 namespace DeliveryWebApp.Domain.Entities
 {
-    public class Restaurateur : BaseEntity
+    public class Restaurateur : Customer
     {
         public virtual Restaurant Restaurant { get; set; }
-        public virtual Customer Customer { get; set; } // a restaurateur is also a customer
         public ICollection<Review> Reviews { get; set; }
     }
 }

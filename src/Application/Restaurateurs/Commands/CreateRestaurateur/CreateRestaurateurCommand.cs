@@ -21,10 +21,7 @@ namespace DeliveryWebApp.Application.Restaurateurs.Commands.CreateRestaurateur
 
             public async Task<int> Handle(CreateRestaurateurCommand request, CancellationToken cancellationToken)
             {
-                var entity = new Restaurateur
-                {
-                    Customer = request.Customer
-                };
+                var entity = new Restaurateur();
 
                 _context.Restaurateurs.Add(entity);
 

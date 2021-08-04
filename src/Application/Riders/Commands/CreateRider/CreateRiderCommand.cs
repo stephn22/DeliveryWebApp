@@ -24,7 +24,6 @@ namespace DeliveryWebApp.Application.Riders.Commands.CreateRider
             {
                 var entity = new Rider
                 {
-                    Customer = request.Customer,
                     DeliveryCredit = request.DeliveryCredit
                 };
 
