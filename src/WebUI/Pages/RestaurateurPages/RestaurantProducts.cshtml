@@ -1,17 +1,17 @@
 ﻿@page "{id:int?}"
-@model DeliveryWebApp.WebUI.Pages.RestaurateurPages.RestaurantProductsModel
-@{
-    ViewData["Title"] = "Restaurant Products";
-}
 @section Head {
     <link type="text/css" rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/jsgrid/1.5.3/jsgrid.min.css" />
     <link type="text/css" rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/jsgrid/1.5.3/jsgrid-theme.min.css" />
 }
+@model DeliveryWebApp.WebUI.Pages.RestaurateurPages.RestaurantProductsModel
+@{
+    ViewData["Title"] = "Restaurant Products";
+}
 
 <div id="jsGrid"></div>
-@* FIXME: not working *@
 
 @section Scripts {
+    <script src="~/lib/jquery/dist/jquery-3.6.0.min.js"></script>
     <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/jsgrid/1.5.3/jsgrid.min.js"></script>
 
     <script>

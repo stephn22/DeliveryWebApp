@@ -14,7 +14,6 @@ using MediatR;
 
 namespace DeliveryWebApp.WebUI.Controllers
 {
-    [Authorize]
     [Route("api/[controller]")]
     [ApiController]
     public class ProductsController : ControllerBase
@@ -39,7 +38,7 @@ namespace DeliveryWebApp.WebUI.Controllers
         /// </summary>
         /// <param name="id">id of the restaurant or the order</param>
         /// <returns></returns>
-        [HttpGet]
+        [HttpGet("{id:int}")]
         public async Task<List<Product>> Read(int id)
         {
             return await _mediator.Send(new GetProductsQuery
