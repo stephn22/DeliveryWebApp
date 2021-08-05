@@ -1,12 +1,11 @@
-using System.Collections.Generic;
-using System.Threading.Tasks;
 using DeliveryWebApp.Application.Common.Interfaces;
 using DeliveryWebApp.Application.Orders.Queries.GetOrders;
-using DeliveryWebApp.Application.Restaurants.Queries.GetRestaurants;
 using DeliveryWebApp.Domain.Entities;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
+using System.Collections.Generic;
+using System.Threading.Tasks;
 
 namespace DeliveryWebApp.WebUI.Pages.RestaurateurPages
 {
@@ -23,7 +22,7 @@ namespace DeliveryWebApp.WebUI.Pages.RestaurateurPages
 
         public int Id { get; set; }
 
-        public Restaurant Restaurant { get; set; }
+        public Restaurateur Restaurateur { get; set; }
 
         public List<Order> Orders { get; set; }
 
@@ -36,11 +35,11 @@ namespace DeliveryWebApp.WebUI.Pages.RestaurateurPages
 
             Id = (int)id;
 
-            Restaurant = await _context.Restaurants.FindAsync(Id);
+            Restaurateur = await _context.Restaurateurs.FindAsync(Id);
 
             Orders = await _mediator.Send(new GetOrdersQuery
             {
-                RestaurantId = Id
+                RestaurateurId = Id
             });
 
             return Page();

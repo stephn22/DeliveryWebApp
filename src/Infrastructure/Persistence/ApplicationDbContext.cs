@@ -37,12 +37,11 @@ namespace DeliveryWebApp.Infrastructure.Persistence
         public DbSet<Basket> Baskets { get; set; }
         public DbSet<Order> Orders { get; set; }
         public DbSet<Product> Products { get; set; }
-        public DbSet<Customer> Customers { get; set; }
-        public DbSet<Restaurant> Restaurants { get; set; }
         public DbSet<Restaurateur> Restaurateurs { get; set; }
         public DbSet<Rider> Riders { get; set; }
         public DbSet<Request> Requests { get; set; }
         public DbSet<Review> Reviews { get; set; }
+        public DbSet<Customer> Customers { get; set; }
 
         public override async Task<int> SaveChangesAsync(CancellationToken cancellationToken = new CancellationToken())
         {

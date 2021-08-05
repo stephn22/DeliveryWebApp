@@ -35,7 +35,7 @@ namespace DeliveryWebApp.WebUI.Pages.CustomerPages
         }
 
         public Customer Customer { get; set; }
-        public Restaurant Restaurant { get; set; }
+        public Restaurateur Restaurateur { get; set; }
         public List<Product> Products { get; set; }
 
         public async Task<IActionResult> OnGetAsync(int? id)
@@ -48,10 +48,10 @@ namespace DeliveryWebApp.WebUI.Pages.CustomerPages
             var user = await _userManager.GetUserAsync(User);
             Customer = await _context.Customers.Where(c => c.ApplicationUserFk == user.Id).FirstAsync();
 
-            Restaurant = await _context.Restaurants.FindAsync(id);
+            Restaurateur = await _context.Restaurateurs.FindAsync(id);
             Products = await _mediator.Send(new GetProductsQuery
             {
-                RestaurantId = Restaurant.Id
+                RestaurateurId = Restaurateur.Id
             });
 
             return Page();

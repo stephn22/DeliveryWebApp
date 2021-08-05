@@ -1,8 +1,6 @@
+using DeliveryWebApp.Application.Addresses.Commands.UpdateAddress;
 using DeliveryWebApp.Application.Common.Exceptions;
 using DeliveryWebApp.Application.Products.Queries.GetProducts;
-using DeliveryWebApp.Application.Restaurants.Commands.CreateRestaurant;
-using DeliveryWebApp.Application.Restaurants.Commands.UpdateRestaurant;
-using DeliveryWebApp.Application.Restaurants.Extensions;
 using DeliveryWebApp.Application.Restaurateurs.Extensions;
 using DeliveryWebApp.Domain.Constants;
 using DeliveryWebApp.Domain.Entities;
@@ -21,10 +19,9 @@ using Microsoft.Extensions.Logging;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.IO;
-using System.Linq;
 using System.Threading.Tasks;
-using DeliveryWebApp.Application.Addresses.Commands.UpdateAddress;
-using Microsoft.EntityFrameworkCore;
+using AutoMapper;
+using DeliveryWebApp.Application.Restaurateurs.Commands.UpdateRestaurateur;
 
 namespace DeliveryWebApp.WebUI.Pages.RestaurateurPages
 {
@@ -37,8 +34,7 @@ namespace DeliveryWebApp.WebUI.Pages.RestaurateurPages
         private readonly IMediator _mediator;
         private readonly UserManager<ApplicationUser> _userManager;
 
-        public RestaurantDashboardModel(ApplicationDbContext context, ILogger<RestaurantDashboardModel> logger,
-            IMediator mediator, UserManager<ApplicationUser> userManager)
+        public RestaurantDashboardModel(ApplicationDbContext context, ILogger<RestaurantDashboardModel> logger, IMediator mediator, UserManager<ApplicationUser> userManager)
         {
             _context = context;
             _logger = logger;
@@ -46,7 +42,7 @@ namespace DeliveryWebApp.WebUI.Pages.RestaurateurPages
             _userManager = userManager;
         }
 
-        public Restaurant Restaurant { get; set; }
+        public bool HasRestaurant { get; set; }
         public Address RestaurantAddress { get; set; }
         public Restaurateur Restaurateur { get; set; }
         public IList<Product> Products { get; set; }
@@ -124,22 +120,20 @@ namespace DeliveryWebApp.WebUI.Pages.RestaurateurPages
         {
             Restaurateur = await _context.GetRestaurateurByApplicationUserFkAsync(user.Id);
 
-            Restaurant = await _context.GetRestaurantByRestaurateurId(Restaurateur.Id);
-
-            RestaurantAddress = await _context.GetRestaurantAddress(Restaurant);
-
-            if (Restaurant != null)
+            if (Restaurateur != null)
             {
                 Products = await _mediator.Send(new GetProductsQuery
                 {
-                    RestaurantId = Restaurant.Id
+                    RestaurateurId = Restaurateur.Id
                 });
 
+                HasRestaurant = (Restaurateur.RestaurantAddress != null && Restaurateur.Logo != null &&
+                                 Restaurateur.RestaurantName != null && Restaurateur.RestaurantCategory != null);
                 //Orders = Restaurant.Orders.ToList();
             }
         }
 
-        public async Task<IActionResult> OnGetAsync(string sortOrder)
+        public async Task<IActionResult> OnGetAsync()
         {
             var user = await _userManager.GetUserAsync(User);
 
@@ -171,10 +165,10 @@ namespace DeliveryWebApp.WebUI.Pages.RestaurateurPages
 
             try
             {
-                await _mediator.Send(new UpdateRestaurantCommand
+                await _mediator.Send(new UpdateRestaurateurCommand
                 {
                     Id = id,
-                    Name = Input.Name
+                    RestaurantName = Input.Name
                 });
             }
             catch (NotFoundException e)
@@ -201,10 +195,10 @@ namespace DeliveryWebApp.WebUI.Pages.RestaurateurPages
 
             try
             {
-                await _mediator.Send(new UpdateRestaurantCommand
+                await _mediator.Send(new UpdateRestaurateurCommand
                 {
                     Id = id,
-                    Category = Input.Category
+                    RestaurantCategory = Input.Category
                 });
             }
             catch (NotFoundException e)
@@ -220,7 +214,10 @@ namespace DeliveryWebApp.WebUI.Pages.RestaurateurPages
 
         public async Task<IActionResult> OnPostUploadNewImageAsync()
         {
-            if (Input?.Logo == null) return Page();
+            if (Input?.Logo == null)
+            {
+                return Page();
+            }
 
             var user = await _userManager.GetUserAsync(User);
 
@@ -240,9 +237,9 @@ namespace DeliveryWebApp.WebUI.Pages.RestaurateurPages
                 bytes = memoryStream.ToArray();
             }
 
-            await _mediator.Send(new UpdateRestaurantCommand
+            await _mediator.Send(new UpdateRestaurateurCommand
             {
-                Id = Restaurant.Id,
+                Id = Restaurateur.Id,
                 Logo = bytes
             });
 
@@ -313,17 +310,15 @@ namespace DeliveryWebApp.WebUI.Pages.RestaurateurPages
                 Longitude = Input.Longitude
             };
 
-            // insert new restaurant in context
-            var restaurant = await _mediator.Send(new CreateRestaurantCommand
+            var id = await _mediator.Send(new UpdateRestaurateurCommand
             {
-                Address = RestaurantAddress,
-                Category = Input.Category,
+                RestaurantAddress = RestaurantAddress,
+                RestaurantCategory = Input.Category,
                 Logo = bytes,
-                Name = Input.Name,
-                Restaurateur = Restaurateur
+                RestaurantName = Input.Name
             });
 
-            _logger.LogInformation($"Created new restaurant with id: {restaurant.Id}");
+            _logger.LogInformation($"Created new restaurant with id: {id}");
 
             StatusMessage =
                 "Your restaurant has been created successfully";

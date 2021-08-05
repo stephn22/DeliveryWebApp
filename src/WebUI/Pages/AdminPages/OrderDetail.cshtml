@@ -25,16 +25,22 @@
             @Html.DisplayFor(model => model.Order.Date)
         </dd>
         <dt class="col-sm-2">
-            @Html.DisplayNameFor(model => model.Order.Restaurant)
+            @Html.DisplayNameFor(model => model.Order.Restaurateur.RestaurantName)
         </dt>
         <dd class="col-sm-10">
-            @Html.DisplayFor(model => model.Order.Restaurant.Name)
+            @Html.DisplayFor(model => model.Order.Restaurateur.RestaurantName)
         </dd>
         <dt class="col-sm-2">
-            @Html.DisplayNameFor(model => model.Order.Restaurant.Category)
+            @Html.DisplayNameFor(model => model.Order.Restaurateur.RestaurantCategory)
         </dt>
         <dd class="col-sm-10">
-            @Html.DisplayFor(model => model.Order.Restaurant.Category)
+            @Html.DisplayFor(model => model.Order.Restaurateur.RestaurantCategory)
+        </dd>
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.Order.Status)
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.Order.Status)
         </dd>
     </dl>
 </div>

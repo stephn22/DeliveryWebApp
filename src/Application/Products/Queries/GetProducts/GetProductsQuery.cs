@@ -14,7 +14,7 @@ namespace DeliveryWebApp.Application.Products.Queries.GetProducts
 {
     public class GetProductsQuery : IRequest<List<Product>>
     {
-        public int? RestaurantId { get; set; }
+        public int? RestaurateurId { get; set; }
         public int? OrderId { get; set; }
     }
 
@@ -33,10 +33,10 @@ namespace DeliveryWebApp.Application.Products.Queries.GetProducts
         {
             try
             {
-                if (request.RestaurantId != null)
+                if (request.RestaurateurId != null)
                 {
                     return await (from p in _context.Products
-                        where p.RestaurantId == request.RestaurantId
+                        where p.RestaurateurId == request.RestaurateurId
                         select p).ToListAsync(cancellationToken);
                 }
 

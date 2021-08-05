@@ -24,9 +24,17 @@ namespace DeliveryWebApp.Application.Riders.Commands.CreateRider
             {
                 var entity = new Rider
                 {
+                    ApplicationUserFk = request.Customer.ApplicationUserFk,
+                    Addresses = request.Customer.Addresses,
+                    Basket = request.Customer.Basket,
+                    Email = request.Customer.Email,
+                    FirstName = request.Customer.FirstName,
+                    LastName = request.Customer.LastName,
+                    Orders = request.Customer.Orders,
                     DeliveryCredit = request.DeliveryCredit
                 };
 
+                _context.Customers.Remove(request.Customer);
                 _context.Riders.Add(entity);
 
                 await _context.SaveChangesAsync(cancellationToken);

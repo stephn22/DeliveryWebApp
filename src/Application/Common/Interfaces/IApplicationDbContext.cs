@@ -12,7 +12,6 @@ namespace DeliveryWebApp.Application.Common.Interfaces
         DbSet<Order> Orders { get; set; }
         DbSet<Product> Products { get; set; }
         DbSet<Customer> Customers { get; set; }
-        DbSet<Restaurant> Restaurants { get; set; }
         DbSet<Restaurateur> Restaurateurs { get; set; }
         DbSet<Rider> Riders { get; set; }
         DbSet<Request> Requests { get; set; }

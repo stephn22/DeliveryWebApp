@@ -20,9 +20,12 @@ namespace DeliveryWebApp.Infrastructure
         {
 
             services.AddDbContext<ApplicationDbContext>(options =>
+            {
                 options.UseSqlServer(
                     configuration.GetConnectionString("DefaultConnection"),
-                    b => b.MigrationsAssembly("DeliveryWebApp.WebUI")));
+                    b => b.MigrationsAssembly("DeliveryWebApp.WebUI"));
+                options.EnableSensitiveDataLogging(); // TODO: Enable only in development
+            });
 
             services.AddScoped<IApplicationDbContext>(provider => provider.GetService<ApplicationDbContext>());
 

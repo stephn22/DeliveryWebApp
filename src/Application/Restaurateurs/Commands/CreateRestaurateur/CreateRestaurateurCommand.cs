@@ -6,11 +6,11 @@ using MediatR;
 
 namespace DeliveryWebApp.Application.Restaurateurs.Commands.CreateRestaurateur
 {
-    public class CreateRestaurateurCommand : IRequest<int>
+    public class CreateRestaurateurCommand : IRequest<Restaurateur>
     {
         public Customer Customer { get; set; }
 
-        public class CreateRestaurateurCommandHandler : IRequestHandler<CreateRestaurateurCommand, int>
+        public class CreateRestaurateurCommandHandler : IRequestHandler<CreateRestaurateurCommand, Restaurateur>
         {
             private readonly IApplicationDbContext _context;
 
@@ -19,15 +19,25 @@ namespace DeliveryWebApp.Application.Restaurateurs.Commands.CreateRestaurateur
                 _context = context;
             }
 
-            public async Task<int> Handle(CreateRestaurateurCommand request, CancellationToken cancellationToken)
+            public async Task<Restaurateur> Handle(CreateRestaurateurCommand request, CancellationToken cancellationToken)
             {
-                var entity = new Restaurateur();
+                var entity = new Restaurateur
+                {
+                    ApplicationUserFk = request.Customer.ApplicationUserFk,
+                    Addresses = request.Customer.Addresses,
+                    Basket = request.Customer.Basket,
+                    Email = request.Customer.Email,
+                    FirstName = request.Customer.FirstName,
+                    LastName = request.Customer.LastName,
+                    Orders = request.Customer.Orders,
+                };
 
+                _context.Customers.Remove(request.Customer);
                 _context.Restaurateurs.Add(entity);
 
                 await _context.SaveChangesAsync(cancellationToken);
 
-                return entity.Id;
+                return entity;
             }
         }
     }

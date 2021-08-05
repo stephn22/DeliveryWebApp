@@ -3,7 +3,7 @@
 @using Newtonsoft.Json
 @model DeliveryWebApp.WebUI.Pages.CustomerPages.RestaurantDetailModel
 @{
-    ViewData["Title"] = @Model.Restaurant.Name;
+    ViewData["Title"] = @Model.Restaurateur.RestaurantName;
 }
 
 @section Head
@@ -20,7 +20,7 @@
 
 <h4>@ViewData["Title"]</h4>
 
-<img src="data:image/jpeg;base64,@Convert.ToBase64String(Model.Restaurant.Logo)" alt="restaurant_logo" class="img-dashboard square img-fluid rounded"/>
+<img src="data:image/jpeg;base64,@Convert.ToBase64String(Model.Restaurateur.Logo)" alt="restaurant_logo" class="img-dashboard square img-fluid rounded"/>
 <hr/>
 
 @if (!Model.Products.IsNullOrEmpty())

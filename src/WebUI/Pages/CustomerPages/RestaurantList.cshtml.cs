@@ -29,7 +29,7 @@ namespace DeliveryWebApp.WebUI.Pages.CustomerPages
             _userManager = userManager;
         }
 
-        public List<Restaurant> Restaurants { get; set; }
+        public List<Restaurateur> Restaurants { get; set; }
         public Customer Customer { get; set; }
         public List<Address> CustomerAddresses { get; set; }
 
@@ -55,7 +55,7 @@ namespace DeliveryWebApp.WebUI.Pages.CustomerPages
                 CustomerId = Customer.Id
             });
 
-            var restaurantsOrd = from r in _context.Restaurants
+            var restaurantsOrd = from r in _context.Restaurateurs
                                  select r;
 
             NameSort = string.IsNullOrEmpty(sortOrder) ? "name_desc" : "";
@@ -64,9 +64,9 @@ namespace DeliveryWebApp.WebUI.Pages.CustomerPages
 
             restaurantsOrd = sortOrder switch
             {
-                "name_desc" => restaurantsOrd.OrderByDescending(r => r.Name),
-                "category_desc" => restaurantsOrd.OrderByDescending(r => r.Category),
-                _ => restaurantsOrd.OrderBy(r => r.Name)
+                "name_desc" => restaurantsOrd.OrderByDescending(r => r.RestaurantName),
+                "category_desc" => restaurantsOrd.OrderByDescending(r => r.RestaurantCategory),
+                _ => restaurantsOrd.OrderBy(r => r.RestaurantName)
             };
 
             Restaurants = await restaurantsOrd.AsNoTracking().ToListAsync();

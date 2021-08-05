@@ -250,7 +250,7 @@ else
 
             $.ajax({
                 type: "GET", // get restaurants
-                url: "/api/restaurants",
+                url: "/api/restaurateurs",
                 dataType: "JSON",
                 contentType: "application/json; charset=utf-8",
                 success: function(data, status, xhr) {
@@ -419,20 +419,20 @@ else
                 <thead>
                     <tr class="table-primary">
                         <th>
-                            @Html.DisplayNameFor(model => model.Restaurants[0].Logo)
+                            @Html.DisplayRestaurantNameFor(model => model.Restaurants[0].Logo)
                         </th>
                         <th>
-                            <a asp-page="./RestaurantList" asp-route-sortOrder="@Model.NameSort">
-                                @Html.DisplayNameFor(model => model.Restaurants[0].Name)
+                            <a asp-page="./RestaurantList" asp-route-sortOrder="@Model.RestaurantNameSort">
+                                @Html.DisplayRestaurantNameFor(model => model.Restaurants[0].RestaurantName)
                             </a>
                         </th>
                         <th>
                             <a asp-page="./RestaurantList" asp-route-sortOrder="@Model.CategorySort">
-                                @Html.DisplayNameFor(model => model.Restaurants[0].Category)
+                                @Html.DisplayRestaurantNameFor(model => model.Restaurants[0].Category)
                             </a>
                         </th>
                         <th>
-                            @Html.DisplayNameFor(model => model.Restaurants[0].Address)
+                            @Html.DisplayRestaurantNameFor(model => model.Restaurants[0].Address)
                         </th>
                         <th>
                             Distance
@@ -448,7 +448,7 @@ else
                                 <img src="data:image/jpeg;base64,@Convert.ToBase64String(restaurant.Logo)" class="img-dashboard square img-fluid rounded" alt="restaurant_logo" height="40" width="40">
                             </td>
                             <td>
-                                @Html.DisplayFor(model => restaurant.Name)
+                                @Html.DisplayFor(model => restaurant.RestaurantName)
                             </td>
                             <td>
                                 @Html.DisplayFor(model => restaurant.Category)

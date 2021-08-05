@@ -57,7 +57,7 @@ namespace DeliveryWebApp.WebUI.Pages.CustomerPages
             // TODO: mediatr
             //Products = Order.Products.Select(p => new Product
             //{
-            //    Name = p.Name,
+            //    RestaurantName = p.RestaurantName,
             //    Image = p.Image,
             //    Price = p.Price,
             //    Discount = p.Discount,

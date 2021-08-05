@@ -1,10 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Text.Json;
-using System.Text.Json.Serialization;
-using System.Threading.Tasks;
 
 namespace DeliveryWebApp.Domain.Entities
 {
@@ -16,8 +12,8 @@ namespace DeliveryWebApp.Domain.Entities
         public int Discount { get; set; }
         public string Category { get; set; }
         public int Quantity { get; set; }
-        public int RestaurantId { get; set; }
-        public Restaurant Restaurant { get; set; }
+        public int RestaurateurId { get; set; }
+        public Restaurateur Restaurateur { get; set; }
 
         public decimal ApplyDiscount()
         {

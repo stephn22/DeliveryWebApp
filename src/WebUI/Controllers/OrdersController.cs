@@ -39,7 +39,7 @@ namespace DeliveryWebApp.WebUI.Controllers
         {
             return await _mediator.Send(new GetOrdersQuery
             {
-                RestaurantId = restaurantId
+                RestaurateurId = restaurantId
             });
         }
 

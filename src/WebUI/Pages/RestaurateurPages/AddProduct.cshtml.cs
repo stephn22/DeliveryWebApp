@@ -1,6 +1,4 @@
 using DeliveryWebApp.Application.Common.Security;
-using DeliveryWebApp.Application.Restaurants.Commands.UpdateRestaurant;
-using DeliveryWebApp.Application.Restaurants.Extensions;
 using DeliveryWebApp.Application.Restaurateurs.Extensions;
 using DeliveryWebApp.Domain.Entities;
 using DeliveryWebApp.Infrastructure.Identity;
@@ -18,6 +16,7 @@ using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
 using System.IO;
 using System.Threading.Tasks;
+using DeliveryWebApp.Application.Restaurateurs.Commands.UpdateRestaurateur;
 
 namespace DeliveryWebApp.WebUI.Pages.RestaurateurPages
 {
@@ -84,7 +83,6 @@ namespace DeliveryWebApp.WebUI.Pages.RestaurateurPages
             var user = await _userManager.GetUserAsync(User);
 
             var restaurateur = await _context.GetRestaurateurByApplicationUserFkAsync(user.Id);
-            var restaurant = await _context.GetRestaurantByRestaurateurId(restaurateur.Id);
 
             byte[] bytes = null;
 
@@ -95,7 +93,7 @@ namespace DeliveryWebApp.WebUI.Pages.RestaurateurPages
                 await fileStream.CopyToAsync(memoryStream);
                 bytes = memoryStream.ToArray();
             }
-            
+
             var product = new Product
             {
                 Image = bytes,
@@ -106,11 +104,10 @@ namespace DeliveryWebApp.WebUI.Pages.RestaurateurPages
                 Quantity = Input.Quantity
             };
 
-            await _mediator.Send(new UpdateRestaurantCommand
+            await _mediator.Send(new UpdateRestaurateurCommand
             {
-                Id = restaurant.Id,
+                Id = restaurateur.Id,
                 Product = product
-
             });
 
             return RedirectToPage("/RestaurateurPages/RestaurantDashboard");

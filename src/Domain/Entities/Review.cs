@@ -1,8 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace DeliveryWebApp.Domain.Entities
 {
@@ -11,6 +7,7 @@ namespace DeliveryWebApp.Domain.Entities
         public int CustomerId { get; set; }
         public virtual Customer Customer { get; set; }
         public string Title { get; set; }
+        public DateTime Date { get; set; }
         public string Text { get; set; }
         public int Grade { get; set; } // TODO: 0-5?
         public int RestaurateurId { get; set; }

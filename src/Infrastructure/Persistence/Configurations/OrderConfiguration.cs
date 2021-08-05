@@ -20,15 +20,12 @@ namespace DeliveryWebApp.Infrastructure.Persistence.Configurations
                 .IsRequired();
 
             builder.Property(o => o.Date)
+                .HasColumnType("datetime2")
+                .HasPrecision(0)
                 .IsRequired();
 
             builder.Property(u => u.Status)
                 .IsRequired();
-
-            builder.HasOne(u => u.Customer)
-                .WithOne()
-                .HasForeignKey<Customer>(c => c.Id)
-                .OnDelete(DeleteBehavior.NoAction);
         }
     }
 }

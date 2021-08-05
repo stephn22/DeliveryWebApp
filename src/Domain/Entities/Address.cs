@@ -1,10 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace DeliveryWebApp.Domain.Entities
+﻿namespace DeliveryWebApp.Domain.Entities
 {
     public class Address : BaseEntity
     {
@@ -19,6 +13,8 @@ namespace DeliveryWebApp.Domain.Entities
         public decimal Latitude { get; set; }
         public int? CustomerId { get; set; }
         public Customer Customer { get; set; }
+        public int? RestaurateurId { get; set; }
+        public Restaurateur Restaurateur { get; set; }
 
         public override string ToString()
         {

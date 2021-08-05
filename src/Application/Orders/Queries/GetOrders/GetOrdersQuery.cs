@@ -15,7 +15,7 @@ namespace DeliveryWebApp.Application.Orders.Queries.GetOrders
     public class GetOrdersQuery : IRequest<List<Order>>
     {
         public int? CustomerId { get; set; }
-        public int? RestaurantId { get; set; }
+        public int? RestaurateurId { get; set; }
     }
 
     public class GetOrdersQueryHandler : IRequestHandler<GetOrdersQuery, List<Order>>
@@ -33,14 +33,14 @@ namespace DeliveryWebApp.Application.Orders.Queries.GetOrders
         {
             try
             {
-                if (request.CustomerId == null && request.RestaurantId == null) // for administrator and rider
+                if (request.CustomerId == null && request.RestaurateurId == null) // for administrator and rider
                 {
                     return await _context.Orders.ToListAsync(cancellationToken);
                 }
 
-                if (request.RestaurantId != null) // for restaurateur
+                if (request.RestaurateurId != null) // for restaurateur
                 {
-                    return await _context.Orders.Where(o => o.RestaurantId == request.RestaurantId)
+                    return await _context.Orders.Where(o => o.RestaurateurId == request.RestaurateurId)
                         .ToListAsync(cancellationToken);
                 }
 

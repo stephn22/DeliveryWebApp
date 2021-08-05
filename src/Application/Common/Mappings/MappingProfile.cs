@@ -17,8 +17,6 @@ using DeliveryWebApp.Application.Products.Commands.UpdateProducts;
 using DeliveryWebApp.Application.Requests.Commands.CreateRequest;
 using DeliveryWebApp.Application.Requests.Commands.DeleteRequest;
 using DeliveryWebApp.Application.Requests.Commands.UpdateRequest;
-using DeliveryWebApp.Application.Restaurants.Commands.CreateRestaurant;
-using DeliveryWebApp.Application.Restaurants.Commands.UpdateRestaurant;
 using DeliveryWebApp.Application.Restaurateurs.Commands.CreateRestaurateur;
 using DeliveryWebApp.Application.Restaurateurs.Commands.DeleteRestaurateur;
 using DeliveryWebApp.Application.Restaurateurs.Commands.UpdateRestaurateur;
@@ -61,9 +59,6 @@ namespace DeliveryWebApp.Application.Common.Mappings
             CreateMap<Request, CreateRequestCommand>().ReverseMap();
             CreateMap<Request, DeleteRequestCommand>().ReverseMap();
             CreateMap<Request, UpdateRequestCommand>().ReverseMap();
-
-            CreateMap<Restaurant, CreateRestaurantCommand>().ReverseMap();
-            CreateMap<Restaurant, UpdateRestaurantCommand>().ReverseMap();
 
             CreateMap<Restaurateur, CreateRestaurateurCommand>().ReverseMap();
             CreateMap<Restaurateur, DeleteRestaurateurCommand>().ReverseMap();

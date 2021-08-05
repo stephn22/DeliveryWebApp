@@ -15,7 +15,6 @@ namespace DeliveryWebApp.Application.Orders.Commands.CreateOrder
     {
         public Customer Customer { get; set; }
         public ICollection<Product> Products { get; set; }
-        public Restaurant Restaurant { get; set; }
     }
 
     public class CreateOrderCommandHandler : IRequestHandler<CreateOrderCommand, Order>
@@ -37,7 +36,6 @@ namespace DeliveryWebApp.Application.Orders.Commands.CreateOrder
                 Date = DateTime.Now,
                 Products = request.Products,
                 TotalPrice = totalPrice,
-                Restaurant = request.Restaurant,
                 Status = OrderStatus.Open
             };
 

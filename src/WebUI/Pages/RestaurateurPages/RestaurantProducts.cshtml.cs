@@ -35,7 +35,7 @@ namespace DeliveryWebApp.WebUI.Pages.RestaurateurPages
 
             Products = await _mediator.Send(new GetProductsQuery
             {
-                RestaurantId = Id
+                RestaurateurId = Id
             });
 
             return Page();

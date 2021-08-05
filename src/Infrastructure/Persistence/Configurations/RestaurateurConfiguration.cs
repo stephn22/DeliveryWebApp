@@ -8,11 +8,11 @@ namespace DeliveryWebApp.Infrastructure.Persistence.Configurations
     {
         public void Configure(EntityTypeBuilder<Restaurateur> builder)
         {
-            //builder.HasOne(r => r.Customer)
-            //    .WithOne()
-            //    .HasForeignKey<Customer>(c => c.Id);
-
             builder.ToTable("Restaurateurs");
+
+            builder.HasOne(r => r.RestaurantAddress)
+                .WithOne(r => r.Restaurateur)
+                .HasForeignKey<Address>(a => a.RestaurateurId);
         }
     }
 }

@@ -13,10 +13,7 @@ namespace DeliveryWebApp.Application.IntegrationTests.Restaurateurs.Commands
             var command = new UpdateRestaurateurCommand
             {
                 Id = 5,
-                Restaurant = new Restaurant
-                {
-                    // TODO: complete
-                }
+                // TODO: complete
             };
         }
     }
