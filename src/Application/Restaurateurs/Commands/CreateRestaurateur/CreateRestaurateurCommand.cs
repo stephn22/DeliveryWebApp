@@ -26,7 +26,6 @@ namespace DeliveryWebApp.Application.Restaurateurs.Commands.CreateRestaurateur
                     Customer = request.Customer
                 };
 
-                _context.Customers.Remove(request.Customer);
                 _context.Restaurateurs.Add(entity);
 
                 await _context.SaveChangesAsync(cancellationToken);

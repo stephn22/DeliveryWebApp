@@ -28,7 +28,6 @@ namespace DeliveryWebApp.Application.Riders.Commands.CreateRider
                     DeliveryCredit = request.DeliveryCredit
                 };
 
-                _context.Customers.Remove(request.Customer);
                 _context.Riders.Add(entity);
 
                 await _context.SaveChangesAsync(cancellationToken);

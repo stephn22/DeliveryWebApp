@@ -24,7 +24,6 @@ namespace DeliveryWebApp.Infrastructure
                 options.UseSqlServer(
                     configuration.GetConnectionString("DefaultConnection"),
                     b => b.MigrationsAssembly("DeliveryWebApp.WebUI"));
-                options.EnableSensitiveDataLogging(); // TODO: Enable only in development
             });
 
             services.AddScoped<IApplicationDbContext>(provider => provider.GetService<ApplicationDbContext>());
