@@ -246,13 +246,13 @@
                         @await UserManager.GetUserNameAsync(await Model.GetUserAsync(item.Id, nameof(Model.Riders)))
                     </td>
                     <td>
-                        @Html.DisplayFor(modelItem => item.FirstName)
+                        @Html.DisplayFor(modelItem => item.Customer.FirstName)
                     </td>
                     <td>
-                        @Html.DisplayFor(modelItem => item.LastName)
+                        @Html.DisplayFor(modelItem => item.Customer.LastName)
                     </td>
                     <td>
-                        @Html.DisplayFor(modelItem => item.Email)
+                        @Html.DisplayFor(modelItem => item.Customer.Email)
                     </td>
                     <td>
                         @Html.DisplayFor(modelItem => item.DeliveryCredit) €
@@ -265,7 +265,7 @@
                     </td>
                     <td>
 
-                        @if (await UserManager.IsLockedOutAsync(await UserManager.FindByIdAsync(item.ApplicationUserFk))) // user is disabled
+                        @if (await UserManager.IsLockedOutAsync(await UserManager.FindByIdAsync(item.Customer.ApplicationUserFk))) // user is disabled
                         {
                             <form method="post">
                                 <button class="btn" asp-page-handler="UnblockRider" type="submit" title="Unblock user" asp-route-id="@item.Id">
@@ -397,13 +397,13 @@
                         @await UserManager.GetUserNameAsync(await Model.GetUserAsync(item.Id, nameof(Model.Restaurateurs)))
                     </td>
                     <td>
-                        @Html.DisplayFor(modelItem => item.FirstName)
+                        @Html.DisplayFor(modelItem => item.Customer.FirstName)
                     </td>
                     <td>
-                        @Html.DisplayFor(modelItem => item.LastName)
+                        @Html.DisplayFor(modelItem => item.Customer.LastName)
                     </td>
                     <td>
-                        @Html.DisplayFor(modelItem => item.Email)
+                        @Html.DisplayFor(modelItem => item.Customer.Email)
                     </td>
                     <td>
                         <a asp-page="#" asp-route-id="@item.Id">Restaurant</a>
@@ -415,7 +415,7 @@
                     </td>
                     <td>
 
-                        @if (await UserManager.IsLockedOutAsync(await UserManager.FindByIdAsync(item.ApplicationUserFk)))
+                        @if (await UserManager.IsLockedOutAsync(await UserManager.FindByIdAsync(item.Customer.ApplicationUserFk)))
                         {
                             <form method="post">
                                 <button class="btn" type="submit" asp-page-handler="UnblockRestaurateur" title="Unblock user" asp-route-id="@item.Id">

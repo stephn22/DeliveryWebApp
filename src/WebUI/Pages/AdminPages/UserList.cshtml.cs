@@ -106,7 +106,7 @@ namespace DeliveryWebApp.WebUI.Pages.AdminPages
             Riders = await _mediator.Send(new GetRidersQuery());
 
             var rider = Riders.First(r => r.Id == id);
-            var user = await _userManager.FindByIdAsync(rider.ApplicationUserFk);
+            var user = await _userManager.FindByIdAsync(rider.Customer.ApplicationUserFk);
 
             // block the user
             await _userManager.BlockUser(user);
@@ -122,7 +122,7 @@ namespace DeliveryWebApp.WebUI.Pages.AdminPages
 
             var rider = Riders.First(c => c.Id == id);
 
-            var user = await _userManager.FindByIdAsync(rider.ApplicationUserFk);
+            var user = await _userManager.FindByIdAsync(rider.Customer.ApplicationUserFk);
 
             // unblock
             await _userManager.UnblockUser(user);
@@ -137,7 +137,7 @@ namespace DeliveryWebApp.WebUI.Pages.AdminPages
             Riders = await _mediator.Send(new GetRidersQuery());
 
             var rider = Riders.First(r => r.Id == id);
-            var user = await _userManager.FindByIdAsync(rider.ApplicationUserFk);
+            var user = await _userManager.FindByIdAsync(rider.Customer.ApplicationUserFk);
 
             await _userManager.DeleteAsync(user);
             _context.Riders.Remove(rider);
@@ -154,7 +154,7 @@ namespace DeliveryWebApp.WebUI.Pages.AdminPages
             Restaurateurs = await _mediator.Send(new GetRestaurateursQuery());
 
             var restaurateur = Restaurateurs.First(r => r.Id == id);
-            var user = await _userManager.FindByIdAsync(restaurateur.ApplicationUserFk);
+            var user = await _userManager.FindByIdAsync(restaurateur.Customer.ApplicationUserFk);
 
             // block the user
             await _userManager.BlockUser(user);
@@ -170,7 +170,7 @@ namespace DeliveryWebApp.WebUI.Pages.AdminPages
 
             var restaurateur = Restaurateurs.First(c => c.Id == id);
 
-            var user = await _userManager.FindByIdAsync(restaurateur.ApplicationUserFk);
+            var user = await _userManager.FindByIdAsync(restaurateur.Customer.ApplicationUserFk);
 
             // unblock
             await _userManager.UnblockUser(user);
@@ -185,7 +185,7 @@ namespace DeliveryWebApp.WebUI.Pages.AdminPages
             Restaurateurs = await _mediator.Send(new GetRestaurateursQuery());
 
             var restaurateur = Restaurateurs.First(r => r.Id == id);
-            var user = await _userManager.FindByIdAsync(restaurateur.ApplicationUserFk);
+            var user = await _userManager.FindByIdAsync(restaurateur.Customer.ApplicationUserFk);
 
             await _userManager.DeleteAsync(user);
             _context.Restaurateurs.Remove(restaurateur);
@@ -205,11 +205,11 @@ namespace DeliveryWebApp.WebUI.Pages.AdminPages
 
                 case nameof(Riders):
                     var rider = Riders.First(u => u.Id == id);
-                    return await _userManager.FindByIdAsync(rider.ApplicationUserFk);
+                    return await _userManager.FindByIdAsync(rider.Customer.ApplicationUserFk);
 
                 case nameof(Restaurateurs):
                     var restaurateur = Restaurateurs.First(u => u.Id == id);
-                    return await _userManager.FindByIdAsync(restaurateur.ApplicationUserFk);
+                    return await _userManager.FindByIdAsync(restaurateur.Customer.ApplicationUserFk);
             }
 
             return null;

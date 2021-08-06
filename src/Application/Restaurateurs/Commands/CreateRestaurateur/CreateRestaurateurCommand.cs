@@ -23,13 +23,7 @@ namespace DeliveryWebApp.Application.Restaurateurs.Commands.CreateRestaurateur
             {
                 var entity = new Restaurateur
                 {
-                    ApplicationUserFk = request.Customer.ApplicationUserFk,
-                    Addresses = request.Customer.Addresses,
-                    Basket = request.Customer.Basket,
-                    Email = request.Customer.Email,
-                    FirstName = request.Customer.FirstName,
-                    LastName = request.Customer.LastName,
-                    Orders = request.Customer.Orders,
+                    Customer = request.Customer
                 };
 
                 _context.Customers.Remove(request.Customer);

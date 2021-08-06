@@ -36,7 +36,7 @@ namespace DeliveryWebApp.Application.Riders.Extensions
                     throw new NullReferenceException();
                 }
 
-                return await context.Riders.Where(r => r.Id == customerId).FirstAsync();
+                return await context.Riders.Where(r => r.Customer.Id == customerId).FirstAsync();
             }
             catch (NullReferenceException e)
             {

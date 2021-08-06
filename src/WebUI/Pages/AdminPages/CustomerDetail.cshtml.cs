@@ -190,7 +190,7 @@ namespace DeliveryWebApp.WebUI.Pages.AdminPages
 
                 try // if user was a restaurateur delete from table
                 {
-                    var restaurateur = await _context.Restaurateurs.Where(r => r.Id == Customer.Id).FirstAsync();
+                    var restaurateur = await _context.Restaurateurs.Where(r => r.Customer.Id == Customer.Id).FirstAsync();
 
                     await _mediator.Send(new DeleteRestaurateurCommand
                     {
@@ -246,7 +246,7 @@ namespace DeliveryWebApp.WebUI.Pages.AdminPages
 
                 try // if user was a rider, delete from table
                 {
-                    var rider = await _context.Riders.Where(r => r.Id == Customer.Id).FirstAsync();
+                    var rider = await _context.Riders.Where(r => r.CustomerId == Customer.Id).FirstAsync();
 
                     await _mediator.Send(new DeleteRiderCommand
                     {
