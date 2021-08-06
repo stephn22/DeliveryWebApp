@@ -41,7 +41,9 @@ namespace DeliveryWebApp.Application.IntegrationTests.Restaurateurs.Commands
 
             restaurateur.Should().NotBeNull();
             restaurateur.Should().Be(command.Customer);
-            restaurateur.Restaurant.Should().BeNull();
+            restaurateur.RestaurantName.Should().BeNull();
+            restaurateur.RestaurantAddress.Should().BeNull();
+            restaurateur.RestaurantCategory.Should().BeNull();
         }
     }
 }
