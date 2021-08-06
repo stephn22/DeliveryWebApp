@@ -1,3 +1,4 @@
+using System;
 using DeliveryWebApp.Application.Addresses.Commands.UpdateAddress;
 using DeliveryWebApp.Application.Common.Exceptions;
 using DeliveryWebApp.Application.Products.Queries.GetProducts;
@@ -22,6 +23,7 @@ using System.IO;
 using System.Threading.Tasks;
 using AutoMapper;
 using DeliveryWebApp.Application.Restaurateurs.Commands.UpdateRestaurateur;
+using DeliveryWebApp.Application.Restaurateurs.Queries.GetRestaurateurAddress;
 
 namespace DeliveryWebApp.WebUI.Pages.RestaurateurPages
 {
@@ -127,8 +129,13 @@ namespace DeliveryWebApp.WebUI.Pages.RestaurateurPages
                     RestaurateurId = Restaurateur.Id
                 });
 
-                HasRestaurant = (Restaurateur.RestaurantAddress != null && Restaurateur.Logo != null &&
-                                 Restaurateur.RestaurantName != null && Restaurateur.RestaurantCategory != null);
+                RestaurantAddress = await _mediator.Send(new GetRestaurateurAddressQuery
+                {
+                    Id = Restaurateur.Id
+                });
+
+                HasRestaurant = RestaurantAddress != null && Restaurateur.Logo != null &&
+                                 Restaurateur.RestaurantName != null && Restaurateur.RestaurantCategory != null;
                 //Orders = Restaurant.Orders.ToList();
             }
         }
@@ -310,18 +317,28 @@ namespace DeliveryWebApp.WebUI.Pages.RestaurateurPages
                 Longitude = Input.Longitude
             };
 
-            var id = await _mediator.Send(new UpdateRestaurateurCommand
+            try
             {
-                RestaurantAddress = RestaurantAddress,
-                RestaurantCategory = Input.Category,
-                Logo = bytes,
-                RestaurantName = Input.Name
-            });
+                var id = await _mediator.Send(new UpdateRestaurateurCommand
+                {
+                    Id = Restaurateur.Id,
+                    RestaurantAddress = RestaurantAddress,
+                    RestaurantCategory = Input.Category,
+                    Logo = bytes,
+                    RestaurantName = Input.Name
+                });
 
-            _logger.LogInformation($"Created new restaurant with id: {id}");
+                _logger.LogInformation($"Created new restaurant with id: {id}");
 
-            StatusMessage =
-                "Your restaurant has been created successfully";
+                StatusMessage =
+                    "Your restaurant has been created successfully";
+            }
+            catch (NotFoundException e)
+            {
+                _logger.LogError($"Could not find restaurateur that id: ${e.Message}");
+                return NotFound("Could not find restaurateur that id.");
+            }
+            
 
             return RedirectToPage();
         }

@@ -27,10 +27,19 @@ namespace DeliveryWebApp.WebUI.Controllers
             _mapper = mapper;
         }
 
-        [HttpPost]
-        public async Task<ActionResult<Product>> Create(Product request)
+        [HttpPost("{id:int}")]
+        public async Task<ActionResult<Product>> Create(Product request, int id)
         {
-            return await _mediator.Send(_mapper.Map<CreateProductCommand>(request));
+            return await _mediator.Send(new CreateProductCommand
+            {
+                RestaurateurId = id,
+                Name = request.Name,
+                Category = request.Category,
+                Discount = request.Discount,
+                Image = request.Image,
+                Price = request.Price,
+                Quantity = request.Quantity
+            });
         }
 
         /// <summary>
@@ -47,8 +56,8 @@ namespace DeliveryWebApp.WebUI.Controllers
             });
         }
 
-        [HttpPut]
-        public async Task<ActionResult<Product>> Update(Product request)
+        [HttpPut("{id:int}")]
+        public async Task<ActionResult<Product>> Update(Product request, int id)
         {
             return await _mediator.Send(_mapper.Map<UpdateProductCommand>(request));
         }

@@ -10,7 +10,7 @@
     <link type="text/css" rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/jsgrid/1.5.3/jsgrid-theme.min.css" />
 }
 
-@if (Model.Products.IsNullOrEmpty())
+@if (false) @*!Model.Products.IsNullOrEmpty()*@
 {
     <div class="alert alert-secondary" role="alert">
         Your restaurant has no products yet.
@@ -18,22 +18,22 @@
 }
 else
 {
-    <div id="jsGrid"></div>
+    @* FIXME: some jsgrid buttons do not work *@
+    <div id="jsGrid" style="padding-bottom: 7rem"></div>
 }
 
 @section Scripts {
     <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/jsgrid/1.5.3/jsgrid.min.js"></script>
 
     <script>
-        $(function () {
+        $(function() {
             const url = "/api/products";
-            const ajax = function (item, verb, json = true) {
-                if (verb === "POST") {
-                    item.restaurantId = @Model.Id;
-                }
+            const ajax = function(item, verb, json = true) {
+                const id = @Model.Id;
+
                 return $.ajax({
                     type: verb,
-                    url: url,
+                    url: `${url}/${id}`,
                     data: json ? JSON.stringify(item) : item,
                     dataType: "JSON",
                     contentType: json ? "application/json" : "text/plain",
@@ -52,7 +52,7 @@ else
                 pageButtonCount: 5,
                 deleteConfirm: "Do you really want to delete this?", //TODO: localize?
                 controller: {
-                    loadData: function (filter) {
+                    loadData: function(filter) {
                         const id = @Model.Id;
                         return $.ajax({
                             type: "GET",

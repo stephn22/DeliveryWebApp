@@ -4,6 +4,7 @@ using System.Threading.Tasks;
 using DeliveryWebApp.Application.Common.Interfaces;
 using DeliveryWebApp.Domain.Entities;
 using MediatR;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 
 namespace DeliveryWebApp.Application.Restaurateurs.Queries.GetRestaurateurAddress
@@ -21,7 +22,8 @@ namespace DeliveryWebApp.Application.Restaurateurs.Queries.GetRestaurateurAddres
         private readonly IApplicationDbContext _context;
         private readonly ILogger<GetRestaurateurAddressQuery> _logger;
 
-        public GetRestaurateurAddressQueryHandler(IApplicationDbContext context, ILogger<GetRestaurateurAddressQuery> logger)
+        public GetRestaurateurAddressQueryHandler(IApplicationDbContext context,
+            ILogger<GetRestaurateurAddressQuery> logger)
         {
             _context = context;
             _logger = logger;
@@ -31,8 +33,9 @@ namespace DeliveryWebApp.Application.Restaurateurs.Queries.GetRestaurateurAddres
         {
             try
             {
-                var r = await _context.Restaurateurs.FindAsync(request.Id);
-                return r.RestaurantAddress;
+                var entity =
+                    await _context.Addresses.FirstAsync(a => a.RestaurateurId == request.Id, cancellationToken);
+                return entity;
             }
             catch (InvalidOperationException e)
             {
