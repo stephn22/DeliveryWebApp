@@ -52,9 +52,8 @@ namespace DeliveryWebApp.Application.Restaurateurs.Extensions
         {
             try
             {
-
                 var restaurateur = await (from r in context.Restaurateurs
-                    where r.Customer.Id == customer.Id
+                    where r.Customer.ApplicationUserFk == applicationUserFk
                     select r).FirstAsync();
 
                 return restaurateur;
