@@ -1,16 +1,13 @@
-﻿using Microsoft.AspNetCore.Mvc;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using AutoMapper;
-using DeliveryWebApp.Application.Common.Security;
+﻿using AutoMapper;
 using DeliveryWebApp.Application.Products.Commands.CreateProduct;
 using DeliveryWebApp.Application.Products.Commands.DeleteProduct;
 using DeliveryWebApp.Application.Products.Commands.UpdateProducts;
 using DeliveryWebApp.Application.Products.Queries.GetProducts;
 using DeliveryWebApp.Domain.Entities;
 using MediatR;
+using Microsoft.AspNetCore.Mvc;
+using System.Collections.Generic;
+using System.Threading.Tasks;
 
 namespace DeliveryWebApp.WebUI.Controllers
 {
@@ -62,8 +59,8 @@ namespace DeliveryWebApp.WebUI.Controllers
             return await _mediator.Send(_mapper.Map<UpdateProductCommand>(request));
         }
 
-        [HttpDelete]
-        public async Task<ActionResult<Product>> Delete(Product request)
+        [HttpDelete("{id:int}")]
+        public async Task<ActionResult<Product>> Delete(Product request, int id)
         {
             return await _mediator.Send(_mapper.Map<DeleteProductCommand>(request));
         }

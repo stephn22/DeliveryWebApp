@@ -1,5 +1,4 @@
 ﻿@page "{id:int?}"
-@using IdentityServer4.Extensions
 @model DeliveryWebApp.WebUI.Pages.RestaurateurPages.RestaurantOrdersModel
 @{
     ViewData["Title"] = "Restaurant Orders";
@@ -10,35 +9,33 @@
     <link type="text/css" rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/jsgrid/1.5.3/jsgrid-theme.min.css" />
 }
 
-@if (Model.Orders.IsNullOrEmpty())
-{
-    <div class=" alert alert-secondary" role="alert">
-        Your restaurant has no orders yet.
-    </div>
-}
-else
-{
-    <div id="jsGrid"></div>
-}
+<a asp-page="/RestaurateurPages/RestaurantDashboard" title="Back to dashboard" id="back">
+    <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" fill="black" class="bi bi-arrow-left" viewBox="0 0 16 16">
+        <path fill-rule="evenodd" d="M15 8a.5.5 0 0 0-.5-.5H2.707l3.147-3.146a.5.5 0 1 0-.708-.708l-4 4a.5.5 0 0 0 0 .708l4 4a.5.5 0 0 0 .708-.708L2.707 8.5H14.5A.5.5 0 0 0 15 8z" />
+    </svg>
+</a>
+
+<div id="jsGrid" style="padding-bottom: 7rem; display: table"></div>
 
 @section Scripts {
     <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/jsgrid/1.5.3/jsgrid.min.js"></script>
+    <script type="text/javascript" src="/js/jsgrid-fields/dateField.js"></script>
 
     <script>
         $(function () {
-            const url = "/api/orders";
+            const id = @Model.Id;
+            const url = `/api/orders/${id}`;
+
             const ajax = function (item, verb, json = true) {
-                if (verb === "POST") {
-                    item.restaurantId = @Model.Id;
-                }
                 return $.ajax({
                     type: verb,
                     url: url,
                     data: json ? JSON.stringify(item) : item,
-                    dataType: "JSON",
-                    contentType: json ? "application/json" : "text/plain",
+                    dataType: "json",
+                    contentType: json ? "application/json" : "text/plain"
                 });
             };
+
             $("#jsGrid").jsGrid({
                 height: "90%",
                 width: "100%",
@@ -50,29 +47,19 @@ else
                 autoload: true,
                 pageSize: 15,
                 pageButtonCount: 5,
-                deleteConfirm: "Do you really want to delete this?", //TODO: localize?
+                deleteConfirm: "Do you really want to delete this item?", //TODO: localize
                 controller: {
-                    loadData: function (filter) {
-                        const id = @Model.Id;
-                        return $.ajax({
-                            type: "GET",
-                            url: `${url}/${id}`,
-                            data: filter,
-                            dataType: "json"
-                        });
-                    },
+                    loadData: filter => ajax(filter, "GET", json = false),
                     insertItem: item => ajax(item, "POST"),
                     updateItem: item => ajax(item, "PUT"),
                     deleteItem: item => ajax(item, "DELETE"),
                 },
-                // TODO: date type
                 fields: [
                     { name: "customerId", type: "text", width: 150, title: "CustomerId" },
-                    /*{ name: "image", type: "text", width: 30, title: "Image"},*/
-                    { name: "date", type: "number", width: 50, title: "Date" },
+                    { name: "date", type: "date", myCustomProperty: "date", width: 50, title: "Date" },
                     { name: "totalPrice", type: "number", width: 50, title: "Total Price" },
                     { name: "status", type: "text", width: 150, title: "Status" },
-                    { name: "deliveryDate", type: "number", width: 50, title: "deliveryDate" },
+                    { name: "deliveryDate", type: "date", myCustomProperty: "date", width: 50, title: "Delivery Date" },
                     { type: "control" }
                 ]
             });

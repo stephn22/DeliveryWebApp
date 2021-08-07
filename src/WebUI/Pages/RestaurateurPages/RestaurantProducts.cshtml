@@ -1,5 +1,4 @@
 ﻿@page "{id:int?}"
-@using IdentityServer4.Extensions
 @model DeliveryWebApp.WebUI.Pages.RestaurateurPages.RestaurantProductsModel
 @{
     ViewData["Title"] = "Restaurant Products";
@@ -10,33 +9,29 @@
     <link type="text/css" rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/jsgrid/1.5.3/jsgrid-theme.min.css" />
 }
 
-@if (false) @*!Model.Products.IsNullOrEmpty()*@
-{
-    <div class="alert alert-secondary" role="alert">
-        Your restaurant has no products yet.
-    </div>
-}
-else
-{
-    @* FIXME: some jsgrid buttons do not work *@
-    <div id="jsGrid" style="padding-bottom: 7rem"></div>
-}
+<a asp-page="/RestaurateurPages/RestaurantDashboard" title="Back to dashboard" id="back">
+    <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" fill="black" class="bi bi-arrow-left" viewBox="0 0 16 16">
+        <path fill-rule="evenodd" d="M15 8a.5.5 0 0 0-.5-.5H2.707l3.147-3.146a.5.5 0 1 0-.708-.708l-4 4a.5.5 0 0 0 0 .708l4 4a.5.5 0 0 0 .708-.708L2.707 8.5H14.5A.5.5 0 0 0 15 8z" />
+    </svg>
+</a>
+
+<div id="jsGrid" style="padding-bottom: 10rem; display: table"></div>
 
 @section Scripts {
     <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/jsgrid/1.5.3/jsgrid.min.js"></script>
 
     <script>
         $(function() {
-            const url = "/api/products";
-            const ajax = function(item, verb, json = true) {
-                const id = @Model.Id;
+            const id = @Model.Id;
+            const url = `/api/products/${id}`;
 
+            const ajax = function(item, verb, json = true) {
                 return $.ajax({
                     type: verb,
-                    url: `${url}/${id}`,
+                    url: url,
                     data: json ? JSON.stringify(item) : item,
-                    dataType: "JSON",
-                    contentType: json ? "application/json" : "text/plain",
+                    dataType: "json",
+                    contentType: json ? "application/json" : "text/plain"
                 });
             };
             $("#jsGrid").jsGrid({
@@ -50,25 +45,27 @@ else
                 autoload: true,
                 pageSize: 15,
                 pageButtonCount: 5,
-                deleteConfirm: "Do you really want to delete this?", //TODO: localize?
+                deleteConfirm: "Do you really want to delete this item?", //TODO: localize
                 controller: {
-                    loadData: function(filter) {
-                        const id = @Model.Id;
-                        return $.ajax({
-                            type: "GET",
-                            url: `${url}/${id}`,
-                            data: filter,
-                            dataType: "json"
-                        });
-                    },
+                    loadData: filter => ajax(filter, "GET", json = false),
                     insertItem: item => ajax(item, "POST"),
                     updateItem: item => ajax(item, "PUT"),
-                    deleteItem: item => ajax(item, "DELETE"),
+                    deleteItem: item => ajax(item, "DELETE")
                 },
                 fields: [
                     { name: "name", type: "text", width: 150, title: "Name" },
-                    { name: "price", type: "number", width: 50, title: "Price" },
-                    { name: "discount", type: "number", width: 50, title: "Discount" },
+                    { name: "price", type: "number", validate: {
+                        validator: function (value, item) {
+                            return /^(\d*([.,](?=\d{3}))?\d+)+((?!\2)[.,]\d\d)?$/.test(value);
+                        },
+                        message: "Please enter a valid price"
+                    }, width: 50, title: "Price" },
+                    { name: "discount", type: "number", validate: {
+                        validator: function(value, item) {
+                            return /^(\d\d?$|^100)$/gm.test(value);
+                        },
+                        message: "Please enter a valid discount"
+                    }, width: 50, title: "Discount" },
                     { name: "category", type: "text", width: 150, title: "Category" },
                     { name: "quantity", type: "number", width: 50, title: "Quantity" },
                     { type: "control" }
