@@ -3,7 +3,9 @@ using System.Linq;
 using System.Threading.Tasks;
 using DeliveryWebApp.Application.Customers.Commands.DeleteCustomer;
 using DeliveryWebApp.Application.Customers.Queries.GetCustomers;
+using DeliveryWebApp.Application.Restaurateurs.Commands.DeleteRestaurateur;
 using DeliveryWebApp.Application.Restaurateurs.Queries.GetRestaurateurs;
+using DeliveryWebApp.Application.Riders.Commands.DeleteRider;
 using DeliveryWebApp.Application.Riders.Queries.GetRiders;
 using DeliveryWebApp.Domain.Entities;
 using DeliveryWebApp.Infrastructure.Identity;
@@ -139,8 +141,12 @@ namespace DeliveryWebApp.WebUI.Pages.AdminPages
             var rider = Riders.First(r => r.Id == id);
             var user = await _userManager.FindByIdAsync(rider.Customer.ApplicationUserFk);
 
+
+            await _mediator.Send(new DeleteRiderCommand
+            {
+                Id = rider.Id
+            });
             await _userManager.DeleteAsync(user);
-            _context.Riders.Remove(rider);
 
             await _context.SaveChangesAsync();
 
@@ -187,8 +193,11 @@ namespace DeliveryWebApp.WebUI.Pages.AdminPages
             var restaurateur = Restaurateurs.First(r => r.Id == id);
             var user = await _userManager.FindByIdAsync(restaurateur.Customer.ApplicationUserFk);
 
+            await _mediator.Send(new DeleteRestaurateurCommand
+            {
+                Id = restaurateur.Id
+            });
             await _userManager.DeleteAsync(user);
-            _context.Restaurateurs.Remove(restaurateur);
 
             _logger.LogInformation($"Deleted user with id: {user.Id}");
 
