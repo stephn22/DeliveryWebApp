@@ -36,5 +36,3 @@ DateField.prototype = new jsGrid.DateField({
         return this._editPicker.datepicker("getDate").toISOString();
     }
 });
-
-jsGrid.fields.date = DateField;
