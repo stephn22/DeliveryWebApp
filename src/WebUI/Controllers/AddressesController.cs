@@ -35,12 +35,12 @@ namespace DeliveryWebApp.WebUI.Controllers
             return await _mediator.Send(_mapper.Map<CreateAddressCommand>(request));
         }
 
-        [HttpGet]
-        public async Task<List<Address>> Read(int customerId)
+        [HttpGet("{id:int}")]
+        public async Task<List<Address>> Read(int id)
         {
             return await _mediator.Send(new GetAddressesQuery
             {
-                CustomerId = customerId
+                CustomerId = id
             });
         }
 

@@ -1,9 +1,4 @@
-﻿using Microsoft.AspNetCore.Mvc;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using AutoMapper;
+﻿using AutoMapper;
 using DeliveryWebApp.Application.Common.Security;
 using DeliveryWebApp.Application.Orders.Commands.CreateOrder;
 using DeliveryWebApp.Application.Orders.Commands.DeleteOrder;
@@ -11,6 +6,9 @@ using DeliveryWebApp.Application.Orders.Commands.UpdateOrder;
 using DeliveryWebApp.Application.Orders.Queries.GetOrders;
 using DeliveryWebApp.Domain.Entities;
 using MediatR;
+using Microsoft.AspNetCore.Mvc;
+using System.Collections.Generic;
+using System.Threading.Tasks;
 
 namespace DeliveryWebApp.WebUI.Controllers
 {
@@ -28,18 +26,18 @@ namespace DeliveryWebApp.WebUI.Controllers
             _mapper = mapper;
         }
 
-        [HttpPost]
-        public async Task<ActionResult<Order>> Create(Order request)
+        [HttpPost("{id:int}")]
+        public async Task<ActionResult<Order>> Create(Order request, int id)
         {
             return await _mediator.Send(_mapper.Map<CreateOrderCommand>(request));
         }
 
-        [HttpGet("{restaurantId:int?}")]
-        public async Task<List<Order>> Read(int? restaurantId)
+        [HttpGet("{id:int}")]
+        public async Task<List<Order>> Read(int id)
         {
             return await _mediator.Send(new GetOrdersQuery
             {
-                RestaurateurId = restaurantId
+                RestaurateurId = id
             });
         }
 
