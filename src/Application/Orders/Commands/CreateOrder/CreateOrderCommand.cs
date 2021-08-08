@@ -15,6 +15,7 @@ namespace DeliveryWebApp.Application.Orders.Commands.CreateOrder
     {
         public Customer Customer { get; set; }
         public ICollection<Product> Products { get; set; }
+        public int RestaurateurId { get; set; }
     }
 
     public class CreateOrderCommandHandler : IRequestHandler<CreateOrderCommand, Order>
@@ -32,11 +33,7 @@ namespace DeliveryWebApp.Application.Orders.Commands.CreateOrder
 
             var entity = new Order
             {
-                Customer = request.Customer,
-                Date = DateTime.Now,
-                Products = request.Products,
-                TotalPrice = totalPrice,
-                Status = OrderStatus.Open
+                // TODO: complete
             };
 
             _context.Orders.Add(entity);

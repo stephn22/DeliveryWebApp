@@ -14,7 +14,10 @@ namespace DeliveryWebApp.Infrastructure.Persistence.Configurations
                 .HasColumnType(PropertyName.Money)
                 .IsRequired();
 
-            builder.ToTable("Riders");
+            //builder.HasOne(r => r.Customer)
+            //    .WithOne()
+            //    .HasForeignKey<Rider>(c => c.Id)
+            //    .OnDelete(DeleteBehavior.ClientCascade);
         }
     }
 }

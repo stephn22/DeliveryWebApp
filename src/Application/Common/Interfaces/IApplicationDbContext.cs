@@ -9,7 +9,9 @@ namespace DeliveryWebApp.Application.Common.Interfaces
     {
         DbSet<Address> Addresses { get; set; }
         DbSet<Basket> Baskets { get; set; }
+        DbSet<BasketItem> BasketItems { get; set; }
         DbSet<Order> Orders { get; set; }
+        DbSet<OrderItem> OrderItems { get; set; }
         DbSet<Product> Products { get; set; }
         DbSet<Customer> Customers { get; set; }
         DbSet<Restaurateur> Restaurateurs { get; set; }

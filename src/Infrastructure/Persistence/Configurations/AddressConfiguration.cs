@@ -24,12 +24,17 @@ namespace DeliveryWebApp.Infrastructure.Persistence.Configurations
                 .IsRequired();
 
             builder.Property(a => a.Longitude)
-                .HasPrecision(18, 9)
+                .HasPrecision(16, 3)
                 .IsRequired();
 
             builder.Property(a => a.Latitude)
-                .HasPrecision(18, 9)
+                .HasPrecision(16, 3)
                 .IsRequired();
+
+            builder.HasOne(a => a.Customer)
+                .WithMany(c => c.Addresses)
+                .HasForeignKey(c => c.Id)
+                .OnDelete(DeleteBehavior.ClientCascade);
         }
     }
 }

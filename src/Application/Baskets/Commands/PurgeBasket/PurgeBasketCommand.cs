@@ -30,7 +30,7 @@ namespace DeliveryWebApp.Application.Baskets.Commands.PurgeBasket
         {
             var entity = await _context.Baskets.FindAsync(request.Id);
 
-            entity.Products.Clear();
+            // TODO: clear basket items
             entity.TotalPrice = 0.00M;
 
             await _context.SaveChangesAsync(cancellationToken);

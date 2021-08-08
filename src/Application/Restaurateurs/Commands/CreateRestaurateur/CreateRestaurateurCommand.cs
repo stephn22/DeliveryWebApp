@@ -23,7 +23,7 @@ namespace DeliveryWebApp.Application.Restaurateurs.Commands.CreateRestaurateur
             {
                 var entity = new Restaurateur
                 {
-                    Customer = request.Customer
+                    CustomerId = request.Customer.Id
                 };
 
                 _context.Restaurateurs.Add(entity);

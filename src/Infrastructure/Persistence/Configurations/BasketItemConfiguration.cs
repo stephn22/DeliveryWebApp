@@ -5,26 +5,28 @@ using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
 namespace DeliveryWebApp.Infrastructure.Persistence.Configurations
 {
-    public class OrderConfiguration : IEntityTypeConfiguration<Order>
+    public class BasketItemConfiguration : IEntityTypeConfiguration<BasketItem>
     {
-        public void Configure(EntityTypeBuilder<Order> builder)
+        public void Configure(EntityTypeBuilder<BasketItem> builder)
         {
-            builder.Property(u => u.TotalPrice)
+            builder.Property(b => b.ProductPrice)
                 .HasPrecision(16, 3)
                 .HasColumnType(PropertyName.Money)
                 .IsRequired();
 
-            builder.Property(o => o.Date)
-                .HasColumnType("datetime2")
-                .HasPrecision(0)
+            builder.Property(b => b.Quantity)
                 .IsRequired();
 
-            builder.Property(u => u.Status)
+            builder.Property(b => b.Discount)
                 .IsRequired();
 
-            builder.HasOne(o => o.Customer)
-                .WithMany(c => c.Orders)
-                .HasForeignKey(o => o.CustomerId)
+            builder.HasOne(b => b.Product)
+                .WithOne()
+                .HasForeignKey<Product>(b => b.Id);
+
+            builder.HasOne(b => b.Basket)
+                .WithMany(b => b.BasketItems)
+                .HasForeignKey(b => b.BasketId)
                 .OnDelete(DeleteBehavior.ClientCascade);
         }
     }

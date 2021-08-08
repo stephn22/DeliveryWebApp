@@ -1,5 +1,7 @@
 ﻿namespace DeliveryWebApp.Domain.Constants
 {
+    // TODO: New, Checkout, Paid, Failed, Shipped, Delivered, Returned, and Complete ??
+
     /// <summary>
     /// Describes the status of an order
     /// </summary>

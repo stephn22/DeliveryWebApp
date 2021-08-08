@@ -42,9 +42,7 @@ namespace DeliveryWebApp.Application.Products.Queries.GetProducts
 
                 if (request.OrderId != null)
                 {
-                    return await (from o in _context.Orders
-                        where o.Id == request.OrderId
-                        select o.Products.ToList()).FirstAsync(cancellationToken);
+                    // TODO: complete
                 }
 
                 return null;

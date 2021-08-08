@@ -10,24 +10,24 @@ using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
 namespace DeliveryWebApp.Infrastructure.Persistence.Configurations
 {
-    public class ProductConfiguration : IEntityTypeConfiguration<Product>
+    public class OrderItemConfiguration : IEntityTypeConfiguration<OrderItem>
     {
-        public void Configure(EntityTypeBuilder<Product> builder)
+        public void Configure(EntityTypeBuilder<OrderItem> builder)
         {
-            builder.Property(p => p.Name)
-                .IsRequired();
-
-            builder.Property(p => p.Quantity)
-                .IsRequired();
-
-            builder.Property(p => p.Price)
+            builder.Property(u => u.ProductPrice)
                 .HasPrecision(16, 3)
                 .HasColumnType(PropertyName.Money)
                 .IsRequired();
 
-            builder.HasOne(p => p.Restaurateur)
-                .WithMany(r => r.Products)
-                .HasForeignKey(p => p.RestaurateurId)
+            builder.Property(u => u.Quantity)
+                .IsRequired();
+
+            builder.Property(u => u.Discount)
+                .IsRequired();
+
+            builder.HasOne(o => o.Order)
+                .WithMany(o => o.OrderItems)
+                .HasForeignKey(o => o.OrderId)
                 .OnDelete(DeleteBehavior.ClientCascade);
         }
     }

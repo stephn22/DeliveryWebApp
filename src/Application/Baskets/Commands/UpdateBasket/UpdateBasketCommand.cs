@@ -15,6 +15,7 @@ namespace DeliveryWebApp.Application.Baskets.Commands.UpdateBasket
     {
         public int CustomerId { get; set; }
         public Product Product { get; set; }
+        // TODO: basket item
     }
 
     public class UpdateBasketCommandHandler : IRequestHandler<UpdateBasketCommand, Basket>
@@ -40,10 +41,10 @@ namespace DeliveryWebApp.Application.Baskets.Commands.UpdateBasket
             }
 
             // if Products is null instantiate a new list
-            entity.Products ??= new List<Product>();
-            entity.Products.Add(request.Product);
+            //entity.Products ??= new List<Product>();
+            //entity.Products.Add(request.Product);
 
-            entity.TotalPrice = Product.TotalPrice(entity.Products.ToList());
+            //entity.TotalPrice = Product.TotalPrice(entity.Products.ToList());
 
             await _context.SaveChangesAsync(cancellationToken);
 

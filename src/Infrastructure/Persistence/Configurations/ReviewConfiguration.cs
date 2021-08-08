@@ -35,10 +35,10 @@ namespace DeliveryWebApp.Infrastructure.Persistence.Configurations
             builder.HasIndex(r => r.RestaurateurId)
                 .IsUnique();
 
-            //builder.HasOne(u => u.Restaurateur)
-            //    .WithOne()
-            //    .HasForeignKey<Restaurateur>(r => r.Id)
-            //    .OnDelete(DeleteBehavior.NoAction);
+            builder.HasOne(r => r.Customer)
+                .WithMany(c => c.Reviews)
+                .HasForeignKey(r => r.CustomerId)
+                .OnDelete(DeleteBehavior.ClientCascade);
         }
     }
 }

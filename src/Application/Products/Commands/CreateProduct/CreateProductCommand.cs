@@ -1,12 +1,9 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading;
-using System.Threading.Tasks;
-using DeliveryWebApp.Application.Common.Interfaces;
+﻿using DeliveryWebApp.Application.Common.Interfaces;
 using DeliveryWebApp.Domain.Entities;
 using MediatR;
+using System.Collections.Generic;
+using System.Threading;
+using System.Threading.Tasks;
 
 namespace DeliveryWebApp.Application.Products.Commands.CreateProduct
 {
@@ -18,7 +15,7 @@ namespace DeliveryWebApp.Application.Products.Commands.CreateProduct
         public int Discount { get; set; }
         public string Category { get; set; }
         public int Quantity { get; set; }
-        public int RestaurateurId { get; set; }
+        public Restaurateur Restaurateur { get; set; }
     }
 
     public class CreateProductCommandHandler : IRequestHandler<CreateProductCommand, Product>
@@ -40,10 +37,13 @@ namespace DeliveryWebApp.Application.Products.Commands.CreateProduct
                 Discount = request.Discount,
                 Category = request.Category,
                 Quantity = request.Quantity,
-                RestaurateurId = request.RestaurateurId
+                RestaurateurId = request.Restaurateur.Id
             };
 
-            _context.Products.Add(entity);
+            request.Restaurateur.Products ??= new List<Product>();
+            request.Restaurateur.Products.Add(entity);
+
+            //_context.Products.Add(entity);
 
             await _context.SaveChangesAsync(cancellationToken);
 

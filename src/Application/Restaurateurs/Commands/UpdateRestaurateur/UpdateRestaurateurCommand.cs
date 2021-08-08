@@ -54,6 +54,7 @@ namespace DeliveryWebApp.Application.Restaurateurs.Commands.UpdateRestaurateur
             if (request.RestaurantAddress != null)
             {
                 entity.RestaurantAddress = request.RestaurantAddress;
+                entity.RestaurantAddressId = request.RestaurantAddress.Id;
             }
 
             if (request.Product != null)

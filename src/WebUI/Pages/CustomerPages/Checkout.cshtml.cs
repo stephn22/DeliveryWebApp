@@ -61,7 +61,7 @@ namespace DeliveryWebApp.WebUI.Pages.CustomerPages
                 CustomerId = Customer.Id
             });
 
-            Products = Basket.Products.ToList();
+            // TODO: BasketProducts
 
             return Page();
         }

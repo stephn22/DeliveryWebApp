@@ -40,7 +40,7 @@ namespace DeliveryWebApp.WebUI.Pages.CustomerPages
 
             var customer = await _context.Customers.Where(c => c.ApplicationUserFk == user.Id).FirstAsync();
             Basket = customer.Basket;
-            Products = Basket.Products.ToList();
+            // TODO: Basket products
 
             return Page();
         }
