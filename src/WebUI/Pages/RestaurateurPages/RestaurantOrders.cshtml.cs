@@ -1,6 +1,8 @@
-using DeliveryWebApp.Application.Common.Interfaces;
+﻿using DeliveryWebApp.Application.Common.Interfaces;
+using DeliveryWebApp.Application.Common.Security;
 using DeliveryWebApp.Application.Orders.Queries.GetOrders;
 using DeliveryWebApp.Domain.Entities;
+using DeliveryWebApp.Infrastructure.Security;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
@@ -9,6 +11,7 @@ using System.Threading.Tasks;
 
 namespace DeliveryWebApp.WebUI.Pages.RestaurateurPages
 {
+    [Authorize(Roles = RoleName.Restaurateur)]
     public class RestaurantOrdersModel : PageModel
     {
         private readonly IMediator _mediator;

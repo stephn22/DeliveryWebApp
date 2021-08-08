@@ -1,4 +1,5 @@
 ﻿@page "{id:int?}"
+@using IdentityServer4.Extensions
 @model DeliveryWebApp.WebUI.Pages.RestaurateurPages.RestaurantProductsModel
 @{
     ViewData["Title"] = "Restaurant Products";
@@ -15,62 +16,108 @@
     </svg>
 </a>
 
-<div id="jsGrid" style="padding-bottom: 10rem; display: table"></div>
+<div class="text-end">
+    <a id="add-product-btn" class="btn rounded-pill btn-primary" type="button" asp-page="/RestaurateurPages/AddProduct">
+        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-plus-square-fill" viewBox="0 0 16 16">
+            <path d="M2 0a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V2a2 2 0 0 0-2-2H2zm6.5 4.5v3h3a.5.5 0 0 1 0 1h-3v3a.5.5 0 0 1-1 0v-3h-3a.5.5 0 0 1 0-1h3v-3a.5.5 0 0 1 1 0z" />
+        </svg>
+        Product
+    </a>
+</div>
+<br />
 
-@section Scripts {
-    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/jsgrid/1.5.3/jsgrid.min.js"></script>
+@if (Model.Products.IsNullOrEmpty())
+{
+    <div class="alert alert-secondary" role="alert">
+        Your restaurant has no products yet.
+    </div>
+}
+else
+{
+    <table class="table">
+        <thead>
+            <tr class="table-primary">
+                <th>
+                    @Html.DisplayNameFor(model => model.Products[0].Image)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.Products[0].Name)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.Products[0].Quantity)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.Products[0].Price)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.Products[0].Discount)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.Products[0].Category)
+                </th>
+                <th></th>
+                <th></th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var product in Model.Products)
+            {
+                <tr>
+                    <td>
+                        @if (!product.Image.IsNullOrEmpty())
+                        {
+                            <img class="img-dashboard square rounded img-fluid" style="height: 60px; width: 60px" src="data:image/jpeg;base64,@Convert.ToBase64String(product.Image)" alt="" />
+                        }
+                    </td>
+                    <td>
+                        @Html.DisplayFor(model => product.Name)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(model => product.Quantity)
+                    </td>
+                    <td>
+                        @product.Price €
+                    </td>
+                    <td>
+                        @Html.DisplayFor(model => product.Discount) %
+                    </td>
+                    <td>
+                        @Html.DisplayFor(model => product.Category)
+                    </td>
+                    <td>
+                        <a asp-page="/RestaurateurPages/ProductDetail" asp-route-id="@product.Id">Details</a>
+                    </td>
+                    <td>
+                        <a class="btn" title="Delete product" data-bs-toggle="modal" data-bs-target="#product-@product.Id-delete-modal">
+                            <img src="/icons/trash.svg" alt="delete" height="16" width="16" />
+                        </a>
 
-    <script>
-        $(function() {
-            const id = @Model.Id;
-            const url = `/api/products/${id}`;
+                        @* Vertically centered modal to confirm action *@
 
-            const ajax = function(item, verb, json = true) {
-                return $.ajax({
-                    type: verb,
-                    url: url,
-                    data: json ? JSON.stringify(item) : item,
-                    dataType: "json",
-                    contentType: json ? "application/json" : "text/plain"
-                });
-            };
-            $("#jsGrid").jsGrid({
-                height: "90%",
-                width: "100%",
-                filtering: true,
-                inserting: true,
-                editing: true,
-                sorting: true,
-                paging: true,
-                autoload: true,
-                pageSize: 15,
-                pageButtonCount: 5,
-                deleteConfirm: "Do you really want to delete this item?", //TODO: localize
-                controller: {
-                    loadData: filter => ajax(filter, "GET", json = false),
-                    insertItem: item => ajax(item, "POST"),
-                    updateItem: item => ajax(item, "PUT"),
-                    deleteItem: item => ajax(item, "DELETE")
-                },
-                fields: [
-                    { name: "name", type: "text", width: 150, title: "Name" },
-                    { name: "price", type: "number", validate: {
-                        validator: function (value, item) {
-                            return /^(\d*([.,](?=\d{3}))?\d+)+((?!\2)[.,]\d\d)?$/.test(value);
-                        },
-                        message: "Please enter a valid price"
-                    }, width: 50, title: "Price" },
-                    { name: "discount", type: "number", validate: {
-                        validator: function(value, item) {
-                            return /^(\d\d?$|^100)$/gm.test(value);
-                        },
-                        message: "Please enter a valid discount"
-                    }, width: 50, title: "Discount" },
-                    { name: "category", type: "text", width: 150, title: "Category" },
-                    { name: "quantity", type: "number", width: 50, title: "Quantity" },
-                    { type: "control" }
-                ]
-            });
-        });
-    </script>
+                        <div class="modal fade show" id="customer-@product.Id-delete-modal" aria-labelledby="customer-@product.Id-delete-modal-title" aria-modal="true" role="dialog">
+                            <div id="" class="modal-dialog modal-dialog-centered">
+                                <div class="modal-content">
+                                    <div class="modal-header">
+                                        <h5 class="modal-title" id="customer-@product.Id-delete-modal-title">Delete product @product.Name</h5>
+                                        <button class="btn-close" data-bs-dismiss="modal" aria-label="close"></button>
+                                    </div>
+                                    <div class="modal-body">
+                                        <p>Are you sure you want to <strong>permanently delete</strong> "@product.Name"?</p>
+                                    </div>
+                                    <div class="modal-footer">
+                                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+
+                                        <form method="post">
+                                            <button type="submit" class="btn btn-primary" value="DeleteProduct" asp-page-handler="DeleteProduct" asp-route-id="@product.Id">Confirm</button>
+                                        </form>
+
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
 }
