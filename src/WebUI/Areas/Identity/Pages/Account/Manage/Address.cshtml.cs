@@ -140,7 +140,6 @@ namespace DeliveryWebApp.WebUI.Areas.Identity.Pages.Account.Manage
 
             await _mediator.Send(new CreateAddressCommand
             {
-                CustomerId = Customer.Id,
                 Customer = Customer,
                 AddressLine1 = Input.AddressLine1,
                 AddressLine2 = Input.AddressLine2,

@@ -4,5 +4,11 @@
     "inputFiles": [
       "wwwroot/lib/bootstrap/dist/css/bootstrap.css"
     ]
+  },
+  {
+    "outputFileName": "wwwroot/js/classes/address.min.js",
+    "inputFiles": [
+      "wwwroot/js/classes/address.js"
+    ]
   }
 ]
