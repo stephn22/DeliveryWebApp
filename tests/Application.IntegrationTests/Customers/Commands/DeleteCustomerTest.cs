@@ -5,6 +5,7 @@ using FluentAssertions;
 using NUnit.Framework;
 using System.Threading.Tasks;
 using DeliveryWebApp.Application.Restaurateurs.Commands.CreateRestaurateur;
+using DeliveryWebApp.Application.Riders.Commands.CreateRider;
 
 namespace DeliveryWebApp.Application.IntegrationTests.Customers.Commands
 {
@@ -43,6 +44,41 @@ namespace DeliveryWebApp.Application.IntegrationTests.Customers.Commands
 
             var customer = await FindAsync<Customer>(item.Id);
             customer.Should().BeNull();
+        }
+
+        [Test]
+        public async Task ShouldDeleteCustomerAndRiderAsync()
+        {
+            var userId = await RunAsDefaultUserAsync();
+
+            var customerCommand = new CreateCustomerCommand
+            {
+                ApplicationUserFk = userId,
+                FirstName = "John",
+                LastName = "Doe",
+                Email = "johndoe@gmail.com"
+            };
+
+            var c = await SendAsync(customerCommand);
+
+            var command = new CreateRiderCommand
+            {
+                Customer = c,
+                DeliveryCredit = 12.52M
+            };
+
+            var r = await SendAsync(command);
+
+            await SendAsync(new DeleteCustomerCommand
+            {
+                Customer = c
+            });
+
+            var customer = await FindAsync<Customer>(c.Id);
+            var rider = await FindAsync<Rider>(r.Id);
+
+            customer.Should().BeNull();
+            rider.Should().BeNull();
         }
 
         [Test]
