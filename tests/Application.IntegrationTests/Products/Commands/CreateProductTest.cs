@@ -11,14 +11,14 @@ namespace DeliveryWebApp.Application.IntegrationTests.Products.Commands
     using static Testing;
     public class CreateProductTest : TestBase
     {
-        [Test]
-        public void ShouldRequireMinimumFields()
-        {
-            var command = new CreateProductCommand();
+        //[Test]
+        //public void ShouldRequireMinimumFields()
+        //{
+        //    var command = new CreateProductCommand();
 
-            FluentActions.Invoking(() =>
-                SendAsync(command)).Should().Throw<ValidationException>();
-        }
+        //    FluentActions.Invoking(() =>
+        //        SendAsync(command)).Should().Throw<ValidationException>();
+        //}
 
         [Test]
         public async Task ShouldCreateProductAsync()

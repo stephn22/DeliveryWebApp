@@ -14,14 +14,14 @@ namespace DeliveryWebApp.Application.IntegrationTests.Requests.Commands
 
     public class CreateRequestTest : TestBase
     {
-        [Test]
-        public void ShouldRequireMinimumFields()
-        {
-            var command = new CreateCustomerCommand();
+        //[Test]
+        //public void ShouldRequireMinimumFields()
+        //{
+        //    var command = new CreateCustomerCommand();
 
-            FluentActions.Invoking(() =>
-                SendAsync(command)).Should().Throw<ValidationException>();
-        }
+        //    FluentActions.Invoking(() =>
+        //        SendAsync(command)).Should().Throw<ValidationException>();
+        //}
 
         [Test]
         public async Task ShouldCreateRequestAsync()

@@ -16,14 +16,14 @@ namespace DeliveryWebApp.Application.IntegrationTests.Customers.Commands
 
     public class DeleteCustomerTest : TestBase
     {
-        [Test]
-        public void ShouldRequireMinimumFields()
-        {
-            var command = new DeleteCustomerCommand();
+        //[Test]
+        //public void ShouldRequireMinimumFields()
+        //{
+        //    var command = new DeleteCustomerCommand();
 
-            FluentActions.Invoking(() =>
-                SendAsync(command)).Should().Throw<ValidationException>();
-        }
+        //    FluentActions.Invoking(() =>
+        //        SendAsync(command)).Should().Throw<ValidationException>();
+        //}
 
         [Test]
         public async Task ShouldDeleteCustomerAsync()
