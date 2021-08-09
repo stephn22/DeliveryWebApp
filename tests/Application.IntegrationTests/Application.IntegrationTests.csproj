@@ -36,9 +36,4 @@
     <ProjectReference Include="..\..\src\WebUI\WebUI.csproj" />
   </ItemGroup>
 
-  <ItemGroup>
-    <Folder Include="Baskets\" />
-    <Folder Include="BasketItems\" />
-  </ItemGroup>
-
 </Project>
