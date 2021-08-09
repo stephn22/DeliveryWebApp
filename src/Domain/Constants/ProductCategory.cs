@@ -17,5 +17,6 @@ namespace DeliveryWebApp.Domain.Constants
         public const string Vegan = "Vegan";
         public const string Chicken = "Chicken";
         public const string Fish = "Fish";
+        public const string Snacks = "Snacks";
     }
 }

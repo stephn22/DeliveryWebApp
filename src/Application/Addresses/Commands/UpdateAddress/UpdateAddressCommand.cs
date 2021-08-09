@@ -1,13 +1,9 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading;
-using System.Threading.Tasks;
-using DeliveryWebApp.Application.Common.Exceptions;
+﻿using DeliveryWebApp.Application.Common.Exceptions;
 using DeliveryWebApp.Application.Common.Interfaces;
 using DeliveryWebApp.Domain.Entities;
 using MediatR;
+using System.Threading;
+using System.Threading.Tasks;
 
 namespace DeliveryWebApp.Application.Addresses.Commands.UpdateAddress
 {
@@ -21,8 +17,8 @@ namespace DeliveryWebApp.Application.Addresses.Commands.UpdateAddress
         public string StateProvince { get; set; }
         public string PostalCode { get; set; }
         public string Country { get; set; }
-        public decimal Longitude { get; set; }
-        public decimal Latitude { get; set; }
+        public decimal? Longitude { get; set; }
+        public decimal? Latitude { get; set; }
     }
 
     public class UpdateAddressCommandHandler : IRequestHandler<UpdateAddressCommand, Address>
@@ -79,8 +75,15 @@ namespace DeliveryWebApp.Application.Addresses.Commands.UpdateAddress
                 entity.Country = request.Country;
             }
 
-            entity.Latitude = request.Latitude;
-            entity.Longitude = request.Longitude;
+            if (request.Latitude != null)
+            {
+                entity.Latitude = (decimal)request.Latitude;
+            }
+
+            if (request.Longitude != null)
+            {
+                entity.Longitude = (decimal)request.Longitude;
+            }
 
             await _context.SaveChangesAsync(cancellationToken);
 

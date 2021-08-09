@@ -7,6 +7,7 @@ using DeliveryWebApp.Application.Customers.Commands.CreateCustomer;
 using DeliveryWebApp.Application.Products.Commands.CreateProduct;
 using DeliveryWebApp.Application.Products.Commands.UpdateProducts;
 using DeliveryWebApp.Application.Restaurateurs.Commands.CreateRestaurateur;
+using DeliveryWebApp.Domain.Constants;
 using FluentAssertions;
 using NUnit.Framework;
 
@@ -42,7 +43,7 @@ namespace DeliveryWebApp.Application.IntegrationTests.Products.Commands
             {
                 Image = null,
                 Name = "Pizza",
-                Category = "Pizza",
+                Category = ProductCategory.Pizza,
                 Price = 5.50M,
                 Discount = 12,
                 Quantity = 21,
@@ -56,7 +57,7 @@ namespace DeliveryWebApp.Application.IntegrationTests.Products.Commands
                 Id = product.Id,
                 Image = product.Image,
                 Name = "French Fries",
-                Category = "Snacks",
+                Category = ProductCategory.Snacks,
                 Discount = 0,
                 Price = 7.50M,
             };

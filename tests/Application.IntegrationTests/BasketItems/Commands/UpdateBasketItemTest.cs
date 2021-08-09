@@ -1,9 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using DeliveryWebApp.Application.BasketItems.Commands.CreateBasketItem;
+﻿using DeliveryWebApp.Application.BasketItems.Commands.CreateBasketItem;
+using DeliveryWebApp.Application.BasketItems.Commands.UpdateBasketItem;
 using DeliveryWebApp.Application.Baskets.Commands.CreateBasket;
 using DeliveryWebApp.Application.Customers.Commands.CreateCustomer;
 using DeliveryWebApp.Application.Products.Commands.CreateProduct;
@@ -11,15 +7,16 @@ using DeliveryWebApp.Application.Restaurateurs.Commands.CreateRestaurateur;
 using DeliveryWebApp.Domain.Constants;
 using FluentAssertions;
 using NUnit.Framework;
+using System.Threading.Tasks;
 
 namespace DeliveryWebApp.Application.IntegrationTests.BasketItems.Commands
 {
     using static Testing;
 
-    public class CreateBasketItemTest : TestBase
+    public class UpdateBasketItemTest : TestBase
     {
         [Test]
-        public async Task ShouldCreateBasketItemAsync()
+        public async Task ShouldUpdateBasketItemAsync()
         {
             var userId = await RunAsDefaultUserAsync();
 
@@ -62,7 +59,7 @@ namespace DeliveryWebApp.Application.IntegrationTests.BasketItems.Commands
                 Customer = customer
             };
 
-            // finally create basket item
+            // create basket item
             var basket = await SendAsync(basketCommand);
 
             var command = new CreateBasketItemCommand
@@ -74,13 +71,36 @@ namespace DeliveryWebApp.Application.IntegrationTests.BasketItems.Commands
 
             var basketItem = await SendAsync(command);
 
-            basketItem.Should().NotBeNull();
-            basketItem.Id.Should().NotBe(0);
-            basketItem.BasketId.Should().Be(command.Basket.Id);
-            basketItem.ProductId.Should().Be(command.Product.Id);
-            basketItem.ProductPrice.Should().Be(command.Product.Price);
-            basketItem.Discount.Should().Be(command.Product.Discount);
-            basketItem.Quantity.Should().Be(command.Quantity);
+            var newProductCommand = new CreateProductCommand
+            {
+                Image = null,
+                Name = "Hamburger",
+                Category = ProductCategory.Hamburger,
+                Price = 7.95M,
+                Discount = 15,
+                Quantity = 34,
+                Restaurateur = restaurateur
+            };
+
+            var newProduct = await SendAsync(newProductCommand);
+
+            var updateBasketItem = new UpdateBasketItemCommand
+            {
+                Id = basketItem.Id,
+                Product = newProduct,
+                Quantity = newProductCommand.Quantity
+            };
+
+            var update = await SendAsync(updateBasketItem);
+
+            update.Should().NotBeNull();
+            update.Id.Should().NotBe(0);
+            update.Id.Should().Be(basketItem.Id);
+            update.ProductId.Should().Be(updateBasketItem.Product.Id);
+            update.ProductPrice.Should().Be(updateBasketItem.Product.Price);
+            update.Discount.Should().Be(updateBasketItem.Product.Discount);
+            update.Quantity.Should().Be(updateBasketItem.Quantity);
+            update.BasketId.Should().Be(basket.Id);
         }
     }
 }
