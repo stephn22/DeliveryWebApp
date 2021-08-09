@@ -4,35 +4,38 @@ using System.Linq;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
+using AutoMapper;
 using DeliveryWebApp.Application.Common.Interfaces;
 using DeliveryWebApp.Domain.Entities;
 using MediatR;
-using Microsoft.Extensions.Logging;
 
 namespace DeliveryWebApp.Application.BasketItems.Commands.CreateBasketItem
 {
     public class CreateBasketItemCommand : IRequest<BasketItem>
     {
-        public int BasketId { get; set; }
+        public Basket Basket { get; set; }
         public Product Product { get; set; }
+        public int Quantity { get; set; }
     }
 
     public class CreateBasketItemCommandHandler : IRequestHandler<CreateBasketItemCommand, BasketItem>
     {
         private readonly IApplicationDbContext _context;
-        private readonly ILogger<CreateBasketItemCommand> _logger;
 
-        public CreateBasketItemCommandHandler(IApplicationDbContext context, ILogger<CreateBasketItemCommand> logger)
+        public CreateBasketItemCommandHandler(IApplicationDbContext context)
         {
             _context = context;
-            _logger = logger;
         }
 
         public async Task<BasketItem> Handle(CreateBasketItemCommand request, CancellationToken cancellationToken)
         {
             var entity = new BasketItem
             {
-                BasketId = request.BasketId,
+                BasketId = request.Basket.Id,
+                ProductId = request.Product.Id,
+                Discount = request.Product.Discount,
+                ProductPrice = request.Product.Price,
+                Quantity = request.Quantity
             };
 
             _context.BasketItems.Add(entity);
