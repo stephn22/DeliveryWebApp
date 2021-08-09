@@ -16,6 +16,7 @@ using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
 using System.IO;
 using System.Threading.Tasks;
+using DeliveryWebApp.Application.Products.Commands.CreateProduct;
 using DeliveryWebApp.Application.Restaurateurs.Commands.UpdateRestaurateur;
 
 namespace DeliveryWebApp.WebUI.Pages.RestaurateurPages
@@ -94,23 +95,18 @@ namespace DeliveryWebApp.WebUI.Pages.RestaurateurPages
                 bytes = memoryStream.ToArray();
             }
 
-            var product = new Product
+            await _mediator.Send(new CreateProductCommand
             {
                 Image = bytes,
                 Name = Input.Name,
                 Category = Input.Category,
                 Discount = Input.Discount,
                 Price = Input.Price,
-                Quantity = Input.Quantity
-            };
-
-            await _mediator.Send(new UpdateRestaurateurCommand
-            {
-                Id = restaurateur.Id,
-                Product = product
+                Quantity = Input.Quantity,
+                Restaurateur = restaurateur
             });
 
-            return RedirectToPage("/RestaurateurPages/RestaurantDashboard");
+            return RedirectToPage("/RestaurateurPages/RestaurantProducts");
         }
     }
 }

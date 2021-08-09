@@ -30,11 +30,6 @@ namespace DeliveryWebApp.Infrastructure.Persistence.Configurations
             builder.Property(a => a.Latitude)
                 .HasPrecision(16, 3)
                 .IsRequired();
-
-            builder.HasOne(a => a.Customer)
-                .WithMany(c => c.Addresses)
-                .HasForeignKey(c => c.Id)
-                .OnDelete(DeleteBehavior.ClientCascade);
         }
     }
 }

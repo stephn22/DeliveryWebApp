@@ -49,6 +49,7 @@ namespace DeliveryWebApp.Application.IntegrationTests.Requests.Commands
             var request = await FindAsync<Request>(item.Id);
 
             request.Should().NotBeNull();
+            request.Id.Should().NotBe(0);
             request.CustomerId.Should().Be(customer.Id);
             request.Status.Should().Be(command.Status);
             request.Role.Should().Be(command.Role);

@@ -114,7 +114,7 @@ namespace DeliveryWebApp.WebUI.Areas.Identity.Pages.Account.Manage
             await _mediator.Send(new UpdateCustomerCommand
             {
                 Id = customer.Id,
-                Fname = Input.NewFName,
+                FName = Input.NewFName,
                 LName = Input.NewLName
             });
 

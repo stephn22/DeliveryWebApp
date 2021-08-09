@@ -15,14 +15,6 @@ namespace DeliveryWebApp.Application.Products.Commands.DeleteProduct
     public class DeleteProductCommand : IRequest<Product>
     {
         public Product Product { get; set; }
-        //public int Id { get; set; }
-        //public string Name { get; set; }
-        //public byte[] Image { get; set; }
-        //public decimal Price { get; set; }
-        //public int Discount { get; set; }
-        //public string Category { get; set; }
-        //public int Quantity { get; set; }
-        //public int RestaurateurId { get; set; } // TODO: check
     }
 
     public class DeleteProductCommandHandler : IRequestHandler<DeleteProductCommand, Product>
@@ -47,7 +39,7 @@ namespace DeliveryWebApp.Application.Products.Commands.DeleteProduct
 
             //_context.Products.Remove(entity);
 
-            var entity = _mapper.Map<Product>(request);
+            var entity = _mapper.Map<Product>(request.Product);
             _context.Products.Remove(entity);
 
             await _context.SaveChangesAsync(cancellationToken);

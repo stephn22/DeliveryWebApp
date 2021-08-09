@@ -1,20 +1,16 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading;
-using System.Threading.Tasks;
-using DeliveryWebApp.Application.Common.Exceptions;
+﻿using DeliveryWebApp.Application.Common.Exceptions;
 using DeliveryWebApp.Application.Common.Interfaces;
 using DeliveryWebApp.Domain.Entities;
 using MediatR;
+using System.Threading;
+using System.Threading.Tasks;
 
 namespace DeliveryWebApp.Application.Customers.Commands.UpdateCustomer
 {
     public class UpdateCustomerCommand : IRequest<Customer>
     {
         public int Id { get; set; }
-        public string Fname { get; set; }
+        public string FName { get; set; }
         public string LName { get; set; }
         public string Email { get; set; }
     }
@@ -42,9 +38,9 @@ namespace DeliveryWebApp.Application.Customers.Commands.UpdateCustomer
                 entity.Email = request.Email;
             }
 
-            if (!string.IsNullOrEmpty(request.Fname))
+            if (!string.IsNullOrEmpty(request.FName))
             {
-                entity.FirstName = request.Fname;
+                entity.FirstName = request.FName;
             }
 
             if (!string.IsNullOrEmpty(request.LName))

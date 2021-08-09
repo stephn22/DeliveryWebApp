@@ -1,27 +1,23 @@
-﻿using DeliveryWebApp.Application.Common.Exceptions;
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
 using DeliveryWebApp.Application.Customers.Commands.CreateCustomer;
 using DeliveryWebApp.Application.Products.Commands.CreateProduct;
+using DeliveryWebApp.Application.Products.Commands.DeleteProduct;
 using DeliveryWebApp.Application.Restaurateurs.Commands.CreateRestaurateur;
+using DeliveryWebApp.Domain.Entities;
 using FluentAssertions;
 using NUnit.Framework;
-using System.Threading.Tasks;
 
 namespace DeliveryWebApp.Application.IntegrationTests.Products.Commands
 {
     using static Testing;
-    public class CreateProductTest : TestBase
+    public class DeleteProductTest : TestBase
     {
-        //[Test]
-        //public void ShouldRequireMinimumFields()
-        //{
-        //    var command = new CreateProductCommand();
-
-        //    FluentActions.Invoking(() =>
-        //        SendAsync(command)).Should().Throw<ValidationException>();
-        //}
-
         [Test]
-        public async Task ShouldCreateProductAsync()
+        public async Task ShouldDeleteProductAsync()
         {
             var userId = await RunAsDefaultUserAsync();
 
@@ -53,17 +49,15 @@ namespace DeliveryWebApp.Application.IntegrationTests.Products.Commands
                 Restaurateur = restaurateur
             };
 
-            var product = await SendAsync(productCommand);
+            var item = await SendAsync(productCommand);
 
-            product.Should().NotBeNull();
-            product.Id.Should().NotBe(0);
-            product.Name.Should().Be(productCommand.Name);
-            product.Image.Should().BeNull();
-            product.Category.Should().Be(productCommand.Category);
-            product.Price.Should().Be(productCommand.Price);
-            product.Discount.Should().Be(productCommand.Discount);
-            product.Quantity.Should().Be(productCommand.Quantity);
-            product.RestaurateurId.Should().Be(productCommand.Restaurateur.Id);
+            await SendAsync(new DeleteProductCommand
+            {
+                Product = item
+            });
+
+            var product = await FindAsync<Product>(item.Id);
+            product.Should().BeNull();
         }
     }
 }

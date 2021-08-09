@@ -1,8 +1,6 @@
 using DeliveryWebApp.Application.Addresses.Commands.CreateAddress;
 using DeliveryWebApp.Application.Addresses.Commands.UpdateAddress;
 using DeliveryWebApp.Application.Common.Exceptions;
-using DeliveryWebApp.Application.Products.Commands.DeleteProduct;
-using DeliveryWebApp.Application.Products.Queries.GetProducts;
 using DeliveryWebApp.Application.Restaurateurs.Commands.UpdateRestaurateur;
 using DeliveryWebApp.Application.Restaurateurs.Extensions;
 using DeliveryWebApp.Domain.Constants;
@@ -18,12 +16,10 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.AspNetCore.Mvc.Rendering;
-using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.IO;
-using System.Linq;
 using System.Threading.Tasks;
 
 namespace DeliveryWebApp.WebUI.Pages.RestaurateurPages
@@ -290,8 +286,6 @@ namespace DeliveryWebApp.WebUI.Pages.RestaurateurPages
                 await fileStream.CopyToAsync(memoryStream);
                 bytes = memoryStream.ToArray();
             }
-
-
 
             RestaurantAddress = await _mediator.Send(new CreateAddressCommand
             {

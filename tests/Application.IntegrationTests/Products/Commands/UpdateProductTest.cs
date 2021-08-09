@@ -1,27 +1,23 @@
-﻿using DeliveryWebApp.Application.Common.Exceptions;
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
 using DeliveryWebApp.Application.Customers.Commands.CreateCustomer;
 using DeliveryWebApp.Application.Products.Commands.CreateProduct;
+using DeliveryWebApp.Application.Products.Commands.UpdateProducts;
 using DeliveryWebApp.Application.Restaurateurs.Commands.CreateRestaurateur;
 using FluentAssertions;
 using NUnit.Framework;
-using System.Threading.Tasks;
 
 namespace DeliveryWebApp.Application.IntegrationTests.Products.Commands
 {
     using static Testing;
-    public class CreateProductTest : TestBase
+
+    public class UpdateProductTest : TestBase
     {
-        //[Test]
-        //public void ShouldRequireMinimumFields()
-        //{
-        //    var command = new CreateProductCommand();
-
-        //    FluentActions.Invoking(() =>
-        //        SendAsync(command)).Should().Throw<ValidationException>();
-        //}
-
         [Test]
-        public async Task ShouldCreateProductAsync()
+        public async Task ShouldUpdateProductAsync()
         {
             var userId = await RunAsDefaultUserAsync();
 
@@ -55,15 +51,27 @@ namespace DeliveryWebApp.Application.IntegrationTests.Products.Commands
 
             var product = await SendAsync(productCommand);
 
-            product.Should().NotBeNull();
-            product.Id.Should().NotBe(0);
-            product.Name.Should().Be(productCommand.Name);
-            product.Image.Should().BeNull();
-            product.Category.Should().Be(productCommand.Category);
-            product.Price.Should().Be(productCommand.Price);
-            product.Discount.Should().Be(productCommand.Discount);
-            product.Quantity.Should().Be(productCommand.Quantity);
-            product.RestaurateurId.Should().Be(productCommand.Restaurateur.Id);
+            var updateCommand = new UpdateProductCommand
+            {
+                Id = product.Id,
+                Image = product.Image,
+                Name = "French Fries",
+                Category = "Snacks",
+                Discount = 0,
+                Price = 7.50M,
+            };
+
+            var update = await SendAsync(updateCommand);
+
+            update.Should().NotBeNull();
+            update.Id.Should().Be(product.Id);
+            update.Name.Should().Be(updateCommand.Name);
+            update.Image.Should().BeEquivalentTo(product.Image);
+            update.Category.Should().Be(updateCommand.Category);
+            update.Price.Should().Be(updateCommand.Price);
+            update.Price.Should().BeOfType(typeof(decimal));
+            update.Discount.Should().Be(updateCommand.Discount);
+            update.Quantity.Should().Be(product.Quantity);
         }
     }
 }

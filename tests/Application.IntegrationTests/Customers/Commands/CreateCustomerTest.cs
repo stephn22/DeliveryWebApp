@@ -35,6 +35,7 @@ namespace DeliveryWebApp.Application.IntegrationTests.Customers.Commands
             var customer = await SendAsync(command);
 
             customer.Should().NotBeNull();
+            customer.Id.Should().NotBe(0);
             customer.ApplicationUserFk.Should().Be(command.ApplicationUserFk);
             customer.FirstName.Should().Be(command.FirstName);
             customer.LastName.Should().Be(command.LastName);

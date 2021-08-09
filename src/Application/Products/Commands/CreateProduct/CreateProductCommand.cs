@@ -40,10 +40,7 @@ namespace DeliveryWebApp.Application.Products.Commands.CreateProduct
                 RestaurateurId = request.Restaurateur.Id
             };
 
-            request.Restaurateur.Products ??= new List<Product>();
-            request.Restaurateur.Products.Add(entity);
-
-            //_context.Products.Add(entity);
+            _context.Products.Add(entity);
 
             await _context.SaveChangesAsync(cancellationToken);
 

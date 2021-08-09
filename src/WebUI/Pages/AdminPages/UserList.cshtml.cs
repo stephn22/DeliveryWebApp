@@ -95,7 +95,7 @@ namespace DeliveryWebApp.WebUI.Pages.AdminPages
 
             await _mediator.Send(new DeleteCustomerCommand
             {
-                Id = id
+                Customer = customer
             });
 
             _logger.LogInformation($"Deleted user with id: {user.Id}");

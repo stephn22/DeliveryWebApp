@@ -20,9 +20,10 @@ namespace DeliveryWebApp.Infrastructure.Persistence.Configurations
             builder.Property(b => b.Discount)
                 .IsRequired();
 
-            builder.HasOne(b => b.Product)
-                .WithOne()
-                .HasForeignKey<Product>(b => b.Id);
+            //builder.HasOne(b => b.Product)
+            //    .WithOne()
+            //    .HasForeignKey<Product>(b => b.Id)
+            //    .OnDelete(DeleteBehavior.ClientCascade);
 
             builder.HasOne(b => b.Basket)
                 .WithMany(b => b.BasketItems)

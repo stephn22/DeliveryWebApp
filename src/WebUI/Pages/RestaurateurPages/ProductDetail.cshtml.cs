@@ -101,16 +101,14 @@ namespace DeliveryWebApp.WebUI.Pages.RestaurateurPages
                 bytes = memoryStream.ToArray();
             }
 
-            Product.Name = Input.Name;
-            Product.Category = Input.Category;
-            Product.Discount = Input.Discount;
-            Product.Image = bytes;
-            Product.Price = Input.Price;
-            Product.Quantity = Input.Quantity;
-
             await _mediator.Send(new UpdateProductCommand
             {
-                Product = Product
+                Name = Input.Name,
+                Category = Input.Category,
+                Discount = Input.Discount,
+                Image = bytes,
+                Price = Input.Price,
+                Quantity = Input.Quantity
             });
 
             return RedirectToPage(routeValues: id);

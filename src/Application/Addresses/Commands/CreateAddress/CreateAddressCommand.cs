@@ -47,13 +47,11 @@ namespace DeliveryWebApp.Application.Addresses.Commands.CreateAddress
 
             if (request.Customer != null)
             {
-                entity.Customer = request.Customer;
                 entity.CustomerId = request.Customer.Id;
             }
 
             if (request.Restaurateur != null)
             {
-                entity.Restaurateur = request.Restaurateur;
                 entity.RestaurateurId = request.Restaurateur.Id;
             }
 

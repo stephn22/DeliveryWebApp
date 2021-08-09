@@ -94,7 +94,7 @@ namespace DeliveryWebApp.WebUI.Areas.Identity.Pages.Account.Manage
                 return NotFound($"Unable to load user with ID '{_userManager.GetUserId(User)}'.");
             }
 
-            Customer = await _context.Customers.Where(c => c.ApplicationUserFk == user.Id).FirstAsync();
+            Customer = await _context.Customers.FirstAsync(c => c.ApplicationUserFk == user.Id);
 
             await LoadAddressesAsync(user);
             return Page();
@@ -108,7 +108,7 @@ namespace DeliveryWebApp.WebUI.Areas.Identity.Pages.Account.Manage
                 return NotFound();
             }
 
-            Customer = await _context.Customers.Where(c => c.ApplicationUserFk == user.Id).FirstAsync();
+            Customer = await _context.Customers.FirstAsync(c => c.ApplicationUserFk == user.Id);
 
             await _mediator.Send(new DeleteAddressCommand
             {
@@ -136,7 +136,7 @@ namespace DeliveryWebApp.WebUI.Areas.Identity.Pages.Account.Manage
                 return BadRequest();
             }
 
-            Customer = await _context.Customers.Where(c => c.ApplicationUserFk == user.Id).FirstAsync();
+            Customer = await _context.Customers.FirstAsync(c => c.ApplicationUserFk == user.Id);
 
             await _mediator.Send(new CreateAddressCommand
             {
@@ -168,7 +168,7 @@ namespace DeliveryWebApp.WebUI.Areas.Identity.Pages.Account.Manage
                 return BadRequest();
             }
 
-            Customer = await _context.Customers.Where(c => c.ApplicationUserFk == user.Id).FirstAsync();
+            Customer = await _context.Customers.FirstAsync(c => c.ApplicationUserFk == user.Id);
 
             await _mediator.Send(new UpdateAddressCommand
             {
@@ -189,7 +189,7 @@ namespace DeliveryWebApp.WebUI.Areas.Identity.Pages.Account.Manage
 
         private async Task LoadAddressesAsync(ApplicationUser user)
         {
-            Customer = await _context.Customers.Where(c => c.ApplicationUserFk == user.Id).FirstAsync();
+            Customer = await _context.Customers.FirstAsync(c => c.ApplicationUserFk == user.Id);
 
             Addresses = await _mediator.Send(new GetAddressesQuery
             {

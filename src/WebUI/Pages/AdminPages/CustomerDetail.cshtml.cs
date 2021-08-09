@@ -120,7 +120,7 @@ namespace DeliveryWebApp.WebUI.Pages.AdminPages
 
             await _mediator.Send(new DeleteCustomerCommand
             {
-                Id = Customer.Id
+                Customer = Customer
             });
 
             return RedirectToPage("/AdminPages/UserList");

@@ -8,10 +8,10 @@ namespace DeliveryWebApp.Infrastructure.Persistence.Configurations
     {
         public void Configure(EntityTypeBuilder<Restaurateur> builder)
         {
-            //builder.HasOne(r => r.Customer)
-            //    .WithOne()
-            //    .HasForeignKey<Restaurateur>(c => c.CustomerId)
-            //    .OnDelete(DeleteBehavior.ClientCascade);
+            builder.HasOne(r => r.Customer)
+                .WithOne()
+                .HasForeignKey<Restaurateur>(c => c.CustomerId)
+                .OnDelete(DeleteBehavior.ClientCascade);
 
             builder.HasMany(r => r.RestaurantOrders)
                 .WithOne(o => o.Restaurateur)
@@ -21,7 +21,7 @@ namespace DeliveryWebApp.Infrastructure.Persistence.Configurations
             builder.HasOne(r => r.RestaurantAddress)
                 .WithOne(a => a.Restaurateur)
                 .HasForeignKey<Address>(a => a.RestaurateurId)
-                .OnDelete(DeleteBehavior.ClientCascade);
+                .OnDelete(DeleteBehavior.SetNull);
 
             builder.HasMany(r => r.RestaurateurReviews)
                 .WithOne(r => r.Restaurateur)

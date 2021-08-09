@@ -33,7 +33,6 @@ namespace DeliveryWebApp.Application.BasketItems.Commands.CreateBasketItem
             var entity = new BasketItem
             {
                 BasketId = request.BasketId,
-                Product = request.Product
             };
 
             _context.BasketItems.Add(entity);

@@ -10,6 +10,11 @@ namespace DeliveryWebApp.Infrastructure.Persistence.Configurations
         {
             builder.Property(u => u.ApplicationUserFk)
                 .IsRequired();
+
+            builder.HasMany(c => c.Addresses)
+                .WithOne(a => a.Customer)
+                .HasForeignKey(a => a.CustomerId)
+                .OnDelete(DeleteBehavior.SetNull);
         }
     }
 }

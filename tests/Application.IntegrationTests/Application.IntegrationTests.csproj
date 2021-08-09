@@ -37,7 +37,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="Addresses\" />
     <Folder Include="Baskets\" />
     <Folder Include="BasketItems\" />
   </ItemGroup>

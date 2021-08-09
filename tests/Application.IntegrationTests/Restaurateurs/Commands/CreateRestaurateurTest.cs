@@ -46,6 +46,7 @@ namespace DeliveryWebApp.Application.IntegrationTests.Restaurateurs.Commands
             var restaurateur = await SendAsync(command);
 
             restaurateur.Should().NotBeNull();
+            restaurateur.Id.Should().NotBe(0);
             restaurateur.RestaurantName.Should().BeNull();
             restaurateur.RestaurantAddress.Should().BeNull();
             restaurateur.RestaurantCategory.Should().BeNull();
