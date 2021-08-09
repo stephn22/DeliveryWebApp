@@ -16,7 +16,7 @@ namespace DeliveryWebApp.Infrastructure.Persistence.Configurations
 
             builder.HasOne(r => r.Customer)
                 .WithOne()
-                .HasForeignKey<Rider>(c => c.Id)
+                .HasForeignKey<Rider>(c => c.CustomerId)
                 .OnDelete(DeleteBehavior.ClientCascade);
         }
     }

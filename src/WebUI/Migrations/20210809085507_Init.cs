@@ -299,7 +299,8 @@ namespace DeliveryWebApp.WebUI.Migrations
                 name: "Riders",
                 columns: table => new
                 {
-                    Id = table.Column<int>(type: "int", nullable: false),
+                    Id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
                     CustomerId = table.Column<int>(type: "int", nullable: false),
                     DeliveryCredit = table.Column<decimal>(type: "Money", precision: 19, scale: 4, nullable: false)
                 },
@@ -307,8 +308,8 @@ namespace DeliveryWebApp.WebUI.Migrations
                 {
                     table.PrimaryKey("PK_Riders", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_Riders_Customers_Id",
-                        column: x => x.Id,
+                        name: "FK_Riders_Customers_CustomerId",
+                        column: x => x.CustomerId,
                         principalTable: "Customers",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Restrict);
@@ -598,6 +599,12 @@ namespace DeliveryWebApp.WebUI.Migrations
                 name: "IX_Reviews_RestaurateurId",
                 table: "Reviews",
                 column: "RestaurateurId",
+                unique: true);
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Riders_CustomerId",
+                table: "Riders",
+                column: "CustomerId",
                 unique: true);
         }
 

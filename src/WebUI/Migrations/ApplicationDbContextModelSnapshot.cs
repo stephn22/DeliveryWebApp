@@ -363,7 +363,9 @@ namespace DeliveryWebApp.WebUI.Migrations
             modelBuilder.Entity("DeliveryWebApp.Domain.Entities.Rider", b =>
                 {
                     b.Property<int>("Id")
-                        .HasColumnType("int");
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
+                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
                     b.Property<int>("CustomerId")
                         .HasColumnType("int");
@@ -373,6 +375,9 @@ namespace DeliveryWebApp.WebUI.Migrations
                         .HasColumnType("Money");
 
                     b.HasKey("Id");
+
+                    b.HasIndex("CustomerId")
+                        .IsUnique();
 
                     b.ToTable("Riders");
                 });
@@ -809,7 +814,7 @@ namespace DeliveryWebApp.WebUI.Migrations
                 {
                     b.HasOne("DeliveryWebApp.Domain.Entities.Customer", "Customer")
                         .WithOne()
-                        .HasForeignKey("DeliveryWebApp.Domain.Entities.Rider", "Id")
+                        .HasForeignKey("DeliveryWebApp.Domain.Entities.Rider", "CustomerId")
                         .OnDelete(DeleteBehavior.ClientCascade)
                         .IsRequired();
 
