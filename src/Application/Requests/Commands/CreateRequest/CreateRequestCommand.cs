@@ -30,7 +30,7 @@ namespace DeliveryWebApp.Application.Requests.Commands.CreateRequest
         {
             var entity = new Request
             {
-                Customer = request.Customer,
+                CustomerId = request.Customer.Id,
                 Role = request.Role,
                 Status = request.Status
             };
