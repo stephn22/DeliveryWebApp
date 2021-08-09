@@ -144,7 +144,7 @@ namespace DeliveryWebApp.WebUI.Pages.AdminPages
 
             await _mediator.Send(new DeleteRiderCommand
             {
-                Id = rider.Id
+                Rider = rider
             });
             await _userManager.DeleteAsync(user);
 
@@ -195,7 +195,7 @@ namespace DeliveryWebApp.WebUI.Pages.AdminPages
 
             await _mediator.Send(new DeleteRestaurateurCommand
             {
-                Id = restaurateur.Id
+                Restaurateur = restaurateur
             });
             await _userManager.DeleteAsync(user);
 

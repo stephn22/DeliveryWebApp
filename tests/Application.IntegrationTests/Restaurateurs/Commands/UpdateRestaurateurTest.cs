@@ -62,6 +62,7 @@ namespace DeliveryWebApp.Application.IntegrationTests.Restaurateurs.Commands
 
             update.Should().NotBeNull();
             update.Id.Should().NotBe(0);
+            update.Id.Should().Be(restaurateur.Id);
             update.RestaurantName.Should().Be(updateCommand.RestaurantName);
             update.RestaurantCategory.Should().Be(updateCommand.RestaurantCategory);
             update.RestaurantAddressId.Should().Be(address.Id);

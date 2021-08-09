@@ -11,13 +11,13 @@ using MediatR;
 
 namespace DeliveryWebApp.Application.Riders.Commands.UpdateRider
 {
-    public class UpdateRiderCommand : IRequest
+    public class UpdateRiderCommand : IRequest<Rider>
     {
         public int Id { get; set; }
         public decimal DeliveryCredit { get; set; }
     }
 
-    public class UpdateRiderCommandHandler : IRequestHandler<UpdateRiderCommand>
+    public class UpdateRiderCommandHandler : IRequestHandler<UpdateRiderCommand, Rider>
     {
         private readonly IApplicationDbContext _context;
 
@@ -26,7 +26,7 @@ namespace DeliveryWebApp.Application.Riders.Commands.UpdateRider
             _context = context;
         }
 
-        public async Task<Unit> Handle(UpdateRiderCommand request, CancellationToken cancellationToken)
+        public async Task<Rider> Handle(UpdateRiderCommand request, CancellationToken cancellationToken)
         {
             var entity = await _context.Riders.FindAsync(request.Id);
 
@@ -39,7 +39,7 @@ namespace DeliveryWebApp.Application.Riders.Commands.UpdateRider
 
             await _context.SaveChangesAsync(cancellationToken);
 
-            return Unit.Value;
+            return entity;
         }
     }
 }

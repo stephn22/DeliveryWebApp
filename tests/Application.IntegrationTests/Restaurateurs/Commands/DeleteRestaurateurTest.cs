@@ -1,14 +1,10 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using DeliveryWebApp.Application.Customers.Commands.CreateCustomer;
+﻿using DeliveryWebApp.Application.Customers.Commands.CreateCustomer;
 using DeliveryWebApp.Application.Restaurateurs.Commands.CreateRestaurateur;
 using DeliveryWebApp.Application.Restaurateurs.Commands.DeleteRestaurateur;
 using DeliveryWebApp.Domain.Entities;
 using FluentAssertions;
 using NUnit.Framework;
+using System.Threading.Tasks;
 
 namespace DeliveryWebApp.Application.IntegrationTests.Restaurateurs.Commands
 {
@@ -40,7 +36,7 @@ namespace DeliveryWebApp.Application.IntegrationTests.Restaurateurs.Commands
 
             await SendAsync(new DeleteRestaurateurCommand
             {
-                Id = item.Id
+                Restaurateur = item
             });
 
             var restaurateur = await FindAsync<Restaurateur>(item.Id);
