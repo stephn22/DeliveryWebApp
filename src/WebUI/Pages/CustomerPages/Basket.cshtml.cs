@@ -38,9 +38,10 @@ namespace DeliveryWebApp.WebUI.Pages.CustomerPages
         {
             var user = await _userManager.GetUserAsync(User);
 
-            var customer = await _context.Customers.Where(c => c.ApplicationUserFk == user.Id).FirstAsync();
-            Basket = customer.Basket;
+            var customer = await _context.Customers.FirstAsync(c => c.ApplicationUserFk == user.Id);
+            
             // TODO: Basket products
+
 
             return Page();
         }

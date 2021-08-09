@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using DeliveryWebApp.Application.Addresses.Queries.GetAddresses;
+using DeliveryWebApp.Application.BasketItems.Queries;
 using DeliveryWebApp.Application.Baskets.Queries;
 using DeliveryWebApp.Application.Common.Security;
 using DeliveryWebApp.Domain.Entities;
@@ -49,7 +50,14 @@ namespace DeliveryWebApp.WebUI.Pages.CustomerPages
                 return NotFound();
             }
 
-            Customer = await _context.Customers.Where(c => c.ApplicationUserFk == user.Id).FirstAsync();
+            await LoadAsync(user);
+
+            return Page();
+        }
+
+        private async Task LoadAsync(ApplicationUser user)
+        {
+            Customer = await _context.Customers.FirstAsync(c => c.ApplicationUserFk == user.Id);
 
             CustomerAddresses = await _mediator.Send(new GetAddressesQuery
             {
@@ -58,12 +66,15 @@ namespace DeliveryWebApp.WebUI.Pages.CustomerPages
 
             Basket = await _mediator.Send(new GetBasketQuery
             {
-                CustomerId = Customer.Id
+                Customer = Customer
             });
 
-            // TODO: BasketProducts
+            Basket.BasketItems = await _mediator.Send(new GetBasketItemsQuery
+            {
+                Basket = Basket
+            });
 
-            return Page();
+            // TODO: products
         }
     }
 }

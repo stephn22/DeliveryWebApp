@@ -10,7 +10,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace DeliveryWebApp.WebUI.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20210809085507_Init")]
+    [Migration("20210809162113_Init")]
     partial class Init
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -95,6 +95,8 @@ namespace DeliveryWebApp.WebUI.Migrations
 
                     b.HasKey("Id");
 
+                    b.HasIndex("CustomerId");
+
                     b.ToTable("Baskets");
                 });
 
@@ -139,9 +141,6 @@ namespace DeliveryWebApp.WebUI.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<int>("BasketId")
-                        .HasColumnType("int");
-
                     b.Property<string>("Email")
                         .HasColumnType("nvarchar(max)");
 
@@ -152,9 +151,6 @@ namespace DeliveryWebApp.WebUI.Migrations
                         .HasColumnType("nvarchar(max)");
 
                     b.HasKey("Id");
-
-                    b.HasIndex("BasketId")
-                        .IsUnique();
 
                     b.ToTable("Customers");
                 });
@@ -704,22 +700,22 @@ namespace DeliveryWebApp.WebUI.Migrations
                     b.Navigation("Restaurateur");
                 });
 
+            modelBuilder.Entity("DeliveryWebApp.Domain.Entities.Basket", b =>
+                {
+                    b.HasOne("DeliveryWebApp.Domain.Entities.Customer", "Customer")
+                        .WithMany()
+                        .HasForeignKey("CustomerId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Customer");
+                });
+
             modelBuilder.Entity("DeliveryWebApp.Domain.Entities.BasketItem", b =>
                 {
                     b.HasOne("DeliveryWebApp.Domain.Entities.Basket", "Basket")
                         .WithMany("BasketItems")
                         .HasForeignKey("BasketId")
-                        .OnDelete(DeleteBehavior.ClientCascade)
-                        .IsRequired();
-
-                    b.Navigation("Basket");
-                });
-
-            modelBuilder.Entity("DeliveryWebApp.Domain.Entities.Customer", b =>
-                {
-                    b.HasOne("DeliveryWebApp.Domain.Entities.Basket", "Basket")
-                        .WithOne("Customer")
-                        .HasForeignKey("DeliveryWebApp.Domain.Entities.Customer", "BasketId")
                         .OnDelete(DeleteBehavior.ClientCascade)
                         .IsRequired();
 
@@ -877,8 +873,6 @@ namespace DeliveryWebApp.WebUI.Migrations
             modelBuilder.Entity("DeliveryWebApp.Domain.Entities.Basket", b =>
                 {
                     b.Navigation("BasketItems");
-
-                    b.Navigation("Customer");
                 });
 
             modelBuilder.Entity("DeliveryWebApp.Domain.Entities.Customer", b =>

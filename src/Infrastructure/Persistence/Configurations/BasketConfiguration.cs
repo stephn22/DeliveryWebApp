@@ -13,11 +13,6 @@ namespace DeliveryWebApp.Infrastructure.Persistence.Configurations
                 .HasPrecision(16, 3)
                 .HasColumnType(PropertyName.Money)
                 .IsRequired();
-
-            builder.HasOne(b => b.Customer)
-                .WithOne(c => c.Basket)
-                .HasForeignKey<Customer>(b => b.BasketId)
-                .OnDelete(DeleteBehavior.ClientCascade);
         }
     }
 }

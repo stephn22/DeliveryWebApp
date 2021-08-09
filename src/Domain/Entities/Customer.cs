@@ -11,7 +11,5 @@ namespace DeliveryWebApp.Domain.Entities
         public ICollection<Order> Orders { get; set; }
         public ICollection<Address> Addresses { get; set; }
         public ICollection<Review> Reviews { get; set; }
-        public int BasketId { get; set; }
-        public virtual Basket Basket { get; set; }
     }
 }

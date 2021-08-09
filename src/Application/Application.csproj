@@ -21,7 +21,6 @@
   <ItemGroup>
     <Folder Include="BasketItems\Commands\DeleteBasketItem\" />
     <Folder Include="BasketItems\Commands\UpdateBasketItem\" />
-    <Folder Include="BasketItems\Queries\" />
     <Folder Include="OrderItems\Commands\CreateOrderItem\" />
     <Folder Include="OrderItems\Commands\DeleteOrderItem\" />
     <Folder Include="OrderItems\Commands\UpdateOrderItem\" />

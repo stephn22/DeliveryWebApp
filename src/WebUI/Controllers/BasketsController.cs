@@ -23,14 +23,14 @@ namespace DeliveryWebApp.WebUI.Controllers
             _mapper = mapper;
         }
 
-        [HttpGet]
-        public async Task<Basket> Read(int customerId)
-        {
-            return await _mediator.Send(new GetBasketQuery
-            {
-                CustomerId = customerId
-            });
-        }
+        //[HttpGet] TODO:
+        //public async Task<Basket> Read(int customerId)
+        //{
+        //    return await _mediator.Send(new GetBasketQuery
+        //    {
+        //        Customer = customerId
+        //    });
+        //}
 
         [HttpPut("{customerId:int}")]
         public async Task<ActionResult<Basket>> Update(int customerId, Product request)
