@@ -1,36 +1,36 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading;
-using System.Threading.Tasks;
+﻿using AutoMapper;
 using DeliveryWebApp.Application.Common.Interfaces;
 using DeliveryWebApp.Application.Common.Security;
+using DeliveryWebApp.Domain.Entities;
 using MediatR;
+using System.Threading;
+using System.Threading.Tasks;
 
 namespace DeliveryWebApp.Application.Baskets.Commands.PurgeBasket
 {
-    [Authorize(Roles = "Administrator")]
-    [Authorize(Policy = "IsCustomer")]
+    [Authorize(Roles = RoleName.Admin)]
+    [Authorize(Policy = PolicyName.IsCustomer)]
     public class PurgeBasketCommand : IRequest
     {
-        public int Id { get; set; }
+        public Basket Basket { get; set; }
     }
 
     public class PurgeBasketCommandHandler : IRequestHandler<PurgeBasketCommand>
     {
-        private IApplicationDbContext _context;
+        private readonly IApplicationDbContext _context;
+        private readonly IMapper _mapper;
 
-        public PurgeBasketCommandHandler(IApplicationDbContext context)
+        public PurgeBasketCommandHandler(IApplicationDbContext context, IMapper mapper)
         {
             _context = context;
+            _mapper = mapper;
         }
 
         public async Task<Unit> Handle(PurgeBasketCommand request, CancellationToken cancellationToken)
         {
-            var entity = await _context.Baskets.FindAsync(request.Id);
+            var entity = _mapper.Map<Basket>(request.Basket);
 
-            // TODO: clear basket items
+
             entity.TotalPrice = 0.00M;
 
             await _context.SaveChangesAsync(cancellationToken);

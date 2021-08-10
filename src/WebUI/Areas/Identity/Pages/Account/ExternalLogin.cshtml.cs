@@ -1,7 +1,7 @@
-﻿using DeliveryWebApp.Application.Customers.Commands.CreateCustomer;
+﻿using DeliveryWebApp.Application.Common.Security;
+using DeliveryWebApp.Application.Customers.Commands.CreateCustomer;
 using DeliveryWebApp.Infrastructure.Identity;
 using DeliveryWebApp.Infrastructure.Persistence;
-using DeliveryWebApp.Infrastructure.Security;
 using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
@@ -183,7 +183,7 @@ namespace DeliveryWebApp.WebUI.Areas.Identity.Pages.Account
                             });
 
                             _logger.LogInformation($"Created customer with id '{customer.Id}'.");
-                            
+
                             return RedirectToPage("./RegisterConfirmation", new { Email = Input.Email });
                         }
 

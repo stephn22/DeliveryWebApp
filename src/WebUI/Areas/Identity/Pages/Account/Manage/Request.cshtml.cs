@@ -1,11 +1,10 @@
+using DeliveryWebApp.Application.Common.Security;
 using DeliveryWebApp.Application.Requests.Commands.CreateRequest;
 using DeliveryWebApp.Domain.Constants;
 using DeliveryWebApp.Domain.Entities;
 using DeliveryWebApp.Infrastructure.Identity;
 using DeliveryWebApp.Infrastructure.Persistence;
-using DeliveryWebApp.Infrastructure.Security;
 using MediatR;
-using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;

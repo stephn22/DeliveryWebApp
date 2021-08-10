@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace DeliveryWebApp.Application.Common.Exceptions
+namespace DeliveryWebApp.Domain.Exceptions
 {
     public class ForbiddenAccessException : Exception
     {

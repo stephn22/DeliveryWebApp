@@ -1,11 +1,11 @@
-﻿using DeliveryWebApp.Infrastructure.Identity;
+﻿using DeliveryWebApp.Application.Common.Security;
+using DeliveryWebApp.Infrastructure.Identity;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using System;
 using System.Linq;
 using System.Threading.Tasks;
-using DeliveryWebApp.Infrastructure.Security;
 
 namespace DeliveryWebApp.Infrastructure.Persistence
 {

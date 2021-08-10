@@ -1,13 +1,12 @@
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
+using DeliveryWebApp.Application.Common.Security;
 using DeliveryWebApp.Domain.Constants;
 using DeliveryWebApp.Domain.Entities;
 using DeliveryWebApp.Infrastructure.Persistence;
-using DeliveryWebApp.Infrastructure.Security;
-using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.EntityFrameworkCore;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
 
 namespace DeliveryWebApp.WebUI.Pages.AdminPages
 {
@@ -27,7 +26,7 @@ namespace DeliveryWebApp.WebUI.Pages.AdminPages
         {
             var requests = from r in _context.Requests
                            where r.Status == RequestStatus.Idle
-                select r;
+                           select r;
 
             Requests = await requests.ToListAsync();
         }

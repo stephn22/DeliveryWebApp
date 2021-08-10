@@ -2,13 +2,12 @@ using DeliveryWebApp.Application.Addresses.Commands.CreateAddress;
 using DeliveryWebApp.Application.Addresses.Commands.DeleteAddress;
 using DeliveryWebApp.Application.Addresses.Commands.UpdateAddress;
 using DeliveryWebApp.Application.Addresses.Queries.GetAddresses;
+using DeliveryWebApp.Application.Common.Security;
 using DeliveryWebApp.Domain.Entities;
 using DeliveryWebApp.Infrastructure.Identity;
 using DeliveryWebApp.Infrastructure.Persistence;
-using DeliveryWebApp.Infrastructure.Security;
 using DeliveryWebApp.Infrastructure.Services.Utilities;
 using MediatR;
-using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
@@ -17,7 +16,6 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
-using System.Linq;
 using System.Threading.Tasks;
 
 namespace DeliveryWebApp.WebUI.Areas.Identity.Pages.Account.Manage

@@ -1,9 +1,8 @@
-﻿using DeliveryWebApp.Application.Common.Exceptions;
+﻿using DeliveryWebApp.Application.Common.Security;
 using DeliveryWebApp.Application.Customers.Commands.CreateCustomer;
 using DeliveryWebApp.Application.Requests.Commands.CreateRequest;
 using DeliveryWebApp.Domain.Constants;
 using DeliveryWebApp.Domain.Entities;
-using DeliveryWebApp.Infrastructure.Security;
 using FluentAssertions;
 using NUnit.Framework;
 using System.Threading.Tasks;

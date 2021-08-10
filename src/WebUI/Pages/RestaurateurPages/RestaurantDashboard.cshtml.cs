@@ -1,16 +1,15 @@
 using DeliveryWebApp.Application.Addresses.Commands.CreateAddress;
 using DeliveryWebApp.Application.Addresses.Commands.UpdateAddress;
 using DeliveryWebApp.Application.Common.Exceptions;
+using DeliveryWebApp.Application.Common.Security;
 using DeliveryWebApp.Application.Restaurateurs.Commands.UpdateRestaurateur;
 using DeliveryWebApp.Application.Restaurateurs.Extensions;
 using DeliveryWebApp.Domain.Constants;
 using DeliveryWebApp.Domain.Entities;
 using DeliveryWebApp.Infrastructure.Identity;
 using DeliveryWebApp.Infrastructure.Persistence;
-using DeliveryWebApp.Infrastructure.Security;
 using DeliveryWebApp.Infrastructure.Services.Utilities;
 using MediatR;
-using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
