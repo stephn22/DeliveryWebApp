@@ -3,7 +3,6 @@ using DeliveryWebApp.Application.BasketItems.Commands.DeleteBasketItem;
 using DeliveryWebApp.Application.BasketItems.Queries;
 using DeliveryWebApp.Application.Common.Exceptions;
 using DeliveryWebApp.Application.Common.Interfaces;
-using DeliveryWebApp.Application.Common.Security;
 using DeliveryWebApp.Domain.Entities;
 using MediatR;
 using System.Threading;
@@ -34,6 +33,11 @@ namespace DeliveryWebApp.Application.Baskets.Commands.PurgeBasket
         public async Task<Unit> Handle(PurgeBasketCommand request, CancellationToken cancellationToken)
         {
             var entity = _mapper.Map<Basket>(request.Basket);
+
+            if (entity == null)
+            {
+                throw new NotFoundException(nameof(Basket), request.Basket.Id);
+            }
 
             var basketItems = await _mediator.Send(new GetBasketItemsQuery
             {

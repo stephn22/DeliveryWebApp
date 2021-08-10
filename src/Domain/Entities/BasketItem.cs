@@ -27,5 +27,15 @@ namespace DeliveryWebApp.Domain.Entities
         /// The quantity of the product selected by the customer
         /// </summary>
         public int Quantity { get; set; }
+
+        public decimal GetPrice()
+        {
+            if (Discount != 0)
+            {
+                return (ProductPrice * ((100.00M - Discount) / 100.00M)) * Quantity;
+            }
+
+            return ProductPrice;
+        }
     }
 }

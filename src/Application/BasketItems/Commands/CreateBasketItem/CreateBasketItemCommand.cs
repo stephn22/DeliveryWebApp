@@ -1,13 +1,9 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading;
-using System.Threading.Tasks;
-using AutoMapper;
-using DeliveryWebApp.Application.Common.Interfaces;
+﻿using DeliveryWebApp.Application.Common.Interfaces;
+using DeliveryWebApp.Application.Products.Commands.UpdateProducts;
 using DeliveryWebApp.Domain.Entities;
 using MediatR;
+using System.Threading;
+using System.Threading.Tasks;
 
 namespace DeliveryWebApp.Application.BasketItems.Commands.CreateBasketItem
 {
@@ -21,10 +17,12 @@ namespace DeliveryWebApp.Application.BasketItems.Commands.CreateBasketItem
     public class CreateBasketItemCommandHandler : IRequestHandler<CreateBasketItemCommand, BasketItem>
     {
         private readonly IApplicationDbContext _context;
+        private readonly IMediator _mediator;
 
-        public CreateBasketItemCommandHandler(IApplicationDbContext context)
+        public CreateBasketItemCommandHandler(IApplicationDbContext context, IMediator mediator)
         {
             _context = context;
+            _mediator = mediator;
         }
 
         public async Task<BasketItem> Handle(CreateBasketItemCommand request, CancellationToken cancellationToken)
@@ -38,8 +36,15 @@ namespace DeliveryWebApp.Application.BasketItems.Commands.CreateBasketItem
                 Quantity = request.Quantity
             };
 
-            _context.BasketItems.Add(entity);
+            var newQuantity = request.Product.Quantity - request.Quantity; // decrease product quantity
 
+            await _mediator.Send(new UpdateProductCommand
+            {
+                Id = request.Product.Id,
+                Quantity = newQuantity
+            }, cancellationToken);
+
+            _context.BasketItems.Add(entity);
             await _context.SaveChangesAsync(cancellationToken);
 
             return entity;

@@ -24,7 +24,8 @@ namespace DeliveryWebApp.Application.Baskets.Commands.CreateBasket
         {
             var entity = new Basket
             {
-                CustomerId = request.Customer.Id
+                CustomerId = request.Customer.Id,
+                TotalPrice = 0.00M
             };
 
             _context.Baskets.Add(entity);

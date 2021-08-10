@@ -14,6 +14,7 @@ using Microsoft.Extensions.Logging;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using DeliveryWebApp.Application.Baskets.Queries;
 
 namespace DeliveryWebApp.WebUI.Pages.CustomerPages
 {
@@ -35,6 +36,7 @@ namespace DeliveryWebApp.WebUI.Pages.CustomerPages
         }
 
         public Customer Customer { get; set; }
+        public Basket Basket { get; set; }
         public Restaurateur Restaurateur { get; set; }
         public List<Product> Products { get; set; }
 
@@ -46,15 +48,30 @@ namespace DeliveryWebApp.WebUI.Pages.CustomerPages
             }
 
             var user = await _userManager.GetUserAsync(User);
-            Customer = await _context.Customers.Where(c => c.ApplicationUserFk == user.Id).FirstAsync();
+            await LoadAsync(user, id);
+
+            if (Basket == null || Restaurateur == null)
+            {
+                return NotFound();
+            }
+            
+            return Page();
+        }
+
+        private async Task LoadAsync(ApplicationUser user, int? id)
+        {
+            Customer = await _context.Customers.FirstAsync(c => c.ApplicationUserFk == user.Id);
+
+            Basket = await _mediator.Send(new GetBasketQuery
+            {
+                Customer = Customer
+            });
 
             Restaurateur = await _context.Restaurateurs.FindAsync(id);
             Products = await _mediator.Send(new GetProductsQuery
             {
                 RestaurateurId = Restaurateur.Id
             });
-
-            return Page();
         }
 
         public async Task<IActionResult> OnPostAddToCartAsync(int id)
@@ -67,8 +84,9 @@ namespace DeliveryWebApp.WebUI.Pages.CustomerPages
 
             await _mediator.Send(new UpdateBasketCommand
             {
-                CustomerId = customer.Id,
-                Product = product
+                Basket = Basket,
+                Product = product,
+                // TODO: quantity
             });
 
             _logger.LogInformation($"Added product with id {product.Id} to basket of user {user.Id}");

@@ -75,6 +75,7 @@ namespace DeliveryWebApp.Application.IntegrationTests.BasketItems.Commands
             basketItem.BasketId.Should().Be(command.Basket.Id);
             basketItem.ProductId.Should().Be(command.Product.Id);
             basketItem.ProductPrice.Should().Be(command.Product.Price);
+            basketItem.GetPrice().Should().Be(14.52M);
             basketItem.Discount.Should().Be(command.Product.Discount);
             basketItem.Quantity.Should().Be(command.Quantity);
         }

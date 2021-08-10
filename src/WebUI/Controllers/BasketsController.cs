@@ -32,14 +32,14 @@ namespace DeliveryWebApp.WebUI.Controllers
         //    });
         //}
 
-        [HttpPut("{customerId:int}")]
-        public async Task<ActionResult<Basket>> Update(int customerId, Product request)
-        {
-            return await _mediator.Send(new UpdateBasketCommand
-            {
-                CustomerId = customerId,
-                Product = request
-            });
-        }
+        //[HttpPut("{customerId:int}")]
+        //public async Task<ActionResult<Basket>> Update(int customerId, Product request)
+        //{
+        //    return await _mediator.Send(new UpdateBasketCommand
+        //    {
+        //        CustomerId = customerId,
+        //        Product = request
+        //    });
+        //}
     }
 }

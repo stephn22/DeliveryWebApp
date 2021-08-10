@@ -1,11 +1,9 @@
 ﻿using AutoMapper;
+using DeliveryWebApp.Application.BasketItems.Commands.CreateBasketItem;
 using DeliveryWebApp.Application.Common.Exceptions;
 using DeliveryWebApp.Application.Common.Interfaces;
 using DeliveryWebApp.Domain.Entities;
 using MediatR;
-using Microsoft.EntityFrameworkCore;
-using System.Collections.Generic;
-using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -13,38 +11,48 @@ namespace DeliveryWebApp.Application.Baskets.Commands.UpdateBasket
 {
     public class UpdateBasketCommand : IRequest<Basket>
     {
-        public int CustomerId { get; set; }
+        public Basket Basket { get; set; }
         public Product Product { get; set; }
-        // TODO: basket item
+        public int Quantity { get; set; }
     }
 
     public class UpdateBasketCommandHandler : IRequestHandler<UpdateBasketCommand, Basket>
     {
         private readonly IApplicationDbContext _context;
         private readonly IMapper _mapper;
+        private readonly IMediator _mediator;
 
-        public UpdateBasketCommandHandler(IApplicationDbContext context, IMapper mapper)
+        public UpdateBasketCommandHandler(IApplicationDbContext context, IMapper mapper, IMediator mediator)
         {
             _context = context;
             _mapper = mapper;
+            _mediator = mediator;
         }
 
         public async Task<Basket> Handle(UpdateBasketCommand request, CancellationToken cancellationToken)
         {
-            // FIXME: if basket not exist create a new one
-            var entity = await _context.Baskets.Where(b => b.CustomerId == request.CustomerId)
-                .FirstAsync(cancellationToken);
+            var entity = _mapper.Map<Basket>(request.Basket);
 
             if (entity == null)
             {
-                throw new NotFoundException(nameof(Basket), request.CustomerId);
+                throw new NotFoundException(nameof(Basket), request.Basket.Id);
             }
 
-            // if Products is null instantiate a new list
-            //entity.Products ??= new List<Product>();
-            //entity.Products.Add(request.Product);
+            var product = _mapper.Map<Product>(request.Product);
 
-            //entity.TotalPrice = Product.TotalPrice(entity.Products.ToList());
+            if (product == null)
+            {
+                throw new NotFoundException(nameof(Product), request.Product.Id);
+            }
+
+            var basketItem = await _mediator.Send(new CreateBasketItemCommand
+            {
+                Basket = entity,
+                Product = product,
+                Quantity = request.Quantity
+            }, cancellationToken);
+
+            entity.TotalPrice += basketItem.GetPrice();
 
             await _context.SaveChangesAsync(cancellationToken);
 
