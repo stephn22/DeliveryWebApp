@@ -1,4 +1,5 @@
-﻿using DeliveryWebApp.Application.Common.Interfaces;
+﻿using System;
+using DeliveryWebApp.Application.Common.Interfaces;
 using DeliveryWebApp.Application.Products.Commands.DeleteProduct;
 using DeliveryWebApp.Application.Products.Queries.GetProducts;
 using DeliveryWebApp.Application.Restaurateurs.Extensions;
@@ -13,6 +14,7 @@ using Microsoft.EntityFrameworkCore;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using DeliveryWebApp.Application.Common.Exceptions;
 using DeliveryWebApp.Application.Common.Security;
 using DeliveryWebApp.Infrastructure.Security;
 using EllipticCurve;
@@ -112,10 +114,18 @@ namespace DeliveryWebApp.WebUI.Pages.RestaurateurPages
         {
             var product = await _context.Products.FindAsync(id);
 
-            await _mediator.Send(new DeleteProductCommand
+            try
             {
-                Product = product
-            });
+                await _mediator.Send(new DeleteProductCommand
+                {
+                    Product = product
+                });
+            }
+            catch (NotFoundException e)
+            {
+                _logger.LogWarning($"{e.Message}");
+                return RedirectToPage();
+            }
 
             _logger.LogInformation($"Deleted product with id '{product.Id}");
 

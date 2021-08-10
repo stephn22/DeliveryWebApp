@@ -1,15 +1,12 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using DeliveryWebApp.Application.Customers.Commands.CreateCustomer;
+﻿using DeliveryWebApp.Application.Customers.Commands.CreateCustomer;
 using DeliveryWebApp.Application.Products.Commands.CreateProduct;
 using DeliveryWebApp.Application.Products.Commands.DeleteProduct;
 using DeliveryWebApp.Application.Restaurateurs.Commands.CreateRestaurateur;
+using DeliveryWebApp.Domain.Constants;
 using DeliveryWebApp.Domain.Entities;
 using FluentAssertions;
 using NUnit.Framework;
+using System.Threading.Tasks;
 
 namespace DeliveryWebApp.Application.IntegrationTests.Products.Commands
 {
@@ -42,7 +39,7 @@ namespace DeliveryWebApp.Application.IntegrationTests.Products.Commands
             {
                 Image = null,
                 Name = "Pizza",
-                Category = "Pizza",
+                Category = ProductCategory.Pizza,
                 Price = 5.50M,
                 Discount = 12,
                 Quantity = 21,

@@ -1,14 +1,10 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading;
-using System.Threading.Tasks;
-using AutoMapper;
+﻿using AutoMapper;
 using DeliveryWebApp.Application.Common.Exceptions;
 using DeliveryWebApp.Application.Common.Interfaces;
 using DeliveryWebApp.Domain.Entities;
 using MediatR;
+using System.Threading;
+using System.Threading.Tasks;
 
 namespace DeliveryWebApp.Application.Products.Commands.DeleteProduct
 {
@@ -30,16 +26,13 @@ namespace DeliveryWebApp.Application.Products.Commands.DeleteProduct
 
         public async Task<Product> Handle(DeleteProductCommand request, CancellationToken cancellationToken)
         {
-            //var entity = await _context.Products.FindAsync(request.Id);
-
-            //if (entity == null)
-            //{
-            //    throw new NotFoundException(nameof(Product), request.Id);
-            //}
-
-            //_context.Products.Remove(entity);
-
             var entity = _mapper.Map<Product>(request.Product);
+
+            if (entity == null)
+            {
+                throw new NotFoundException(nameof(Product), request.Product.Id);
+            }
+
             _context.Products.Remove(entity);
 
             await _context.SaveChangesAsync(cancellationToken);
