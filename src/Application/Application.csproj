@@ -23,6 +23,9 @@
     <Folder Include="OrderItems\Commands\DeleteOrderItem\" />
     <Folder Include="OrderItems\Commands\UpdateOrderItem\" />
     <Folder Include="OrderItems\Queries\" />
+    <Folder Include="Reviews\Commands\CreateReview\" />
+    <Folder Include="Reviews\Commands\UpdateReview\" />
+    <Folder Include="Reviews\Queries\" />
   </ItemGroup>
 
 </Project>
