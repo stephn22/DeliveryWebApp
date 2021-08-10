@@ -31,8 +31,6 @@ namespace DeliveryWebApp.Application.BasketItems.Commands.CreateBasketItem
             {
                 BasketId = request.Basket.Id,
                 ProductId = request.Product.Id,
-                Discount = request.Product.Discount,
-                ProductPrice = request.Product.Price,
                 Quantity = request.Quantity
             };
 

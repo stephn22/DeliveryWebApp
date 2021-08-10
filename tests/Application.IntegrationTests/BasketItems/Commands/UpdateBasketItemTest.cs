@@ -97,8 +97,6 @@ namespace DeliveryWebApp.Application.IntegrationTests.BasketItems.Commands
             update.Id.Should().NotBe(0);
             update.Id.Should().Be(basketItem.Id);
             update.ProductId.Should().Be(updateBasketItem.Product.Id);
-            update.ProductPrice.Should().Be(updateBasketItem.Product.Price);
-            update.Discount.Should().Be(updateBasketItem.Product.Discount);
             update.Quantity.Should().Be(updateBasketItem.Quantity);
             update.BasketId.Should().Be(basket.Id);
         }

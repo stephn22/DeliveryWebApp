@@ -14,7 +14,7 @@ namespace DeliveryWebApp.Domain.Entities
         public DateTime Date { get; set; }
         public int RestaurateurId { get; set; }
         public virtual Restaurateur Restaurateur { get; set; }
-        public decimal TotalPrice { get; private set; }
+        public decimal TotalPrice { get; set; }
         public string Status { get; set; }
         public DateTime? DeliveryDate { get; set; }
 

@@ -10,7 +10,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace DeliveryWebApp.WebUI.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20210809162113_Init")]
+    [Migration("20210810144134_Init")]
     partial class Init
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -110,15 +110,8 @@ namespace DeliveryWebApp.WebUI.Migrations
                     b.Property<int>("BasketId")
                         .HasColumnType("int");
 
-                    b.Property<int>("Discount")
-                        .HasColumnType("int");
-
                     b.Property<int>("ProductId")
                         .HasColumnType("int");
-
-                    b.Property<decimal>("ProductPrice")
-                        .HasPrecision(16, 3)
-                        .HasColumnType("Money");
 
                     b.Property<int>("Quantity")
                         .HasColumnType("int");

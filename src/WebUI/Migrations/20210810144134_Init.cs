@@ -299,8 +299,6 @@ namespace DeliveryWebApp.WebUI.Migrations
                         .Annotation("SqlServer:Identity", "1, 1"),
                     ProductId = table.Column<int>(type: "int", nullable: false),
                     BasketId = table.Column<int>(type: "int", nullable: false),
-                    ProductPrice = table.Column<decimal>(type: "Money", precision: 16, scale: 3, nullable: false),
-                    Discount = table.Column<int>(type: "int", nullable: false),
                     Quantity = table.Column<int>(type: "int", nullable: false)
                 },
                 constraints: table =>

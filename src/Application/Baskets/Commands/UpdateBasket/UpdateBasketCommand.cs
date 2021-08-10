@@ -6,6 +6,7 @@ using DeliveryWebApp.Domain.Entities;
 using MediatR;
 using System.Threading;
 using System.Threading.Tasks;
+using DeliveryWebApp.Application.Baskets.Extensions;
 
 namespace DeliveryWebApp.Application.Baskets.Commands.UpdateBasket
 {
@@ -52,7 +53,7 @@ namespace DeliveryWebApp.Application.Baskets.Commands.UpdateBasket
                 Quantity = request.Quantity
             }, cancellationToken);
 
-            entity.TotalPrice += basketItem.GetPrice();
+            entity.TotalPrice = await entity.GetBasketTotalPrice(_mediator, _context);
 
             await _context.SaveChangesAsync(cancellationToken);
 

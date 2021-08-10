@@ -38,8 +38,6 @@ namespace DeliveryWebApp.Application.BasketItems.Commands.UpdateBasketItem
             }
 
             entity.ProductId = request.Product.Id;
-            entity.ProductPrice = request.Product.Price;
-            entity.Discount = request.Product.Discount;
             entity.Quantity = request.Quantity;
 
             await _context.SaveChangesAsync(cancellationToken);

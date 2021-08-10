@@ -108,15 +108,8 @@ namespace DeliveryWebApp.WebUI.Migrations
                     b.Property<int>("BasketId")
                         .HasColumnType("int");
 
-                    b.Property<int>("Discount")
-                        .HasColumnType("int");
-
                     b.Property<int>("ProductId")
                         .HasColumnType("int");
-
-                    b.Property<decimal>("ProductPrice")
-                        .HasPrecision(16, 3)
-                        .HasColumnType("Money");
 
                     b.Property<int>("Quantity")
                         .HasColumnType("int");
