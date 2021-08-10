@@ -16,11 +16,11 @@ namespace DeliveryWebApp.Application.Restaurateurs.Commands.UpdateRestaurateur
         public Address RestaurantAddress { get; set; }
     }
 
-    public class UpdateRestaurantCommandHandler : IRequestHandler<UpdateRestaurateurCommand, Restaurateur>
+    public class UpdateRestaurateurCommandHandler : IRequestHandler<UpdateRestaurateurCommand, Restaurateur>
     {
         private readonly IApplicationDbContext _context;
 
-        public UpdateRestaurantCommandHandler(IApplicationDbContext context)
+        public UpdateRestaurateurCommandHandler(IApplicationDbContext context)
         {
             _context = context;
         }

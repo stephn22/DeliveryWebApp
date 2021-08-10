@@ -36,15 +36,8 @@ namespace DeliveryWebApp.Application.Orders.Commands.UpdateOrder
                 throw new NotFoundException(nameof(Order), request.Id);
             }
 
-            if (request.DeliveryDate != null)
-            {
-                entity.DeliveryDate = request.DeliveryDate;
-            }
-
-            if (!string.IsNullOrEmpty(request.OrderStatus))
-            {
-                entity.Status = request.OrderStatus;
-            }
+            entity.DeliveryDate = request.DeliveryDate;
+            entity.Status = request.OrderStatus;
 
             return entity;
         }

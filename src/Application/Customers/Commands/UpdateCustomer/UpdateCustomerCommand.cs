@@ -33,20 +33,9 @@ namespace DeliveryWebApp.Application.Customers.Commands.UpdateCustomer
                 throw new NotFoundException(nameof(Customer), request.Id);
             }
 
-            if (!string.IsNullOrEmpty(request.Email))
-            {
-                entity.Email = request.Email;
-            }
-
-            if (!string.IsNullOrEmpty(request.FName))
-            {
-                entity.FirstName = request.FName;
-            }
-
-            if (!string.IsNullOrEmpty(request.LName))
-            {
-                entity.LastName = request.LName;
-            }
+            entity.Email = request.Email;
+            entity.FirstName = request.FName;
+            entity.LastName = request.LName;
 
             await _context.SaveChangesAsync(cancellationToken);
 

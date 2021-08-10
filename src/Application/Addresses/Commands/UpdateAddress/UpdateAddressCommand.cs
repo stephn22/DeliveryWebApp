@@ -17,8 +17,8 @@ namespace DeliveryWebApp.Application.Addresses.Commands.UpdateAddress
         public string StateProvince { get; set; }
         public string PostalCode { get; set; }
         public string Country { get; set; }
-        public decimal? Longitude { get; set; }
-        public decimal? Latitude { get; set; }
+        public decimal Longitude { get; set; }
+        public decimal Latitude { get; set; }
     }
 
     public class UpdateAddressCommandHandler : IRequestHandler<UpdateAddressCommand, Address>
@@ -39,51 +39,15 @@ namespace DeliveryWebApp.Application.Addresses.Commands.UpdateAddress
                 throw new NotFoundException(nameof(Address), request.Id);
             }
 
-            if (!string.IsNullOrEmpty(request.AddressLine1))
-            {
-                entity.AddressLine1 = request.AddressLine1;
-            }
-
-            if (!string.IsNullOrEmpty(request.AddressLine2))
-            {
-                entity.AddressLine2 = request.AddressLine2;
-            }
-
-            if (!string.IsNullOrEmpty(request.Number))
-            {
-                entity.Number = request.Number;
-            }
-
-            if (!string.IsNullOrEmpty(request.City))
-            {
-                entity.City = request.City;
-            }
-
-            if (!string.IsNullOrEmpty(request.PostalCode))
-            {
-                entity.PostalCode = request.PostalCode;
-            }
-
-            if (!string.IsNullOrEmpty(request.StateProvince))
-            {
-                entity.StateProvince = request.StateProvince;
-            }
-
-
-            if (!string.IsNullOrEmpty(request.Country))
-            {
-                entity.Country = request.Country;
-            }
-
-            if (request.Latitude != null)
-            {
-                entity.Latitude = (decimal)request.Latitude;
-            }
-
-            if (request.Longitude != null)
-            {
-                entity.Longitude = (decimal)request.Longitude;
-            }
+            entity.AddressLine1 = request.AddressLine1;
+            entity.AddressLine2 = request.AddressLine2;
+            entity.Number = request.Number;
+            entity.City = request.City;
+            entity.PostalCode = request.PostalCode;
+            entity.StateProvince = request.StateProvince;
+            entity.Country = request.Country;
+            entity.Latitude = request.Latitude;
+            entity.Longitude = request.Longitude;
 
             await _context.SaveChangesAsync(cancellationToken);
 

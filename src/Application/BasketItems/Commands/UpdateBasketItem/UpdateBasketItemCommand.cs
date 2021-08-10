@@ -16,7 +16,7 @@ namespace DeliveryWebApp.Application.BasketItems.Commands.UpdateBasketItem
     {
         public int Id { get; set; }
         public Product Product { get; set; }
-        public int? Quantity { get; set; }
+        public int Quantity { get; set; }
     }
 
     public class UpdateBasketItemCommandHandler : IRequestHandler<UpdateBasketItemCommand, BasketItem>
@@ -37,17 +37,10 @@ namespace DeliveryWebApp.Application.BasketItems.Commands.UpdateBasketItem
                 throw new NotFoundException(nameof(BasketItem), request.Id);
             }
 
-            if (request.Product != null)
-            {
-                entity.ProductId = request.Product.Id;
-                entity.ProductPrice = request.Product.Price;
-                entity.Discount = request.Product.Discount;
-            }
-
-            if (request.Quantity != null)
-            {
-                entity.Quantity = (int)request.Quantity;
-            }
+            entity.ProductId = request.Product.Id;
+            entity.ProductPrice = request.Product.Price;
+            entity.Discount = request.Product.Discount;
+            entity.Quantity = request.Quantity;
 
             await _context.SaveChangesAsync(cancellationToken);
 

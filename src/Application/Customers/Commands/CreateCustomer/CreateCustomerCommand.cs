@@ -36,13 +36,6 @@ namespace DeliveryWebApp.Application.Customers.Commands.CreateCustomer
                     Email = request.Email
                 };
 
-                //var basket = await _mediator.Send(new CreateBasketCommand
-                //{
-                //    Customer = entity
-                //});
-
-                //entity.BasketId = basket.Id;
-
                 _context.Customers.Add(entity);
 
                 await _context.SaveChangesAsync(cancellationToken);
