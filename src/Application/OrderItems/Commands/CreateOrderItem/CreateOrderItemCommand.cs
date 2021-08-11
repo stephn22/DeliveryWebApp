@@ -47,7 +47,7 @@ namespace DeliveryWebApp.Application.OrderItems.Commands.CreateOrderItem
                 ProductId = basketItem.ProductId,
                 Discount = product.Discount,
                 OrderId = request.Order.Id,
-                // TODO: product price
+                ProductPrice = product.Price
             };
 
             return entity;

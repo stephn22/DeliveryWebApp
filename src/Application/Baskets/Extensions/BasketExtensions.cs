@@ -1,9 +1,9 @@
-﻿using System.Threading.Tasks;
-using DeliveryWebApp.Application.BasketItems;
+﻿using DeliveryWebApp.Application.BasketItems.Extensions;
 using DeliveryWebApp.Application.BasketItems.Queries;
 using DeliveryWebApp.Application.Common.Interfaces;
 using DeliveryWebApp.Domain.Entities;
 using MediatR;
+using System.Threading.Tasks;
 
 namespace DeliveryWebApp.Application.Baskets.Extensions
 {
@@ -18,12 +18,15 @@ namespace DeliveryWebApp.Application.Baskets.Extensions
                 Basket = basket
             });
 
-            if (basket.BasketItems == null) return tot;
+            if (basket.BasketItems == null)
+            {
+                return tot;
+            }
 
             foreach (var item in basket.BasketItems)
             {
                 var product = await item.GetProduct(context);
-                
+
                 tot += (product.ApplyDiscount() * item.Quantity);
             }
 

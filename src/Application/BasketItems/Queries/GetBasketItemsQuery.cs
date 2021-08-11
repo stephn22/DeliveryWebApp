@@ -5,6 +5,7 @@ using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using AutoMapper;
+using DeliveryWebApp.Application.Common.Exceptions;
 using DeliveryWebApp.Application.Common.Interfaces;
 using DeliveryWebApp.Domain.Entities;
 using MediatR;
@@ -31,6 +32,11 @@ namespace DeliveryWebApp.Application.BasketItems.Queries
         public async Task<List<BasketItem>> Handle(GetBasketItemsQuery request, CancellationToken cancellationToken)
         {
             var basket = _mapper.Map<Basket>(request.Basket);
+
+            if (basket == null)
+            {
+                throw new NotFoundException(nameof(Basket), request.Basket.Id);
+            }
 
             try
             {

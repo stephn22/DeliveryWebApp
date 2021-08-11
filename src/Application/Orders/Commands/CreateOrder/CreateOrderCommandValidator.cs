@@ -8,9 +8,13 @@ namespace DeliveryWebApp.Application.Orders.Commands.CreateOrder
         {
             RuleFor(o => o.Customer).NotEmpty();
 
-            RuleFor(o => o.RestaurateurId).GreaterThan(0).NotEmpty();
+            RuleFor(c => c.Customer.Id).NotEqual(c => c.Restaurateur.CustomerId);
 
-            RuleFor(o => o.BasketItems).NotEmpty();
+            RuleFor(c => c.Customer.Id).GreaterThan(0).NotEmpty();
+
+            RuleFor(o => o.Restaurateur).NotEmpty();
+
+            RuleFor(o => o.Restaurateur.Id).GreaterThan(0).NotEmpty();
         }
     }
 }

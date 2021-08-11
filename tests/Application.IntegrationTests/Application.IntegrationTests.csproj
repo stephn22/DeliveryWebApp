@@ -38,7 +38,6 @@
 
   <ItemGroup>
     <Folder Include="OrderItems\Commands\" />
-    <Folder Include="Orders\Commands\" />
   </ItemGroup>
 
 </Project>
