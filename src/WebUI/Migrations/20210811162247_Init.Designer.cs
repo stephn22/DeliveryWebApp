@@ -10,7 +10,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace DeliveryWebApp.WebUI.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20210810144134_Init")]
+    [Migration("20210811162247_Init")]
     partial class Init
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -47,12 +47,12 @@ namespace DeliveryWebApp.WebUI.Migrations
                         .HasColumnType("int");
 
                     b.Property<decimal>("Latitude")
-                        .HasPrecision(16, 3)
-                        .HasColumnType("decimal(16,3)");
+                        .HasPrecision(18, 9)
+                        .HasColumnType("decimal(18,9)");
 
                     b.Property<decimal>("Longitude")
-                        .HasPrecision(16, 3)
-                        .HasColumnType("decimal(16,3)");
+                        .HasPrecision(18, 9)
+                        .HasColumnType("decimal(18,9)");
 
                     b.Property<string>("Number")
                         .IsRequired()

@@ -325,8 +325,8 @@ namespace DeliveryWebApp.WebUI.Migrations
                     PostalCode = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     Country = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     StateProvince = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    Longitude = table.Column<decimal>(type: "decimal(16,3)", precision: 16, scale: 3, nullable: false),
-                    Latitude = table.Column<decimal>(type: "decimal(16,3)", precision: 16, scale: 3, nullable: false),
+                    Longitude = table.Column<decimal>(type: "decimal(18,9)", precision: 18, scale: 9, nullable: false),
+                    Latitude = table.Column<decimal>(type: "decimal(18,9)", precision: 18, scale: 9, nullable: false),
                     CustomerId = table.Column<int>(type: "int", nullable: true),
                     RestaurateurId = table.Column<int>(type: "int", nullable: true)
                 },

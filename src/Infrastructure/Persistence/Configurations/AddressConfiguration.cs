@@ -24,11 +24,11 @@ namespace DeliveryWebApp.Infrastructure.Persistence.Configurations
                 .IsRequired();
 
             builder.Property(a => a.Longitude)
-                .HasPrecision(16, 3)
+                .HasPrecision(18, 9)
                 .IsRequired();
 
             builder.Property(a => a.Latitude)
-                .HasPrecision(16, 3)
+                .HasPrecision(18, 9)
                 .IsRequired();
         }
     }
