@@ -49,7 +49,7 @@ namespace DeliveryWebApp.Application.IntegrationTests.Addresses.Commands
             var address = await SendAsync(addressCommand);
 
             address.Should().NotBeNull();
-            address.Id.Should().NotBe(0);
+            address.Id.Should().BeGreaterThan(0);
             address.AddressLine1.Should().Be(addressCommand.AddressLine1);
             address.AddressLine2.Should().Be(addressCommand.AddressLine2);
             address.City.Should().Be(addressCommand.City);

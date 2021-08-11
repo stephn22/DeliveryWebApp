@@ -52,7 +52,7 @@ namespace DeliveryWebApp.Application.Baskets.Commands.UpdateBasket
                 Product = product,
                 Quantity = request.Quantity
             }, cancellationToken);
-
+            
             entity.TotalPrice = await entity.GetBasketTotalPrice(_mediator, _context);
 
             await _context.SaveChangesAsync(cancellationToken);

@@ -39,13 +39,42 @@ namespace DeliveryWebApp.Application.Addresses.Commands.UpdateAddress
                 throw new NotFoundException(nameof(Address), request.Id);
             }
 
-            entity.AddressLine1 = request.AddressLine1;
-            entity.AddressLine2 = request.AddressLine2;
-            entity.Number = request.Number;
-            entity.City = request.City;
-            entity.PostalCode = request.PostalCode;
-            entity.StateProvince = request.StateProvince;
-            entity.Country = request.Country;
+            if (!string.IsNullOrEmpty(request.AddressLine1))
+            {
+                entity.AddressLine1 = request.AddressLine1;
+            }
+
+            if (!string.IsNullOrEmpty(request.AddressLine2))
+            {
+                entity.AddressLine2 = request.AddressLine2;
+            }
+
+            if (!string.IsNullOrEmpty(request.Number))
+            {
+                entity.Number = request.Number;
+            }
+
+            if (!string.IsNullOrEmpty(request.City))
+            {
+                entity.City = request.City;
+            }
+
+            if (!string.IsNullOrEmpty(request.PostalCode))
+            {
+                entity.PostalCode = request.PostalCode;
+            }
+
+            if (!string.IsNullOrEmpty(request.StateProvince))
+            {
+                entity.StateProvince = request.StateProvince;
+            }
+
+
+            if (!string.IsNullOrEmpty(request.Country))
+            {
+                entity.Country = request.Country;
+            }
+
             entity.Latitude = request.Latitude;
             entity.Longitude = request.Longitude;
 

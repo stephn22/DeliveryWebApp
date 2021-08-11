@@ -1,29 +1,21 @@
-﻿using DeliveryWebApp.Application.Common.Security;
+﻿using System.Threading.Tasks;
+using DeliveryWebApp.Application.Common.Security;
 using DeliveryWebApp.Application.Customers.Commands.CreateCustomer;
 using DeliveryWebApp.Application.Requests.Commands.CreateRequest;
+using DeliveryWebApp.Application.Requests.Commands.UpdateRequest;
 using DeliveryWebApp.Domain.Constants;
 using DeliveryWebApp.Domain.Entities;
 using FluentAssertions;
 using NUnit.Framework;
-using System.Threading.Tasks;
 
 namespace DeliveryWebApp.Application.IntegrationTests.Requests.Commands
 {
     using static Testing;
 
-    public class CreateRequestTest : TestBase
+    public class UpdateRequestTest : TestBase
     {
-        //[Test]
-        //public void ShouldRequireMinimumFields()
-        //{
-        //    var command = new CreateCustomerCommand();
-
-        //    FluentActions.Invoking(() =>
-        //        SendAsync(command)).Should().Throw<ValidationException>();
-        //}
-
         [Test]
-        public async Task ShouldCreateRequestAsync()
+        public async Task ShouldUpdateRequestAsync()
         {
             // create customer first
             var userId = await RunAsDefaultUserAsync();
@@ -48,14 +40,21 @@ namespace DeliveryWebApp.Application.IntegrationTests.Requests.Commands
 
             var item = await SendAsync(command);
 
-            var request = await FindAsync<Request>(item.Id);
+            var updateCommand = new UpdateRequestCommand
+            {
+                Id = item.Id,
+                Status = RequestStatus.Accepted
+            };
 
-            request.Should().NotBeNull();
-            request.Id.Should().BeGreaterThan(0);
-            request.CustomerId.Should().Be(customer.Id);
-            request.Status.Should().Be(command.Status);
-            request.Role.Should().Be(command.Role);
-            request.Customer.Should().BeNull();
+            await SendAsync(updateCommand);
+
+            var update = await FindAsync<Request>(updateCommand.Id);
+
+            update.Should().NotBeNull();
+            update.Id.Should().BeGreaterThan(0);
+            update.CustomerId.Should().Be(customer.Id);
+            update.Role.Should().Be(command.Role);
+            update.Status.Should().Be(updateCommand.Status);
         }
     }
 }

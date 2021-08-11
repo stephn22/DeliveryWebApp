@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
+using AutoMapper;
 using DeliveryWebApp.Application.Common.Exceptions;
 using DeliveryWebApp.Application.Common.Interfaces;
 using DeliveryWebApp.Domain.Entities;
@@ -13,25 +14,27 @@ namespace DeliveryWebApp.Application.Requests.Commands.DeleteRequest
 {
     public class DeleteRequestCommand : IRequest<Request>
     {
-        public int Id { get; set; }
+        public Request Request { get; set; }
     }
 
     public class DeleteRequestCommandHandler : IRequestHandler<DeleteRequestCommand, Request>
     {
         private readonly IApplicationDbContext _context;
+        private readonly IMapper _mapper;
 
-        public DeleteRequestCommandHandler(IApplicationDbContext context)
+        public DeleteRequestCommandHandler(IApplicationDbContext context, IMapper mapper)
         {
             _context = context;
+            _mapper = mapper;
         }
 
         public async Task<Request> Handle(DeleteRequestCommand request, CancellationToken cancellationToken)
         {
-            var entity = await _context.Requests.FindAsync(request.Id);
+            var entity = _mapper.Map<Request>(request.Request);
 
             if (entity == null)
             {
-                throw new NotFoundException(nameof(Request), request.Id);
+                throw new NotFoundException(nameof(Request), request.Request);
             }
 
             _context.Requests.Remove(entity);

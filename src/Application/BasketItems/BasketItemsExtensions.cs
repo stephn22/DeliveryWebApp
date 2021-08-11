@@ -12,7 +12,7 @@ namespace DeliveryWebApp.Application.BasketItems
     {
         public static async Task<Product> GetProduct(this BasketItem basketItem, IApplicationDbContext context)
         {
-            return await context.Products.FindAsync(basketItem.Id);
+            return await context.Products.FindAsync(basketItem.ProductId);
         }
     }
 }

@@ -23,8 +23,8 @@ namespace DeliveryWebApp.Application.Baskets.Extensions
             foreach (var item in basket.BasketItems)
             {
                 var product = await item.GetProduct(context);
-
-                tot += product.ApplyDiscount();
+                
+                tot += (product.ApplyDiscount() * item.Quantity);
             }
 
             return tot;

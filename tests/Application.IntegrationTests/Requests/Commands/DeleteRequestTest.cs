@@ -1,29 +1,21 @@
-﻿using DeliveryWebApp.Application.Common.Security;
+﻿using NUnit.Framework;
+using System.Threading.Tasks;
+using DeliveryWebApp.Application.Common.Security;
 using DeliveryWebApp.Application.Customers.Commands.CreateCustomer;
 using DeliveryWebApp.Application.Requests.Commands.CreateRequest;
+using DeliveryWebApp.Application.Requests.Commands.DeleteRequest;
 using DeliveryWebApp.Domain.Constants;
 using DeliveryWebApp.Domain.Entities;
 using FluentAssertions;
-using NUnit.Framework;
-using System.Threading.Tasks;
 
 namespace DeliveryWebApp.Application.IntegrationTests.Requests.Commands
 {
     using static Testing;
 
-    public class CreateRequestTest : TestBase
+    public class DeleteRequestTest : TestBase
     {
-        //[Test]
-        //public void ShouldRequireMinimumFields()
-        //{
-        //    var command = new CreateCustomerCommand();
-
-        //    FluentActions.Invoking(() =>
-        //        SendAsync(command)).Should().Throw<ValidationException>();
-        //}
-
         [Test]
-        public async Task ShouldCreateRequestAsync()
+        public async Task ShouldDeleteRequestAsync()
         {
             // create customer first
             var userId = await RunAsDefaultUserAsync();
@@ -46,16 +38,18 @@ namespace DeliveryWebApp.Application.IntegrationTests.Requests.Commands
                 Status = RequestStatus.Idle
             };
 
-            var item = await SendAsync(command);
+            var request = await SendAsync(command);
 
-            var request = await FindAsync<Request>(item.Id);
+            // delete request
 
-            request.Should().NotBeNull();
-            request.Id.Should().BeGreaterThan(0);
-            request.CustomerId.Should().Be(customer.Id);
-            request.Status.Should().Be(command.Status);
-            request.Role.Should().Be(command.Role);
-            request.Customer.Should().BeNull();
+            await SendAsync(new DeleteRequestCommand
+            {
+                Request = request
+            });
+
+            var r = await FindAsync<Request>(request.Id);
+            r.Should().BeNull();
+            customer.Should().NotBeNull();
         }
     }
 }

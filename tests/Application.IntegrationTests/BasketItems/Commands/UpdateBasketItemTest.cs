@@ -8,6 +8,7 @@ using DeliveryWebApp.Domain.Constants;
 using FluentAssertions;
 using NUnit.Framework;
 using System.Threading.Tasks;
+using DeliveryWebApp.Domain.Entities;
 
 namespace DeliveryWebApp.Application.IntegrationTests.BasketItems.Commands
 {
@@ -91,7 +92,9 @@ namespace DeliveryWebApp.Application.IntegrationTests.BasketItems.Commands
                 Quantity = newProductCommand.Quantity
             };
 
-            var update = await SendAsync(updateBasketItem);
+            await SendAsync(updateBasketItem);
+
+            var update = await FindAsync<BasketItem>(updateBasketItem.Id);
 
             update.Should().NotBeNull();
             update.Id.Should().NotBe(0);
