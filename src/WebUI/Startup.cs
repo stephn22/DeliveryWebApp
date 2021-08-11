@@ -14,6 +14,7 @@ using Microsoft.Extensions.Hosting;
 using Newtonsoft.Json;
 using System.Collections.Generic;
 using System.Globalization;
+using FluentValidation.AspNetCore;
 
 namespace DeliveryWebApp.WebUI
 {
@@ -64,7 +65,8 @@ namespace DeliveryWebApp.WebUI
             services.AddRazorPages()
                 .AddNewtonsoftJson(options => options.SerializerSettings.ReferenceLoopHandling = ReferenceLoopHandling.Serialize)
                 .AddViewLocalization()
-                .AddDataAnnotationsLocalization();
+                .AddDataAnnotationsLocalization()
+                .AddFluentValidation();
 
             // Customise default API behaviour
             services.Configure<ApiBehaviorOptions>(options =>
