@@ -46,9 +46,13 @@ namespace DeliveryWebApp.Application.OrderItems.Commands.CreateOrderItem
             {
                 ProductId = basketItem.ProductId,
                 Discount = product.Discount,
-                OrderId = request.Order.Id,
-                ProductPrice = product.Price
+                OrderId = order.Id,
+                ProductPrice = product.Price,
+                Quantity = basketItem.Quantity
             };
+
+            _context.OrderItems.Add(entity);
+            await _context.SaveChangesAsync(cancellationToken);
 
             return entity;
         }

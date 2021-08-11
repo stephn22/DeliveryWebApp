@@ -4,7 +4,7 @@ using System.Text.RegularExpressions;
 
 namespace DeliveryWebApp.Application.Addresses.Commands.CreateAddress
 {
-    public class CreateAddressCommandValidator : AbstractValidator<UpdateAddressCommand>
+    public class CreateAddressCommandValidator : AbstractValidator<CreateAddressCommand>
     {
         public CreateAddressCommandValidator()
         {
@@ -32,16 +32,14 @@ namespace DeliveryWebApp.Application.Addresses.Commands.CreateAddress
                 .NotEmpty();
 
             RuleFor(a => a.Country)
-                .Matches(new Regex(@"/[a-zA-Z]{2,}/gm"))
+                .MaximumLength(40)
                 .NotEmpty();
 
             RuleFor(a => a.Latitude)
-                .NotEmpty()
-                .NotNull();
+                .NotEmpty();
 
             RuleFor(a => a.Longitude)
-                .NotEmpty()
-                .NotNull();
+                .NotEmpty();
         }
     }
 }

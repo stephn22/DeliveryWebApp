@@ -4,6 +4,7 @@ using DeliveryWebApp.Application.Common.Interfaces;
 using DeliveryWebApp.Domain.Entities;
 using MediatR;
 using System.Threading.Tasks;
+using DeliveryWebApp.Application.Products.Extensions;
 
 namespace DeliveryWebApp.Application.Baskets.Extensions
 {
@@ -27,7 +28,7 @@ namespace DeliveryWebApp.Application.Baskets.Extensions
             {
                 var product = await item.GetProduct(context);
 
-                tot += (product.ApplyDiscount() * item.Quantity);
+                tot += (product.DiscountedPrice() * item.Quantity);
             }
 
             return tot;

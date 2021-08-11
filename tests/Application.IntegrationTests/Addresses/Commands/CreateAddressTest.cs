@@ -43,7 +43,7 @@ namespace DeliveryWebApp.Application.IntegrationTests.Addresses.Commands
                 Number = "2",
                 Latitude = 48.5472M,
                 Longitude = 72.1804M,
-                Customer = customer
+                CustomerId = customer.Id
             };
 
             var address = await SendAsync(addressCommand);
@@ -95,7 +95,7 @@ namespace DeliveryWebApp.Application.IntegrationTests.Addresses.Commands
                 Number = "2",
                 Latitude = 48.5472M,
                 Longitude = 72.1804M,
-                Restaurateur = restaurateur
+                RestaurateurId = restaurateur.Id
             };
 
             var address = await SendAsync(addressCommand);

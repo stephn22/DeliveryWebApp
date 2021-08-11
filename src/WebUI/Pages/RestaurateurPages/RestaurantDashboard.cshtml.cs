@@ -297,7 +297,7 @@ namespace DeliveryWebApp.WebUI.Pages.RestaurateurPages
                 PostalCode = Input.PostalCode,
                 Latitude = Input.Latitude,
                 Longitude = Input.Longitude,
-                Restaurateur = Restaurateur,
+                RestaurateurId = Restaurateur.Id,
             });
 
             try

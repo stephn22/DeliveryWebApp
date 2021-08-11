@@ -41,10 +41,11 @@ namespace DeliveryWebApp.Application.IntegrationTests.Restaurateurs.Commands
                 City = "Milan",
                 Country = "Italy",
                 PostalCode = "28100",
+                StateProvince = "MI",
                 Number = "2",
                 Latitude = 48.5472M,
                 Longitude = 72.1804M,
-                Restaurateur = restaurateur
+                RestaurateurId = restaurateur.Id
             };
 
             var address = await SendAsync(addressCommand);

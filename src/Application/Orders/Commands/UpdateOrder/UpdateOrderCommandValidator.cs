@@ -10,7 +10,9 @@ namespace DeliveryWebApp.Application.Orders.Commands.UpdateOrder
         {
             RuleFor(o => o.Id).GreaterThan(0).NotEmpty();
 
-            RuleFor(o => o.DeliveryDate).GreaterThanOrEqualTo(DateTime.Now).NotEmpty(); // TODO: Check
+            //RuleFor(o => o.Date).GreaterThanOrEqualTo(DateTime.UtcNow);
+
+            //RuleFor(o => o.DeliveryDate).GreaterThanOrEqualTo(DateTime.UtcNow);
 
             RuleFor(o => o.OrderStatus).NotEmpty();
         }

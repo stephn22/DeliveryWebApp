@@ -14,21 +14,5 @@ namespace DeliveryWebApp.Domain.Entities
         public int Quantity { get; set; }
         public int RestaurateurId { get; set; }
         public Restaurateur Restaurateur { get; set; }
-
-        public decimal ApplyDiscount()
-        {
-            if (Discount != 0)
-            {
-                return Price * ((100.00M - Discount) / 100.00M);
-            }
-
-            return Price;
-        }
-
-        public static decimal TotalPrice(List<Product> list)
-        {
-            const decimal tot = 0.00M;
-            return list.Count <= 0 ? tot : Math.Round(list.Sum(p => (p.ApplyDiscount() * p.Quantity)), 2);
-        }
     }
 }

@@ -17,8 +17,8 @@ namespace DeliveryWebApp.Application.Addresses.Commands.CreateAddress
         public string Country { get; set; }
         public decimal Longitude { get; set; }
         public decimal Latitude { get; set; }
-        public Customer Customer { get; set; }
-        public Restaurateur Restaurateur { get; set; }
+        public int? CustomerId { get; set; }
+        public int? RestaurateurId { get; set; }
     }
 
     public class CreateAddressCommandHandler : IRequestHandler<CreateAddressCommand, Address>
@@ -45,14 +45,14 @@ namespace DeliveryWebApp.Application.Addresses.Commands.CreateAddress
                 Longitude = request.Longitude,
             };
 
-            if (request.Customer != null)
+            if (request.CustomerId != null)
             {
-                entity.CustomerId = request.Customer.Id;
+                entity.CustomerId = request.CustomerId;
             }
 
-            if (request.Restaurateur != null)
+            if (request.RestaurateurId != null)
             {
-                entity.RestaurateurId = request.Restaurateur.Id;
+                entity.RestaurateurId = request.RestaurateurId;
             }
 
             _context.Addresses.Add(entity);
