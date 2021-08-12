@@ -147,6 +147,9 @@
   <data name="Sign up today" xml:space="preserve">
     <value>Registrati oggi</value>
   </data>
+  <data name="Welcome" xml:space="preserve">
+    <value>Benvenuto</value>
+  </data>
   <data name="Welcome Administrator" xml:space="preserve">
     <value>Benvenuto Amministratore</value>
   </data>
