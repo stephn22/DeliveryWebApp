@@ -12,7 +12,7 @@ namespace DeliveryWebApp.Application.Products.Commands.UpdateProducts
 
             RuleFor(p => p.Category).MaximumLength(20);
 
-            RuleFor(p => p.Discount).GreaterThanOrEqualTo(0);
+            RuleFor(p => p.Discount).GreaterThanOrEqualTo(0).LessThanOrEqualTo(100);
 
             RuleFor(p => p.Price).GreaterThan(0.00M);
 

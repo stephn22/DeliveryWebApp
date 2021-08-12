@@ -15,22 +15,10 @@
     </svg>
 </a>
 
-@section Head {
-    <link type="text/css" rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/jsgrid/1.5.3/jsgrid.min.css" />
-    <link type="text/css" rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/jsgrid/1.5.3/jsgrid-theme.min.css" />
-}
-
-<a asp-page="/RestaurateurPages/RestaurantDashboard" title="Back to dashboard" id="back">
-    <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" fill="black" class="bi bi-arrow-left" viewBox="0 0 16 16">
-        <path fill-rule="evenodd" d="M15 8a.5.5 0 0 0-.5-.5H2.707l3.147-3.146a.5.5 0 1 0-.708-.708l-4 4a.5.5 0 0 0 0 .708l4 4a.5.5 0 0 0 .708-.708L2.707 8.5H14.5A.5.5 0 0 0 15 8z" />
-    </svg>
-</a>
-
 <div id="jsGrid" style="padding-bottom: 7rem; display: table"></div>
 
 @section Scripts {
     <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/jsgrid/1.5.3/jsgrid.min.js"></script>
-    <script type="text/javascript" src="/js/jsgrid-fields/dateField.js"></script>
 
     <script>
         $(function () {
@@ -46,6 +34,42 @@
                     contentType: json ? "application/json" : "text/plain"
                 });
             };
+
+            const DateField = function (config) {
+                jsGrid.Field.call(this, config);
+            };
+
+            DateField.prototype = new jsGrid.DateField({
+
+                css: "date",
+                align: "center",
+
+                myCustomProperty: "orderDate",
+
+                sorter: function(date1, date2) {
+                    return new Date(date1) - new Date(date2);
+                },
+
+                itemTemplate: function(value) {
+                    return new Date(value).toDateString();
+                },
+
+                insertTemplate: function(value) {
+                    return this._insertPicker = $("<input>").datepicker({ defaultDate: new Date() });
+                },
+
+                editTemplate: function(value) {
+                    return this._editPicker = $("<input>").datepicker().datepicker("setDate", new Date(value));
+                },
+
+                insertValue: function () {
+                    return this._insertPicker.datepicker("getDate").toISOString();
+                },
+
+                editValue: function () {
+                    return this._editPicker.datepicker("getDate").toISOString();
+                }
+            });
 
             jsGrid.fields.date = DateField;
 

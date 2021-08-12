@@ -1,5 +1,6 @@
-﻿using System;
+﻿using DeliveryWebApp.Application.Common.Exceptions;
 using DeliveryWebApp.Application.Common.Interfaces;
+using DeliveryWebApp.Application.Common.Security;
 using DeliveryWebApp.Application.Products.Commands.DeleteProduct;
 using DeliveryWebApp.Application.Products.Queries.GetProducts;
 using DeliveryWebApp.Application.Restaurateurs.Extensions;
@@ -11,14 +12,10 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Logging;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using DeliveryWebApp.Application.Common.Exceptions;
-using DeliveryWebApp.Application.Common.Security;
-using DeliveryWebApp.Infrastructure.Security;
-using EllipticCurve;
-using Microsoft.Extensions.Logging;
 
 namespace DeliveryWebApp.WebUI.Pages.RestaurateurPages
 {
@@ -28,9 +25,9 @@ namespace DeliveryWebApp.WebUI.Pages.RestaurateurPages
         private readonly IMediator _mediator;
         private readonly IApplicationDbContext _context;
         private readonly UserManager<ApplicationUser> _userManager;
-        private readonly ILogger _logger;
+        private readonly ILogger<RestaurantProductsModel> _logger;
 
-        public RestaurantProductsModel(IMediator mediator, IApplicationDbContext context, UserManager<ApplicationUser> userManager, ILogger logger)
+        public RestaurantProductsModel(IMediator mediator, IApplicationDbContext context, UserManager<ApplicationUser> userManager, ILogger<RestaurantProductsModel> logger)
         {
             _mediator = mediator;
             _context = context;
@@ -52,7 +49,7 @@ namespace DeliveryWebApp.WebUI.Pages.RestaurateurPages
         {
             if (id == null)
             {
-                return NotFound($"Unable to find a food vendor with that id");
+                return NotFound("Unable to find a food vendor with that id");
             }
 
             var user = await _userManager.GetUserAsync(User);

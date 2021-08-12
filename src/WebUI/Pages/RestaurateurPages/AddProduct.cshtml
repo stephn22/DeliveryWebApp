@@ -72,6 +72,14 @@
             </div>
         </div>
     </div>
+    
+    <div class="form-row">
+        <div class="form-group col-md-4">
+            <label asp-for="Input.Category"></label>
+            <select class="form-select" aria-label="Select country" asp-for="Input.Category" asp-items="Model.Categories"></select>
+            <span asp-validation-for="Input.Category" class="text-danger"></span>
+        </div>
+    </div>
 
     <div class="form-row">
         <div class="col-3">

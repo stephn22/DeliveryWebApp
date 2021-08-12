@@ -20,6 +20,7 @@ using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.IO;
 using System.Threading.Tasks;
+using DeliveryWebApp.Application.Restaurateurs.Queries.GetRestaurateurAddress;
 
 namespace DeliveryWebApp.WebUI.Pages.RestaurateurPages
 {
@@ -132,6 +133,11 @@ namespace DeliveryWebApp.WebUI.Pages.RestaurateurPages
 
             if (Restaurateur != null)
             {
+                RestaurantAddress = await _mediator.Send(new GetRestaurateurAddressQuery
+                {
+                    Id = Restaurateur.Id
+                });
+
                 HasRestaurant = RestaurantAddress != null && Restaurateur.Logo != null &&
                                 Restaurateur.RestaurantName != null && Restaurateur.RestaurantCategory != null;
             }

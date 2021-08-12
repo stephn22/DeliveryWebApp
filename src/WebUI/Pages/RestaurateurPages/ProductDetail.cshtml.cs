@@ -1,20 +1,19 @@
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.ComponentModel.DataAnnotations;
-using System.IO;
-using System.Threading.Tasks;
 using DeliveryWebApp.Application.Common.Security;
 using DeliveryWebApp.Application.Products.Commands.UpdateProducts;
 using DeliveryWebApp.Domain.Constants;
 using DeliveryWebApp.Domain.Entities;
 using DeliveryWebApp.Infrastructure.Persistence;
-using DeliveryWebApp.Infrastructure.Security;
 using MediatR;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.Extensions.Logging;
+using System.Collections.Generic;
+using System.ComponentModel;
+using System.ComponentModel.DataAnnotations;
+using System.IO;
+using System.Threading.Tasks;
 
 namespace DeliveryWebApp.WebUI.Pages.RestaurateurPages
 {
@@ -80,16 +79,23 @@ namespace DeliveryWebApp.WebUI.Pages.RestaurateurPages
         {
             if (id == null)
             {
-                return NotFound($"Unable to load product with this ID.");
+                return NotFound("Unable to load product with this ID.");
             }
 
-            Product = await _context.Products.FindAsync(id);
+            await LoadAsync(id);
 
             return Page();
         }
 
+        private async Task LoadAsync(int? id)
+        {
+            Product = await _context.Products.FindAsync(id);
+        }
+
         public async Task<IActionResult> OnPost(int id)
         {
+            await LoadAsync(id);
+
             byte[] bytes = null;
 
             if (Input.Image != null)
@@ -103,15 +109,16 @@ namespace DeliveryWebApp.WebUI.Pages.RestaurateurPages
 
             await _mediator.Send(new UpdateProductCommand
             {
+                Id = Product.Id,
                 Name = Input.Name,
                 Category = Input.Category,
                 Discount = Input.Discount,
                 Image = bytes,
-                Price = Input.Price,
+                Price = Input.Price <= 0.00M ? Product.Price : Input.Price,
                 Quantity = Input.Quantity
             });
 
-            return RedirectToPage(routeValues: id);
+            return RedirectToPage(id);
         }
     }
 }

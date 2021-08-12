@@ -17,9 +17,9 @@ namespace DeliveryWebApp.WebUI
             try
             {
                 Log.Logger = new LoggerConfiguration()
-                    .MinimumLevel.Debug()
+                    .MinimumLevel.Information()
                     .WriteTo.Console()
-                    .WriteTo.File("/Log/log-.txt", rollingInterval: RollingInterval.Day)
+                    .WriteTo.File("Log/log-.txt", rollingInterval: RollingInterval.Day)
                     .CreateLogger();
 
                 var host = CreateHostBuilder(args).Build();
