@@ -14,7 +14,7 @@
     var isRider = (await AuthorizationService.AuthorizeAsync(User, PolicyName.IsRider)).Succeeded;
     var isDefault = (await AuthorizationService.AuthorizeAsync(User, PolicyName.IsDefault)).Succeeded;
     var isCustomer = (await AuthorizationService.AuthorizeAsync(User, PolicyName.IsCustomer)).Succeeded;
-    var isLogged = HttpContext.User.IsAuthenticated();
+    var isLogged = User.IsAuthenticated();
     var isAdmin = User.IsInRole(RoleName.Admin);
     ViewData["Title"] = localizer["Home page"];
 }
@@ -55,9 +55,6 @@
 
     @if (isCustomer)
     {
-        <h1 class="display-3">@localizer["Welcome"] @Model.Customer.FirstName!</h1>
-        <hr/>
-
         <div id="myCarousel" class="carousel slide" data-bs-ride="carousel">
             <div class="carousel-indicators">
                 <button type="button" data-bs-target="#myCarousel" data-bs-slide-to="0" class="active" aria-current="true" aria-label="Slide 1"></button>
