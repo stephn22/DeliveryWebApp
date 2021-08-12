@@ -20,7 +20,7 @@ namespace DeliveryWebApp.Application.Addresses.Commands.CreateAddress
                 .NotEmpty();
 
             RuleFor(a => a.City)
-                .MaximumLength(15)
+                .MaximumLength(30)
                 .NotEmpty();
 
             RuleFor(a => a.StateProvince)

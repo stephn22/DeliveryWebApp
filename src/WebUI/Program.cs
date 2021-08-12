@@ -14,14 +14,14 @@ namespace DeliveryWebApp.WebUI
     {
         public static async Task Main(string[] args)
         {
-            Log.Logger = new LoggerConfiguration()
-                .MinimumLevel.Debug()
-                .WriteTo.Console()
-                .WriteTo.File("/Log/log-.txt", rollingInterval: RollingInterval.Day)
-                .CreateLogger();
-
             try
             {
+                Log.Logger = new LoggerConfiguration()
+                    .MinimumLevel.Debug()
+                    .WriteTo.Console()
+                    .WriteTo.File("/Log/log-.txt", rollingInterval: RollingInterval.Day)
+                    .CreateLogger();
+
                 var host = CreateHostBuilder(args).Build();
 
                 using (var scope = host.Services.CreateScope())
@@ -35,6 +35,7 @@ namespace DeliveryWebApp.WebUI
                         var roleManager = services.GetRequiredService<RoleManager<IdentityRole>>();
 
                         await ApplicationDbContextSeed.SeedDefaultUserAsync(userManager, roleManager, scope.ServiceProvider);
+
                     }
                     catch (Exception e)
                     {

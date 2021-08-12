@@ -350,7 +350,7 @@ else
         <div class="card card-body">
 
             <input id="address1Id" value="@Model.Addresses[1].Id" hidden/>
-            
+
             <form method="post" asp-page-handler="UpdateAddress" asp-route-id="@Model.Addresses[1].Id">
                 <div class="form-row">
                     <div class="form-group col-md-6">
@@ -403,7 +403,7 @@ else
 
                 <button type="submit" class="btn btn-primary" id="update-address-1">
                     <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-save" viewBox="0 0 16 16">
-                        <path d="M2 1a1 1 0 0 0-1 1v12a1 1 0 0 0 1 1h12a1 1 0 0 0 1-1V2a1 1 0 0 0-1-1H9.5a1 1 0 0 0-1 1v7.293l2.646-2.647a.5.5 0 0 1 .708.708l-3.5 3.5a.5.5 0 0 1-.708 0l-3.5-3.5a.5.5 0 1 1 .708-.708L7.5 9.293V2a2 2 0 0 1 2-2H14a2 2 0 0 1 2 2v12a2 2 0 0 1-2 2H2a2 2 0 0 1-2-2V2a2 2 0 0 1 2-2h2.5a.5.5 0 0 1 0 1H2z" />
+                        <path d="M2 1a1 1 0 0 0-1 1v12a1 1 0 0 0 1 1h12a1 1 0 0 0 1-1V2a1 1 0 0 0-1-1H9.5a1 1 0 0 0-1 1v7.293l2.646-2.647a.5.5 0 0 1 .708.708l-3.5 3.5a.5.5 0 0 1-.708 0l-3.5-3.5a.5.5 0 1 1 .708-.708L7.5 9.293V2a2 2 0 0 1 2-2H14a2 2 0 0 1 2 2v12a2 2 0 0 1-2 2H2a2 2 0 0 1-2-2V2a2 2 0 0 1 2-2h2.5a.5.5 0 0 1 0 1H2z"/>
                     </svg>
                     Save
                 </button>
@@ -418,68 +418,16 @@ else
 {
     <partial name="_ValidationScriptsPartial"/>
 
-    <script src='https://api.mapbox.com/mapbox-gl-js/v2.3.1/mapbox-gl.js'></script>
+    <script src="https://api.mapbox.com/mapbox-gl-js/v2.3.1/mapbox-gl.js"></script>
     <script src="https://unpkg.com/@@mapbox/mapbox-sdk/umd/mapbox-sdk.min.js"></script>
+    <script src="/js/classes/address.min.js"></script>
 
     <script type="text/javascript">
-        $(function() {
+        $(function () {
 
                 $("#location-btn-addr-0").on("mousedown",
                     function() {
                         navigator.geolocation.getCurrentPosition(getCoords0);
-                    });
-
-                /**
-                 * Save the manually inserted address
-                 */
-                $("#edit-address-save-0").on("mousedown",
-                    function() {
-                        const accessToken = 'pk.eyJ1Ijoic3RlY3JvdHRpMSIsImEiOiJja3Bna2kzbHYyaThoMm9ueHl1dzlnaTc1In0.EpALSOaDOmuM8XGS_IQzvA';
-
-                            const query = `${$("#address0-line1").val()}, ${$("#address0-line2").val()}, ${$("#address0-number").val()}, ${$("#address0-city").val()}, ${$("#address0-postal-code").val()}, ${$("#address0-state-province").val()}, ${$("#address0-country option:selected").val()}`;
-
-                            const url = `https://api.mapbox.com/geocoding/v5/mapbox.places/${query}.json?limit=1&access_token=${accessToken}`;
-
-                            $.ajax({ //forward geocode
-                                type: "GET",
-                                url: url,
-                                dataType: "JSON",
-                                contentType: "application/json; charset=utf-8",
-                                success: function(data, status, xhr) {
-
-                                    const [longitude, latitude] = data.features[0].center;
-                                    $("#address0-longitude").val(longitude);
-                                    $("#address0-latitude").val(latitude);
-                                },
-                                error: function() {
-                                    console.log("Error");
-                                }
-                            });
-                        });
-
-                $("#edit-address-save-1").on("click",
-                    function() {
-                        const accessToken = 'pk.eyJ1Ijoic3RlY3JvdHRpMSIsImEiOiJja3Bna2kzbHYyaThoMm9ueHl1dzlnaTc1In0.EpALSOaDOmuM8XGS_IQzvA';
-
-                            const query = `${$("#address1-line1").val()}, ${$("#address1-line2").val()}, ${$("#address1-number").val()}, ${$("#address1-city").val()}, ${$("#address1-postal-code").val()}, ${$("#address1-state-province").val()}, ${$("#address1-country option:selected").val()}`;
-
-                            const url = `https://api.mapbox.com/geocoding/v5/mapbox.places/${query}.json?limit=1&access_token=${accessToken}`;
-
-                            $.ajax({ //forward geocode
-                                type: "GET",
-                                url: url,
-                                dataType: "JSON",
-                                contentType: "application/json; charset=utf-8",
-                                success: function(data, status, xhr) {
-
-                                    const [longitude, latitude] = data.features[0].center;
-                                    $("#address1-longitude").val(longitude);
-                                    $("#address1-latitude").val(latitude);
-                                },
-                                error: function() {
-                                    console.log("Error");
-                                }
-                            });
                     });
 
                 /**
@@ -499,32 +447,37 @@ else
                             $("#input-address-0").val(data.features[0].place_name);
 
                             $("#save-btn-0").on("click",
-                                function() {
-                                    const addressObj = { // prepare address object
-                                        addressLine1: data.features[0].text,
-                                        addressLine2: "",
-                                        number: data.features[0].address,
-                                        postalCode: data.features[0].context[0].text,
-                                        city: data.features[0].context[1].text,
-                                        stateProvince: data.features[0].context[2].text,
-                                        country: data.features[0].context[3].text,
-                                        longitude: position.coords.longitude,
-                                        latitude: position.coords.latitude,
-                                        customerId: @Model.Customer.Id
-                                    };
+                                function () {
+                                    const address0 = new Address(
+                                        data.features[0].text,              // addressLine1
+                                        "",                                 // addressLine2
+                                        data.features[0].address,           // number
+                                        data.features[0].context[1].text,   // city
+                                        data.features[0].context[0].text,   // postalCode
+                                        data.features[0].context[3].text,   // country
+                                        data.features[0].context[2].text,   // stateProvince
+                                        position.coords.longitude,          // latitude
+                                        position.coords.latitude,           // longitude
+                                        @Model.Customer.Id,                 // customerId
+                                        null);                              // restaurateurId
+
+                                    if (validate(address0.toString())) {
+                                        alert("The address provided has an incorrect format"); // TODO: localize
+                                        return;
+                                    }
 
                                     $.ajax({
                                         type: "POST", // save into database
                                         async: true,
                                         url: "/api/addresses",
                                         dataType: "JSON",
-                                        data: JSON.stringify(addressObj),
+                                        data: JSON.stringify(address0),
                                         contentType: "application/json; charset=utf-8",
                                         success: function(data, status, xhr) {
-                                            console.log(status);
+                                            @*console.log(status);
                                             @{
                                                 Model.StatusMessage = "Your address has been updated";
-                                            }
+                                            }*@
                                             window.location.reload(true);
                                         },
                                         error: function(jqXhr, textStatus, errorMessage) {
@@ -540,31 +493,84 @@ else
                 }
 
                 /**
+                 * Save the manually inserted address
+                 */
+                $("#edit-address-save-0").on("mousedown",
+                    function() {
+                        const accessToken = 'pk.eyJ1Ijoic3RlY3JvdHRpMSIsImEiOiJja3Bna2kzbHYyaThoMm9ueHl1dzlnaTc1In0.EpALSOaDOmuM8XGS_IQzvA';
+
+                        const query = `${$("#address0-line1").val()}, ${$("#address0-line2").val()}, ${$("#address0-number").val()}, ${$("#address0-city").val()}, ${$("#address0-postal-code").val()}, ${$("#address0-state-province").val()}, ${$("#address0-country option:selected").val()}`;
+
+                        const url = `https://api.mapbox.com/geocoding/v5/mapbox.places/${query}.json?limit=1&access_token=${accessToken}`;
+
+                        $.ajax({ //forward geocode
+                            type: "GET",
+                            url: url,
+                            dataType: "JSON",
+                            contentType: "application/json; charset=utf-8",
+                            success: function(data, status, xhr) {
+
+                                const [longitude, latitude] = data.features[0].center;
+                                $("#address0-longitude").val(longitude);
+                                $("#address0-latitude").val(latitude);
+                            },
+                            error: function() {
+                                console.log("Error");
+                            }
+                        });
+                    });
+
+                $("#edit-address-save-1").on("click",
+                    function() {
+                        const accessToken = 'pk.eyJ1Ijoic3RlY3JvdHRpMSIsImEiOiJja3Bna2kzbHYyaThoMm9ueHl1dzlnaTc1In0.EpALSOaDOmuM8XGS_IQzvA';
+
+                        const query = `${$("#address1-line1").val()}, ${$("#address1-line2").val()}, ${$("#address1-number").val()}, ${$("#address1-city").val()}, ${$("#address1-postal-code").val()}, ${$("#address1-state-province").val()}, ${$("#address1-country option:selected").val()}`;
+
+                        const url = `https://api.mapbox.com/geocoding/v5/mapbox.places/${query}.json?limit=1&access_token=${accessToken}`;
+
+                        $.ajax({ //forward geocode
+                            type: "GET",
+                            url: url,
+                            dataType: "JSON",
+                            contentType: "application/json; charset=utf-8",
+                            success: function(data, status, xhr) {
+
+                                const [longitude, latitude] = data.features[0].center;
+                                $("#address1-longitude").val(longitude);
+                                $("#address1-latitude").val(latitude);
+                            },
+                            error: function() {
+                                console.log("Error");
+                            }
+                        });
+                    });
+
+                /**
                  * Update the primary address
                  */
                 $("#update-address-0").on("mousedown",
                     function() {
                         const accessToken = 'pk.eyJ1Ijoic3RlY3JvdHRpMSIsImEiOiJja3Bna2kzbHYyaThoMm9ueHl1dzlnaTc1In0.EpALSOaDOmuM8XGS_IQzvA';
 
-                            const query = `${$("#update-address0-line1").val()}, ${$("#update-address0-line2").val()}, ${$("#update-address0-number").val()}, ${$("#update-address0-city").val()}, ${$("#update-address0-postal-code").val()}, ${$("#update-address0-state-province").val()}, ${$("#update-address0-country option:selected").val()}`;
+                        const query = `${$("#update-address0-line1").val()}, ${$("#update-address0-line2").val()}, ${$("#update-address0-number").val()}, ${$("#update-address0-city").val()}, ${$("#update-address0-postal-code").val()}, ${$("#update-address0-state-province").val()}, ${$("#update-address0-country option:selected").val()}`;
 
-                            const url = `https://api.mapbox.com/geocoding/v5/mapbox.places/${query}.json?limit=1&access_token=${accessToken}`;
+                        const url = `https://api.mapbox.com/geocoding/v5/mapbox.places/${query}.json?limit=1&access_token=${accessToken}`;
 
-                            $.ajax({ //forward geocode
-                                type: "GET",
-                                url: url,
-                                dataType: "JSON",
-                                contentType: "application/json; charset=utf-8",
-                                success: function(data, status, xhr) {
+                        $.ajax({ //forward geocode
+                            type: "GET",
+                            url: url,
+                            dataType: "JSON",
+                            contentType: "application/json; charset=utf-8",
+                            success: function(data, status, xhr) {
 
-                                    const [longitude, latitude] = data.features[0].center;
-                                    $("#update-address0-longitude").val(longitude);
-                                    $("#update-address0-latitude").val(latitude);
-                                },
-                                error: function() {
-                                    console.log("Error");
-                                }
-                            });
+                                const [longitude, latitude] = data.features[0].center;
+                                $("#update-address0-longitude").val(longitude);
+                                $("#update-address0-latitude").val(latitude);
+                            },
+                            error: function() {
+                                console.log("Error");
+                            }
+                        });
                     });
 
                 /**
@@ -572,29 +578,29 @@ else
                  * Update secondary address
                  */
                 $("#update-address-1").on("mousedown",
-                    function () {
+                    function() {
 
                         const accessToken = 'pk.eyJ1Ijoic3RlY3JvdHRpMSIsImEiOiJja3Bna2kzbHYyaThoMm9ueHl1dzlnaTc1In0.EpALSOaDOmuM8XGS_IQzvA';
 
-                            const query = `${$("#update-address1-line1").val()}, ${$("#update-address1-line2").val()}, ${$("#update-address1-number").val()}, ${$("#update-address1-city").val()}, ${$("#update-address1-postal-code").val()}, ${$("#update-address1-state-province").val()}, ${$("#update-address1-country option:selected").val()}`;
+                        const query = `${$("#update-address1-line1").val()}, ${$("#update-address1-line2").val()}, ${$("#update-address1-number").val()}, ${$("#update-address1-city").val()}, ${$("#update-address1-postal-code").val()}, ${$("#update-address1-state-province").val()}, ${$("#update-address1-country option:selected").val()}`;
 
-                            const url = `https://api.mapbox.com/geocoding/v5/mapbox.places/${query}.json?limit=1&access_token=${accessToken}`;
+                        const url = `https://api.mapbox.com/geocoding/v5/mapbox.places/${query}.json?limit=1&access_token=${accessToken}`;
 
-                            $.ajax({ //forward geocode
-                                type: "GET",
-                                url: url,
-                                dataType: "JSON",
-                                contentType: "application/json; charset=utf-8",
-                                success: function(data, status, xhr) {
+                        $.ajax({ //forward geocode
+                            type: "GET",
+                            url: url,
+                            dataType: "JSON",
+                            contentType: "application/json; charset=utf-8",
+                            success: function(data, status, xhr) {
 
-                                    const [longitude, latitude] = data.features[0].center;
-                                    $("#update-address1-longitude").val(longitude);
-                                    $("#update-address1-latitude").val(latitude);
-                                },
-                                error: function() {
-                                    console.log("Error");
-                                }
-                            });
+                                const [longitude, latitude] = data.features[0].center;
+                                $("#update-address1-longitude").val(longitude);
+                                $("#update-address1-latitude").val(latitude);
+                            },
+                            error: function() {
+                                console.log("Error");
+                            }
+                        });
                     });
 
                 $("#location-btn-addr-1").on("mousedown",
@@ -615,35 +621,32 @@ else
                         success: function(data, status, xhr) {
                             $("#input-address-1").val(data.features[0].place_name);
 
-                            const addressObj = {
-                                addressLine1: data.features[0].text,
-                                addressLine2: "",
-                                number: data.features[0].address,
-                                postalCode: data.features[0].context[0].text,
-                                city: data.features[0].context[1].text,
-                                stateProvince: data.features[0].context[2].text,
-                                country: data.features[0].context[3].text
-                            };
-
                             $("#save-btn-1").on("click",
                                 function() {
-                                    const addressObj = {
-                                        addressLine1: data.features[0].text,
-                                        addressLine2: "",
-                                        number: data.features[0].address,
-                                        postalCode: data.features[0].context[0].text,
-                                        city: data.features[0].context[1].text,
-                                        stateProvince: data.features[0].context[2].text,
-                                        country: data.features[0].context[3].text,
-                                        customerId: @Model.Customer.Id
-                                    };
+                                    const address1 = new Address(
+                                        data.features[0].text,              // addressLine1
+                                        "",                                 // addressLine2
+                                        data.features[0].address,           // number
+                                        data.features[0].context[1].text,   // city
+                                        data.features[0].context[0].text,   // postalCode
+                                        data.features[0].context[3].text,   // country
+                                        data.features[0].context[2].text,   // stateProvince
+                                        position.coords.longitude,          // latitude
+                                        position.coords.latitude,           // longitude
+                                        @Model.Customer.Id,                 // customerId
+                                        null);                              // restaurateurId
+
+                                    if (validate(address1.toString())) {
+                                        alert("The address provided has an incorrect format"); // TODO: localize
+                                        return;
+                                    }
 
                                     $.ajax({
                                         type: "POST", // save into database
                                         async: true,
                                         url: "/api/addresses",
                                         dataType: "JSON",
-                                        data: JSON.stringify(addressObj),
+                                        data: JSON.stringify(address1),
                                         contentType: "application/json; charset=utf-8",
                                         success: function(data, status, xhr) {
                                             console.log(status);
@@ -662,7 +665,16 @@ else
                             console.log(errorMessage);
                         }
                     });
+            }
+
+            function validate(string) {
+                const regexp = new RegExp("^[a-zA-Z0-9\s,'-]*$");
+                if (!regexp.test(string)) {
+                    return false;
                 }
+                return true;
+            }
+
             }
         );
     </script>
