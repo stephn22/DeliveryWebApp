@@ -42,7 +42,7 @@ namespace DeliveryWebApp.Application.IntegrationTests.Requests.Commands
             // then create request
             var command = new CreateRequestCommand
             {
-                Customer = customer,
+                CustomerId = customer.Id,
                 Role = RoleName.Restaurateur,
                 Status = RequestStatus.Idle
             };

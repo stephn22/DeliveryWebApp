@@ -11,7 +11,7 @@ namespace DeliveryWebApp.Application.Requests.Commands.CreateRequest
     {
         public string Role { get; set; }
         public string Status { get; set; }
-        public Customer Customer { get; set; }
+        public int CustomerId { get; set; }
     }
 
     public class CreateRequestCommandHandler : IRequestHandler<CreateRequestCommand, Request>
@@ -27,12 +27,7 @@ namespace DeliveryWebApp.Application.Requests.Commands.CreateRequest
 
         public async Task<Request> Handle(CreateRequestCommand request, CancellationToken cancellationToken)
         {
-            var entity = new Request // TODO: try with mediator
-            {
-                CustomerId = request.Customer.Id,
-                Role = request.Role,
-                Status = request.Status
-            };
+            var entity = _mapper.Map<Request>(request);
 
             _context.Requests.Add(entity);
 

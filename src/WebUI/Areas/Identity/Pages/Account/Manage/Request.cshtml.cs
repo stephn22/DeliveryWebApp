@@ -106,7 +106,7 @@ namespace DeliveryWebApp.WebUI.Areas.Identity.Pages.Account.Manage
 
             var requestId = await _mediator.Send(new CreateRequestCommand
             {
-                Customer = customer,
+                CustomerId = customer.Id,
                 Role = Input.Role,
                 Status = RequestStatus.Idle
             });

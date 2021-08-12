@@ -7,7 +7,7 @@ namespace DeliveryWebApp.Application.Requests.Commands.CreateRequest
     {
         public CreateRequestCommandValidator()
         {
-            RuleFor(r => r.Customer).NotEmpty();
+            RuleFor(r => r.CustomerId).NotEmpty();
 
             RuleFor(r => r.Role).NotEmpty();
 
