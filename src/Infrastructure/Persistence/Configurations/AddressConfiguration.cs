@@ -8,7 +8,7 @@ namespace DeliveryWebApp.Infrastructure.Persistence.Configurations
     {
         public void Configure(EntityTypeBuilder<Address> builder)
         {
-            builder.Property(c => c.AddressLine)
+            builder.Property(c => c.PlaceName)
                 .IsRequired();
 
             builder.Property(a => a.Longitude)

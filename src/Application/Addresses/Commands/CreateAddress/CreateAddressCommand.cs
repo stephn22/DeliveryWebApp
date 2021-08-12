@@ -9,6 +9,7 @@ namespace DeliveryWebApp.Application.Addresses.Commands.CreateAddress
 {
     public class CreateAddressCommand : IRequest<Address>
     {
+        public string PlaceName { get; set; }
         public string AddressLine1 { get; set; }
         public string AddressLine2 { get; set; }
         public string Number { get; set; }
@@ -47,15 +48,20 @@ namespace DeliveryWebApp.Application.Addresses.Commands.CreateAddress
                 entity.RestaurateurId = request.RestaurateurId;
             }
 
-            var line = $"{request.AddressLine1}, " +
-                       $"{request.AddressLine2}, " +
-                       $"{request.Number}, " +
-                       $"{request.City}, " +
-                       $"{request.StateProvince}, " +
-                       $"{request.PostalCode}, " +
-                       $"{request.Country}";
+            if (!string.IsNullOrEmpty(request.PlaceName)) // if placename isn't provided use other properties
+            {
+                var line = $"{request.AddressLine1}, " +
+                           $"{request.AddressLine2}, " +
+                           $"{request.Number}, " +
+                           $"{request.City}, " +
+                           $"{request.StateProvince}, " +
+                           $"{request.PostalCode}, " +
+                           $"{request.Country}";
 
-            entity.AddressLine = line;
+                entity.PlaceName = line;
+            }
+
+            entity.PlaceName = request.PlaceName;
 
             _context.Addresses.Add(entity);
             await _context.SaveChangesAsync(cancellationToken);

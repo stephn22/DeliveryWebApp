@@ -47,7 +47,7 @@ namespace DeliveryWebApp.Application.Addresses.Commands.UpdateAddress
                        $"{request.PostalCode}, " +
                        $"{request.Country}";
 
-            entity.AddressLine = line;
+            entity.PlaceName = line;
 
             entity.Latitude = request.Latitude;
             entity.Longitude = request.Longitude;

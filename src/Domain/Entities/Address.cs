@@ -2,7 +2,7 @@
 {
     public class Address : BaseEntity
     {
-        public string AddressLine { get; set; }
+        public string PlaceName { get; set; }
         public decimal Longitude { get; set; }
         public decimal Latitude { get; set; }
         public int? CustomerId { get; set; }
@@ -12,7 +12,7 @@
 
         public override string ToString()
         {
-            return AddressLine;
+            return PlaceName;
         }
     }
 }

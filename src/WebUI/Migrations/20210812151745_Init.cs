@@ -318,7 +318,7 @@ namespace DeliveryWebApp.WebUI.Migrations
                 {
                     Id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
-                    AddressLine = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    PlaceName = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     Longitude = table.Column<decimal>(type: "decimal(18,9)", precision: 18, scale: 9, nullable: false),
                     Latitude = table.Column<decimal>(type: "decimal(18,9)", precision: 18, scale: 9, nullable: false),
                     CustomerId = table.Column<int>(type: "int", nullable: true),

@@ -56,7 +56,7 @@ namespace DeliveryWebApp.Application.IntegrationTests.Addresses.Commands
 
             address.Should().NotBeNull();
             address.Id.Should().BeGreaterThan(0);
-            address.AddressLine.Should()
+            address.PlaceName.Should()
                 .Be(
                     $"{addressCommand.AddressLine1}, {addressCommand.AddressLine2}, " +
                     $"{addressCommand.Number}, {addressCommand.City}, " +
@@ -119,7 +119,7 @@ namespace DeliveryWebApp.Application.IntegrationTests.Addresses.Commands
             address.Id.Should().NotBe(0);
             address.Id.Should().Be(restaurateurUpdate.RestaurantAddressId);
             address.RestaurateurId.Should().Be(restaurateur.Id);
-            address.AddressLine.Should()
+            address.PlaceName.Should()
                 .Be(
                     $"{addressCommand.AddressLine1}, {addressCommand.AddressLine2}, " +
                     $"{addressCommand.Number}, {addressCommand.City}, " +

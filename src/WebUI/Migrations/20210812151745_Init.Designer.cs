@@ -10,7 +10,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace DeliveryWebApp.WebUI.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20210812142803_Init")]
+    [Migration("20210812151745_Init")]
     partial class Init
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -28,10 +28,6 @@ namespace DeliveryWebApp.WebUI.Migrations
                         .HasColumnType("int")
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
-                    b.Property<string>("AddressLine")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
                     b.Property<int?>("CustomerId")
                         .HasColumnType("int");
 
@@ -42,6 +38,10 @@ namespace DeliveryWebApp.WebUI.Migrations
                     b.Property<decimal>("Longitude")
                         .HasPrecision(18, 9)
                         .HasColumnType("decimal(18,9)");
+
+                    b.Property<string>("PlaceName")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<int?>("RestaurateurId")
                         .HasColumnType("int");

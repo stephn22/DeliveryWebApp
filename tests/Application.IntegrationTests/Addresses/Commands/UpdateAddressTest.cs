@@ -69,7 +69,7 @@ namespace DeliveryWebApp.Application.IntegrationTests.Addresses.Commands
 
             update.Should().NotBeNull();
             update.Id.Should().BeGreaterThan(0);
-            address.AddressLine.Should()
+            address.PlaceName.Should()
                 .Be(
                     $"{addressCommand.AddressLine1}, {addressCommand.AddressLine2}, " +
                     $"{addressCommand.Number}, {addressCommand.City}, " +
