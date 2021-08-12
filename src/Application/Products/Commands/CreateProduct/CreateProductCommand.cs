@@ -15,7 +15,7 @@ namespace DeliveryWebApp.Application.Products.Commands.CreateProduct
         public int Discount { get; set; }
         public string Category { get; set; }
         public int Quantity { get; set; }
-        public Restaurateur Restaurateur { get; set; }
+        public int RestaurateurId { get; set; }
     }
 
     public class CreateProductCommandHandler : IRequestHandler<CreateProductCommand, Product>
@@ -31,16 +31,7 @@ namespace DeliveryWebApp.Application.Products.Commands.CreateProduct
 
         public async Task<Product> Handle(CreateProductCommand request, CancellationToken cancellationToken)
         {
-            var entity = new Product // TODO: try with mapper
-            {
-                Name = request.Name,
-                Image = request.Image,
-                Price = request.Price,
-                Discount = request.Discount,
-                Category = request.Category,
-                Quantity = request.Quantity,
-                RestaurateurId = request.Restaurateur.Id
-            };
+            var entity = _mapper.Map<Product>(request);
 
             _context.Products.Add(entity);
 

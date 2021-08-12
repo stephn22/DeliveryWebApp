@@ -61,7 +61,7 @@ namespace DeliveryWebApp.Application.IntegrationTests.Baskets.Commands
                 Price = 5.50M,
                 Discount = 12,
                 Quantity = 21,
-                Restaurateur = restaurateur
+                RestaurateurId = restaurateur.Id
             });
 
             var p2 = await SendAsync(new CreateProductCommand
@@ -72,7 +72,7 @@ namespace DeliveryWebApp.Application.IntegrationTests.Baskets.Commands
                 Price = 14.35M,
                 Discount = 0,
                 Quantity = 45,
-                Restaurateur = restaurateur
+                RestaurateurId = restaurateur.Id
             });
 
             var p3 = await SendAsync(new CreateProductCommand
@@ -83,7 +83,7 @@ namespace DeliveryWebApp.Application.IntegrationTests.Baskets.Commands
                 Price = 11.20M,
                 Discount = 5,
                 Quantity = 17,
-                Restaurateur = restaurateur
+                RestaurateurId = restaurateur.Id
             });
 
             // create a basket

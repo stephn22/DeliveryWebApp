@@ -103,7 +103,7 @@ namespace DeliveryWebApp.WebUI.Pages.RestaurateurPages
                 Discount = Input.Discount,
                 Price = Input.Price,
                 Quantity = Input.Quantity,
-                Restaurateur = restaurateur
+                RestaurateurId = restaurateur.Id
             });
 
             return RedirectToPage("/RestaurateurPages/RestaurantProducts");

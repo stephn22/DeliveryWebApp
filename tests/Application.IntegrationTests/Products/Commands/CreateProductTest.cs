@@ -51,7 +51,7 @@ namespace DeliveryWebApp.Application.IntegrationTests.Products.Commands
                 Price = 5.50M,
                 Discount = 12,
                 Quantity = 21,
-                Restaurateur = restaurateur
+                RestaurateurId = restaurateur.Id
             };
 
             var product = await SendAsync(productCommand);
@@ -59,12 +59,12 @@ namespace DeliveryWebApp.Application.IntegrationTests.Products.Commands
             product.Should().NotBeNull();
             product.Id.Should().NotBe(0);
             product.Name.Should().Be(productCommand.Name);
-            product.Image.Should().BeNull();
+            product.Image.Should().BeNullOrEmpty();
             product.Category.Should().Be(productCommand.Category);
             product.Price.Should().Be(productCommand.Price);
             product.Discount.Should().Be(productCommand.Discount);
             product.Quantity.Should().Be(productCommand.Quantity);
-            product.RestaurateurId.Should().Be(productCommand.Restaurateur.Id);
+            product.RestaurateurId.Should().Be(productCommand.RestaurateurId);
         }
     }
 }

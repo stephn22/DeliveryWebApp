@@ -53,7 +53,7 @@ namespace DeliveryWebApp.Application.IntegrationTests.Products.Commands
                 Price = 5.50M,
                 Discount = 12,
                 Quantity = 21,
-                Restaurateur = restaurateur
+                RestaurateurId = restaurateur.Id
             };
 
             var product = await SendAsync(productCommand);

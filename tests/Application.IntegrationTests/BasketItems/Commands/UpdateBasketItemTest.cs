@@ -59,7 +59,7 @@ namespace DeliveryWebApp.Application.IntegrationTests.BasketItems.Commands
                 Price = 5.50M,
                 Discount = 12,
                 Quantity = 21,
-                Restaurateur = restaurateur
+                RestaurateurId = restaurateur.Id
             };
 
             var product = await SendAsync(productCommand);
@@ -90,7 +90,7 @@ namespace DeliveryWebApp.Application.IntegrationTests.BasketItems.Commands
                 Price = 7.95M,
                 Discount = 15,
                 Quantity = 34,
-                Restaurateur = restaurateur
+                RestaurateurId = restaurateur.Id
             };
 
             var newProduct = await SendAsync(newProductCommand);

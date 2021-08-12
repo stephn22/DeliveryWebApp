@@ -16,7 +16,7 @@ namespace DeliveryWebApp.Application.Products.Commands.CreateProduct
 
             RuleFor(p => p.Quantity).GreaterThan(0).NotEmpty();
 
-            RuleFor(p => p.Restaurateur).NotEmpty();
+            RuleFor(p => p.RestaurateurId).NotEmpty();
         }
     }
 }
