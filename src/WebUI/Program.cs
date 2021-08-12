@@ -6,9 +6,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Serilog;
 using System;
-using System.IO;
 using System.Threading.Tasks;
-using Microsoft.Extensions.Configuration;
 
 namespace DeliveryWebApp.WebUI
 {
@@ -16,12 +14,10 @@ namespace DeliveryWebApp.WebUI
     {
         public static async Task Main(string[] args)
         {
-            var configuration = new ConfigurationBuilder()
-                .AddJsonFile("appsettings.json")
-                .Build();
-
             Log.Logger = new LoggerConfiguration()
-                .ReadFrom.Configuration(configuration)
+                .MinimumLevel.Debug()
+                .WriteTo.Console()
+                .WriteTo.File("/Log/log-.txt", rollingInterval: RollingInterval.Day)
                 .CreateLogger();
 
             try
@@ -61,8 +57,6 @@ namespace DeliveryWebApp.WebUI
             {
                 Log.CloseAndFlush();
             }
-
-
         }
 
         public static IHostBuilder CreateHostBuilder(string[] args) =>

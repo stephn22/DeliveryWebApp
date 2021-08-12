@@ -41,6 +41,12 @@ namespace DeliveryWebApp.WebUI
             services.AddHealthChecks()
                 .AddDbContextCheck<ApplicationDbContext>();
 
+            services.AddRazorPages()
+                .AddNewtonsoftJson(options => options.SerializerSettings.ReferenceLoopHandling = ReferenceLoopHandling.Serialize)
+                .AddViewLocalization()
+                .AddDataAnnotationsLocalization()
+                .AddFluentValidation();
+
             services.AddControllers()
                 .AddNewtonsoftJson(options => options.SerializerSettings.ReferenceLoopHandling = ReferenceLoopHandling.Serialize);
 
@@ -62,11 +68,7 @@ namespace DeliveryWebApp.WebUI
                 options.SupportedUICultures = supportedCultures;
             });
 
-            services.AddRazorPages()
-                .AddNewtonsoftJson(options => options.SerializerSettings.ReferenceLoopHandling = ReferenceLoopHandling.Serialize)
-                .AddViewLocalization()
-                .AddDataAnnotationsLocalization()
-                .AddFluentValidation();
+            
 
             // Customise default API behaviour
             services.Configure<ApiBehaviorOptions>(options =>
@@ -104,7 +106,6 @@ namespace DeliveryWebApp.WebUI
             };
 
             app.UseRequestLocalization(options);
-
 
             app.UseHttpsRedirection();
             app.UseStaticFiles();
