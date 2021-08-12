@@ -15,6 +15,15 @@ namespace DeliveryWebApp.Application.IntegrationTests.Orders.Commands
     public class CreateOrderTest : TestBase
     {
         [Test]
+        public void ShouldRequireMinimumFields()
+        {
+            var command = new CreateOrderCommand();
+
+            FluentActions.Invoking(() =>
+                SendAsync(command)).Should().Throw<NullReferenceException>();
+        }
+
+        [Test]
         public async Task ShouldCreateOrderAsync()
         {
             var user1 = await RunAsDefaultUserAsync();

@@ -1,4 +1,5 @@
-﻿using DeliveryWebApp.Application.Customers.Commands.CreateCustomer;
+﻿using DeliveryWebApp.Application.Common.Exceptions;
+using DeliveryWebApp.Application.Customers.Commands.CreateCustomer;
 using DeliveryWebApp.Application.Riders.Commands.CreateRider;
 using FluentAssertions;
 using NUnit.Framework;
@@ -10,6 +11,15 @@ namespace DeliveryWebApp.Application.IntegrationTests.Riders.Commands
 
     public class CreateRiderTest : TestBase
     {
+        [Test]
+        public void ShouldRequireMinimumFields()
+        {
+            var command = new CreateRiderCommand();
+
+            FluentActions.Invoking(() =>
+                SendAsync(command)).Should().Throw<ValidationException>();
+        }
+
         [Test]
         public async Task ShouldCreateRiderAsync()
         {

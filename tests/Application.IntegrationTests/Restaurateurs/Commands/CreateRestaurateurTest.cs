@@ -14,14 +14,14 @@ namespace DeliveryWebApp.Application.IntegrationTests.Restaurateurs.Commands
     public class CreateRestaurateurTest : TestBase
     {
 
-        //[Test]
-        //public void ShouldRequireMinimumFields()
-        //{
-        //    var command = new CreateRestaurateurCommand();
+        [Test]
+        public void ShouldRequireMinimumFields()
+        {
+            var command = new CreateRestaurateurCommand();
 
-        //    FluentActions.Invoking(() =>
-        //        SendAsync(command)).Should().Throw<ValidationException>();
-        //}
+            FluentActions.Invoking(() =>
+                SendAsync(command)).Should().Throw<ValidationException>();
+        }
 
         [Test]
         public async Task ShouldCreateRestaurateurAsync()

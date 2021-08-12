@@ -6,7 +6,7 @@ namespace DeliveryWebApp.Application.BasketItems.Commands.DeleteBasketItem
     {
         public DeleteBasketItemCommandValidator()
         {
-            RuleFor(b => b.BasketItem).NotEmpty();
+            RuleFor(b => b.Id).GreaterThan(0).NotEmpty();
         }
     }
 }

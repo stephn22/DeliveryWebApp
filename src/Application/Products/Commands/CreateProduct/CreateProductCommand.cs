@@ -1,9 +1,9 @@
 ﻿using DeliveryWebApp.Application.Common.Interfaces;
 using DeliveryWebApp.Domain.Entities;
 using MediatR;
-using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
+using AutoMapper;
 
 namespace DeliveryWebApp.Application.Products.Commands.CreateProduct
 {
@@ -21,15 +21,17 @@ namespace DeliveryWebApp.Application.Products.Commands.CreateProduct
     public class CreateProductCommandHandler : IRequestHandler<CreateProductCommand, Product>
     {
         private readonly IApplicationDbContext _context;
+        private readonly IMapper _mapper;
 
-        public CreateProductCommandHandler(IApplicationDbContext context)
+        public CreateProductCommandHandler(IApplicationDbContext context, IMapper mapper)
         {
             _context = context;
+            _mapper = mapper;
         }
 
         public async Task<Product> Handle(CreateProductCommand request, CancellationToken cancellationToken)
         {
-            var entity = new Product
+            var entity = new Product // TODO: try with mapper
             {
                 Name = request.Name,
                 Image = request.Image,

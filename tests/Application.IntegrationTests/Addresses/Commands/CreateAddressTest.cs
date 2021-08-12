@@ -1,15 +1,12 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using DeliveryWebApp.Application.Addresses.Commands.CreateAddress;
+﻿using DeliveryWebApp.Application.Addresses.Commands.CreateAddress;
+using DeliveryWebApp.Application.Common.Exceptions;
 using DeliveryWebApp.Application.Customers.Commands.CreateCustomer;
 using DeliveryWebApp.Application.Restaurateurs.Commands.CreateRestaurateur;
 using DeliveryWebApp.Application.Restaurateurs.Commands.UpdateRestaurateur;
 using DeliveryWebApp.Domain.Constants;
 using FluentAssertions;
 using NUnit.Framework;
+using System.Threading.Tasks;
 
 namespace DeliveryWebApp.Application.IntegrationTests.Addresses.Commands
 {
@@ -17,6 +14,15 @@ namespace DeliveryWebApp.Application.IntegrationTests.Addresses.Commands
 
     public class CreateAddressTest : TestBase
     {
+        [Test]
+        public void ShouldRequireMinimumFields()
+        {
+            var command = new CreateAddressCommand();
+
+            FluentActions.Invoking(() =>
+                SendAsync(command)).Should().Throw<ValidationException>();
+        }
+
         [Test]
         public async Task ShouldCreateAddressAsync()
         {

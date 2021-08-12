@@ -15,12 +15,10 @@ namespace DeliveryWebApp.Application.OrderItems.Commands.DeleteOrderItem
     public class DeleteOrderItemCommandHandler : IRequestHandler<DeleteOrderItemCommand, OrderItem>
     {
         private readonly IApplicationDbContext _context;
-        private readonly IMediator _mediator;
 
-        public DeleteOrderItemCommandHandler(IApplicationDbContext context, IMediator mediator)
+        public DeleteOrderItemCommandHandler(IApplicationDbContext context)
         {
             _context = context;
-            _mediator = mediator;
         }
 
         public async Task<OrderItem> Handle(DeleteOrderItemCommand request, CancellationToken cancellationToken)

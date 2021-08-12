@@ -1,15 +1,9 @@
-﻿using System;
-using DeliveryWebApp.Application.Common.Interfaces;
+﻿using DeliveryWebApp.Application.Common.Interfaces;
+using DeliveryWebApp.Domain.Constants;
 using DeliveryWebApp.Domain.Entities;
 using MediatR;
-using System.Collections.Generic;
-using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
-using AutoMapper;
-using DeliveryWebApp.Application.OrderItems.Commands.CreateOrderItem;
-using DeliveryWebApp.Application.OrderItems.Queries;
-using DeliveryWebApp.Domain.Constants;
 
 namespace DeliveryWebApp.Application.Orders.Commands.CreateOrder
 {

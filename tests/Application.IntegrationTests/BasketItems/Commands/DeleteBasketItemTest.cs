@@ -18,6 +18,15 @@ namespace DeliveryWebApp.Application.IntegrationTests.BasketItems.Commands
     public class DeleteBasketItemTest : TestBase
     {
         [Test]
+        public void ShouldRequireMinimumFields()
+        {
+            var command = new DeleteBasketItemCommand();
+
+            FluentActions.Invoking(() =>
+                SendAsync(command)).Should().Throw<ValidationException>();
+        }
+
+        [Test]
         public async Task ShouldDeleteBasketItemAsync()
         {
             var userId = await RunAsDefaultUserAsync();
@@ -77,7 +86,7 @@ namespace DeliveryWebApp.Application.IntegrationTests.BasketItems.Commands
             {
                 await SendAsync(new DeleteBasketItemCommand
                 {
-                    BasketItem = item
+                    Id = item.Id
                 });
 
                 var basketItem = await FindAsync<BasketItem>(item.Id);

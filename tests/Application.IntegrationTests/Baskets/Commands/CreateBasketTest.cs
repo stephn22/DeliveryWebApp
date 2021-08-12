@@ -1,4 +1,5 @@
 ﻿using DeliveryWebApp.Application.Baskets.Commands.CreateBasket;
+using DeliveryWebApp.Application.Common.Exceptions;
 using DeliveryWebApp.Application.Customers.Commands.CreateCustomer;
 using FluentAssertions;
 using NUnit.Framework;
@@ -10,6 +11,15 @@ namespace DeliveryWebApp.Application.IntegrationTests.Baskets.Commands
 
     public class CreateBasketTest : TestBase
     {
+        [Test]
+        public void ShouldRequireMinimumFields()
+        {
+            var command = new CreateBasketCommand();
+
+            FluentActions.Invoking(() =>
+                SendAsync(command)).Should().Throw<ValidationException>();
+        }
+
         [Test]
         public async Task ShouldCreateBasketAsync()
         {

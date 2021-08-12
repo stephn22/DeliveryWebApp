@@ -118,7 +118,7 @@ namespace DeliveryWebApp.WebUI.Pages.RestaurateurPages
             {
                 await _mediator.Send(new DeleteProductCommand
                 {
-                    Product = product
+                    Id = product.Id
                 });
             }
             catch (NotFoundException e)

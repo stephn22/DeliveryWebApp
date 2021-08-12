@@ -1,11 +1,13 @@
-﻿using DeliveryWebApp.Application.Customers.Commands.CreateCustomer;
+﻿using DeliveryWebApp.Application.Common.Exceptions;
+using DeliveryWebApp.Application.Customers.Commands.CreateCustomer;
 using DeliveryWebApp.Application.Customers.Commands.DeleteCustomer;
+using DeliveryWebApp.Application.Restaurateurs.Commands.CreateRestaurateur;
+using DeliveryWebApp.Application.Riders.Commands.CreateRider;
 using DeliveryWebApp.Domain.Entities;
 using FluentAssertions;
 using NUnit.Framework;
 using System.Threading.Tasks;
-using DeliveryWebApp.Application.Restaurateurs.Commands.CreateRestaurateur;
-using DeliveryWebApp.Application.Riders.Commands.CreateRider;
+using DeliveryWebApp.Application.Baskets.Commands.CreateBasket;
 
 namespace DeliveryWebApp.Application.IntegrationTests.Customers.Commands
 {
@@ -13,14 +15,14 @@ namespace DeliveryWebApp.Application.IntegrationTests.Customers.Commands
 
     public class DeleteCustomerTest : TestBase
     {
-        //[Test]
-        //public void ShouldRequireMinimumFields()
-        //{
-        //    var command = new DeleteCustomerCommand();
+        [Test]
+        public void ShouldRequireMinimumFields()
+        {
+            var command = new DeleteCustomerCommand();
 
-        //    FluentActions.Invoking(() =>
-        //        SendAsync(command)).Should().Throw<ValidationException>();
-        //}
+            FluentActions.Invoking(() =>
+                SendAsync(command)).Should().Throw<ValidationException>();
+        }
 
         [Test]
         public async Task ShouldDeleteCustomerAsync()
@@ -44,6 +46,40 @@ namespace DeliveryWebApp.Application.IntegrationTests.Customers.Commands
 
             var customer = await FindAsync<Customer>(item.Id);
             customer.Should().BeNull();
+        }
+
+        [Test]
+        public async Task ShouldDeleteCustomerAndBasketAsync()
+        {
+            var userId = await RunAsAdministratorAsync();
+
+            var create = new CreateCustomerCommand
+            {
+                ApplicationUserFk = userId,
+                FirstName = "John",
+                LastName = "Doe",
+                Email = "johndoe@gmail.com"
+            };
+
+            var item = await SendAsync(create);
+
+            var basketCommand = new CreateBasketCommand
+            {
+                Customer = item
+            };
+
+            var b = await SendAsync(basketCommand);
+
+            await SendAsync(new DeleteCustomerCommand
+            {
+                Customer = item
+            });
+
+            var customer = await FindAsync<Customer>(item.Id);
+            var basket = await FindAsync<Basket>(b.Id);
+
+            customer.Should().BeNull();
+            basket.Should().BeNull();
         }
 
         [Test]

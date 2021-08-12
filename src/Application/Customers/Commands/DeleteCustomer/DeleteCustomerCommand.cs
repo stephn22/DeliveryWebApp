@@ -8,6 +8,10 @@ using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using AutoMapper;
+using DeliveryWebApp.Application.Addresses.Queries.GetAddresses;
+using DeliveryWebApp.Application.Baskets.Commands.DeleteBasket;
+using DeliveryWebApp.Application.Restaurateurs.Commands.DeleteRestaurateur;
+using DeliveryWebApp.Application.Riders.Commands.DeleteRider;
 using Microsoft.Extensions.Logging;
 
 namespace DeliveryWebApp.Application.Customers.Commands.DeleteCustomer
@@ -21,13 +25,14 @@ namespace DeliveryWebApp.Application.Customers.Commands.DeleteCustomer
     {
         private readonly IApplicationDbContext _context;
         private readonly IMapper _mapper;
-        private readonly ILogger<DeleteCustomerCommand> _logger;
+        private readonly IMediator _mediator;
 
-        public DeleteCustomerCommandHandler(IApplicationDbContext context, IMapper mapper, ILogger<DeleteCustomerCommand> logger)
+        public DeleteCustomerCommandHandler(IApplicationDbContext context, IMapper mapper, IMediator mediator)
         {
             _context = context;
             _mapper = mapper;
-            _logger = logger;
+
+            _mediator = mediator;
         }
 
         public async Task<Customer> Handle(DeleteCustomerCommand request, CancellationToken cancellationToken)
@@ -45,8 +50,10 @@ namespace DeliveryWebApp.Application.Customers.Commands.DeleteCustomer
                 var restaurateur =
                     await _context.Restaurateurs.FirstAsync(r => r.CustomerId == entity.Id, cancellationToken);
 
-                _context.Restaurateurs.Remove(restaurateur);
-                _logger.LogInformation($"Deleted restaurateur with id '{restaurateur.Id}");
+                await _mediator.Send(new DeleteRestaurateurCommand
+                {
+                    Id = restaurateur.Id
+                }, cancellationToken);
             }
             catch (InvalidOperationException)
             {
@@ -56,23 +63,40 @@ namespace DeliveryWebApp.Application.Customers.Commands.DeleteCustomer
                 var rider =
                     await _context.Riders.FirstAsync(r => r.CustomerId == entity.Id, cancellationToken);
 
-                _context.Riders.Remove(rider);
-                _logger.LogInformation($"Deleted rider with id '{rider.Id}");
+                await _mediator.Send(new DeleteRiderCommand
+                {
+                    Id = rider.Id
+                }, cancellationToken);
             }
             catch (InvalidOperationException)
             {
             }
             
-            var addresses = await _context.Addresses.Where(a => a.CustomerId == entity.Id)
-                .ToListAsync(cancellationToken);
+            // search if customer has basket and delete it
+            try
+            {
+                var basket = await _context.Baskets.FirstAsync(b => b.CustomerId == entity.Id, cancellationToken);
 
-            if (addresses.Count != 0)
+                await _mediator.Send(new DeleteBasketCommand
+                {
+                    Id = basket.Id
+                }, cancellationToken);
+            }
+            catch (InvalidOperationException)
+            {
+            }
+            
+            var addresses = await _mediator.Send(new GetAddressesQuery
+            {
+                CustomerId = entity.Id
+            }, cancellationToken);
+
+            if (addresses is { Count: > 0 })
             {
                 _context.Addresses.RemoveRange(addresses);
             } 
-            _context.Customers.Remove(entity);
-            _logger.LogInformation($"Deleted customer with id '{entity.Id}");
 
+            _context.Customers.Remove(entity);
             await _context.SaveChangesAsync(cancellationToken);
 
             return entity;

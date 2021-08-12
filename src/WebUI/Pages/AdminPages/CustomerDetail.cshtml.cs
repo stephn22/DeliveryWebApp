@@ -160,7 +160,7 @@ namespace DeliveryWebApp.WebUI.Pages.AdminPages
 
                         await _mediator.Send(new DeleteRiderCommand
                         {
-                            Rider = rider
+                            Id = rider.Id
                         });
                         break;
 
@@ -169,7 +169,7 @@ namespace DeliveryWebApp.WebUI.Pages.AdminPages
 
                         await _mediator.Send(new DeleteRestaurateurCommand
                         {
-                            Restaurateur = restaurateur
+                            Id = restaurateur.Id
                         });
                         break;
                 }
@@ -202,7 +202,7 @@ namespace DeliveryWebApp.WebUI.Pages.AdminPages
 
                     await _mediator.Send(new DeleteRestaurateurCommand
                     {
-                        Restaurateur = restaurateur
+                        Id = restaurateur.Id
                     });
                 }
                 catch (InvalidOperationException)
@@ -258,7 +258,7 @@ namespace DeliveryWebApp.WebUI.Pages.AdminPages
 
                     await _mediator.Send(new DeleteRiderCommand
                     {
-                        Rider = rider
+                        Id = rider.Id
                     });
                 }
                 catch (InvalidOperationException)

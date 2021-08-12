@@ -1,4 +1,5 @@
-﻿using DeliveryWebApp.Application.Customers.Commands.CreateCustomer;
+﻿using DeliveryWebApp.Application.Common.Exceptions;
+using DeliveryWebApp.Application.Customers.Commands.CreateCustomer;
 using DeliveryWebApp.Application.Customers.Commands.UpdateCustomer;
 using FluentAssertions;
 using NUnit.Framework;
@@ -10,6 +11,15 @@ namespace DeliveryWebApp.Application.IntegrationTests.Customers.Commands
 
     public class UpdateCustomerTest : TestBase
     {
+        [Test]
+        public void ShouldRequireMinimumFields()
+        {
+            var command = new UpdateCustomerCommand();
+
+            FluentActions.Invoking(() =>
+                SendAsync(command)).Should().Throw<ValidationException>();
+        }
+
         [Test]
         public async Task ShouldUpdateCustomerAsync()
         {

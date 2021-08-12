@@ -1,40 +1,33 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading;
-using System.Threading.Tasks;
-using AutoMapper;
-using DeliveryWebApp.Application.Common.Exceptions;
+﻿using DeliveryWebApp.Application.Common.Exceptions;
 using DeliveryWebApp.Application.Common.Interfaces;
 using DeliveryWebApp.Domain.Entities;
 using MediatR;
+using System.Threading;
+using System.Threading.Tasks;
 
 namespace DeliveryWebApp.Application.Requests.Commands.DeleteRequest
 {
     public class DeleteRequestCommand : IRequest<Request>
     {
-        public Request Request { get; set; }
+        public int Id { get; set; }
     }
 
     public class DeleteRequestCommandHandler : IRequestHandler<DeleteRequestCommand, Request>
     {
         private readonly IApplicationDbContext _context;
-        private readonly IMapper _mapper;
 
-        public DeleteRequestCommandHandler(IApplicationDbContext context, IMapper mapper)
+        public DeleteRequestCommandHandler(IApplicationDbContext context)
         {
             _context = context;
-            _mapper = mapper;
         }
 
         public async Task<Request> Handle(DeleteRequestCommand request, CancellationToken cancellationToken)
         {
-            var entity = _mapper.Map<Request>(request.Request);
+            var entity = await _context.Requests.FindAsync(request.Id);
 
             if (entity == null)
             {
-                throw new NotFoundException(nameof(Request), request.Request);
+                throw new NotFoundException(nameof(Request), request.Id);
             }
 
             _context.Requests.Remove(entity);

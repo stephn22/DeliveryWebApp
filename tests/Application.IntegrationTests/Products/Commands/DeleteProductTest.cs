@@ -1,4 +1,5 @@
-﻿using DeliveryWebApp.Application.Customers.Commands.CreateCustomer;
+﻿using DeliveryWebApp.Application.Common.Exceptions;
+using DeliveryWebApp.Application.Customers.Commands.CreateCustomer;
 using DeliveryWebApp.Application.Products.Commands.CreateProduct;
 using DeliveryWebApp.Application.Products.Commands.DeleteProduct;
 using DeliveryWebApp.Application.Restaurateurs.Commands.CreateRestaurateur;
@@ -13,6 +14,15 @@ namespace DeliveryWebApp.Application.IntegrationTests.Products.Commands
     using static Testing;
     public class DeleteProductTest : TestBase
     {
+        [Test]
+        public void ShouldRequireMinimumFields()
+        {
+            var command = new DeleteProductCommand();
+
+            FluentActions.Invoking(() =>
+                SendAsync(command)).Should().Throw<ValidationException>();
+        }
+
         [Test]
         public async Task ShouldDeleteProductAsync()
         {
@@ -50,7 +60,7 @@ namespace DeliveryWebApp.Application.IntegrationTests.Products.Commands
 
             await SendAsync(new DeleteProductCommand
             {
-                Product = item
+                Id = item.Id
             });
 
             var product = await FindAsync<Product>(item.Id);

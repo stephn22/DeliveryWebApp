@@ -6,7 +6,7 @@ namespace DeliveryWebApp.Application.Products.Commands.DeleteProduct
     {
         public DeleteProductCommandValidator()
         {
-            RuleFor(p => p.Product).NotEmpty();
+            RuleFor(p => p.Id).GreaterThan(0).NotEmpty();
         }
     }
 }

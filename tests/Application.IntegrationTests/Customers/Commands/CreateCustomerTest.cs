@@ -10,14 +10,14 @@ namespace DeliveryWebApp.Application.IntegrationTests.Customers.Commands
 
     public class CreateCustomerTest : TestBase
     {
-        //[Test]
-        //public void ShouldRequireMinimumFields()
-        //{
-        //    var command = new CreateCustomerCommand();
+        [Test]
+        public void ShouldRequireMinimumFields()
+        {
+            var command = new CreateCustomerCommand();
 
-        //    FluentActions.Invoking(() =>
-        //        SendAsync(command)).Should().Throw<ValidationException>();
-        //}
+            FluentActions.Invoking(() =>
+                SendAsync(command)).Should().Throw<ValidationException>();
+        }
 
         [Test]
         public async Task ShouldCreateCustomerAsync()
@@ -40,6 +40,8 @@ namespace DeliveryWebApp.Application.IntegrationTests.Customers.Commands
             customer.FirstName.Should().Be(command.FirstName);
             customer.LastName.Should().Be(command.LastName);
             customer.Addresses.Should().BeNullOrEmpty();
+            customer.Orders.Should().BeNullOrEmpty();
+            customer.Reviews.Should().BeNullOrEmpty();
         }
     }
 }

@@ -6,7 +6,7 @@ namespace DeliveryWebApp.Application.Restaurateurs.Commands.DeleteRestaurateur
     {
         public DeleteRestaurateurCommandValidator()
         {
-            RuleFor(r => r.Restaurateur).NotEmpty();
+            RuleFor(r => r.Id).GreaterThan(0).NotEmpty();
         }
     }
 }

@@ -8,6 +8,7 @@ using DeliveryWebApp.Domain.Constants;
 using FluentAssertions;
 using NUnit.Framework;
 using System.Threading.Tasks;
+using DeliveryWebApp.Application.Common.Exceptions;
 using DeliveryWebApp.Domain.Entities;
 
 namespace DeliveryWebApp.Application.IntegrationTests.BasketItems.Commands
@@ -16,6 +17,15 @@ namespace DeliveryWebApp.Application.IntegrationTests.BasketItems.Commands
 
     public class UpdateBasketItemTest : TestBase
     {
+        [Test]
+        public void ShouldRequireMinimumFields()
+        {
+            var command = new UpdateBasketItemCommand();
+
+            FluentActions.Invoking(() =>
+                SendAsync(command)).Should().Throw<ValidationException>();
+        }
+
         [Test]
         public async Task ShouldUpdateBasketItemAsync()
         {

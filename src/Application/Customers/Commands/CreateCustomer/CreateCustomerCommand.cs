@@ -1,10 +1,9 @@
 ﻿using DeliveryWebApp.Application.Common.Interfaces;
 using DeliveryWebApp.Domain.Entities;
 using MediatR;
-using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
-using DeliveryWebApp.Application.Baskets.Commands.CreateBasket;
+using AutoMapper;
 
 namespace DeliveryWebApp.Application.Customers.Commands.CreateCustomer
 {
@@ -18,23 +17,17 @@ namespace DeliveryWebApp.Application.Customers.Commands.CreateCustomer
         public class CreateCustomerCommandHandler : IRequestHandler<CreateCustomerCommand, Customer>
         {
             private readonly IApplicationDbContext _context;
-            private readonly IMediator _mediator;
+            private readonly IMapper _mapper;
 
-            public CreateCustomerCommandHandler(IApplicationDbContext context, IMediator mediator)
+            public CreateCustomerCommandHandler(IApplicationDbContext context, IMapper mapper)
             {
                 _context = context;
-                _mediator = mediator;
+                _mapper = mapper;
             }
 
             public async Task<Customer> Handle(CreateCustomerCommand request, CancellationToken cancellationToken)
             {
-                var entity = new Customer
-                {
-                    ApplicationUserFk = request.ApplicationUserFk,
-                    FirstName = request.FirstName,
-                    LastName = request.LastName,
-                    Email = request.Email
-                };
+                var entity = _mapper.Map<Customer>(request);
 
                 _context.Customers.Add(entity);
 

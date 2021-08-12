@@ -6,7 +6,7 @@ namespace DeliveryWebApp.Application.Riders.Commands.DeleteRider
     {
         public DeleteRiderCommandValidator()
         {
-            RuleFor(r => r.Rider).NotEmpty();
+            RuleFor(r => r.Id).GreaterThan(0).NotEmpty();
         }
     }
 }

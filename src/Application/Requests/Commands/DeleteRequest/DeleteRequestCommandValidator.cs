@@ -6,7 +6,7 @@ namespace DeliveryWebApp.Application.Requests.Commands.DeleteRequest
     {
         public DeleteRequestCommandValidator()
         {
-            RuleFor(r => r.Request).NotEmpty();
+            RuleFor(r => r.Id).GreaterThan(0).NotEmpty();
         }
     }
 }

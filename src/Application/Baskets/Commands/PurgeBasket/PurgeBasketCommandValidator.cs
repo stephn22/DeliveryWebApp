@@ -6,7 +6,7 @@ namespace DeliveryWebApp.Application.Baskets.Commands.PurgeBasket
     {
         public PurgeBasketCommandValidator()
         {
-            RuleFor(b => b.Basket).NotEmpty();
+            RuleFor(b => b.Id).GreaterThan(0).NotEmpty();
         }
     }
 }

@@ -1,6 +1,8 @@
-﻿using DeliveryWebApp.Application.BasketItems.Commands.CreateBasketItem;
+﻿using DeliveryWebApp.Application.BasketItems.Queries;
 using DeliveryWebApp.Application.Baskets.Commands.CreateBasket;
 using DeliveryWebApp.Application.Baskets.Commands.PurgeBasket;
+using DeliveryWebApp.Application.Baskets.Commands.UpdateBasket;
+using DeliveryWebApp.Application.Common.Exceptions;
 using DeliveryWebApp.Application.Customers.Commands.CreateCustomer;
 using DeliveryWebApp.Application.Products.Commands.CreateProduct;
 using DeliveryWebApp.Application.Restaurateurs.Commands.CreateRestaurateur;
@@ -9,8 +11,6 @@ using DeliveryWebApp.Domain.Entities;
 using FluentAssertions;
 using NUnit.Framework;
 using System.Threading.Tasks;
-using DeliveryWebApp.Application.BasketItems.Queries;
-using DeliveryWebApp.Application.Baskets.Commands.UpdateBasket;
 
 namespace DeliveryWebApp.Application.IntegrationTests.Baskets.Commands
 {
@@ -18,6 +18,15 @@ namespace DeliveryWebApp.Application.IntegrationTests.Baskets.Commands
 
     public class PurgeBasketTest : TestBase
     {
+        [Test]
+        public void ShouldRequireMinimumFields()
+        {
+            var command = new PurgeBasketCommand();
+
+            FluentActions.Invoking(() =>
+                SendAsync(command)).Should().Throw<ValidationException>();
+        }
+
         [Test]
         public async Task ShouldPurgeBasketAsync()
         {
@@ -108,7 +117,7 @@ namespace DeliveryWebApp.Application.IntegrationTests.Baskets.Commands
 
             await SendAsync(new PurgeBasketCommand
             {
-                Basket = basket
+                Id = basket.Id
             });
 
             var items = await SendAsync(new GetBasketItemsQuery
@@ -116,12 +125,14 @@ namespace DeliveryWebApp.Application.IntegrationTests.Baskets.Commands
                 Basket = updatedBasket
             });
 
+            var b = await FindAsync<Basket>(basket.Id);
+
             var product1 = await FindAsync<Product>(p1.Id);
             var product2 = await FindAsync<Product>(p2.Id);
             var product3 = await FindAsync<Product>(p3.Id);
 
-            basket.Should().NotBeNull();
-            basket.TotalPrice.Should().Be(0.00M);
+            b.Should().NotBeNull();
+            b.TotalPrice.Should().Be(0.00M);
             items.Should().BeNullOrEmpty();
             product1.Quantity.Should().Be(p1.Quantity);
             product2.Quantity.Should().Be(p2.Quantity);

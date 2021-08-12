@@ -1,4 +1,5 @@
-﻿using DeliveryWebApp.Application.Common.Interfaces;
+﻿using AutoMapper;
+using DeliveryWebApp.Application.Common.Interfaces;
 using DeliveryWebApp.Domain.Entities;
 using MediatR;
 using System.Threading;
@@ -24,26 +25,17 @@ namespace DeliveryWebApp.Application.Addresses.Commands.CreateAddress
     public class CreateAddressCommandHandler : IRequestHandler<CreateAddressCommand, Address>
     {
         private readonly IApplicationDbContext _context;
+        private readonly IMapper _mapper;
 
-        public CreateAddressCommandHandler(IApplicationDbContext context)
+        public CreateAddressCommandHandler(IApplicationDbContext context, IMapper mapper)
         {
             _context = context;
+            _mapper = mapper;
         }
 
         public async Task<Address> Handle(CreateAddressCommand request, CancellationToken cancellationToken)
         {
-            var entity = new Address
-            {
-                AddressLine1 = request.AddressLine1,
-                AddressLine2 = request.AddressLine2,
-                City = request.City,
-                StateProvince = request.StateProvince,
-                Country = request.Country,
-                Number = request.Number,
-                PostalCode = request.PostalCode,
-                Latitude = request.Latitude,
-                Longitude = request.Longitude,
-            };
+            var entity = _mapper.Map<Address>(request);
 
             if (request.CustomerId != null)
             {
@@ -56,7 +48,6 @@ namespace DeliveryWebApp.Application.Addresses.Commands.CreateAddress
             }
 
             _context.Addresses.Add(entity);
-
             await _context.SaveChangesAsync(cancellationToken);
 
             return entity;

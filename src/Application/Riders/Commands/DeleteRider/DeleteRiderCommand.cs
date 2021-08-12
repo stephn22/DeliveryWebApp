@@ -1,36 +1,33 @@
-﻿using System.Threading;
-using System.Threading.Tasks;
-using AutoMapper;
-using DeliveryWebApp.Application.Common.Exceptions;
+﻿using DeliveryWebApp.Application.Common.Exceptions;
 using DeliveryWebApp.Application.Common.Interfaces;
 using DeliveryWebApp.Domain.Entities;
 using MediatR;
+using System.Threading;
+using System.Threading.Tasks;
 
 namespace DeliveryWebApp.Application.Riders.Commands.DeleteRider
 {
     public class DeleteRiderCommand : IRequest
     {
-        public Rider Rider { get; set; }
+        public int Id { get; set; }
     }
 
     public class DeleteRiderCommandHandler : IRequestHandler<DeleteRiderCommand>
     {
         private readonly IApplicationDbContext _context;
-        private readonly IMapper _mapper;
 
-        public DeleteRiderCommandHandler(IApplicationDbContext context, IMapper mapper)
+        public DeleteRiderCommandHandler(IApplicationDbContext context)
         {
             _context = context;
-            _mapper = mapper;
         }
 
         public async Task<Unit> Handle(DeleteRiderCommand request, CancellationToken cancellationToken)
         {
-            var entity = _mapper.Map<Rider>(request.Rider);
+            var entity = await _context.Riders.FindAsync(request.Id);
 
             if (entity == null)
             {
-                throw new NotFoundException(nameof(Restaurateur), request.Rider);
+                throw new NotFoundException(nameof(Restaurateur), request.Id);
             }
 
             _context.Riders.Remove(entity);

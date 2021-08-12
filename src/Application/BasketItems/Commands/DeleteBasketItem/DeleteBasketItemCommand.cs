@@ -1,5 +1,4 @@
-﻿using AutoMapper;
-using DeliveryWebApp.Application.Common.Exceptions;
+﻿using DeliveryWebApp.Application.Common.Exceptions;
 using DeliveryWebApp.Application.Common.Interfaces;
 using DeliveryWebApp.Application.Products.Commands.UpdateProducts;
 using DeliveryWebApp.Domain.Entities;
@@ -11,29 +10,27 @@ namespace DeliveryWebApp.Application.BasketItems.Commands.DeleteBasketItem
 {
     public class DeleteBasketItemCommand : IRequest<BasketItem>
     {
-        public BasketItem BasketItem { get; set; }
+        public int Id { get; set; }
     }
 
     public class DeleteBasketItemCommandHandler : IRequestHandler<DeleteBasketItemCommand, BasketItem>
     {
         private readonly IApplicationDbContext _context;
-        private readonly IMapper _mapper;
         private readonly IMediator _mediator;
 
-        public DeleteBasketItemCommandHandler(IApplicationDbContext context, IMapper mapper, IMediator mediator)
+        public DeleteBasketItemCommandHandler(IApplicationDbContext context, IMediator mediator)
         {
             _context = context;
-            _mapper = mapper;
             _mediator = mediator;
         }
 
         public async Task<BasketItem> Handle(DeleteBasketItemCommand request, CancellationToken cancellationToken)
         {
-            var entity = _mapper.Map<BasketItem>(request.BasketItem);
+            var entity = await _context.BasketItems.FindAsync(request.Id);
 
             if (entity == null)
             {
-                throw new NotFoundException(nameof(BasketItem), request.BasketItem.Id);
+                throw new NotFoundException(nameof(BasketItem), request.Id);
             }
 
             var product = await _context.Products.FindAsync(entity.ProductId);

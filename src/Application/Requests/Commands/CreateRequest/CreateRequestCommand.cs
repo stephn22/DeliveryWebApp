@@ -1,12 +1,9 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading;
-using System.Threading.Tasks;
-using DeliveryWebApp.Application.Common.Interfaces;
+﻿using DeliveryWebApp.Application.Common.Interfaces;
 using DeliveryWebApp.Domain.Entities;
 using MediatR;
+using System.Threading;
+using System.Threading.Tasks;
+using AutoMapper;
 
 namespace DeliveryWebApp.Application.Requests.Commands.CreateRequest
 {
@@ -20,15 +17,17 @@ namespace DeliveryWebApp.Application.Requests.Commands.CreateRequest
     public class CreateRequestCommandHandler : IRequestHandler<CreateRequestCommand, Request>
     {
         private readonly IApplicationDbContext _context;
+        private readonly IMapper _mapper;
 
-        public CreateRequestCommandHandler(IApplicationDbContext context)
+        public CreateRequestCommandHandler(IApplicationDbContext context, IMapper mapper)
         {
             _context = context;
+            _mapper = mapper;
         }
 
         public async Task<Request> Handle(CreateRequestCommand request, CancellationToken cancellationToken)
         {
-            var entity = new Request
+            var entity = new Request // TODO: try with mediator
             {
                 CustomerId = request.Customer.Id,
                 Role = request.Role,

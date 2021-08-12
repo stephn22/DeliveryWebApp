@@ -1,5 +1,4 @@
-﻿using NUnit.Framework;
-using System.Threading.Tasks;
+﻿using DeliveryWebApp.Application.Common.Exceptions;
 using DeliveryWebApp.Application.Common.Security;
 using DeliveryWebApp.Application.Customers.Commands.CreateCustomer;
 using DeliveryWebApp.Application.Requests.Commands.CreateRequest;
@@ -7,6 +6,8 @@ using DeliveryWebApp.Application.Requests.Commands.DeleteRequest;
 using DeliveryWebApp.Domain.Constants;
 using DeliveryWebApp.Domain.Entities;
 using FluentAssertions;
+using NUnit.Framework;
+using System.Threading.Tasks;
 
 namespace DeliveryWebApp.Application.IntegrationTests.Requests.Commands
 {
@@ -14,6 +15,15 @@ namespace DeliveryWebApp.Application.IntegrationTests.Requests.Commands
 
     public class DeleteRequestTest : TestBase
     {
+        [Test]
+        public void ShouldRequireMinimumFields()
+        {
+            var command = new DeleteRequestCommand();
+
+            FluentActions.Invoking(() =>
+                SendAsync(command)).Should().Throw<ValidationException>();
+        }
+
         [Test]
         public async Task ShouldDeleteRequestAsync()
         {
@@ -44,7 +54,7 @@ namespace DeliveryWebApp.Application.IntegrationTests.Requests.Commands
 
             await SendAsync(new DeleteRequestCommand
             {
-                Request = request
+                Id = request.Id
             });
 
             var r = await FindAsync<Request>(request.Id);

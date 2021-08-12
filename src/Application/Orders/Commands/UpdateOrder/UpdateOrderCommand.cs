@@ -1,13 +1,13 @@
 ﻿using DeliveryWebApp.Application.Common.Exceptions;
 using DeliveryWebApp.Application.Common.Interfaces;
+using DeliveryWebApp.Application.OrderItems.Commands.CreateOrderItem;
+using DeliveryWebApp.Application.Orders.Extensions;
 using DeliveryWebApp.Domain.Entities;
 using MediatR;
 using System;
 using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
-using DeliveryWebApp.Application.OrderItems.Commands.CreateOrderItem;
-using DeliveryWebApp.Application.Orders.Extensions;
 
 namespace DeliveryWebApp.Application.Orders.Commands.UpdateOrder
 {
@@ -55,14 +55,17 @@ namespace DeliveryWebApp.Application.Orders.Commands.UpdateOrder
                 entity.Status = request.OrderStatus;
             }
 
-            if (request.BasketItems is not { Count: > 0 }) return entity;
+            if (request.BasketItems is not { Count: > 0 })
+            {
+                return entity;
+            }
 
             foreach (var item in request.BasketItems)
             {
                 await _mediator.Send(new CreateOrderItemCommand
                 {
-                    BasketItem = item,
-                    Order = entity
+                    BasketItemId = item.Id,
+                    OrderId = entity.Id
                 }, cancellationToken);
             }
 

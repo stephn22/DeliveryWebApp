@@ -8,7 +8,7 @@ namespace DeliveryWebApp.Application.Orders.Commands.CreateOrder
         {
             RuleFor(o => o.Customer).NotEmpty();
 
-            RuleFor(c => c.Customer.Id).NotEqual(c => c.Restaurateur.CustomerId);
+            RuleFor(c => c.Customer.Id).NotEqual(c => c.Restaurateur.CustomerId).NotEmpty();
 
             RuleFor(c => c.Customer.Id).GreaterThan(0).NotEmpty();
 

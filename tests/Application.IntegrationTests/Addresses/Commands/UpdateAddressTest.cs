@@ -1,10 +1,11 @@
 ﻿using DeliveryWebApp.Application.Addresses.Commands.CreateAddress;
 using DeliveryWebApp.Application.Addresses.Commands.UpdateAddress;
+using DeliveryWebApp.Application.Common.Exceptions;
 using DeliveryWebApp.Application.Customers.Commands.CreateCustomer;
-using NUnit.Framework;
-using System.Threading.Tasks;
 using DeliveryWebApp.Domain.Entities;
 using FluentAssertions;
+using NUnit.Framework;
+using System.Threading.Tasks;
 
 namespace DeliveryWebApp.Application.IntegrationTests.Addresses.Commands
 {
@@ -12,6 +13,15 @@ namespace DeliveryWebApp.Application.IntegrationTests.Addresses.Commands
 
     public class UpdateAddressTest : TestBase
     {
+        [Test]
+        public void ShouldRequireMinimumFields()
+        {
+            var command = new UpdateAddressCommand();
+
+            FluentActions.Invoking(() =>
+                SendAsync(command)).Should().Throw<ValidationException>();
+        }
+
         [Test]
         public async Task ShouldUpdateAddressAsync()
         {
@@ -52,7 +62,7 @@ namespace DeliveryWebApp.Application.IntegrationTests.Addresses.Commands
                 Latitude = 23.4535M,
                 Longitude = 15.7628M,
             };
-            
+
             await SendAsync(updateCommand); // FIXME: validation errors
 
             var update = await FindAsync<Address>(address.Id);

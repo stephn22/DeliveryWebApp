@@ -22,12 +22,10 @@ namespace DeliveryWebApp.Application.Products.Commands.UpdateProducts
     public class UpdateProductCommandHandler : IRequestHandler<UpdateProductCommand, Product>
     {
         private readonly IApplicationDbContext _context;
-        private readonly IMapper _mapper;
 
-        public UpdateProductCommandHandler(IApplicationDbContext context, IMapper mapper)
+        public UpdateProductCommandHandler(IApplicationDbContext context)
         {
             _context = context;
-            _mapper = mapper;
         }
 
         public async Task<Product> Handle(UpdateProductCommand request, CancellationToken cancellationToken)

@@ -6,13 +6,9 @@ namespace DeliveryWebApp.Application.OrderItems.Commands.CreateOrderItem
     {
         public CreateOrderItemCommandValidator()
         {
-            RuleFor(o => o.Order).NotEmpty();
+            RuleFor(o => o.OrderId).GreaterThan(0).NotNull();
 
-            RuleFor(o => o.Order.Id).GreaterThan(0).NotNull();
-
-            RuleFor(o => o.BasketItem).NotEmpty();
-
-            RuleFor(o => o.BasketItem.Id).GreaterThan(0).NotEmpty();
+            RuleFor(o => o.BasketItemId).GreaterThan(0).NotEmpty();
         }
     }
 }

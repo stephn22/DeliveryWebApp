@@ -14,29 +14,27 @@ namespace DeliveryWebApp.Application.Baskets.Commands.PurgeBasket
     //[Authorize(Policy = PolicyName.IsCustomer)] TODO:
     public class PurgeBasketCommand : IRequest
     {
-        public Basket Basket { get; set; }
+        public int Id { get; set; }
     }
 
     public class PurgeBasketCommandHandler : IRequestHandler<PurgeBasketCommand>
     {
         private readonly IApplicationDbContext _context;
-        private readonly IMapper _mapper;
         private readonly IMediator _mediator;
 
-        public PurgeBasketCommandHandler(IApplicationDbContext context, IMapper mapper, IMediator mediator)
+        public PurgeBasketCommandHandler(IApplicationDbContext context, IMediator mediator)
         {
             _context = context;
-            _mapper = mapper;
             _mediator = mediator;
         }
 
         public async Task<Unit> Handle(PurgeBasketCommand request, CancellationToken cancellationToken)
         {
-            var entity = _mapper.Map<Basket>(request.Basket);
+            var entity = await _context.Baskets.FindAsync(request.Id);
 
             if (entity == null)
             {
-                throw new NotFoundException(nameof(Basket), request.Basket.Id);
+                throw new NotFoundException(nameof(Basket), request.Id);
             }
 
             var basketItems = await _mediator.Send(new GetBasketItemsQuery
@@ -50,7 +48,7 @@ namespace DeliveryWebApp.Application.Baskets.Commands.PurgeBasket
                 {
                     await _mediator.Send(new DeleteBasketItemCommand
                     {
-                        BasketItem = item
+                        Id = item.Id
                     }, cancellationToken);
                 }
                 catch (NotFoundException)

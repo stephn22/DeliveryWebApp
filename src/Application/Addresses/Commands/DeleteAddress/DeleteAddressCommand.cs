@@ -31,7 +31,6 @@ namespace DeliveryWebApp.Application.Addresses.Commands.DeleteAddress
             }
 
             _context.Addresses.Remove(entity);
-
             await _context.SaveChangesAsync(cancellationToken);
 
             return entity;
