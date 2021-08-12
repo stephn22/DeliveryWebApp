@@ -1,5 +1,6 @@
-﻿using System.Threading.Tasks;
+﻿using DeliveryWebApp.Application.Common.Security;
 using Microsoft.AspNetCore.Authorization;
+using System.Threading.Tasks;
 
 namespace DeliveryWebApp.Infrastructure.Security.Policies
 {

@@ -10,12 +10,14 @@ namespace DeliveryWebApp.Domain.Entities
     {
         public int CustomerId { get; set; }
         public virtual Customer Customer { get; set; }
-        public ICollection<Product> Products { get; set; }
+        public ICollection<OrderItem> OrderItems { get; set; }
         public DateTime Date { get; set; }
         public int RestaurateurId { get; set; }
         public virtual Restaurateur Restaurateur { get; set; }
         public decimal TotalPrice { get; set; }
         public string Status { get; set; }
         public DateTime? DeliveryDate { get; set; }
+
+        // TODO: total price setter
     }
 }

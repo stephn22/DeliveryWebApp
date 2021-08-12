@@ -1,7 +1,10 @@
 using DeliveryWebApp.Application.Addresses.Queries.GetAddresses;
+using DeliveryWebApp.Application.Common.Security;
+using DeliveryWebApp.Application.Restaurateurs.Queries.GetRestaurateurs;
 using DeliveryWebApp.Domain.Entities;
 using DeliveryWebApp.Infrastructure.Identity;
 using DeliveryWebApp.Infrastructure.Persistence;
+using DeliveryWebApp.Infrastructure.Security;
 using MediatR;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
@@ -10,8 +13,6 @@ using Microsoft.EntityFrameworkCore;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using DeliveryWebApp.Application.Common.Security;
-using DeliveryWebApp.Infrastructure.Security;
 
 namespace DeliveryWebApp.WebUI.Pages.CustomerPages
 {
@@ -33,13 +34,7 @@ namespace DeliveryWebApp.WebUI.Pages.CustomerPages
         public Customer Customer { get; set; }
         public List<Address> CustomerAddresses { get; set; }
 
-        public string NameSort { get; set; }
-        public string CategorySort { get; set; }
-        public string DistanceSort { get; set; }
-        public string CurrentFilter { get; set; }
-        public string CurrentSort { get; set; }
-
-        public async Task<IActionResult> OnGetAsync(string sortOrder)
+        public async Task<IActionResult> OnGetAsync()
         {
             var user = await _userManager.GetUserAsync(User);
 
@@ -48,6 +43,13 @@ namespace DeliveryWebApp.WebUI.Pages.CustomerPages
                 return NotFound($"Unable to load user with ID '{_userManager.GetUserId(User)}'.");
             }
 
+            await LoadAsync(user);
+
+            return Page();
+        }
+
+        private async Task LoadAsync(ApplicationUser user)
+        {
             Customer = await _context.Customers.Where(c => c.ApplicationUserFk == user.Id).FirstAsync();
             //Restaurants = await _mediator.Send(new GetRestaurantsQuery());
             CustomerAddresses = await _mediator.Send(new GetAddressesQuery
@@ -55,23 +57,7 @@ namespace DeliveryWebApp.WebUI.Pages.CustomerPages
                 CustomerId = Customer.Id
             });
 
-            var restaurantsOrd = from r in _context.Restaurateurs
-                                 select r;
-
-            NameSort = string.IsNullOrEmpty(sortOrder) ? "name_desc" : "";
-            CategorySort = string.IsNullOrEmpty(sortOrder) ? "category_desc" : "";
-            //TODO: Distance?
-
-            restaurantsOrd = sortOrder switch
-            {
-                "name_desc" => restaurantsOrd.OrderByDescending(r => r.RestaurantName),
-                "category_desc" => restaurantsOrd.OrderByDescending(r => r.RestaurantCategory),
-                _ => restaurantsOrd.OrderBy(r => r.RestaurantName)
-            };
-
-            Restaurants = await restaurantsOrd.AsNoTracking().ToListAsync();
-
-            return Page();
+            Restaurants = await _mediator.Send(new GetRestaurateursQuery());
         }
     }
 }

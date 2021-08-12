@@ -1,15 +1,14 @@
-using System.Threading.Tasks;
+using DeliveryWebApp.Application.Common.Security;
 using DeliveryWebApp.Domain.Entities;
 using DeliveryWebApp.Infrastructure.Persistence;
-using DeliveryWebApp.Infrastructure.Security;
-using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.EntityFrameworkCore;
+using System.Threading.Tasks;
 
 namespace DeliveryWebApp.WebUI.Pages.AdminPages
 {
-    [Authorize(Roles = RoleName.Admin)]
+    [Microsoft.AspNetCore.Authorization.Authorize(Roles = RoleName.Admin)]
     public class OrderDetailsModel : PageModel
     {
         private readonly ApplicationDbContext _context;

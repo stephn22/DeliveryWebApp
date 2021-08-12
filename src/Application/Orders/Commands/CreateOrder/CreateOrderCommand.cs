@@ -1,20 +1,16 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading;
-using System.Threading.Tasks;
-using DeliveryWebApp.Application.Common.Interfaces;
+﻿using DeliveryWebApp.Application.Common.Interfaces;
 using DeliveryWebApp.Domain.Constants;
 using DeliveryWebApp.Domain.Entities;
 using MediatR;
+using System.Threading;
+using System.Threading.Tasks;
 
 namespace DeliveryWebApp.Application.Orders.Commands.CreateOrder
 {
     public class CreateOrderCommand : IRequest<Order>
     {
         public Customer Customer { get; set; }
-        public ICollection<Product> Products { get; set; }
+        public Restaurateur Restaurateur { get; set; }
     }
 
     public class CreateOrderCommandHandler : IRequestHandler<CreateOrderCommand, Order>
@@ -28,19 +24,15 @@ namespace DeliveryWebApp.Application.Orders.Commands.CreateOrder
 
         public async Task<Order> Handle(CreateOrderCommand request, CancellationToken cancellationToken)
         {
-            var totalPrice = Product.TotalPrice(request.Products.ToList());
-
             var entity = new Order
             {
-                Customer = request.Customer,
-                Date = DateTime.Now,
-                Products = request.Products,
-                TotalPrice = totalPrice,
-                Status = OrderStatus.Open
+                RestaurateurId = request.Restaurateur.Id,
+                CustomerId = request.Customer.Id,
+                Status = OrderStatus.New,
+                TotalPrice = 0.00M
             };
 
             _context.Orders.Add(entity);
-
             await _context.SaveChangesAsync(cancellationToken);
 
             return entity;

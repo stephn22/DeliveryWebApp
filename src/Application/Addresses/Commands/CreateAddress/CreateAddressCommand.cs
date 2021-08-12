@@ -1,4 +1,5 @@
-﻿using DeliveryWebApp.Application.Common.Interfaces;
+﻿using AutoMapper;
+using DeliveryWebApp.Application.Common.Interfaces;
 using DeliveryWebApp.Domain.Entities;
 using MediatR;
 using System.Threading;
@@ -17,38 +18,36 @@ namespace DeliveryWebApp.Application.Addresses.Commands.CreateAddress
         public string Country { get; set; }
         public decimal Longitude { get; set; }
         public decimal Latitude { get; set; }
-        public int CustomerId { get; set; }
-        public Customer Customer { get; set; }
+        public int? CustomerId { get; set; }
+        public int? RestaurateurId { get; set; }
     }
 
     public class CreateAddressCommandHandler : IRequestHandler<CreateAddressCommand, Address>
     {
         private readonly IApplicationDbContext _context;
+        private readonly IMapper _mapper;
 
-        public CreateAddressCommandHandler(IApplicationDbContext context)
+        public CreateAddressCommandHandler(IApplicationDbContext context, IMapper mapper)
         {
             _context = context;
+            _mapper = mapper;
         }
 
         public async Task<Address> Handle(CreateAddressCommand request, CancellationToken cancellationToken)
         {
-            var entity = new Address
+            var entity = _mapper.Map<Address>(request);
+
+            if (request.CustomerId != null)
             {
-                AddressLine1 = request.AddressLine1,
-                AddressLine2 = request.AddressLine2,
-                City = request.City,
-                StateProvince = request.StateProvince,
-                Country = request.Country,
-                Number = request.Number,
-                PostalCode = request.PostalCode,
-                Latitude = request.Latitude,
-                Longitude = request.Longitude,
-                CustomerId = request.CustomerId,
-                Customer = request.Customer,
-            };
+                entity.CustomerId = request.CustomerId;
+            }
+
+            if (request.RestaurateurId != null)
+            {
+                entity.RestaurateurId = request.RestaurateurId;
+            }
 
             _context.Addresses.Add(entity);
-
             await _context.SaveChangesAsync(cancellationToken);
 
             return entity;

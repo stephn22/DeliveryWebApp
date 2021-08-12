@@ -1,13 +1,10 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading;
-using System.Threading.Tasks;
+﻿using AutoMapper;
 using DeliveryWebApp.Application.Common.Exceptions;
 using DeliveryWebApp.Application.Common.Interfaces;
 using DeliveryWebApp.Domain.Entities;
 using MediatR;
+using System.Threading;
+using System.Threading.Tasks;
 
 namespace DeliveryWebApp.Application.Products.Commands.UpdateProducts
 {
@@ -42,17 +39,17 @@ namespace DeliveryWebApp.Application.Products.Commands.UpdateProducts
 
             if (request.Discount != null)
             {
-                entity.Discount = (int) request.Discount;
+                entity.Discount = (int)request.Discount;
             }
 
             if (request.Quantity != null)
             {
-                entity.Quantity = (int) request.Quantity;
+                entity.Quantity = (int)request.Quantity;
             }
 
             if (request.Price != null)
             {
-                entity.Price = (decimal) request.Price;
+                entity.Price = (decimal)request.Price;
             }
 
             if (!string.IsNullOrEmpty(request.Category))

@@ -1,5 +1,4 @@
-﻿using System.Collections.Generic;
-using DeliveryWebApp.Application.Common.Exceptions;
+﻿using DeliveryWebApp.Application.Common.Exceptions;
 using DeliveryWebApp.Application.Common.Interfaces;
 using DeliveryWebApp.Domain.Entities;
 using MediatR;
@@ -8,26 +7,25 @@ using System.Threading.Tasks;
 
 namespace DeliveryWebApp.Application.Restaurateurs.Commands.UpdateRestaurateur
 {
-    public class UpdateRestaurateurCommand : IRequest<int>
+    public class UpdateRestaurateurCommand : IRequest<Restaurateur>
     {
         public int Id { get; set; }
         public byte[] Logo { get; set; }
         public string RestaurantName { get; set; }
         public string RestaurantCategory { get; set; }
         public Address RestaurantAddress { get; set; }
-        public Product Product { get; set; }
     }
 
-    public class UpdateRestaurantCommandHandler : IRequestHandler<UpdateRestaurateurCommand, int>
+    public class UpdateRestaurateurCommandHandler : IRequestHandler<UpdateRestaurateurCommand, Restaurateur>
     {
         private readonly IApplicationDbContext _context;
 
-        public UpdateRestaurantCommandHandler(IApplicationDbContext context)
+        public UpdateRestaurateurCommandHandler(IApplicationDbContext context)
         {
             _context = context;
         }
 
-        public async Task<int> Handle(UpdateRestaurateurCommand request, CancellationToken cancellationToken)
+        public async Task<Restaurateur> Handle(UpdateRestaurateurCommand request, CancellationToken cancellationToken)
         {
             var entity = await _context.Restaurateurs.FindAsync(request.Id);
 
@@ -53,18 +51,12 @@ namespace DeliveryWebApp.Application.Restaurateurs.Commands.UpdateRestaurateur
 
             if (request.RestaurantAddress != null)
             {
-                entity.RestaurantAddress = request.RestaurantAddress;
-            }
-
-            if (request.Product != null)
-            {
-                entity.Products ??= new List<Product>();
-                entity.Products.Add(request.Product);
+                entity.RestaurantAddressId = request.RestaurantAddress.Id;
             }
 
             await _context.SaveChangesAsync(cancellationToken);
 
-            return request.Id;
+            return entity;
         }
     }
 }

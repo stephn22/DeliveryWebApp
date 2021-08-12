@@ -44,22 +44,21 @@ else
                 </svg>
             </a>
 
-            <button class="nav-link" id="v-pills-orders-tab" data-bs-toggle="pill" data-bs-target="#v-pills-orders" type="button" role="tab" aria-controls="v-pills-orders" aria-selected="false">
+            <a asp-page="/RestaurateurPages/RestaurantOrders" asp-route-id="@Model.Restaurateur.Id" class="nav-link" id="v-pills-orders-tab" role="tab"  aria-selected="false">
                 Orders
-                @* TODO: Razor page *@
                 <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-mailbox" viewBox="0 0 16 16">
                     <path d="M4 4a3 3 0 0 0-3 3v6h6V7a3 3 0 0 0-3-3zm0-1h8a4 4 0 0 1 4 4v6a1 1 0 0 1-1 1H1a1 1 0 0 1-1-1V7a4 4 0 0 1 4-4zm2.646 1A3.99 3.99 0 0 1 8 7v6h7V7a3 3 0 0 0-3-3H6.646z" />
                     <path d="M11.793 8.5H9v-1h5a.5.5 0 0 1 .5.5v1a.5.5 0 0 1-.5.5h-1a.5.5 0 0 1-.354-.146l-.853-.854zM5 7c0 .552-.448 0-1 0s-1 .552-1 0a1 1 0 0 1 2 0z" />
                 </svg>
-            </button>
+            </a>
         </div>
         <div class="tab-content" id="v-pills-tabContent">
-
             <div class="tab-pane fade show active" id="v-pills-home" role="tabpanel" aria-labelledby="v-pills-home-tab">
 
-                @await Html.PartialAsync("EditRestaurant.cshtml", Model)
+                @await Html.PartialAsync("EditRestaurant", Model)
 
             </div>
+
         </div>
     </div>
 }

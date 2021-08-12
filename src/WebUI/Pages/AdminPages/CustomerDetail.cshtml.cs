@@ -34,6 +34,8 @@ namespace DeliveryWebApp.WebUI.Pages.AdminPages
         private readonly UserManager<ApplicationUser> _userManager;
         private readonly IMediator _mediator;
 
+        // TODO: complete logger
+
         public CustomerDetailModel(ApplicationDbContext context, ILogger<CustomerDetailModel> logger,
             UserManager<ApplicationUser> userManager, IMediator mediator)
         {
@@ -86,6 +88,8 @@ namespace DeliveryWebApp.WebUI.Pages.AdminPages
 
             await _userManager.BlockUser(user);
 
+            _logger.LogInformation($"Blocked user with id '{user.Id}");
+
             return RedirectToPage("/AdminPages/UserList");
         }
 
@@ -101,6 +105,8 @@ namespace DeliveryWebApp.WebUI.Pages.AdminPages
             var user = await _userManager.FindByIdAsync(Customer.ApplicationUserFk);
 
             await _userManager.UnblockUser(user);
+
+            _logger.LogInformation($"Unblocked user with id '{user.Id}");
 
             return RedirectToPage("/AdminPages/UserList");
         }
@@ -120,8 +126,10 @@ namespace DeliveryWebApp.WebUI.Pages.AdminPages
 
             await _mediator.Send(new DeleteCustomerCommand
             {
-                Id = Customer.Id
+                Customer = Customer
             });
+
+            _logger.LogInformation($"Deleted customer with id '{Customer.Id}");
 
             return RedirectToPage("/AdminPages/UserList");
         }

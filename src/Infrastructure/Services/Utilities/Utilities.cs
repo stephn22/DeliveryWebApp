@@ -1,5 +1,5 @@
-﻿using DeliveryWebApp.Infrastructure.Identity;
-using DeliveryWebApp.Infrastructure.Security;
+﻿using DeliveryWebApp.Application.Common.Security;
+using DeliveryWebApp.Infrastructure.Identity;
 using Microsoft.AspNetCore.Identity;
 using System;
 using System.Collections.Generic;

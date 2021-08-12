@@ -5,6 +5,7 @@ using FluentAssertions;
 using NUnit.Framework;
 using NUnit.Framework.Internal;
 using System.Threading.Tasks;
+using DeliveryWebApp.Application.Customers.Commands.CreateCustomer;
 
 namespace DeliveryWebApp.Application.IntegrationTests.Restaurateurs.Commands
 {
@@ -12,10 +13,6 @@ namespace DeliveryWebApp.Application.IntegrationTests.Restaurateurs.Commands
 
     public class CreateRestaurateurTest : TestBase
     {
-        private static Customer Customer => new()
-        {
-            ApplicationUserFk = "application-user-fk"
-        };
 
         [Test]
         public void ShouldRequireMinimumFields()
@@ -31,19 +28,29 @@ namespace DeliveryWebApp.Application.IntegrationTests.Restaurateurs.Commands
         {
             var userId = await RunAsDefaultUserAsync();
 
-            var command = new CreateRestaurateurCommand
+            var customerCommand = new CreateCustomerCommand
             {
-                Customer = Customer
+                ApplicationUserFk = userId,
+                FirstName = "John",
+                LastName = "Doe",
+                Email = "johndoe@gmail.com"
             };
 
-            var itemId = await SendAsync(command);
-            var restaurateur = await FindAsync<Restaurateur>(itemId);
+            var customer = await SendAsync(customerCommand);
+
+            var command = new CreateRestaurateurCommand
+            {
+                Customer = customer
+            };
+
+            var restaurateur = await SendAsync(command);
 
             restaurateur.Should().NotBeNull();
-            restaurateur.Should().Be(command.Customer);
+            restaurateur.Id.Should().NotBe(0);
             restaurateur.RestaurantName.Should().BeNull();
             restaurateur.RestaurantAddress.Should().BeNull();
             restaurateur.RestaurantCategory.Should().BeNull();
+            restaurateur.CustomerId.Should().Be(customer.Id);
         }
     }
 }

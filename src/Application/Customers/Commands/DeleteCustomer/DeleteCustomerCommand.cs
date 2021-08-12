@@ -1,4 +1,5 @@
-﻿using DeliveryWebApp.Application.Common.Exceptions;
+﻿using System;
+using DeliveryWebApp.Application.Common.Exceptions;
 using DeliveryWebApp.Application.Common.Interfaces;
 using DeliveryWebApp.Domain.Entities;
 using MediatR;
@@ -6,38 +7,96 @@ using Microsoft.EntityFrameworkCore;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
+using AutoMapper;
+using DeliveryWebApp.Application.Addresses.Queries.GetAddresses;
+using DeliveryWebApp.Application.Baskets.Commands.DeleteBasket;
+using DeliveryWebApp.Application.Restaurateurs.Commands.DeleteRestaurateur;
+using DeliveryWebApp.Application.Riders.Commands.DeleteRider;
+using Microsoft.Extensions.Logging;
 
 namespace DeliveryWebApp.Application.Customers.Commands.DeleteCustomer
 {
     public class DeleteCustomerCommand : IRequest<Customer>
     {
-        public int Id { get; set; }
+        public Customer Customer { get; set; }
     }
 
     public class DeleteCustomerCommandHandler : IRequestHandler<DeleteCustomerCommand, Customer>
     {
         private readonly IApplicationDbContext _context;
+        private readonly IMapper _mapper;
+        private readonly IMediator _mediator;
 
-        public DeleteCustomerCommandHandler(IApplicationDbContext context)
+        public DeleteCustomerCommandHandler(IApplicationDbContext context, IMapper mapper, IMediator mediator)
         {
             _context = context;
+            _mapper = mapper;
+
+            _mediator = mediator;
         }
 
         public async Task<Customer> Handle(DeleteCustomerCommand request, CancellationToken cancellationToken)
         {
-            var entity = await _context.Customers.FindAsync(request.Id);
+            var entity = _mapper.Map<Customer>(request.Customer);
 
             if (entity == null)
             {
-                throw new NotFoundException(nameof(Customer), request.Id);
+                throw new NotFoundException(nameof(Customer), request.Customer.Id);
             }
 
-            var addresses = await _context.Addresses.Where(a => a.CustomerId == entity.Id)
-                .ToListAsync(cancellationToken);
+            // search if customer is also a restaurateur or a rider and delete it
+            try
+            {
+                var restaurateur =
+                    await _context.Restaurateurs.FirstAsync(r => r.CustomerId == entity.Id, cancellationToken);
 
-            _context.Addresses.RemoveRange(addresses);
+                await _mediator.Send(new DeleteRestaurateurCommand
+                {
+                    Id = restaurateur.Id
+                }, cancellationToken);
+            }
+            catch (InvalidOperationException)
+            {
+            }
+            try
+            {
+                var rider =
+                    await _context.Riders.FirstAsync(r => r.CustomerId == entity.Id, cancellationToken);
+
+                await _mediator.Send(new DeleteRiderCommand
+                {
+                    Id = rider.Id
+                }, cancellationToken);
+            }
+            catch (InvalidOperationException)
+            {
+            }
+            
+            // search if customer has basket and delete it
+            try
+            {
+                var basket = await _context.Baskets.FirstAsync(b => b.CustomerId == entity.Id, cancellationToken);
+
+                await _mediator.Send(new DeleteBasketCommand
+                {
+                    Id = basket.Id
+                }, cancellationToken);
+            }
+            catch (InvalidOperationException)
+            {
+            }
+            
+            var addresses = await _mediator.Send(new GetAddressesQuery
+            {
+                CustomerId = entity.Id
+            }, cancellationToken);
+
+            if (addresses is { Count: > 0 })
+            {
+                _context.Addresses.RemoveRange(addresses);
+            } 
+
             _context.Customers.Remove(entity);
-
             await _context.SaveChangesAsync(cancellationToken);
 
             return entity;

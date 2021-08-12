@@ -21,9 +21,14 @@ namespace DeliveryWebApp.Infrastructure.Persistence.Configurations
                 .IsRequired();
 
             builder.Property(p => p.Price)
-                .HasPrecision(19, 4)
+                .HasPrecision(16, 3)
                 .HasColumnType(PropertyName.Money)
                 .IsRequired();
+
+            builder.HasOne(p => p.Restaurateur)
+                .WithMany(r => r.Products)
+                .HasForeignKey(p => p.RestaurateurId)
+                .OnDelete(DeleteBehavior.ClientCascade);
         }
     }
 }

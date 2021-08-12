@@ -88,7 +88,6 @@ namespace DeliveryWebApp.WebUI.Pages.RestaurateurPages
             return Page();
         }
 
-
         public async Task<IActionResult> OnPost(int id)
         {
             byte[] bytes = null;
@@ -101,15 +100,13 @@ namespace DeliveryWebApp.WebUI.Pages.RestaurateurPages
                 await fileStream.CopyToAsync(memoryStream);
                 bytes = memoryStream.ToArray();
             }
-            
 
             await _mediator.Send(new UpdateProductCommand
             {
-                Id = id,
                 Name = Input.Name,
                 Category = Input.Category,
                 Discount = Input.Discount,
-                Image = bytes ?? null,
+                Image = bytes,
                 Price = Input.Price,
                 Quantity = Input.Quantity
             });

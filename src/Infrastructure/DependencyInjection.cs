@@ -1,8 +1,7 @@
-﻿using System;
-using DeliveryWebApp.Application.Common.Interfaces;
+﻿using DeliveryWebApp.Application.Common.Interfaces;
+using DeliveryWebApp.Application.Common.Security;
 using DeliveryWebApp.Infrastructure.Identity;
 using DeliveryWebApp.Infrastructure.Persistence;
-using DeliveryWebApp.Infrastructure.Security;
 using DeliveryWebApp.Infrastructure.Security.Policies;
 using DeliveryWebApp.Infrastructure.Services;
 using Microsoft.AspNetCore.Authorization;
@@ -11,6 +10,7 @@ using Microsoft.AspNetCore.Identity.UI.Services;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using System;
 
 namespace DeliveryWebApp.Infrastructure
 {

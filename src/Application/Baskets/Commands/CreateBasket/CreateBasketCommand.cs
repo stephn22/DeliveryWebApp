@@ -1,12 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading;
-using System.Threading.Tasks;
-using DeliveryWebApp.Application.Common.Interfaces;
+﻿using DeliveryWebApp.Application.Common.Interfaces;
 using DeliveryWebApp.Domain.Entities;
 using MediatR;
+using System.Threading;
+using System.Threading.Tasks;
 
 namespace DeliveryWebApp.Application.Baskets.Commands.CreateBasket
 {
@@ -28,8 +24,8 @@ namespace DeliveryWebApp.Application.Baskets.Commands.CreateBasket
         {
             var entity = new Basket
             {
-                Customer = request.Customer,
-                Products = new List<Product>()
+                CustomerId = request.Customer.Id,
+                TotalPrice = 0.00M
             };
 
             _context.Baskets.Add(entity);

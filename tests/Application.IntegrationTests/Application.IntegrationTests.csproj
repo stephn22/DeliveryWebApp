@@ -36,4 +36,9 @@
     <ProjectReference Include="..\..\src\WebUI\WebUI.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="Reviews\" />
+    <Folder Include="OrderItems\Commands\" />
+  </ItemGroup>
+
 </Project>

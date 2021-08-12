@@ -1,7 +1,7 @@
-﻿using DeliveryWebApp.Application.Customers.Commands.CreateCustomer;
+﻿using DeliveryWebApp.Application.Common.Security;
+using DeliveryWebApp.Application.Customers.Commands.CreateCustomer;
 using DeliveryWebApp.Infrastructure.Identity;
 using DeliveryWebApp.Infrastructure.Persistence;
-using DeliveryWebApp.Infrastructure.Security;
 using MediatR;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authorization;

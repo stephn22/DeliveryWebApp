@@ -1,21 +1,22 @@
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
+using DeliveryWebApp.Application.Common.Security;
 using DeliveryWebApp.Application.Customers.Commands.DeleteCustomer;
 using DeliveryWebApp.Application.Customers.Queries.GetCustomers;
+using DeliveryWebApp.Application.Restaurateurs.Commands.DeleteRestaurateur;
 using DeliveryWebApp.Application.Restaurateurs.Queries.GetRestaurateurs;
+using DeliveryWebApp.Application.Riders.Commands.DeleteRider;
 using DeliveryWebApp.Application.Riders.Queries.GetRiders;
 using DeliveryWebApp.Domain.Entities;
 using DeliveryWebApp.Infrastructure.Identity;
 using DeliveryWebApp.Infrastructure.Persistence;
-using DeliveryWebApp.Infrastructure.Security;
 using DeliveryWebApp.Infrastructure.Services.Utilities;
 using MediatR;
-using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.Extensions.Logging;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
 
 namespace DeliveryWebApp.WebUI.Pages.AdminPages
 {
@@ -93,7 +94,7 @@ namespace DeliveryWebApp.WebUI.Pages.AdminPages
 
             await _mediator.Send(new DeleteCustomerCommand
             {
-                Id = id
+                Customer = customer
             });
 
             _logger.LogInformation($"Deleted user with id: {user.Id}");
@@ -139,8 +140,12 @@ namespace DeliveryWebApp.WebUI.Pages.AdminPages
             var rider = Riders.First(r => r.Id == id);
             var user = await _userManager.FindByIdAsync(rider.Customer.ApplicationUserFk);
 
+
+            await _mediator.Send(new DeleteRiderCommand
+            {
+                Id = rider.Id
+            });
             await _userManager.DeleteAsync(user);
-            _context.Riders.Remove(rider);
 
             await _context.SaveChangesAsync();
 
@@ -187,8 +192,11 @@ namespace DeliveryWebApp.WebUI.Pages.AdminPages
             var restaurateur = Restaurateurs.First(r => r.Id == id);
             var user = await _userManager.FindByIdAsync(restaurateur.Customer.ApplicationUserFk);
 
+            await _mediator.Send(new DeleteRestaurateurCommand
+            {
+                Id = restaurateur.Id
+            });
             await _userManager.DeleteAsync(user);
-            _context.Restaurateurs.Remove(restaurateur);
 
             _logger.LogInformation($"Deleted user with id: {user.Id}");
 

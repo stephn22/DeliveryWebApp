@@ -9,13 +9,8 @@ namespace DeliveryWebApp.Infrastructure.Persistence.Configurations
     {
         public void Configure(EntityTypeBuilder<Basket> builder)
         {
-            //builder.HasMany(b => b.Products)
-            //    .WithOne()
-            //    .HasForeignKey(e => e.Id)
-            //    .OnDelete(DeleteBehavior.NoAction);
-
             builder.Property(u => u.TotalPrice)
-                .HasPrecision(19, 4)
+                .HasPrecision(16, 3)
                 .HasColumnType(PropertyName.Money)
                 .IsRequired();
         }

@@ -3,6 +3,7 @@ using DeliveryWebApp.Application.Addresses.Commands.CreateAddress;
 using DeliveryWebApp.Application.Addresses.Commands.DeleteAddress;
 using DeliveryWebApp.Application.Addresses.Commands.UpdateAddress;
 using DeliveryWebApp.Application.Baskets.Commands.CreateBasket;
+using DeliveryWebApp.Application.Baskets.Commands.DeleteBasket;
 using DeliveryWebApp.Application.Baskets.Commands.PurgeBasket;
 using DeliveryWebApp.Application.Baskets.Commands.UpdateBasket;
 using DeliveryWebApp.Application.Customers.Commands.CreateCustomer;
@@ -27,6 +28,12 @@ using DeliveryWebApp.Domain.Entities;
 using System;
 using System.Linq;
 using System.Reflection;
+using DeliveryWebApp.Application.BasketItems.Commands.CreateBasketItem;
+using DeliveryWebApp.Application.BasketItems.Commands.DeleteBasketItem;
+using DeliveryWebApp.Application.BasketItems.Commands.UpdateBasketItem;
+using DeliveryWebApp.Application.OrderItems.Commands.CreateOrderItem;
+using DeliveryWebApp.Application.OrderItems.Commands.DeleteOrderItem;
+using DeliveryWebApp.Application.OrderItems.Commands.UpdateOrderItem;
 
 namespace DeliveryWebApp.Application.Common.Mappings
 {
@@ -43,6 +50,11 @@ namespace DeliveryWebApp.Application.Common.Mappings
             CreateMap<Basket, CreateBasketCommand>().ReverseMap();
             CreateMap<Basket, PurgeBasketCommand>().ReverseMap();
             CreateMap<Basket, UpdateBasketCommand>().ReverseMap();
+            CreateMap<Basket, DeleteBasketCommand>().ReverseMap();
+
+            CreateMap<BasketItem, CreateBasketItemCommand>().ReverseMap();
+            CreateMap<BasketItem, UpdateBasketItemCommand>().ReverseMap();
+            CreateMap<BasketItem, DeleteBasketItemCommand>().ReverseMap();
 
             CreateMap<Customer, CreateCustomerCommand>().ReverseMap();
             CreateMap<Customer, DeleteCustomerCommand>().ReverseMap();
@@ -51,6 +63,10 @@ namespace DeliveryWebApp.Application.Common.Mappings
             CreateMap<Order, CreateOrderCommand>().ReverseMap();
             CreateMap<Order, DeleteOrderCommand>().ReverseMap();
             CreateMap<Order, UpdateOrderCommand>().ReverseMap();
+
+            CreateMap<OrderItem, CreateOrderItemCommand>().ReverseMap();
+            CreateMap<OrderItem, UpdateOrderItemCommand>().ReverseMap();
+            CreateMap<OrderItem, DeleteOrderItemCommand>().ReverseMap();
 
             CreateMap<Product, CreateProductCommand>().ReverseMap();
             CreateMap<Product, DeleteProductCommand>().ReverseMap();

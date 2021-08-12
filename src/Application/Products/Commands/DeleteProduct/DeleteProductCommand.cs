@@ -1,13 +1,10 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading;
-using System.Threading.Tasks;
+﻿using AutoMapper;
 using DeliveryWebApp.Application.Common.Exceptions;
 using DeliveryWebApp.Application.Common.Interfaces;
 using DeliveryWebApp.Domain.Entities;
 using MediatR;
+using System.Threading;
+using System.Threading.Tasks;
 
 namespace DeliveryWebApp.Application.Products.Commands.DeleteProduct
 {
@@ -35,7 +32,6 @@ namespace DeliveryWebApp.Application.Products.Commands.DeleteProduct
             }
 
             _context.Products.Remove(entity);
-
             await _context.SaveChangesAsync(cancellationToken);
 
             return entity;

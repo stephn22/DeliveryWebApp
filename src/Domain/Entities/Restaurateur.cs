@@ -11,6 +11,7 @@ namespace DeliveryWebApp.Domain.Entities
         public Address RestaurantAddress { get; set; }
         public ICollection<Product> Products { get; set; }
         public ICollection<Order> RestaurantOrders { get; set; }
+        public int CustomerId { get; set; }
         public virtual Customer Customer { get; set; } // a restaurateur is also a customer
         public ICollection<Review> RestaurateurReviews { get; set; }
     }

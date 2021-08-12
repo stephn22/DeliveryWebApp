@@ -9,13 +9,8 @@ namespace DeliveryWebApp.Infrastructure.Persistence.Configurations
     {
         public void Configure(EntityTypeBuilder<Order> builder)
         {
-            //builder.HasMany(u => u.Products)
-            //    .WithOne()
-            //    .HasForeignKey(u => u.Id)
-            //    .OnDelete(DeleteBehavior.NoAction);
-
             builder.Property(u => u.TotalPrice)
-                .HasPrecision(19, 4)
+                .HasPrecision(16, 3)
                 .HasColumnType(PropertyName.Money)
                 .IsRequired();
 
@@ -26,6 +21,11 @@ namespace DeliveryWebApp.Infrastructure.Persistence.Configurations
 
             builder.Property(u => u.Status)
                 .IsRequired();
+
+            builder.HasOne(o => o.Customer)
+                .WithMany(c => c.Orders)
+                .HasForeignKey(o => o.CustomerId)
+                .OnDelete(DeleteBehavior.ClientCascade);
         }
     }
 }

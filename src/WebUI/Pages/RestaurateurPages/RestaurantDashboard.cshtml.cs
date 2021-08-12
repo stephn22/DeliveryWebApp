@@ -1,16 +1,15 @@
-using System;
+using DeliveryWebApp.Application.Addresses.Commands.CreateAddress;
 using DeliveryWebApp.Application.Addresses.Commands.UpdateAddress;
 using DeliveryWebApp.Application.Common.Exceptions;
-using DeliveryWebApp.Application.Products.Queries.GetProducts;
+using DeliveryWebApp.Application.Common.Security;
+using DeliveryWebApp.Application.Restaurateurs.Commands.UpdateRestaurateur;
 using DeliveryWebApp.Application.Restaurateurs.Extensions;
 using DeliveryWebApp.Domain.Constants;
 using DeliveryWebApp.Domain.Entities;
 using DeliveryWebApp.Infrastructure.Identity;
 using DeliveryWebApp.Infrastructure.Persistence;
-using DeliveryWebApp.Infrastructure.Security;
 using DeliveryWebApp.Infrastructure.Services.Utilities;
 using MediatR;
-using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
@@ -21,9 +20,6 @@ using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.IO;
 using System.Threading.Tasks;
-using AutoMapper;
-using DeliveryWebApp.Application.Restaurateurs.Commands.UpdateRestaurateur;
-using DeliveryWebApp.Application.Restaurateurs.Queries.GetRestaurateurAddress;
 
 namespace DeliveryWebApp.WebUI.Pages.RestaurateurPages
 {
@@ -47,8 +43,6 @@ namespace DeliveryWebApp.WebUI.Pages.RestaurateurPages
         public bool HasRestaurant { get; set; }
         public Address RestaurantAddress { get; set; }
         public Restaurateur Restaurateur { get; set; }
-        public IList<Product> Products { get; set; }
-        public IList<Order> Orders { get; set; }
 
         [TempData] public string StatusMessage { get; set; }
 
@@ -118,28 +112,6 @@ namespace DeliveryWebApp.WebUI.Pages.RestaurateurPages
             /*********************************************/
         }
 
-        private async Task LoadAsync(ApplicationUser user)
-        {
-            Restaurateur = await _context.GetRestaurateurByApplicationUserFkAsync(user.Id);
-
-            if (Restaurateur != null)
-            {
-                Products = await _mediator.Send(new GetProductsQuery
-                {
-                    RestaurateurId = Restaurateur.Id
-                });
-
-                RestaurantAddress = await _mediator.Send(new GetRestaurateurAddressQuery
-                {
-                    Id = Restaurateur.Id
-                });
-
-                HasRestaurant = RestaurantAddress != null && Restaurateur.Logo != null &&
-                                 Restaurateur.RestaurantName != null && Restaurateur.RestaurantCategory != null;
-                //Orders = Restaurant.Orders.ToList();
-            }
-        }
-
         public async Task<IActionResult> OnGetAsync()
         {
             var user = await _userManager.GetUserAsync(User);
@@ -152,6 +124,17 @@ namespace DeliveryWebApp.WebUI.Pages.RestaurateurPages
             await LoadAsync(user);
 
             return Page();
+        }
+
+        private async Task LoadAsync(ApplicationUser user)
+        {
+            Restaurateur = await _context.GetRestaurateurByApplicationUserFkAsync(user.Id);
+
+            if (Restaurateur != null)
+            {
+                HasRestaurant = RestaurantAddress != null && Restaurateur.Logo != null &&
+                                Restaurateur.RestaurantName != null && Restaurateur.RestaurantCategory != null;
+            }
         }
 
         /// <summary>
@@ -266,7 +249,6 @@ namespace DeliveryWebApp.WebUI.Pages.RestaurateurPages
 
             await LoadAsync(user);
 
-
             await _mediator.Send(new UpdateAddressCommand
             {
                 Id = RestaurantAddress.Id,
@@ -304,7 +286,7 @@ namespace DeliveryWebApp.WebUI.Pages.RestaurateurPages
                 bytes = memoryStream.ToArray();
             }
 
-            RestaurantAddress = new Address
+            RestaurantAddress = await _mediator.Send(new CreateAddressCommand
             {
                 AddressLine1 = Input.AddressLine1,
                 AddressLine2 = Input.AddressLine2,
@@ -314,15 +296,16 @@ namespace DeliveryWebApp.WebUI.Pages.RestaurateurPages
                 Number = Input.Number,
                 PostalCode = Input.PostalCode,
                 Latitude = Input.Latitude,
-                Longitude = Input.Longitude
-            };
+                Longitude = Input.Longitude,
+                RestaurateurId = Restaurateur.Id,
+            });
 
             try
             {
                 var id = await _mediator.Send(new UpdateRestaurateurCommand
                 {
                     Id = Restaurateur.Id,
-                    RestaurantAddress = RestaurantAddress,
+                    RestaurantAddress = RestaurantAddress, // TODO: check database if duplicate
                     RestaurantCategory = Input.Category,
                     Logo = bytes,
                     RestaurantName = Input.Name
@@ -338,7 +321,6 @@ namespace DeliveryWebApp.WebUI.Pages.RestaurateurPages
                 _logger.LogError($"Could not find restaurateur that id: ${e.Message}");
                 return NotFound("Could not find restaurateur that id.");
             }
-            
 
             return RedirectToPage();
         }

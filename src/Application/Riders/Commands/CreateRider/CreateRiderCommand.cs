@@ -6,12 +6,12 @@ using MediatR;
 
 namespace DeliveryWebApp.Application.Riders.Commands.CreateRider
 {
-    public class CreateRiderCommand : IRequest<int>
+    public class CreateRiderCommand : IRequest<Rider>
     {
         public Customer Customer { get; set; }
         public decimal DeliveryCredit { get; set; }
 
-        public class CreateRiderCommandHandler : IRequestHandler<CreateRiderCommand, int>
+        public class CreateRiderCommandHandler : IRequestHandler<CreateRiderCommand, Rider>
         {
             private readonly IApplicationDbContext _context;
 
@@ -20,11 +20,11 @@ namespace DeliveryWebApp.Application.Riders.Commands.CreateRider
                 _context = context;
             }
 
-            public async Task<int> Handle(CreateRiderCommand request, CancellationToken cancellationToken)
+            public async Task<Rider> Handle(CreateRiderCommand request, CancellationToken cancellationToken)
             {
                 var entity = new Rider
                 {
-                    Customer = request.Customer,
+                    CustomerId = request.Customer.Id,
                     DeliveryCredit = request.DeliveryCredit
                 };
 
@@ -32,7 +32,7 @@ namespace DeliveryWebApp.Application.Riders.Commands.CreateRider
 
                 await _context.SaveChangesAsync(cancellationToken);
 
-                return entity.Id;
+                return entity;
             }
         }
     }

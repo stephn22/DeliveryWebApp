@@ -2,13 +2,12 @@ using DeliveryWebApp.Application.Addresses.Commands.CreateAddress;
 using DeliveryWebApp.Application.Addresses.Commands.DeleteAddress;
 using DeliveryWebApp.Application.Addresses.Commands.UpdateAddress;
 using DeliveryWebApp.Application.Addresses.Queries.GetAddresses;
+using DeliveryWebApp.Application.Common.Security;
 using DeliveryWebApp.Domain.Entities;
 using DeliveryWebApp.Infrastructure.Identity;
 using DeliveryWebApp.Infrastructure.Persistence;
-using DeliveryWebApp.Infrastructure.Security;
 using DeliveryWebApp.Infrastructure.Services.Utilities;
 using MediatR;
-using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
@@ -17,7 +16,6 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
-using System.Linq;
 using System.Threading.Tasks;
 
 namespace DeliveryWebApp.WebUI.Areas.Identity.Pages.Account.Manage
@@ -94,7 +92,7 @@ namespace DeliveryWebApp.WebUI.Areas.Identity.Pages.Account.Manage
                 return NotFound($"Unable to load user with ID '{_userManager.GetUserId(User)}'.");
             }
 
-            Customer = await _context.Customers.Where(c => c.ApplicationUserFk == user.Id).FirstAsync();
+            Customer = await _context.Customers.FirstAsync(c => c.ApplicationUserFk == user.Id);
 
             await LoadAddressesAsync(user);
             return Page();
@@ -108,7 +106,7 @@ namespace DeliveryWebApp.WebUI.Areas.Identity.Pages.Account.Manage
                 return NotFound();
             }
 
-            Customer = await _context.Customers.Where(c => c.ApplicationUserFk == user.Id).FirstAsync();
+            Customer = await _context.Customers.FirstAsync(c => c.ApplicationUserFk == user.Id);
 
             await _mediator.Send(new DeleteAddressCommand
             {
@@ -136,12 +134,11 @@ namespace DeliveryWebApp.WebUI.Areas.Identity.Pages.Account.Manage
                 return BadRequest();
             }
 
-            Customer = await _context.Customers.Where(c => c.ApplicationUserFk == user.Id).FirstAsync();
+            Customer = await _context.Customers.FirstAsync(c => c.ApplicationUserFk == user.Id);
 
             await _mediator.Send(new CreateAddressCommand
             {
                 CustomerId = Customer.Id,
-                Customer = Customer,
                 AddressLine1 = Input.AddressLine1,
                 AddressLine2 = Input.AddressLine2,
                 City = Input.City,
@@ -169,7 +166,7 @@ namespace DeliveryWebApp.WebUI.Areas.Identity.Pages.Account.Manage
                 return BadRequest();
             }
 
-            Customer = await _context.Customers.Where(c => c.ApplicationUserFk == user.Id).FirstAsync();
+            Customer = await _context.Customers.FirstAsync(c => c.ApplicationUserFk == user.Id);
 
             await _mediator.Send(new UpdateAddressCommand
             {
@@ -190,7 +187,7 @@ namespace DeliveryWebApp.WebUI.Areas.Identity.Pages.Account.Manage
 
         private async Task LoadAddressesAsync(ApplicationUser user)
         {
-            Customer = await _context.Customers.Where(c => c.ApplicationUserFk == user.Id).FirstAsync();
+            Customer = await _context.Customers.FirstAsync(c => c.ApplicationUserFk == user.Id);
 
             Addresses = await _mediator.Send(new GetAddressesQuery
             {

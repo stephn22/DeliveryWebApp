@@ -1,6 +1,6 @@
-﻿using DeliveryWebApp.Application.Common.Exceptions;
-using DeliveryWebApp.Application.Common.Interfaces;
+﻿using DeliveryWebApp.Application.Common.Interfaces;
 using DeliveryWebApp.Application.Common.Security;
+using DeliveryWebApp.Domain.Exceptions;
 using MediatR;
 using System;
 using System.Linq;
@@ -65,7 +65,7 @@ namespace DeliveryWebApp.Application.Common.Behaviours
                 var authorizeAttributesWithPolicies = authorizeAttributes.Where(a => !string.IsNullOrWhiteSpace(a.Policy));
                 if (authorizeAttributesWithPolicies.Any())
                 {
-                    foreach(var policy in authorizeAttributesWithPolicies.Select(a => a.Policy))
+                    foreach (var policy in authorizeAttributesWithPolicies.Select(a => a.Policy))
                     {
                         var authorized = await _identityService.AuthorizeAsync(_currentUserService.UserId, policy);
 

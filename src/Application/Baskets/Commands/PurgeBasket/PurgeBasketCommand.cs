@@ -1,17 +1,17 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
+﻿using AutoMapper;
+using DeliveryWebApp.Application.BasketItems.Commands.DeleteBasketItem;
+using DeliveryWebApp.Application.BasketItems.Queries;
+using DeliveryWebApp.Application.Common.Exceptions;
+using DeliveryWebApp.Application.Common.Interfaces;
+using DeliveryWebApp.Domain.Entities;
+using MediatR;
 using System.Threading;
 using System.Threading.Tasks;
-using DeliveryWebApp.Application.Common.Interfaces;
-using DeliveryWebApp.Application.Common.Security;
-using MediatR;
 
 namespace DeliveryWebApp.Application.Baskets.Commands.PurgeBasket
 {
-    [Authorize(Roles = "Administrator")]
-    [Authorize(Policy = "IsCustomer")]
+    //[Authorize(Roles = RoleName.Admin)]
+    //[Authorize(Policy = PolicyName.IsCustomer)] TODO:
     public class PurgeBasketCommand : IRequest
     {
         public int Id { get; set; }
@@ -19,18 +19,42 @@ namespace DeliveryWebApp.Application.Baskets.Commands.PurgeBasket
 
     public class PurgeBasketCommandHandler : IRequestHandler<PurgeBasketCommand>
     {
-        private IApplicationDbContext _context;
+        private readonly IApplicationDbContext _context;
+        private readonly IMediator _mediator;
 
-        public PurgeBasketCommandHandler(IApplicationDbContext context)
+        public PurgeBasketCommandHandler(IApplicationDbContext context, IMediator mediator)
         {
             _context = context;
+            _mediator = mediator;
         }
 
         public async Task<Unit> Handle(PurgeBasketCommand request, CancellationToken cancellationToken)
         {
             var entity = await _context.Baskets.FindAsync(request.Id);
 
-            entity.Products.Clear();
+            if (entity == null)
+            {
+                throw new NotFoundException(nameof(Basket), request.Id);
+            }
+
+            var basketItems = await _mediator.Send(new GetBasketItemsQuery
+            {
+                Basket = entity
+            }, cancellationToken);
+
+            foreach (var item in basketItems)
+            {
+                try
+                {
+                    await _mediator.Send(new DeleteBasketItemCommand
+                    {
+                        Id = item.Id
+                    }, cancellationToken);
+                }
+                catch (NotFoundException)
+                { }
+            }
+
             entity.TotalPrice = 0.00M;
 
             await _context.SaveChangesAsync(cancellationToken);
