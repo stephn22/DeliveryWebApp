@@ -1,6 +1,4 @@
-﻿using System.Threading.Tasks;
-using DeliveryWebApp.Application.Customers.Extensions;
-using DeliveryWebApp.Domain.Entities;
+﻿using DeliveryWebApp.Domain.Entities;
 using DeliveryWebApp.Infrastructure.Identity;
 using DeliveryWebApp.Infrastructure.Persistence;
 using IdentityServer4.Extensions;
@@ -9,6 +7,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
+using System.Threading.Tasks;
 
 namespace DeliveryWebApp.WebUI.Pages
 {
@@ -29,16 +28,17 @@ namespace DeliveryWebApp.WebUI.Pages
 
         public async Task<IActionResult> OnGetAsync()
         {
-            if (!User.IsAuthenticated()) return Page();
-
-            var user = await _userManager.GetUserAsync(User);
-
-            if (user == null)
+            if (HttpContext.User.IsAuthenticated())
             {
-                return NotFound();
-            }
+                var user = await _userManager.GetUserAsync(User);
 
-            await LoadCustomerAsync(user);
+                if (user == null)
+                {
+                    return NotFound();
+                }
+
+                await LoadCustomerAsync(user);
+            }
 
             return Page();
         }

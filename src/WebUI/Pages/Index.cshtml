@@ -14,7 +14,7 @@
     var isRider = (await AuthorizationService.AuthorizeAsync(User, PolicyName.IsRider)).Succeeded;
     var isDefault = (await AuthorizationService.AuthorizeAsync(User, PolicyName.IsDefault)).Succeeded;
     var isCustomer = (await AuthorizationService.AuthorizeAsync(User, PolicyName.IsCustomer)).Succeeded;
-    var isLogged = User.IsAuthenticated();
+    var isLogged = HttpContext.User.IsAuthenticated();
     var isAdmin = User.IsInRole(RoleName.Admin);
     ViewData["Title"] = localizer["Home page"];
 }

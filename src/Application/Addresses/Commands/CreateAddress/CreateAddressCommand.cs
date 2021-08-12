@@ -36,7 +36,11 @@ namespace DeliveryWebApp.Application.Addresses.Commands.CreateAddress
 
         public async Task<Address> Handle(CreateAddressCommand request, CancellationToken cancellationToken)
         {
-            var entity = _mapper.Map<Address>(request);
+            var entity = new Address
+            {
+                Longitude = request.Longitude,
+                Latitude = request.Latitude
+            };
 
             if (request.CustomerId != null)
             {
@@ -48,7 +52,7 @@ namespace DeliveryWebApp.Application.Addresses.Commands.CreateAddress
                 entity.RestaurateurId = request.RestaurateurId;
             }
 
-            if (!string.IsNullOrEmpty(request.PlaceName)) // if placename isn't provided use other properties
+            if (string.IsNullOrEmpty(request.PlaceName)) // if placename isn't provided use other properties
             {
                 var line = $"{request.AddressLine1}, " +
                            $"{request.AddressLine2}, " +
@@ -60,8 +64,10 @@ namespace DeliveryWebApp.Application.Addresses.Commands.CreateAddress
 
                 entity.PlaceName = line;
             }
-
-            entity.PlaceName = request.PlaceName;
+            else
+            {
+                entity.PlaceName = request.PlaceName;
+            }
 
             _context.Addresses.Add(entity);
             await _context.SaveChangesAsync(cancellationToken);
