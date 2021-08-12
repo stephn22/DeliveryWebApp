@@ -125,12 +125,12 @@
             <div class="form-row">
                 <div class="form-group col-md-6">
                     <label asp-for="Input.AddressLine1"></label>
-                    <input class="form-control" asp-for="Input.AddressLine1" value="@Model.RestaurantAddress.AddressLine1" placeholder="Address Line 1" id="update-addressline1">
+                    <input class="form-control" asp-for="Input.AddressLine1" placeholder="Address Line 1" id="update-addressline1">
                     <span asp-validation-for="Input.AddressLine1" class="text-danger"></span>
                 </div>
                 <div class="form-group col-md-6">
                     <label asp-for="Input.AddressLine2"></label>
-                    <input class="form-control" asp-for="Input.AddressLine2" value="@Model.RestaurantAddress.AddressLine2" placeholder="Address Line 2" id="update-addressline2">
+                    <input class="form-control" asp-for="Input.AddressLine2" placeholder="Address Line 2" id="update-addressline2">
                     <span asp-validation-for="Input.AddressLine2" class="text-danger"></span>
                 </div>
             </div>
@@ -138,12 +138,12 @@
             <div class="form-row">
                 <div class="form-group col-md-3">
                     <label asp-for="Input.Number"></label>
-                    <input class="form-control" asp-for="Input.Number" value="@Model.RestaurantAddress.Number" placeholder="1, 21B..." id="update-number">
+                    <input class="form-control" asp-for="Input.Number" placeholder="1, 21B..." id="update-number">
                     <span asp-validation-for="Input.Number" class="text-danger"></span>
                 </div>
                 <div class="form-group col-md-6">
                     <label asp-for="Input.City"></label>
-                    <input class="form-control" asp-for="Input.City" value="@Model.RestaurantAddress.City" placeholder="City" id="update-city">
+                    <input class="form-control" asp-for="Input.City" placeholder="City" id="update-city">
                     <span asp-validation-for="Input.City" class="text-danger"></span>
                 </div>
             </div>
@@ -151,17 +151,17 @@
             <div class="form-row">
                 <div class="form-group col-md-6">
                     <label asp-for="Input.PostalCode"></label>
-                    <input class="form-control" asp-for="Input.PostalCode" value="@Model.RestaurantAddress.PostalCode" placeholder="Postal Code: 20020..." id="update-postalcode">
+                    <input class="form-control" asp-for="Input.PostalCode" placeholder="Postal Code: 20020..." id="update-postalcode">
                     <span asp-validation-for="Input.PostalCode" class="text-danger"></span>
                 </div>
                 <div class="form-group col-md-6">
                     <label asp-for="Input.StateProvince"></label>
-                    <input class="form-control" asp-for="Input.StateProvince" value="@Model.RestaurantAddress.StateProvince" placeholder="CA, NY, ..." id="update-stateprovince">
+                    <input class="form-control" asp-for="Input.StateProvince" placeholder="CA, NY, ..." id="update-stateprovince">
                     <span asp-validation-for="Input.StateProvince" class="text-danger"></span>
                 </div>
                 <div class="form-group col-md-7">
                     <label asp-for="Input.Country"></label>
-                    <select class="form-select" aria-label="Select country" asp-for="Input.Country" asp-items="Model.Countries" aria-selected="@Model.RestaurantAddress.Country" id="update-country">
+                    <select class="form-select" aria-label="Select country" asp-for="Input.Country" asp-items="Model.Countries" id="update-country">
                     </select>
                     <span asp-validation-for="Input.Country" class="text-danger"></span>
                 </div>

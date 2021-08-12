@@ -63,19 +63,18 @@ namespace DeliveryWebApp.Application.IntegrationTests.Addresses.Commands
                 Longitude = 15.7628M,
             };
 
-            await SendAsync(updateCommand); // FIXME: validation errors
+            await SendAsync(updateCommand);
 
             var update = await FindAsync<Address>(address.Id);
 
             update.Should().NotBeNull();
             update.Id.Should().BeGreaterThan(0);
-            update.AddressLine1.Should().Be(address.AddressLine1);
-            update.AddressLine2.Should().Be(updateCommand.AddressLine2);
-            update.City.Should().Be(address.City);
-            update.Number.Should().Be(updateCommand.Number);
-            update.PostalCode.Should().Be(updateCommand.PostalCode);
-            update.StateProvince.Should().Be(address.StateProvince);
-            update.Country.Should().Be(address.Country);
+            address.AddressLine.Should()
+                .Be(
+                    $"{addressCommand.AddressLine1}, {addressCommand.AddressLine2}, " +
+                    $"{addressCommand.Number}, {addressCommand.City}, " +
+                    $"{addressCommand.StateProvince}, {addressCommand.PostalCode}, " +
+                    $"{addressCommand.Country}");
             update.Latitude.Should().Be(updateCommand.Latitude);
             update.Longitude.Should().Be(updateCommand.Longitude);
         }

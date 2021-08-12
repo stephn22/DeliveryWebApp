@@ -56,14 +56,12 @@ namespace DeliveryWebApp.Application.IntegrationTests.Addresses.Commands
 
             address.Should().NotBeNull();
             address.Id.Should().BeGreaterThan(0);
-            address.AddressLine1.Should().Be(addressCommand.AddressLine1);
-            address.AddressLine2.Should().Be(addressCommand.AddressLine2);
-            address.City.Should().Be(addressCommand.City);
-            address.Country.Should().Be(addressCommand.Country);
-            address.PostalCode.Should().Be(addressCommand.PostalCode);
-            address.Number.Should().Be(addressCommand.Number);
-            address.Latitude.Should().Be(addressCommand.Latitude);
-            address.StateProvince.Should().Be(addressCommand.StateProvince);
+            address.AddressLine.Should()
+                .Be(
+                    $"{addressCommand.AddressLine1}, {addressCommand.AddressLine2}, " +
+                    $"{addressCommand.Number}, {addressCommand.City}, " +
+                    $"{addressCommand.StateProvince}, {addressCommand.PostalCode}, " +
+                    $"{addressCommand.Country}");
             address.Longitude.Should().Be(addressCommand.Longitude);
             address.CustomerId.Should().Be(customer.Id);
         }
@@ -121,14 +119,13 @@ namespace DeliveryWebApp.Application.IntegrationTests.Addresses.Commands
             address.Id.Should().NotBe(0);
             address.Id.Should().Be(restaurateurUpdate.RestaurantAddressId);
             address.RestaurateurId.Should().Be(restaurateur.Id);
-            address.AddressLine1.Should().Be(addressCommand.AddressLine1);
-            address.AddressLine2.Should().Be(addressCommand.AddressLine2);
-            address.City.Should().Be(addressCommand.City);
-            address.Country.Should().Be(addressCommand.Country);
-            address.PostalCode.Should().Be(addressCommand.PostalCode);
-            address.Number.Should().Be(addressCommand.Number);
+            address.AddressLine.Should()
+                .Be(
+                    $"{addressCommand.AddressLine1}, {addressCommand.AddressLine2}, " +
+                    $"{addressCommand.Number}, {addressCommand.City}, " +
+                    $"{addressCommand.StateProvince}, {addressCommand.PostalCode}, " +
+                    $"{addressCommand.Country}");
             address.Latitude.Should().Be(addressCommand.Latitude);
-            address.StateProvince.Should().Be(addressCommand.StateProvince);
             address.Longitude.Should().Be(addressCommand.Longitude);
         }
     }

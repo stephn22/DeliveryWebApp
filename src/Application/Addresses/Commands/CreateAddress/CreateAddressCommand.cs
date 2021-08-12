@@ -47,6 +47,16 @@ namespace DeliveryWebApp.Application.Addresses.Commands.CreateAddress
                 entity.RestaurateurId = request.RestaurateurId;
             }
 
+            var line = $"{request.AddressLine1}, " +
+                       $"{request.AddressLine2}, " +
+                       $"{request.Number}, " +
+                       $"{request.City}, " +
+                       $"{request.StateProvince}, " +
+                       $"{request.PostalCode}, " +
+                       $"{request.Country}";
+
+            entity.AddressLine = line;
+
             _context.Addresses.Add(entity);
             await _context.SaveChangesAsync(cancellationToken);
 
