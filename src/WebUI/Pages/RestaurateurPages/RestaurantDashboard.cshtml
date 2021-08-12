@@ -1,5 +1,4 @@
 ﻿@page
-@using IdentityServer4.Extensions
 @using Microsoft.Extensions.Configuration
 @inject IConfiguration configuration
 @model DeliveryWebApp.WebUI.Pages.RestaurateurPages.RestaurantDashboardModel
@@ -21,7 +20,7 @@
 @if (!Model.HasRestaurant)
 {
     // Create new restaurant
-    @await Html.PartialAsync("NewRestaurant.cshtml", Model)
+    @await Html.PartialAsync("NewRestaurant", Model)
 }
 else
 {

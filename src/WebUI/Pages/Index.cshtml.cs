@@ -1,13 +1,4 @@
-﻿using System.Threading.Tasks;
-using DeliveryWebApp.Application.Customers.Extensions;
-using DeliveryWebApp.Domain.Entities;
-using DeliveryWebApp.Infrastructure.Identity;
-using DeliveryWebApp.Infrastructure.Persistence;
-using IdentityServer4.Extensions;
-using Microsoft.AspNetCore.Identity;
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.RazorPages;
-using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.Extensions.Logging;
 
 namespace DeliveryWebApp.WebUI.Pages
@@ -15,37 +6,15 @@ namespace DeliveryWebApp.WebUI.Pages
     public class IndexModel : PageModel
     {
         private readonly ILogger<IndexModel> _logger;
-        private readonly UserManager<ApplicationUser> _userManager;
-        private readonly ApplicationDbContext _context;
 
-        public IndexModel(ILogger<IndexModel> logger, UserManager<ApplicationUser> userManager, ApplicationDbContext context)
+        public IndexModel(ILogger<IndexModel> logger)
         {
             _logger = logger;
-            _userManager = userManager;
-            _context = context;
         }
 
-        public Customer Customer { get; set; }
-
-        public async Task<IActionResult> OnGetAsync()
+        public void OnGet()
         {
-            if (!User.IsAuthenticated()) return Page();
 
-            var user = await _userManager.GetUserAsync(User);
-
-            if (user == null)
-            {
-                return NotFound();
-            }
-
-            await LoadCustomerAsync(user);
-
-            return Page();
-        }
-
-        private async Task LoadCustomerAsync(ApplicationUser user)
-        {
-            Customer = await _context.Customers.FirstAsync(c => c.ApplicationUserFk == user.Id);
         }
     }
 }

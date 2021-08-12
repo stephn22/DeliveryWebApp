@@ -107,7 +107,7 @@
 
                 <form method="post">
                     <div class="input-group col-md-5">
-                        <input class="form-control" asp-for="Input.Price" placeholder="New Name" aria-label="New Name"/>
+                        <input class="form-control" asp-for="Input.Price" placeholder="New Price" aria-label="New Name"/>
                         <div class="input-group-append">
                             <button class="btn btn-secondary" type="submit">
                                 <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-pencil-square" viewBox="0 0 16 16">
@@ -124,12 +124,12 @@
             </dt>
             <dd class="col-sm-2">
                 <div class="form-group">
-                    <input class="form-control" asp-for="Input.Discount" value="@Model.Product.Discount %" disabled readonly>
+                    <input class="form-control" value="@Model.Product.Discount %" disabled readonly>
                 </div>
 
                 <form method="post">
                     <div class="input-group col-md-8">
-                        <input class="form-control" asp-for="Input.Discount" placeholder="New Name" aria-label="New Name"/>
+                        <input class="form-control" asp-for="Input.Discount" placeholder="New Discount" aria-label="New Name"/>
                         <div class="input-group-append">
                             <button class="btn btn-secondary" type="submit">
                                 <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-pencil-square" viewBox="0 0 16 16">
