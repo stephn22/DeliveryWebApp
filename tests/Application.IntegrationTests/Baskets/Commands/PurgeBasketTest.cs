@@ -9,6 +9,8 @@ using DeliveryWebApp.Domain.Entities;
 using FluentAssertions;
 using NUnit.Framework;
 using System.Threading.Tasks;
+using DeliveryWebApp.Application.BasketItems.Queries;
+using DeliveryWebApp.Application.Baskets.Commands.UpdateBasket;
 
 namespace DeliveryWebApp.Application.IntegrationTests.Baskets.Commands
 {
@@ -85,21 +87,19 @@ namespace DeliveryWebApp.Application.IntegrationTests.Baskets.Commands
 
             // create basket items for each product
 
-            var b1 = await SendAsync(new CreateBasketItemCommand
+            await SendAsync(new UpdateBasketCommand
             {
                 Basket = basket,
                 Product = p1,
                 Quantity = 1
             });
-
-            var b2 = await SendAsync(new CreateBasketItemCommand
+            await SendAsync(new UpdateBasketCommand
             {
                 Basket = basket,
                 Product = p2,
                 Quantity = 2
             });
-
-            var b3 = await SendAsync(new CreateBasketItemCommand
+            var updatedBasket = await SendAsync(new UpdateBasketCommand
             {
                 Basket = basket,
                 Product = p3,
@@ -111,9 +111,10 @@ namespace DeliveryWebApp.Application.IntegrationTests.Baskets.Commands
                 Basket = basket
             });
 
-            var item1 = await FindAsync<BasketItem>(b1.Id);
-            var item2 = await FindAsync<BasketItem>(b2.Id);
-            var item3 = await FindAsync<BasketItem>(b3.Id);
+            var items = await SendAsync(new GetBasketItemsQuery
+            {
+                Basket = updatedBasket
+            });
 
             var product1 = await FindAsync<Product>(p1.Id);
             var product2 = await FindAsync<Product>(p2.Id);
@@ -121,9 +122,7 @@ namespace DeliveryWebApp.Application.IntegrationTests.Baskets.Commands
 
             basket.Should().NotBeNull();
             basket.TotalPrice.Should().Be(0.00M);
-            item1.Should().BeNull();
-            item2.Should().BeNull();
-            item3.Should().BeNull();
+            items.Should().BeNullOrEmpty();
             product1.Quantity.Should().Be(p1.Quantity);
             product2.Quantity.Should().Be(p2.Quantity);
             product3.Quantity.Should().Be(p3.Quantity);

@@ -16,8 +16,6 @@
     <ProjectReference Include="..\Domain\Domain.csproj" />
   </ItemGroup>
   <ItemGroup>
-    <Folder Include="OrderItems\Commands\DeleteOrderItem\" />
-    <Folder Include="OrderItems\Commands\UpdateOrderItem\" />
     <Folder Include="Reviews\Commands\CreateReview\" />
     <Folder Include="Reviews\Commands\UpdateReview\" />
     <Folder Include="Reviews\Queries\" />
