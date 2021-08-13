@@ -100,7 +100,7 @@ a:hover { color: #101010; }
 .listings .item .title small { font-weight: 400; }
 
 .listings .item.active .title,
-.listings .item .title:hover { color: #8cc63f; }
+.listings .item .title:hover { color: #2390FF; }
 
 .listings .item.active { background-color: #f8f8f8; }
 

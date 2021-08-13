@@ -1,3 +1,4 @@
+using System;
 using DeliveryWebApp.Application.Baskets.Commands.UpdateBasket;
 using DeliveryWebApp.Application.Common.Security;
 using DeliveryWebApp.Application.Products.Queries.GetProducts;
@@ -14,6 +15,7 @@ using Microsoft.Extensions.Logging;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using DeliveryWebApp.Application.Baskets.Commands.CreateBasket;
 using DeliveryWebApp.Application.Baskets.Queries;
 
 namespace DeliveryWebApp.WebUI.Pages.CustomerPages
@@ -44,15 +46,15 @@ namespace DeliveryWebApp.WebUI.Pages.CustomerPages
         {
             if (id == null)
             {
-                return NotFound();
+                return NotFound("Unable to find food vendor with that id");
             }
 
             var user = await _userManager.GetUserAsync(User);
             await LoadAsync(user, id);
 
-            if (Basket == null || Restaurateur == null)
+            if (Restaurateur == null)
             {
-                return NotFound();
+                return NotFound("Unable to find food vendor with that id");
             }
             
             return Page();
@@ -62,25 +64,46 @@ namespace DeliveryWebApp.WebUI.Pages.CustomerPages
         {
             Customer = await _context.Customers.FirstAsync(c => c.ApplicationUserFk == user.Id);
 
-            Basket = await _mediator.Send(new GetBasketQuery
+            try
             {
-                Customer = Customer
-            });
+                Basket = await _mediator.Send(new GetBasketQuery
+                {
+                    Customer = Customer
+                });
+            }
+            catch (InvalidOperationException)
+            {
+                // If basket does not exist, create a new one
+                Basket = await _mediator.Send(new CreateBasketCommand
+                {
+                    Customer = Customer
+                });
 
-            Restaurateur = await _context.Restaurateurs.FindAsync(id);
-            Products = await _mediator.Send(new GetProductsQuery
+                _logger.LogInformation($"Created new basket with id: {Basket.Id}");
+            }
+            
+            try
             {
-                RestaurateurId = Restaurateur.Id
-            });
+                Restaurateur = await _context.Restaurateurs.FindAsync(id);
+
+                Products = await _mediator.Send(new GetProductsQuery
+                {
+                    RestaurateurId = Restaurateur.Id
+                });
+            }
+            catch (InvalidOperationException e)
+            {
+                _logger.LogInformation($"Unable to find food vendor with id '{id}': {e.Message}");
+                Restaurateur = null;
+            }
         }
 
         public async Task<IActionResult> OnPostAddToCartAsync(int id)
         {
             var user = await _userManager.GetUserAsync(User);
 
-            var customer = await _context.Customers.Where(c => c.ApplicationUserFk == user.Id).FirstAsync();
-            var product = await _context.Products.FindAsync(id);
-
+            await _context.Customers.Where(c => c.ApplicationUserFk == user.Id).FirstAsync();
+            var product = Products.First(p => p.Id == id);
 
             await _mediator.Send(new UpdateBasketCommand
             {
