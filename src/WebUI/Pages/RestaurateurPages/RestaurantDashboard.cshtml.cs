@@ -1,3 +1,4 @@
+using System;
 using DeliveryWebApp.Application.Addresses.Commands.CreateAddress;
 using DeliveryWebApp.Application.Addresses.Commands.UpdateAddress;
 using DeliveryWebApp.Application.Common.Exceptions;
@@ -21,6 +22,7 @@ using System.ComponentModel.DataAnnotations;
 using System.IO;
 using System.Threading.Tasks;
 using DeliveryWebApp.Application.Restaurateurs.Queries.GetRestaurateurAddress;
+using Microsoft.EntityFrameworkCore;
 
 namespace DeliveryWebApp.WebUI.Pages.RestaurateurPages
 {
@@ -133,11 +135,16 @@ namespace DeliveryWebApp.WebUI.Pages.RestaurateurPages
 
             if (Restaurateur != null)
             {
-                RestaurantAddress = await _mediator.Send(new GetRestaurateurAddressQuery
+                try
                 {
-                    Id = Restaurateur.Id
-                });
-
+                    RestaurantAddress = await _context.Addresses.FirstAsync(a => a.RestaurateurId == Restaurateur.Id);
+                }
+                catch (InvalidOperationException e)
+                {
+                    _logger.LogWarning($"{e.Message}");
+                    RestaurantAddress = null;
+                }
+               
                 HasRestaurant = RestaurantAddress != null && Restaurateur.Logo != null &&
                                 Restaurateur.RestaurantName != null && Restaurateur.RestaurantCategory != null;
             }
@@ -244,34 +251,6 @@ namespace DeliveryWebApp.WebUI.Pages.RestaurateurPages
             return Page();
         }
 
-        public async Task<IActionResult> OnPostUpdateAddressAsync()
-        {
-            var user = await _userManager.GetUserAsync(User);
-
-            if (user == null)
-            {
-                return NotFound($"Unable to load user with ID '{_userManager.GetUserId(User)}'.");
-            }
-
-            await LoadAsync(user);
-
-            await _mediator.Send(new UpdateAddressCommand
-            {
-                Id = RestaurantAddress.Id,
-                AddressLine1 = Input.AddressLine1,
-                AddressLine2 = Input.AddressLine2,
-                City = Input.City,
-                Country = Input.Country,
-                StateProvince = Input.StateProvince,
-                Number = Input.Number,
-                PostalCode = Input.PostalCode,
-                Latitude = Input.Latitude,
-                Longitude = Input.Longitude
-            });
-
-            return Page();
-        }
-
         public async Task<IActionResult> OnPostAsync()
         {
             var user = await _userManager.GetUserAsync(User);
@@ -292,26 +271,13 @@ namespace DeliveryWebApp.WebUI.Pages.RestaurateurPages
                 bytes = memoryStream.ToArray();
             }
 
-            RestaurantAddress = await _mediator.Send(new CreateAddressCommand
-            {
-                AddressLine1 = Input.AddressLine1,
-                AddressLine2 = Input.AddressLine2,
-                City = Input.City,
-                Country = Input.Country,
-                StateProvince = Input.StateProvince,
-                Number = Input.Number,
-                PostalCode = Input.PostalCode,
-                Latitude = Input.Latitude,
-                Longitude = Input.Longitude,
-                RestaurateurId = Restaurateur.Id,
-            });
-
             try
             {
+                await LoadAsync(user);
                 var id = await _mediator.Send(new UpdateRestaurateurCommand
                 {
                     Id = Restaurateur.Id,
-                    RestaurantAddress = RestaurantAddress, // TODO: check database if duplicate
+                    RestaurantAddress = RestaurantAddress,
                     RestaurantCategory = Input.Category,
                     Logo = bytes,
                     RestaurantName = Input.Name

@@ -64,20 +64,21 @@ else
 
 @section Scripts
 {
-    <script defer src="/js/image_utilities.js" type="text/javascript"></script>
+    <script src="/js/image_utilities.js" type="text/javascript"></script>
+    <script src="/js/classes/address.min.js" type="text/javascript"></script>
 
-    <partial name="_ValidationScriptsPartial" />
+    <partial name="_ValidationScriptsPartial"/>
 
     <script type="text/javascript" language="javascript">
-        $(function () {
+        $(function() {
             // LOCATION
-            $("#location-btn").on("mousedown",
-                function () {
+            $("#location-btn").on("click",
+                function() {
                     navigator.geolocation.getCurrentPosition(getCoords);
                 });
 
             $("#save-btn").on("mousedown",
-                function () {
+                function() {
                     const accessToken = 'pk.eyJ1Ijoic3RlY3JvdHRpMSIsImEiOiJja3Bna2kzbHYyaThoMm9ueHl1dzlnaTc1In0.EpALSOaDOmuM8XGS_IQzvA';
                     const query = `${$("#update-addressline1").val()}, ${$("#update-addressline2").val()}, ${$("#update-number").val()}, ${$("#update-city").val()}, ${$("#update-postalcode").val()}, ${$("#update-stateprovince").val()}, ${$("#update-country option:selected").val()}`;
 
@@ -88,13 +89,25 @@ else
                         url: url,
                         dataType: "JSON",
                         contentType: "application/json; charset=utf-8",
-                        success: function (data, status, xhr) {
+                        success: function(data, status, xhr) {
                             const [longitude, latitude] = data.features[0].center;
                             console.log(latitude);
                             $("#update-longitude").val(longitude);
                             $("#update-latitude").val(latitude);
+
+                            const newAddress = {
+                                addressLine1: $("#update-addressline1").val(),
+                                addressLine2: $("#update-addressline2").val(),
+                                number: $("#update-number").val(),
+                                city: $("#update-city").val(),
+                                stateProvince: $("#update-postalcode").val(),
+                                postalCode: $("#update-stateprovince").val(),
+                                country: $("#update-country option:selected").val()
+                            };
+
+                            updateAddress(newAddress, @Model.RestaurantAddress?.Id);
                         },
-                        error: function () {
+                        error: function() {
                             console.log("Error");
                         }
                     });
@@ -110,25 +123,56 @@ else
                     url: url,
                     dataType: "JSON",
                     contentType: "application/json; charset=utf-8",
-                    success: function (data, status, xhr) {
+                    success: function(data, status, xhr) {
                         $("#input-address").val(data.features[0].place_name);
 
-                        console.log(position.coords.latitude);
-                        console.log(position.coords.longitude);
+                        const address = new Address(
+                            data.features[0].place_name,
+                            position.coords.longitude,
+                            position.coords.latitude,
+                            null,
+                            @Model.Restaurateur.Id
+                        );
 
-                        // set inputs
-                        $("#addressline1").val(data.features[0].text);
-                        $("#addressline2").val("");
-                        $("#number").val(data.features[0].address);
-                        $("#postalcode").val(data.features[0].context[0].text);
-                        $("#city").val(data.features[0].context[1].text);
-                        $("#stateprovince").val(data.features[0].context[2].text);
-                        $("#country option:selected").val(data.features[0].context[3].text);
-                        $("#latitude").val(position.coords.latitude);
-                        $("#longitude").val(position.coords.longitude);
+                        $("ok-btn").on("click", createAddress(address));
                     },
-                    error: function () {
+                    error: function() {
                         console.log("Error");
+                    }
+                });
+            }
+
+            function updateAddress(newAddress, id) {
+                $.ajax({
+                    type: "PUT",
+                    url: `/api/addresses/${id}`,
+                    dataType: "JSON",
+                    data: JSON.stringify(newAddress),
+                    contentType: "application/json; charset=utf-8",
+                    success: function(data, status, xhr) {
+                        console.log(status);
+                        window.location.reload(true);
+                    },
+                    error: function(jqXhr, textStatus, errorMessage) {
+                        console.log(errorMessage);
+                    }
+                });
+            }
+
+            function createAddress(address) {
+                $.ajax({
+                    type: "POST",
+                    async: true,
+                    url: "/api/addresses",
+                    dataType: "JSON",
+                    data: JSON.stringify(address),
+                    contentType: "application/json; charset=utf-8",
+                    success: function(data, status, xhr) {
+                        console.log(status);
+                        //window.location.reload(true);
+                    },
+                    error: function(jqXhr, textStatus, errorMessage) {
+                        console.log(errorMessage);
                     }
                 });
             }
