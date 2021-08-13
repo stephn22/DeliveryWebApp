@@ -10,5 +10,17 @@
     "inputFiles": [
       "wwwroot/js/classes/address.js"
     ]
+  },
+  {
+    "outputFileName": "wwwroot/js/classes/restaurant.min.js",
+    "inputFiles": [
+      "wwwroot/js/classes/restaurant.js"
+    ]
+  },
+  {
+    "outputFileName": "wwwroot/js/image_utilities.min.js",
+    "inputFiles": [
+      "wwwroot/js/image_utilities.js"
+    ]
   }
 ]

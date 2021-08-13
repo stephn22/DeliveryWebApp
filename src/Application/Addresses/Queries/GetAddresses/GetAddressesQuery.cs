@@ -1,14 +1,12 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading;
-using System.Threading.Tasks;
-using DeliveryWebApp.Application.Common.Exceptions;
-using DeliveryWebApp.Application.Common.Interfaces;
+﻿using DeliveryWebApp.Application.Common.Interfaces;
 using DeliveryWebApp.Domain.Entities;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading;
+using System.Threading.Tasks;
 
 namespace DeliveryWebApp.Application.Addresses.Queries.GetAddresses
 {
@@ -32,8 +30,8 @@ namespace DeliveryWebApp.Application.Addresses.Queries.GetAddresses
             try
             {
                 return await (from a in _context.Addresses
-                    where a.CustomerId == request.CustomerId
-                    select a).ToListAsync(cancellationToken);
+                              where a.CustomerId == request.CustomerId
+                              select a).ToListAsync(cancellationToken);
             }
             catch (InvalidOperationException)
             {

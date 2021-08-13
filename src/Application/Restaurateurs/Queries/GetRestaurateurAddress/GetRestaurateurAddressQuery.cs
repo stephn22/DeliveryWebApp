@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Threading;
 using System.Threading.Tasks;
+using DeliveryWebApp.Application.Common.Exceptions;
 using DeliveryWebApp.Application.Common.Interfaces;
 using DeliveryWebApp.Domain.Entities;
 using MediatR;
@@ -12,7 +13,7 @@ namespace DeliveryWebApp.Application.Restaurateurs.Queries.GetRestaurateurAddres
     public class GetRestaurateurAddressQuery : IRequest<Address>
     {
         /// <summary>
-        /// Restaurateur id
+        /// Address Id
         /// </summary>
         public int Id { get; set; }
     }
@@ -20,28 +21,23 @@ namespace DeliveryWebApp.Application.Restaurateurs.Queries.GetRestaurateurAddres
     public class GetRestaurateurAddressQueryHandler : IRequestHandler<GetRestaurateurAddressQuery, Address>
     {
         private readonly IApplicationDbContext _context;
-        private readonly ILogger<GetRestaurateurAddressQuery> _logger;
 
-        public GetRestaurateurAddressQueryHandler(IApplicationDbContext context,
-            ILogger<GetRestaurateurAddressQuery> logger)
+        public GetRestaurateurAddressQueryHandler(IApplicationDbContext context)
         {
             _context = context;
-            _logger = logger;
         }
 
         public async Task<Address> Handle(GetRestaurateurAddressQuery request, CancellationToken cancellationToken)
         {
-            try
+            
+            var entity = await _context.Addresses.FindAsync(request.Id);
+
+            if (entity == null)
             {
-                var entity =
-                    await _context.Addresses.FirstAsync(a => a.RestaurateurId == request.Id, cancellationToken);
-                return entity;
+                throw new NotFoundException(nameof(Address), request.Id);
             }
-            catch (InvalidOperationException e)
-            {
-                _logger.LogWarning($"{nameof(Restaurateur)}, {e.Message}");
-                return null;
-            }
+
+            return entity;
         }
     }
 }

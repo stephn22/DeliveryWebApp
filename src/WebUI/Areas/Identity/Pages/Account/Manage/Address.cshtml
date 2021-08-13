@@ -453,25 +453,16 @@ else
                                     @Model.Customer.Id,             // customerId
                                     null);                          // restaurateurId
 
-                                    @*{
-                                    placeName: data.features[0].place_name,
-                                    longitude: position.coords.longitude,
-                                    latitude: position.coords.latitude,
-                                    customerId: @Model.Customer.Id
-                                };*@
-
+                                // save into database
                                 $.ajax({
-                                    type: "POST", // save into database
+                                    type: "POST", 
                                     async: true,
                                     url: "/api/addresses",
                                     dataType: "JSON",
                                     data: JSON.stringify(address0),
                                     contentType: "application/json; charset=utf-8",
                                     success: function(data, status, xhr) {
-                                        @*console.log(status);
-                                            @{
-                                                Model.StatusMessage = "Your address has been updated";
-                                            }*@
+                                        console.log(status);
                                         window.location.reload(true);
                                     },
                                     error: function(jqXhr, textStatus, errorMessage) {
@@ -632,11 +623,8 @@ else
                                     data: JSON.stringify(address1),
                                     contentType: "application/json; charset=utf-8",
                                     success: function(data, status, xhr) {
-                                        @*console.log(status);
-                                            @{
-                                                Model.StatusMessage = "Your address has been updated";
-                                            }
-                                            window.location.reload(true);*@
+                                        console.log(status);
+                                        window.location.reload(true);
                                     },
                                     error: function(jqXhr, textStatus, errorMessage) {
                                         console.log(errorMessage);
