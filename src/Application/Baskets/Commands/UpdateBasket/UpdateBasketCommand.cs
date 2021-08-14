@@ -46,7 +46,7 @@ namespace DeliveryWebApp.Application.Baskets.Commands.UpdateBasket
                 throw new NotFoundException(nameof(Product), request.Product.Id);
             }
 
-            var basketItem = await _mediator.Send(new CreateBasketItemCommand
+            await _mediator.Send(new CreateBasketItemCommand
             {
                 Basket = entity,
                 Product = product,

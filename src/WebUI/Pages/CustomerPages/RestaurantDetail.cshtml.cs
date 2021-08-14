@@ -1,22 +1,23 @@
-using System;
+using DeliveryWebApp.Application.Baskets.Commands.CreateBasket;
 using DeliveryWebApp.Application.Baskets.Commands.UpdateBasket;
+using DeliveryWebApp.Application.Baskets.Queries;
 using DeliveryWebApp.Application.Common.Security;
 using DeliveryWebApp.Application.Products.Queries.GetProducts;
 using DeliveryWebApp.Domain.Entities;
 using DeliveryWebApp.Infrastructure.Identity;
 using DeliveryWebApp.Infrastructure.Persistence;
-using DeliveryWebApp.Infrastructure.Security;
 using MediatR;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
+using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Threading.Tasks;
-using DeliveryWebApp.Application.Baskets.Commands.CreateBasket;
-using DeliveryWebApp.Application.Baskets.Queries;
+using Microsoft.AspNetCore.Mvc.Rendering;
 
 namespace DeliveryWebApp.WebUI.Pages.CustomerPages
 {
@@ -41,6 +42,19 @@ namespace DeliveryWebApp.WebUI.Pages.CustomerPages
         public Basket Basket { get; set; }
         public Restaurateur Restaurateur { get; set; }
         public List<Product> Products { get; set; }
+        public InputModel Input { get; set; }
+
+        public List<SelectListItem> Quantities => new();
+
+        [TempData]
+        public string StatusMessage { get; set; }
+
+        public class InputModel
+        {
+            [Required]
+            [DataType(DataType.Text)]
+            public int Quantity { get; set; }
+        }
 
         public async Task<IActionResult> OnGetAsync(int? id)
         {
@@ -56,7 +70,7 @@ namespace DeliveryWebApp.WebUI.Pages.CustomerPages
             {
                 return NotFound("Unable to find food vendor with that id");
             }
-            
+
             return Page();
         }
 
@@ -81,7 +95,7 @@ namespace DeliveryWebApp.WebUI.Pages.CustomerPages
 
                 _logger.LogInformation($"Created new basket with id: {Basket.Id}");
             }
-            
+
             try
             {
                 Restaurateur = await _context.Restaurateurs.FindAsync(id);
@@ -109,10 +123,10 @@ namespace DeliveryWebApp.WebUI.Pages.CustomerPages
             {
                 Basket = Basket,
                 Product = product,
-                // TODO: quantity
+                Quantity = Input.Quantity
             });
 
-            _logger.LogInformation($"Added product with id {product.Id} to basket of user {user.Id}");
+            _logger.LogInformation($"Added product with id {product.Id} to the basket of the user {user.Id}");
 
             return Page();
         }
