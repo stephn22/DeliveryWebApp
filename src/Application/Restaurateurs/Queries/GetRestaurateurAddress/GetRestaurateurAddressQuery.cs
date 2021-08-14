@@ -1,12 +1,9 @@
-﻿using System;
-using System.Threading;
-using System.Threading.Tasks;
-using DeliveryWebApp.Application.Common.Exceptions;
+﻿using DeliveryWebApp.Application.Common.Exceptions;
 using DeliveryWebApp.Application.Common.Interfaces;
 using DeliveryWebApp.Domain.Entities;
 using MediatR;
-using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Logging;
+using System.Threading;
+using System.Threading.Tasks;
 
 namespace DeliveryWebApp.Application.Restaurateurs.Queries.GetRestaurateurAddress
 {
@@ -29,7 +26,7 @@ namespace DeliveryWebApp.Application.Restaurateurs.Queries.GetRestaurateurAddres
 
         public async Task<Address> Handle(GetRestaurateurAddressQuery request, CancellationToken cancellationToken)
         {
-            
+
             var entity = await _context.Addresses.FindAsync(request.Id);
 
             if (entity == null)

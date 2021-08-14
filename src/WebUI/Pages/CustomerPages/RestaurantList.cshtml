@@ -12,10 +12,12 @@
 
 @section Head
 {
-    <link rel="stylesheet" href="/css/images.css"/>
     <link rel="stylesheet" href="https://api.mapbox.com/mapbox-gl-js/plugins/mapbox-gl-geocoder/v4.7.0/mapbox-gl-geocoder.css" type="text/css"/>
     <link href="https://api.tiles.mapbox.com/mapbox-gl-js/v2.3.1/mapbox-gl.css" rel="stylesheet"/>
     <link rel="stylesheet" href="/css/restaurant-list.css"/>
+    <link rel="stylesheet" href="/css/images.css"/>
+    
+    <script src="https://api.tiles.mapbox.com/mapbox-gl-js/v2.3.1/mapbox-gl.js"></script>
 }
 
 @if (Model.Customer.Addresses.IsNullOrEmpty())
@@ -48,7 +50,7 @@ else
 {
     @* Geocoder plugin *@
     <script src="https://api.mapbox.com/mapbox-gl-js/plugins/mapbox-gl-geocoder/v4.7.0/mapbox-gl-geocoder.min.js"></script>
-    <script src="https://api.tiles.mapbox.com/mapbox-gl-js/v2.3.1/mapbox-gl.js"></script>
+
 
     @* Turf.js plugin *@
     <script src="https://npmcdn.com/@@turf/turf/turf.min.js"></script>
@@ -117,7 +119,7 @@ else
                                         "coordinates": [address.longitude, address.latitude]
                                     },
                                     "properties": {
-                                        "restaurateurId" : restaurateur.id,
+                                        "restaurateurId": restaurateur.id,
                                         "name": restaurateur.restaurantName,
                                         "category": restaurateur.restaurantCategory,
                                         "address": address.placeName
