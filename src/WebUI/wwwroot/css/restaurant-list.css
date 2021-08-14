@@ -164,6 +164,13 @@ a:hover { color: #101010; }
     font-weight: 400;
 }
 
+.mapboxgl-popup-content a {
+    margin: 0;
+    display: block;
+    padding: 10px 10px 10px 10px;
+    font-weight: 100;
+}
+
 .mapboxgl-popup-content div { padding: 10px; }
 
 .mapboxgl-container .leaflet-marker-icon { cursor: pointer; }
