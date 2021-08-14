@@ -12,12 +12,15 @@
 
 @section Head
 {
+    <link
+        href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:400,700" rel="stylesheet"/>
+
+    <script src="https://api.tiles.mapbox.com/mapbox-gl-js/v2.3.1/mapbox-gl.js"></script>
+
     <link rel="stylesheet" href="https://api.mapbox.com/mapbox-gl-js/plugins/mapbox-gl-geocoder/v4.7.0/mapbox-gl-geocoder.css" type="text/css"/>
     <link href="https://api.tiles.mapbox.com/mapbox-gl-js/v2.3.1/mapbox-gl.css" rel="stylesheet"/>
-    <link rel="stylesheet" href="/css/restaurant-list.css"/>
-    <link rel="stylesheet" href="/css/images.css"/>
-    
-    <script src="https://api.tiles.mapbox.com/mapbox-gl-js/v2.3.1/mapbox-gl.js"></script>
+    <link rel="stylesheet" href="/css/restaurant-list.min.css"/>
+    <link rel="stylesheet" href="/css/images.min.css"/>
 }
 
 @if (Model.Customer.Addresses.IsNullOrEmpty())
@@ -51,7 +54,6 @@ else
     @* Geocoder plugin *@
     <script src="https://api.mapbox.com/mapbox-gl-js/plugins/mapbox-gl-geocoder/v4.7.0/mapbox-gl-geocoder.min.js"></script>
 
-
     @* Turf.js plugin *@
     <script src="https://npmcdn.com/@@turf/turf/turf.min.js"></script>
 
@@ -70,6 +72,8 @@ else
             }
 
             mapboxgl.accessToken = 'pk.eyJ1Ijoic3RlY3JvdHRpMSIsImEiOiJja3Bna2kzbHYyaThoMm9ueHl1dzlnaTc1In0.EpALSOaDOmuM8XGS_IQzvA';
+
+            let map;
 
             let stores = {
                 "type": "FeatureCollection",
@@ -136,7 +140,7 @@ else
                                 });
 
                                 function showMap(center) {
-                                    const map = new mapboxgl.Map({
+                                    map = new mapboxgl.Map({
                                         container: 'map',
                                         style: 'mapbox://styles/mapbox/streets-v11',
                                         center: [center.coords.longitude, center.coords.latitude],
@@ -248,9 +252,7 @@ else
                                         if (prop.category) {
                                             details.innerHTML += prop.category;
                                         }
-                                        if (prop.address) {
-                                            details.innerHTML += ` &middot; ${prop.address}`;
-                                        }
+
 
                                         /**
                                          * Listen to the element and when it is clicked, do four things:
@@ -295,6 +297,7 @@ else
                                 function createPopUp(currentFeature) {
                                     const popUps = document.getElementsByClassName('mapboxgl-popup');
                                     if (popUps[0]) popUps[0].remove();
+
                                     const popup = new mapboxgl.Popup({ closeOnClick: false })
                                         .setLngLat(currentFeature.geometry.coordinates)
                                         .setHTML(

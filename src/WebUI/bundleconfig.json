@@ -22,5 +22,17 @@
     "inputFiles": [
       "wwwroot/js/image_utilities.js"
     ]
+  },
+  {
+    "outputFileName": "wwwroot/css/restaurant-list.min.css",
+    "inputFiles": [
+      "wwwroot/css/restaurant-list.css"
+    ]
+  },
+  {
+    "outputFileName": "wwwroot/css/images.min.css",
+    "inputFiles": [
+      "wwwroot/css/images.css"
+    ]
   }
 ]
