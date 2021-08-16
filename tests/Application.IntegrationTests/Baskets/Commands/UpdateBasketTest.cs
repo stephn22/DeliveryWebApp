@@ -80,7 +80,7 @@ namespace DeliveryWebApp.Application.IntegrationTests.Baskets.Commands
 
             update.Should().NotBeNull();
             update.Id.Should().Be(basket.Id);
-            product.Quantity.Should().Be(18);
+            product.Quantity.Should().Be(p1.Quantity);
             update.TotalPrice.Should().Be(14.52M).And.BeOfType(typeof(decimal));
             update.CustomerId.Should().Be(customer.Id);
         }

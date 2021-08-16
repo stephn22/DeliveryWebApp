@@ -34,14 +34,6 @@ namespace DeliveryWebApp.Application.BasketItems.Commands.CreateBasketItem
                 Quantity = request.Quantity
             };
 
-            var newQuantity = request.Product.Quantity - request.Quantity; // decrease product quantity
-
-            await _mediator.Send(new UpdateProductCommand
-            {
-                Id = request.Product.Id,
-                Quantity = newQuantity
-            }, cancellationToken);
-
             _context.BasketItems.Add(entity);
             await _context.SaveChangesAsync(cancellationToken);
 

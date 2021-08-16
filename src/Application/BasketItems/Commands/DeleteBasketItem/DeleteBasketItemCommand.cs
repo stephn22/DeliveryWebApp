@@ -33,16 +33,6 @@ namespace DeliveryWebApp.Application.BasketItems.Commands.DeleteBasketItem
                 throw new NotFoundException(nameof(BasketItem), request.Id);
             }
 
-            var product = await _context.Products.FindAsync(entity.ProductId);
-
-            var newQuantity = product.Quantity + entity.Quantity;
-
-            await _mediator.Send(new UpdateProductCommand
-            {
-                Id = product.Id,
-                Quantity = newQuantity
-            }, cancellationToken);
-
             _context.BasketItems.Remove(entity);
             await _context.SaveChangesAsync(cancellationToken);
 

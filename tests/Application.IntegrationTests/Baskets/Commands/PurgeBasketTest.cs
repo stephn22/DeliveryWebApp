@@ -127,16 +127,9 @@ namespace DeliveryWebApp.Application.IntegrationTests.Baskets.Commands
 
             var b = await FindAsync<Basket>(basket.Id);
 
-            var product1 = await FindAsync<Product>(p1.Id);
-            var product2 = await FindAsync<Product>(p2.Id);
-            var product3 = await FindAsync<Product>(p3.Id);
-
             b.Should().NotBeNull();
             b.TotalPrice.Should().Be(0.00M);
             items.Should().BeNullOrEmpty();
-            product1.Quantity.Should().Be(p1.Quantity);
-            product2.Quantity.Should().Be(p2.Quantity);
-            product3.Quantity.Should().Be(p3.Quantity);
         }
     }
 }

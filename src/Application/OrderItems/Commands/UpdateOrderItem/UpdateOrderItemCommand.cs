@@ -4,6 +4,7 @@ using DeliveryWebApp.Domain.Entities;
 using MediatR;
 using System.Threading;
 using System.Threading.Tasks;
+using DeliveryWebApp.Application.Products.Commands.UpdateProducts;
 
 namespace DeliveryWebApp.Application.OrderItems.Commands.UpdateOrderItem
 {
@@ -18,10 +19,12 @@ namespace DeliveryWebApp.Application.OrderItems.Commands.UpdateOrderItem
     public class UpdateOrderItemCommandHandler : IRequestHandler<UpdateOrderItemCommand, OrderItem>
     {
         private readonly IApplicationDbContext _context;
+        private readonly IMediator _mediator;
 
-        public UpdateOrderItemCommandHandler(IApplicationDbContext context)
+        public UpdateOrderItemCommandHandler(IApplicationDbContext context, IMediator mediator)
         {
             _context = context;
+            _mediator = mediator;
         }
 
         public async Task<OrderItem> Handle(UpdateOrderItemCommand request, CancellationToken cancellationToken)
@@ -46,6 +49,31 @@ namespace DeliveryWebApp.Application.OrderItems.Commands.UpdateOrderItem
             if (request.Quantity != null)
             {
                 entity.Quantity = (int)request.Quantity;
+
+                var product = await _context.Products.FindAsync(entity.ProductId);
+
+                if (product == null)
+                {
+                    throw new NotFoundException(nameof(Product), entity.ProductId);
+                }
+
+                // update product quantity
+                var newQuantity = product.Quantity;
+
+                if (request.Quantity < entity.Quantity)
+                {
+                    newQuantity += (entity.Quantity - (int)request.Quantity);
+                }
+                else
+                {
+                    newQuantity -= ((int)request.Quantity - entity.Quantity);
+                }
+
+                await _mediator.Send(new UpdateProductCommand
+                {
+                    Id = product.Id,
+                    Quantity = newQuantity
+                }, cancellationToken);
             }
 
             await _context.SaveChangesAsync(cancellationToken);

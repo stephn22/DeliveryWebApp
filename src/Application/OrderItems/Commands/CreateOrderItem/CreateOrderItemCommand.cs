@@ -4,6 +4,7 @@ using DeliveryWebApp.Domain.Entities;
 using MediatR;
 using System.Threading;
 using System.Threading.Tasks;
+using DeliveryWebApp.Application.Products.Commands.UpdateProducts;
 
 namespace DeliveryWebApp.Application.OrderItems.Commands.CreateOrderItem
 {
@@ -16,10 +17,12 @@ namespace DeliveryWebApp.Application.OrderItems.Commands.CreateOrderItem
     public class CreateOrderItemCommandHandler : IRequestHandler<CreateOrderItemCommand, OrderItem>
     {
         private readonly IApplicationDbContext _context;
+        private readonly IMediator _mediator;
 
-        public CreateOrderItemCommandHandler(IApplicationDbContext context)
+        public CreateOrderItemCommandHandler(IApplicationDbContext context, IMediator mediator)
         {
             _context = context;
+            _mediator = mediator;
         }
 
         public async Task<OrderItem> Handle(CreateOrderItemCommand request, CancellationToken cancellationToken)
@@ -39,6 +42,13 @@ namespace DeliveryWebApp.Application.OrderItems.Commands.CreateOrderItem
 
             var product = await _context.Products.FindAsync(basketItem.ProductId);
 
+            if (product == null)
+            {
+                throw new NotFoundException(nameof(Product), basketItem.ProductId);
+            }
+
+            var newQuantity = product.Quantity - basketItem.Quantity; // decrease product quantity
+
             var entity = new OrderItem
             {
                 ProductId = basketItem.ProductId,
@@ -47,6 +57,13 @@ namespace DeliveryWebApp.Application.OrderItems.Commands.CreateOrderItem
                 ProductPrice = product.Price,
                 Quantity = basketItem.Quantity
             };
+
+            // update product quantity
+            await _mediator.Send(new UpdateProductCommand
+            {
+                Id = product.Id,
+                Quantity = newQuantity
+            }, cancellationToken);
 
             _context.OrderItems.Add(entity);
             await _context.SaveChangesAsync(cancellationToken);
