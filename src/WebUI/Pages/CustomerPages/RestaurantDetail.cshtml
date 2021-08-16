@@ -1,142 +1,147 @@
 ﻿@page "{id:int?}"
 @using DeliveryWebApp.Application.Products.Extensions
 @using IdentityServer4.Extensions
+@using Microsoft.AspNetCore.Localization
+@using Microsoft.Extensions.Localization
 @model DeliveryWebApp.WebUI.Pages.CustomerPages.RestaurantDetailModel
+@inject IStringLocalizer<IndexModel> localizer
 @{
     ViewData["Title"] = Model.Restaurateur.RestaurantName;
     // TODO: localize
+
+    var requestCultureFeature = HttpContext.Features.Get<IRequestCultureFeature>();
+    var requestCulture = requestCultureFeature.RequestCulture;
 }
 
 @section Head
 {
-    <link rel="stylesheet" href="~/css/images.min.css"/>
+    <link rel="stylesheet" href="~/css/images.min.css" />
 
     <style type="text/css">
         .square {
             height: 100px;
             width: 100px;
         }
-
     </style>
 }
 
 <h4>@ViewData["Title"]</h4>
 
-<partial name="_StatusMessage" for="StatusMessage"/>
+<partial name="_StatusMessage" for="StatusMessage" />
 
 <div class="alert alert-dismissible alert-secondary" role="alert">
-    Some products may not have an image because food vendors are not required to upload one
+    @localizer["Some products may not have an image because food vendors are not required to upload one"]
     <button type="button" class="btn-close" data-dismiss="alert" aria-label="Close"></button>
 </div>
 
 @if (!Model.Restaurateur.Logo.IsNullOrEmpty())
 {
-    <img src="data:image/jpeg;base64,@Convert.ToBase64String(Model.Restaurateur.Logo)" style="height: 150px; width: 150px" alt="restaurant_logo" class="img-dashboard square img-fluid rounded"/>
+    <img src="data:image/jpeg;base64,@Convert.ToBase64String(Model.Restaurateur.Logo)" style="height: 150px; width: 150px" alt="restaurant_logo" class="img-dashboard square img-fluid rounded" />
 }
 else
 {
     <svg xmlns="http://www.w3.org/2000/svg" width="150" height="150" fill="currentColor" class="bi bi-image" viewBox="0 0 16 16" title="Food vendor didn't upload any image'">
-        <path d="M6.002 5.5a1.5 1.5 0 1 1-3 0 1.5 1.5 0 0 1 3 0z"/>
-        <path d="M2.002 1a2 2 0 0 0-2 2v10a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V3a2 2 0 0 0-2-2h-12zm12 1a1 1 0 0 1 1 1v6.5l-3.777-1.947a.5.5 0 0 0-.577.093l-3.71 3.71-2.66-1.772a.5.5 0 0 0-.63.062L1.002 12V3a1 1 0 0 1 1-1h12z"/>
+        <path d="M6.002 5.5a1.5 1.5 0 1 1-3 0 1.5 1.5 0 0 1 3 0z" />
+        <path d="M2.002 1a2 2 0 0 0-2 2v10a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V3a2 2 0 0 0-2-2h-12zm12 1a1 1 0 0 1 1 1v6.5l-3.777-1.947a.5.5 0 0 0-.577.093l-3.71 3.71-2.66-1.772a.5.5 0 0 0-.63.062L1.002 12V3a1 1 0 0 1 1-1h12z" />
     </svg>
 }
-<hr/>
+<hr />
 
 @if (!Model.Products.IsNullOrEmpty())
 {
-<div class="row">
-    @foreach (var product in Model.Products)
-    {
-        <div class="card" style="width: 18rem; margin: 1rem;">
-            @if (!product.Image.IsNullOrEmpty())
-            {
-                <img class="card-img-top square rounded img-fluid" style="margin-top: 10px" src="data:image/jpeg;base64,@Convert.ToBase64String(product.Image)" alt="" />
-            }
-            else
-            {
-                <div class="card-img-top">
-                    <svg xmlns="http://www.w3.org/2000/svg" width="100" height="100" fill="currentColor" class="bi bi-image" viewBox="0 0 16 16" title="Food vendor didn't upload any image'">
-                        <path d="M6.002 5.5a1.5 1.5 0 1 1-3 0 1.5 1.5 0 0 1 3 0z" />
-                        <path d="M2.002 1a2 2 0 0 0-2 2v10a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V3a2 2 0 0 0-2-2h-12zm12 1a1 1 0 0 1 1 1v6.5l-3.777-1.947a.5.5 0 0 0-.577.093l-3.71 3.71-2.66-1.772a.5.5 0 0 0-.63.062L1.002 12V3a1 1 0 0 1 1-1h12z" />
-                    </svg>
-                </div>
-            }
-
-            <div class="card-body">
-                <h5 class="card-title">@product.Name</h5>
-                <h6 class="card-subtitle mb-2 text-muted">@product.Category</h6>
-                <p class="card-text">
-                    <div class="row">
-                        @if (product.Discount != 0)
-                        {
-                            <p>Price: <del>@product.Price</del> @product.DiscountedPrice()</p>
-                            <p>Discount: @product.Discount %</p>
-                        }
-                        else
-                        {
-                            <p>Price: @product.Price</p>
-                            <p>Discount: N/A</p>
-                        }
+    <div class="row">
+        @foreach (var product in Model.Products)
+        {
+            <div class="card" style="width: 18rem; margin: 1rem;">
+                @if (!product.Image.IsNullOrEmpty())
+                {
+                    <img class="card-img-top square rounded img-fluid" style="margin-top: 10px" src="data:image/jpeg;base64,@Convert.ToBase64String(product.Image)" alt="" />
+                }
+                else
+                {
+                    <div class="card-img-top">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="100" height="100" fill="currentColor" class="bi bi-image" viewBox="0 0 16 16" title="Food vendor didn't upload any image'">
+                            <path d="M6.002 5.5a1.5 1.5 0 1 1-3 0 1.5 1.5 0 0 1 3 0z" />
+                            <path d="M2.002 1a2 2 0 0 0-2 2v10a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V3a2 2 0 0 0-2-2h-12zm12 1a1 1 0 0 1 1 1v6.5l-3.777-1.947a.5.5 0 0 0-.577.093l-3.71 3.71-2.66-1.772a.5.5 0 0 0-.63.062L1.002 12V3a1 1 0 0 1 1-1h12z" />
+                        </svg>
                     </div>
-                    <div class="row">
-                        <p>In stock: @product.Quantity</p>
-                    </div>
-                </p>
+                }
 
-                <button class="btn btn-outline-dark" type="button" data-bs-toggle="modal" data-bs-target="#addToBasketModal-@product.Id">
-                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-cart-plus" viewBox="0 0 16 16">
-                        <path d="M9 5.5a.5.5 0 0 0-1 0V7H6.5a.5.5 0 0 0 0 1H8v1.5a.5.5 0 0 0 1 0V8h1.5a.5.5 0 0 0 0-1H9V5.5z" />
-                        <path d="M.5 1a.5.5 0 0 0 0 1h1.11l.401 1.607 1.498 7.985A.5.5 0 0 0 4 12h1a2 2 0 1 0 0 4 2 2 0 0 0 0-4h7a2 2 0 1 0 0 4 2 2 0 0 0 0-4h1a.5.5 0 0 0 .491-.408l1.5-8A.5.5 0 0 0 14.5 3H2.89l-.405-1.621A.5.5 0 0 0 2 1H.5zm3.915 10L3.102 4h10.796l-1.313 7h-8.17zM6 14a1 1 0 1 1-2 0 1 1 0 0 1 2 0zm7 0a1 1 0 1 1-2 0 1 1 0 0 1 2 0z" />
-                    </svg>
-                </button>
+                <div class="card-body">
+                    <h5 class="card-title">@product.Name</h5>
+                    <h6 class="card-subtitle mb-2 text-muted">@product.Category</h6>
+                    <p class="card-text">
+                        <div class="row">
+                            @if (product.Discount != 0)
+                            {
+                                <p>@localizer["Price"]: <del>@product.Price.ToString("C")</del> @product.DiscountedPrice()</p>
+                                <p>@localizer["Discount"]: @product.Discount %</p>
+                            }
+                            else
+                            {
+                                <p>@localizer["Price"]: @product.Price.ToString("C")</p>
+                                <p>@localizer["Discount"]: N/A</p>
+                            }
+                        </div>
+                        <div class="row">
+                            <p>@localizer["In stock"]: @product.Quantity</p>
+                        </div>
+                    </p>
 
-                @* Add to basket modal *@
-                <div class="modal fade show" id="addToBasketModal-@product.Id" aria-labelledby="addToBasketModalTitle-@product.Id" aria-modal="true" role="dialog">
-                    <div class="modal-dialog modal-dialog-centered">
-                        <div class="modal-content">
-                            <div class="modal-header">
-                                <h5 class="modal-title" id="addToBasketModalTitle-@product.Id">Add @product.Name to basket</h5>
-                                <button class="btn-close" data-bs-dismiss="modal" aria-label="close"></button>
-                            </div>
-                            <div class="modal-body">
-                                <div class="row">
-                                    <p class="text-muted">@product.Category</p>
+                    <button class="btn btn-outline-dark" type="button" data-bs-toggle="modal" data-bs-target="#addToBasketModal-@product.Id">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-cart-plus" viewBox="0 0 16 16">
+                            <path d="M9 5.5a.5.5 0 0 0-1 0V7H6.5a.5.5 0 0 0 0 1H8v1.5a.5.5 0 0 0 1 0V8h1.5a.5.5 0 0 0 0-1H9V5.5z" />
+                            <path d="M.5 1a.5.5 0 0 0 0 1h1.11l.401 1.607 1.498 7.985A.5.5 0 0 0 4 12h1a2 2 0 1 0 0 4 2 2 0 0 0 0-4h7a2 2 0 1 0 0 4 2 2 0 0 0 0-4h1a.5.5 0 0 0 .491-.408l1.5-8A.5.5 0 0 0 14.5 3H2.89l-.405-1.621A.5.5 0 0 0 2 1H.5zm3.915 10L3.102 4h10.796l-1.313 7h-8.17zM6 14a1 1 0 1 1-2 0 1 1 0 0 1 2 0zm7 0a1 1 0 1 1-2 0 1 1 0 0 1 2 0z" />
+                        </svg>
+                    </button>
+
+                    @* Add to basket modal *@
+                    <div class="modal fade show" id="addToBasketModal-@product.Id" aria-labelledby="addToBasketModalTitle-@product.Id" aria-modal="true" role="dialog">
+                        <div class="modal-dialog modal-dialog-centered">
+                            <div class="modal-content">
+                                <div class="modal-header">
+                                    <h5 class="modal-title" id="addToBasketModalTitle-@product.Id">@localizer["Add to basket"]: @product.Name </h5>
+                                    <button class="btn-close" data-bs-dismiss="modal" aria-label="close"></button>
                                 </div>
-                                <div class="row">
-                                    <p>@product.Price</p> @* TODO: culture *@
-                                </div>
-                                <div class="row">
-                                    @if (product.Quantity == 0)
-                                    {
-                                        <div class="alert alert-danger" role="alert">Out of stock</div>
-                                    }
-                                    else
-                                    {
-                                        <label asp-for="Input.Quantity"></label>
-                                        <select class="form-select col-1" aria-label="Select quantity" asp-for="Input.Quantity">
-                                            @for (var i = 1; i <= product.Quantity; i++)
-                                            {
-                                                <option value="@i">@i</option>
-                                            }
-                                        </select>
+                                <div class="modal-body">
+                                    <div class="row">
+                                        <p class="text-muted">@product.Category</p>
+                                    </div>
+                                    <div class="row">
+                                        <p>@product.Price</p> @* TODO: culture *@
+                                    </div>
+                                    <div class="row">
+                                        @if (product.Quantity == 0)
+                                        {
+                                            <div class="alert alert-danger" role="alert">@localizer["Out of stock"]</div>
+                                        }
+                                        else
+                                        {
+                                            <label asp-for="Input.Quantity">@localizer["Quantity"]</label>
+                                            <select class="form-select col-1" aria-label="Select quantity" asp-for="Input.Quantity">
+                                                @for (var i = 1; i <= product.Quantity; i++)
+                                                {
+                                                    <option value="@i">@i</option>
+                                                }
+                                            </select>
                                             <span asp-validation-for="Input.Quantity" class="text-danger"></span>
-                                    }
-                                </div>
-                                <div class="row">
+                                        }
+                                    </div>
+                                    <div class="row">
 
+                                    </div>
                                 </div>
                             </div>
                         </div>
                     </div>
                 </div>
             </div>
-        </div>
-    }
-</div>
-    
+        }
+    </div>
+
 }
 
 @section Scripts
 {
-    <partial name="_ValidationScriptsPartial"/>
+    <partial name="_ValidationScriptsPartial" />
 }
