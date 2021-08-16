@@ -78,7 +78,10 @@ namespace DeliveryWebApp.WebUI
             var cultures = new[]
             {
                 new CultureInfo("en-US"),
-                new CultureInfo("it")
+                new CultureInfo("en-GB"),
+                new CultureInfo("it"),
+                new CultureInfo("it-IT"),
+                new CultureInfo("it-CH"),
             };
 
             var options = new RequestLocalizationOptions
@@ -86,7 +89,8 @@ namespace DeliveryWebApp.WebUI
                 DefaultRequestCulture = new RequestCulture(cultures[0]),
                 SupportedCultures = cultures,
                 SupportedUICultures = cultures,
-                FallBackToParentUICultures = true
+                FallBackToParentUICultures = true,
+                FallBackToParentCultures = true
         };
 
             app.UseRequestLocalization(options);
