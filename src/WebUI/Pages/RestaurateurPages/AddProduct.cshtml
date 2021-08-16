@@ -1,7 +1,10 @@
 ﻿@page
+@using Microsoft.AspNetCore.Localization
 @model DeliveryWebApp.WebUI.Pages.RestaurateurPages.AddProductModel
 @{
     ViewData["Title"] = "Add Product";
+    var requestCultureFeature = HttpContext.Features.Get<IRequestCultureFeature>();
+    var requestCulture = requestCultureFeature.RequestCulture;
 }
 
 @* TODO: localize and culture *@
@@ -53,7 +56,7 @@
             <div class="input-group">
                 <input asp-for="Input.Price" class="form-control" />
                 <div class="input-group-append">
-                    <span class="input-group-text">€</span>
+                    <span class="input-group-text">@requestCulture.Culture.NumberFormat.CurrencySymbol</span>
                 </div>
                 <span asp-validation-for="Input.Price" class="text-danger"></span>
             </div>

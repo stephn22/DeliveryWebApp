@@ -21,8 +21,7 @@ namespace DeliveryWebApp.Infrastructure.Persistence.Configurations
                 .IsRequired();
 
             builder.Property(p => p.Price)
-                .HasPrecision(16, 3)
-                .HasColumnType(PropertyName.Money)
+                .HasPrecision(16, 4)
                 .IsRequired();
 
             builder.HasOne(p => p.Restaurateur)

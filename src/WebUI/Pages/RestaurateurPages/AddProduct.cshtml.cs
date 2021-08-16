@@ -45,7 +45,6 @@ namespace DeliveryWebApp.WebUI.Pages.RestaurateurPages
             new SelectListItem { Text = ProductCategory.Pizza, Value = ProductCategory.Pizza },
             new SelectListItem { Text = ProductCategory.Sushi, Value = ProductCategory.Sushi },
             new SelectListItem { Text = ProductCategory.Dessert, Value = ProductCategory.Dessert },
-            new SelectListItem { Text = ProductCategory.Dessert, Value = ProductCategory.Dessert },
             new SelectListItem { Text = ProductCategory.Vegan, Value = ProductCategory.Vegan },
             new SelectListItem { Text = ProductCategory.Chicken, Value = ProductCategory.Chicken },
             new SelectListItem { Text = ProductCategory.Fish, Value = ProductCategory.Fish },
@@ -68,6 +67,7 @@ namespace DeliveryWebApp.WebUI.Pages.RestaurateurPages
 
             [Required]
             [DataType(DataType.Currency, ErrorMessage = "Value isn't a price")]
+            [DisplayFormat(DataFormatString = "{0:C}")]
             public decimal Price { get; set; }
 
             // TODO: Discount required?

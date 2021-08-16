@@ -17,7 +17,6 @@ using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Threading.Tasks;
-using Microsoft.AspNetCore.Mvc.Rendering;
 
 namespace DeliveryWebApp.WebUI.Pages.CustomerPages
 {
@@ -43,8 +42,6 @@ namespace DeliveryWebApp.WebUI.Pages.CustomerPages
         public Restaurateur Restaurateur { get; set; }
         public List<Product> Products { get; set; }
         public InputModel Input { get; set; }
-
-        public List<SelectListItem> Quantities => new();
 
         [TempData]
         public string StatusMessage { get; set; }
@@ -76,6 +73,21 @@ namespace DeliveryWebApp.WebUI.Pages.CustomerPages
 
         private async Task LoadAsync(ApplicationUser user, int? id)
         {
+            try
+            {
+                Restaurateur = await _context.Restaurateurs.FindAsync(id);
+
+                Products = await _mediator.Send(new GetProductsQuery
+                {
+                    RestaurateurId = Restaurateur.Id
+                });
+            }
+            catch (InvalidOperationException e)
+            {
+                _logger.LogInformation($"Unable to find food vendor with id '{id}': {e.Message}");
+                Restaurateur = null;
+            }
+
             Customer = await _context.Customers.FirstAsync(c => c.ApplicationUserFk == user.Id);
 
             try
@@ -95,29 +107,16 @@ namespace DeliveryWebApp.WebUI.Pages.CustomerPages
 
                 _logger.LogInformation($"Created new basket with id: {Basket.Id}");
             }
-
-            try
-            {
-                Restaurateur = await _context.Restaurateurs.FindAsync(id);
-
-                Products = await _mediator.Send(new GetProductsQuery
-                {
-                    RestaurateurId = Restaurateur.Id
-                });
-            }
-            catch (InvalidOperationException e)
-            {
-                _logger.LogInformation($"Unable to find food vendor with id '{id}': {e.Message}");
-                Restaurateur = null;
-            }
         }
 
-        public async Task<IActionResult> OnPostAddToCartAsync(int id)
+        public async Task OnPostAddToCartAsync(int id, int productId)
         {
             var user = await _userManager.GetUserAsync(User);
 
+            await LoadAsync(user, id);
+
             await _context.Customers.Where(c => c.ApplicationUserFk == user.Id).FirstAsync();
-            var product = Products.First(p => p.Id == id);
+            var product = Products.First(p => p.Id == productId);
 
             await _mediator.Send(new UpdateBasketCommand
             {
@@ -128,7 +127,7 @@ namespace DeliveryWebApp.WebUI.Pages.CustomerPages
 
             _logger.LogInformation($"Added product with id {product.Id} to the basket of the user {user.Id}");
 
-            return Page();
+            StatusMessage = "Added product to cart successfully";
         }
     }
 }
