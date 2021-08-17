@@ -14,9 +14,11 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Threading.Tasks;
+using CsvHelper.Configuration.Attributes;
 
 namespace DeliveryWebApp.WebUI.Pages.CustomerPages
 {
@@ -41,6 +43,8 @@ namespace DeliveryWebApp.WebUI.Pages.CustomerPages
         public Basket Basket { get; set; }
         public Restaurateur Restaurateur { get; set; }
         public List<Product> Products { get; set; }
+
+        [BindProperty]
         public InputModel Input { get; set; }
 
         [TempData]
@@ -73,10 +77,10 @@ namespace DeliveryWebApp.WebUI.Pages.CustomerPages
 
         private async Task LoadAsync(ApplicationUser user, int? id)
         {
+            Restaurateur = await _context.Restaurateurs.FindAsync(id);
+
             try
             {
-                Restaurateur = await _context.Restaurateurs.FindAsync(id);
-
                 Products = await _mediator.Send(new GetProductsQuery
                 {
                     RestaurateurId = Restaurateur.Id
@@ -90,30 +94,33 @@ namespace DeliveryWebApp.WebUI.Pages.CustomerPages
 
             Customer = await _context.Customers.FirstAsync(c => c.ApplicationUserFk == user.Id);
 
-            try
+            Basket = await _mediator.Send(new GetBasketQuery
             {
-                Basket = await _mediator.Send(new GetBasketQuery
-                {
-                    Customer = Customer
-                });
-            }
-            catch (InvalidOperationException)
-            {
-                // If basket does not exist, create a new one
-                Basket = await _mediator.Send(new CreateBasketCommand
-                {
-                    Customer = Customer
-                });
+                Customer = Customer
+            }) // If basket does not exist (null), create a new one
+                     ?? await _mediator.Send(new CreateBasketCommand
+                     {
+                         Customer = Customer
+                     });
 
-                _logger.LogInformation($"Created new basket with id: {Basket.Id}");
-            }
+            _logger.LogInformation($"Created new basket with id: {Basket.Id}");
         }
 
-        public async Task OnPostAddToCartAsync(int id, int productId)
+        public async Task<IActionResult> OnPostAsync(int id, int productId)
         {
+            if (!ModelState.IsValid)
+            {
+                return BadRequest();
+            }
+
             var user = await _userManager.GetUserAsync(User);
 
             await LoadAsync(user, id);
+
+            if (Restaurateur == null)
+            {
+                return NotFound("Unable to find food vendor with that id");
+            }
 
             await _context.Customers.Where(c => c.ApplicationUserFk == user.Id).FirstAsync();
             var product = Products.First(p => p.Id == productId);
@@ -122,12 +129,14 @@ namespace DeliveryWebApp.WebUI.Pages.CustomerPages
             {
                 Basket = Basket,
                 Product = product,
-                Quantity = Input.Quantity
+                Quantity = Input.Quantity == 0 ? 1 : Input.Quantity
             });
 
             _logger.LogInformation($"Added product with id {product.Id} to the basket of the user {user.Id}");
 
             StatusMessage = "Added product to cart successfully";
+
+            return Page();
         }
     }
 }

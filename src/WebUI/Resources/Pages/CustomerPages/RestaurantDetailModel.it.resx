@@ -123,6 +123,9 @@
   <data name="Add to basket" xml:space="preserve">
     <value>Aggiungi al carrello</value>
   </data>
+  <data name="Close" xml:space="preserve">
+    <value>Chiudi</value>
+  </data>
   <data name="Discount" xml:space="preserve">
     <value>Sconto</value>
   </data>

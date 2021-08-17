@@ -9,6 +9,8 @@
     ViewData["Title"] = "Browse Food Vendor";
     var requestCultureFeature = HttpContext.Features.Get<IRequestCultureFeature>();
     var requestCulture = requestCultureFeature.RequestCulture;
+
+    // FIXME: NullReferenceException: Restaurateur = null
 }
 
 @section Head
@@ -29,14 +31,9 @@
     </style>
 }
 
-<div class="alert alert-dismissible alert-secondary" role="alert">
-    @localizer["Some products may not have an image because food vendors are not required to upload one"]
-    <button type="button" class="btn-close" data-dismiss="alert" aria-label="Close"></button>
-</div>
+<partial name="_StatusMessage" for="StatusMessage" />
 
 <h4>@Model.Restaurateur.RestaurantName</h4>
-
-<partial name="_StatusMessage" for="StatusMessage"/>
 
 @if (!Model.Restaurateur.Logo.IsNullOrEmpty())
 {
@@ -135,9 +132,10 @@ else
                                         </div>
 
                                         <div class="modal-footer">
-                                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                                            <form method="post">
-                                                <button class="btn btn-primary"  asp-page-handler="AddToCart" asp-route-id="<@Model.Restaurateur.Id" asp-route-productId="@product.Id" type="submit" id="add-to-cart-@product.Id">
+                                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">@localizer["Close"]</button>
+                                            
+                                            <form asp-route-id="@Model.Restaurateur.Id" asp-route-productId="@product.Id" method="post">
+                                                <button class="btn btn-primary" type="submit" id="add-to-cart-@product.Id">
                                                     @localizer["Add"]
                                                     <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-cart-plus" viewBox="0 0 16 16">
                                                         <path d="M9 5.5a.5.5 0 0 0-1 0V7H6.5a.5.5 0 0 0 0 1H8v1.5a.5.5 0 0 0 1 0V8h1.5a.5.5 0 0 0 0-1H9V5.5z"/>

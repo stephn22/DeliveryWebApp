@@ -29,7 +29,7 @@ namespace DeliveryWebApp.Application.Orders.Commands.CreateOrder
                 RestaurateurId = request.Restaurateur.Id,
                 CustomerId = request.Customer.Id,
                 Status = OrderStatus.New,
-                TotalPrice = 0.00M
+                TotalPrice = 0
             };
 
             _context.Orders.Add(entity);

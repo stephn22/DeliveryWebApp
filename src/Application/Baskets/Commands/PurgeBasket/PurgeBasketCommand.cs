@@ -55,7 +55,7 @@ namespace DeliveryWebApp.Application.Baskets.Commands.PurgeBasket
                 { }
             }
 
-            entity.TotalPrice = 0.00M;
+            entity.TotalPrice = 0;
 
             await _context.SaveChangesAsync(cancellationToken);
 

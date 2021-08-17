@@ -15,7 +15,6 @@ namespace DeliveryWebApp.Application.Products.Queries.GetProducts
     public class GetProductsQuery : IRequest<List<Product>>
     {
         public int? RestaurateurId { get; set; }
-        public int? OrderId { get; set; }
     }
 
     public class GetProductsQueryHandler : IRequestHandler<GetProductsQuery, List<Product>>
@@ -35,14 +34,7 @@ namespace DeliveryWebApp.Application.Products.Queries.GetProducts
             {
                 if (request.RestaurateurId != null)
                 {
-                    return await (from p in _context.Products
-                        where p.RestaurateurId == request.RestaurateurId
-                        select p).ToListAsync(cancellationToken);
-                }
-
-                if (request.OrderId != null)
-                {
-                    // TODO: complete
+                    return await _context.Products.Where(p => p.RestaurateurId == request.RestaurateurId).ToListAsync(cancellationToken);
                 }
 
                 return null;
