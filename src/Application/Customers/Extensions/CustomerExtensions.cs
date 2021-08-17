@@ -33,23 +33,6 @@ namespace DeliveryWebApp.Application.Customers.Extensions
                 return null;
             }
         }
-
-        public static async Task<Customer> GetCustomerByIdAsync(this IApplicationDbContext context, int? customerId)
-        {
-            try
-            {
-                if (customerId == null)
-                {
-                    throw new NullReferenceException();
-                }
-
-                return await context.Customers.Where(c => c.Id == customerId).FirstAsync();
-            }
-            catch (NullReferenceException e)
-            {
-                return null;
-            }
-        }
     }
 
 }

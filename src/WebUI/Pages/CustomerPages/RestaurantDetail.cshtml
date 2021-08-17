@@ -9,8 +9,6 @@
     ViewData["Title"] = "Browse Food Vendor";
     var requestCultureFeature = HttpContext.Features.Get<IRequestCultureFeature>();
     var requestCulture = requestCultureFeature.RequestCulture;
-
-    // FIXME: NullReferenceException: Restaurateur = null
 }
 
 @section Head
@@ -122,19 +120,24 @@ else
                                     {
                                         <div class="row">
                                             <label asp-for="Input.Quantity">@localizer["Quantity"]</label>
-                                            <select class="form-select col-1" aria-label="Select quantity" asp-for="Input.Quantity">
-                                                @for (var i = 1; i <= product.Quantity; i++)
+                                            @{
+                                                Model.Quantities = new List<SelectListItem>();
+
+                                                for (var i = 1; i <= product.Quantity; i++)
                                                 {
-                                                    <option value="@i">@i</option>
+                                                    Model.Quantities.Add(new SelectListItem{ Text = i.ToString(), Value = i.ToString()});
                                                 }
-                                            </select>
+                                                // FIXME: not picking up quantity
+                                                // FIXME: reloading page causes HttpPost
+                                            }
+                                            <select class="form-select col-1" asp-for="Input.Quantity" asp-items="Model.Quantities"></select>
                                             <span asp-validation-for="Input.Quantity" class="text-danger"></span>
                                         </div>
 
                                         <div class="modal-footer">
                                             <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">@localizer["Close"]</button>
                                             
-                                            <form asp-route-id="@Model.Restaurateur.Id" asp-route-productId="@product.Id" method="post">
+                                            <form asp-page-handler="AddToBasket" asp-route-id="@Model.Restaurateur.Id" asp-route-productId="@product.Id" method="post">
                                                 <button class="btn btn-primary" type="submit" id="add-to-cart-@product.Id">
                                                     @localizer["Add"]
                                                     <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-cart-plus" viewBox="0 0 16 16">

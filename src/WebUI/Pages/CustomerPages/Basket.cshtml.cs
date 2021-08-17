@@ -1,17 +1,24 @@
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
+using DeliveryWebApp.Application.BasketItems.Queries;
+using DeliveryWebApp.Application.Baskets.Queries;
 using DeliveryWebApp.Application.Common.Security;
 using DeliveryWebApp.Domain.Entities;
 using DeliveryWebApp.Infrastructure.Identity;
 using DeliveryWebApp.Infrastructure.Persistence;
-using DeliveryWebApp.Infrastructure.Security;
 using MediatR;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
+using System;
+using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
+using System.Threading.Tasks;
+using DeliveryWebApp.Application.BasketItems.Commands.DeleteBasketItem;
+using DeliveryWebApp.Application.BasketItems.Commands.UpdateBasketItem;
+using DeliveryWebApp.Application.Baskets.Commands.UpdateBasket;
+using DeliveryWebApp.Application.Common.Exceptions;
+using IdentityServer4.Extensions;
 
 namespace DeliveryWebApp.WebUI.Pages.CustomerPages
 {
@@ -32,16 +39,123 @@ namespace DeliveryWebApp.WebUI.Pages.CustomerPages
         }
 
         public Basket Basket { get; set; }
+        public List<BasketItem> BasketItems { get; set; }
         public List<Product> Products { get; set; }
+        public Customer Customer { get; set; }
+        public Restaurateur Restaurateur { get; set; }
+
+        [TempData]
+        public string StatusMessage { get; set; }
+
+        [BindProperty] public InputModel Input { get; set; }
+
+        public class InputModel
+        {
+            [Required] public int NewQuantity { get; set; }
+        }
 
         public async Task<IActionResult> OnGetAsync()
         {
             var user = await _userManager.GetUserAsync(User);
 
-            var customer = await _context.Customers.FirstAsync(c => c.ApplicationUserFk == user.Id);
-            
-            // TODO: Basket products
+            if (user == null)
+            {
+                return NotFound("User not found");
+            }
 
+            await LoadAsync(user);
+
+            if (Customer == null)
+            {
+                return NotFound("Unable to find entities");
+            }
+
+            return Page();
+        }
+
+        private async Task LoadAsync(ApplicationUser user)
+        {
+            try
+            {
+                Customer = await _context.Customers.FirstAsync(c => c.ApplicationUserFk == user.Id);
+            }
+            catch (InvalidOperationException e)
+            {
+                _logger.LogError($"Customer not found: {e.Message}");
+                Customer = null;
+                return;
+            }
+
+            Basket = await _mediator.Send(new GetBasketQuery
+            {
+                Customer = Customer
+            });
+
+            if (Basket != null)
+            {
+                BasketItems = await _mediator.Send(new GetBasketItemsQuery
+                {
+                    Basket = Basket
+                });
+
+                if (BasketItems != null)
+                {
+                    Products = new List<Product>();
+
+                    foreach (var item in BasketItems)
+                    {
+                        var p = await _context.Products.FindAsync(item.ProductId);
+
+                        if (p != null)
+                        {
+                            Products.Add(p);
+                        }
+                    }
+
+                    if (!Products.IsNullOrEmpty())
+                    {
+                        Restaurateur = await _context.Restaurateurs.FindAsync(Products[0].RestaurateurId);
+                    }
+                }
+            }
+        }
+
+        public async Task<IActionResult> OnPostRemoveFromBasketAsync(int id, int basketItemId)
+        {
+            if (!ModelState.IsValid)
+            {
+                return BadRequest();
+            }
+
+            var user = await _userManager.GetUserAsync(User);
+
+            if (user == null)
+            {
+                return NotFound("User not found");
+            }
+
+            await LoadAsync(user);
+
+            if (Customer == null || Basket == null || Products.IsNullOrEmpty() || BasketItems.IsNullOrEmpty())
+            {
+                return NotFound("Unable to find entities");
+            }
+
+            try
+            {
+                await _mediator.Send(new DeleteBasketItemCommand
+                {
+                    Id = basketItemId
+                });
+
+                _logger.LogInformation($"Deleted basket item with id: '{basketItemId}'");
+
+                StatusMessage = "Successfully removed item from basket";
+            }
+            catch (NotFoundException e)
+            {
+                _logger.LogError($"Unable to find basket item with id '{basketItemId}': {e.Message}");
+            }
 
             return Page();
         }
