@@ -1,4 +1,6 @@
-﻿using DeliveryWebApp.Application.Baskets.Commands.CreateBasket;
+﻿using System;
+using System.Linq;
+using DeliveryWebApp.Application.Baskets.Commands.CreateBasket;
 using DeliveryWebApp.Application.Baskets.Commands.UpdateBasket;
 using DeliveryWebApp.Application.Common.Exceptions;
 using DeliveryWebApp.Application.Customers.Commands.CreateCustomer;
@@ -9,6 +11,7 @@ using DeliveryWebApp.Domain.Entities;
 using FluentAssertions;
 using NUnit.Framework;
 using System.Threading.Tasks;
+using DeliveryWebApp.Application.BasketItems.Queries;
 
 namespace DeliveryWebApp.Application.IntegrationTests.Baskets.Commands
 {
@@ -83,6 +86,35 @@ namespace DeliveryWebApp.Application.IntegrationTests.Baskets.Commands
             product.Quantity.Should().Be(p1.Quantity);
             update.TotalPrice.Should().Be(14.52M).And.BeOfType(typeof(decimal));
             update.CustomerId.Should().Be(customer.Id);
+
+            var updateCommand2 = new UpdateBasketCommand
+            {
+                Basket = basket,
+                Product = p1,
+                Quantity = 5
+            };
+
+            var update2 = await SendAsync(updateCommand2);
+
+            var items = await SendAsync(new GetBasketItemsQuery
+            {
+                Basket = basket
+            });
+
+            items.Should().NotBeNullOrEmpty();
+
+            try
+            {
+                var item = items.First(i => i.ProductId == p1.Id);
+
+                item.BasketId.Should().Be(basket.Id);
+                item.ProductId.Should().Be(p1.Id);
+                item.Quantity.Should().Be(8);
+            }
+            catch (InvalidOperationException)
+            {
+                Assert.Fail();
+            }
         }
     }
 }

@@ -58,16 +58,7 @@ namespace DeliveryWebApp.Application.OrderItems.Commands.UpdateOrderItem
                 }
 
                 // update product quantity
-                var newQuantity = product.Quantity;
-
-                if (request.Quantity < entity.Quantity)
-                {
-                    newQuantity += (entity.Quantity - (int)request.Quantity);
-                }
-                else
-                {
-                    newQuantity -= ((int)request.Quantity - entity.Quantity);
-                }
+                var newQuantity = entity.Quantity + (int)request.Quantity;
 
                 await _mediator.Send(new UpdateProductCommand
                 {
