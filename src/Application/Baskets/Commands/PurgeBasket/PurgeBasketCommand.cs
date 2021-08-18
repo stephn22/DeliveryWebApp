@@ -10,8 +10,6 @@ using System.Threading.Tasks;
 
 namespace DeliveryWebApp.Application.Baskets.Commands.PurgeBasket
 {
-    //[Authorize(Roles = RoleName.Admin)]
-    //[Authorize(Policy = PolicyName.IsCustomer)] TODO:
     public class PurgeBasketCommand : IRequest
     {
         public int Id { get; set; }

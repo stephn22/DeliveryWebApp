@@ -55,7 +55,7 @@ namespace DeliveryWebApp.Application.IntegrationTests.Baskets.Commands
                 Customer = customer
             };
 
-            var restaurateur = await SendAsync(restaurateurCommand);
+            var restaurateur1 = await SendAsync(restaurateurCommand);
 
             // create some products
 
@@ -67,14 +67,15 @@ namespace DeliveryWebApp.Application.IntegrationTests.Baskets.Commands
                 Price = 5.50M,
                 Discount = 12,
                 Quantity = 21,
-                RestaurateurId = restaurateur.Id
+                RestaurateurId = restaurateur1.Id
             });
 
             var updateCommand = new UpdateBasketCommand
             {
                 Basket = basket,
                 Product = p1,
-                Quantity = 3
+                Quantity = 3,
+                RestaurateurId = restaurateur1.Id
             };
 
             var update = await SendAsync(updateCommand);
@@ -91,7 +92,8 @@ namespace DeliveryWebApp.Application.IntegrationTests.Baskets.Commands
             {
                 Basket = basket,
                 Product = p1,
-                Quantity = 5
+                Quantity = 5,
+                RestaurateurId = restaurateur1.Id
             };
 
             var update2 = await SendAsync(updateCommand2);
@@ -115,6 +117,58 @@ namespace DeliveryWebApp.Application.IntegrationTests.Baskets.Commands
             {
                 Assert.Fail();
             }
+
+            var user2 = await RunAsUserAsync("mariorossi@gmail.com", "Qwerty12!", Array.Empty<string>());
+
+            var customer2 = await SendAsync(new CreateCustomerCommand
+            {
+                ApplicationUserFk = user2,
+                FirstName = "Mario",
+                LastName = "Rossi",
+                Email = "mariorossi@gmail.com"
+            });
+
+            // try adding a product from a different restaurateur
+
+            var restaurateur2 = await SendAsync(new CreateRestaurateurCommand
+            {
+                Customer = customer2
+            });
+
+            var p2 = await SendAsync(new CreateProductCommand
+            {
+                Image = null,
+                Name = "Grilled Salmon",
+                Category = ProductCategory.Fish,
+                Price = 14.35M,
+                Discount = 0,
+                Quantity = 45,
+                RestaurateurId = restaurateur2.Id
+            });
+
+            var updateCommand3 = new UpdateBasketCommand
+            {
+                Basket = basket,
+                Product = p2,
+                Quantity = 2,
+                RestaurateurId = restaurateur2.Id
+            };
+
+            var update3 = await SendAsync(updateCommand3);
+
+            update3.Should().NotBeNull();
+            update3.Id.Should().BeGreaterThan(0);
+            update3.TotalPrice.Should().Be(p2.Price * 2);
+
+            var basketItems = await SendAsync(new GetBasketItemsQuery
+            {
+                Basket = basket
+            });
+
+            basketItems.Should().NotBeNullOrEmpty();
+            basketItems.Count.Should().Be(1);
+            basketItems[0].ProductId.Should().Be(p2.Id);
+            basketItems[0].Quantity.Should().Be(updateCommand3.Quantity);
         }
     }
 }

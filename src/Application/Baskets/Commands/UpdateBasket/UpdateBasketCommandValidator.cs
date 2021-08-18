@@ -11,6 +11,8 @@ namespace DeliveryWebApp.Application.Baskets.Commands.UpdateBasket
             RuleFor(b => b.Product).NotEmpty();
 
             RuleFor(b => b.Basket).NotEmpty();
+
+            RuleFor(b => b.RestaurateurId).GreaterThan(0).NotEmpty();
         }
     }
 }

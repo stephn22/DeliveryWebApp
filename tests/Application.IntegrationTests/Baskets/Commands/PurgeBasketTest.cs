@@ -100,19 +100,22 @@ namespace DeliveryWebApp.Application.IntegrationTests.Baskets.Commands
             {
                 Basket = basket,
                 Product = p1,
-                Quantity = 1
+                Quantity = 1,
+                RestaurateurId = restaurateur.Id
             });
             await SendAsync(new UpdateBasketCommand
             {
                 Basket = basket,
                 Product = p2,
-                Quantity = 2
+                Quantity = 2,
+                RestaurateurId = restaurateur.Id
             });
             var updatedBasket = await SendAsync(new UpdateBasketCommand
             {
                 Basket = basket,
                 Product = p3,
-                Quantity = 3
+                Quantity = 3,
+                RestaurateurId = restaurateur.Id
             });
 
             await SendAsync(new PurgeBasketCommand
