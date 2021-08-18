@@ -15,6 +15,7 @@ using FluentAssertions.Common;
 using NUnit.Framework;
 using System;
 using System.Threading.Tasks;
+using DeliveryWebApp.Application.Addresses.Commands.CreateAddress;
 
 namespace DeliveryWebApp.Application.IntegrationTests.Orders.Commands
 {
@@ -34,6 +35,22 @@ namespace DeliveryWebApp.Application.IntegrationTests.Orders.Commands
                 LastName = "Doe",
                 Email = "johndoe@gmail.com"
             });
+
+            var addressCommand = new CreateAddressCommand
+            {
+                AddressLine1 = "Via Verdi",
+                AddressLine2 = "",
+                City = "Milan",
+                Country = "Italy",
+                PostalCode = "28100",
+                StateProvince = "MI",
+                Number = "2",
+                Latitude = 48.5472M,
+                Longitude = 72.1804M,
+                CustomerId = customer1.Id
+            };
+
+            var address = await SendAsync(addressCommand);
 
             var user2 = await RunAsUserAsync("mariorossi@gmail.com", "Qwerty12!", Array.Empty<string>());
 
@@ -124,38 +141,41 @@ namespace DeliveryWebApp.Application.IntegrationTests.Orders.Commands
             var createOrder = new CreateOrderCommand
             {
                 Customer = customer1,
-                Restaurateur = restaurateur
+                Restaurateur = restaurateur,
+                BasketItems = updatedBasket.BasketItems,
+                Address = address
             };
 
             var order = await SendAsync(createOrder);
 
-            // update order
-            var command = new UpdateOrderCommand
+            // update
+
+            var updateOrder = new UpdateOrderCommand
             {
+                DeliveryDate = new DateTime(2021, 10, 4, 14, 16, 23),
                 Id = order.Id,
-                BasketItems = updatedBasket.BasketItems,
-                Date = DateTime.UtcNow,
-                OrderStatus = OrderStatus.Checkout
+                OrderStatus = OrderStatus.Delivered
             };
 
-            await SendAsync(command);
+            await SendAsync(updateOrder);
 
-            var update = await FindAsync<Order>(order.Id);
-
-            update.Should().NotBeNull();
-            update.Id.Should().BeGreaterThan(0);
-            update.CustomerId.Should().Be(customer1.Id);
-            update.RestaurateurId.Should().Be(restaurateur.Id);
-            update.Date.Should().IsSameOrEqualTo(command.Date);
-            update.OrderItems = await SendAsync(new GetOrderItemsQuery
+            order = await FindAsync<Order>(updateOrder.Id);
+            
+            order.Should().NotBeNull();
+            order.Id.Should().BeGreaterThan(0);
+            order.CustomerId.Should().Be(customer1.Id);
+            order.RestaurateurId.Should().Be(restaurateur.Id);
+            order.Date.Should().IsSameOrEqualTo(DateTime.UtcNow);
+            order.OrderItems = await SendAsync(new GetOrderItemsQuery
             {
-                OrderId = update.Id
+                OrderId = order.Id
             });
-            update.OrderItems.Should().NotBeNullOrEmpty();
-            update.OrderItems.ForAll(o => o.OrderId.Should().Be(update.Id));
-            update.OrderItems.ForAll(o => o.Id.Should().BeGreaterThan(0));
-            update.Status.Should().Be(command.OrderStatus);
-            update.TotalPrice.Should().Be(63.37M);
+            order.OrderItems.Should().NotBeNullOrEmpty();
+            order.OrderItems.ForAll(o => o.OrderId.Should().Be(order.Id));
+            order.OrderItems.ForAll(o => o.Id.Should().BeGreaterThan(0));
+            order.Status.Should().Be(OrderStatus.Delivered);
+            order.DeliveryDate.Should().IsSameOrEqualTo(updateOrder.DeliveryDate);
+            order.TotalPrice.Should().Be(63.37M);
         }
     }
 }

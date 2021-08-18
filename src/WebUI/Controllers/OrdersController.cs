@@ -12,7 +12,7 @@ using System.Threading.Tasks;
 
 namespace DeliveryWebApp.WebUI.Controllers
 {
-    [Authorize]
+    [Authorize(Roles = RoleName.Admin)]
     [Route("api/[controller]")]
     [ApiController]
     public class OrdersController : ControllerBase
@@ -26,19 +26,10 @@ namespace DeliveryWebApp.WebUI.Controllers
             _mapper = mapper;
         }
 
-        [HttpPost("{id:int}")]
-        public async Task<ActionResult<Order>> Create(Order request, int id)
+        [HttpGet]
+        public async Task<List<Order>> Read()
         {
-            return await _mediator.Send(_mapper.Map<CreateOrderCommand>(request));
-        }
-
-        [HttpGet("{id:int}")]
-        public async Task<List<Order>> Read(int id)
-        {
-            return await _mediator.Send(new GetOrdersQuery
-            {
-                RestaurateurId = id
-            });
+            return await _mediator.Send(new GetOrdersQuery());
         }
 
         [HttpPut]

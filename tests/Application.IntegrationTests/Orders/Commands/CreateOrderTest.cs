@@ -7,6 +7,11 @@ using FluentAssertions;
 using NUnit.Framework;
 using System;
 using System.Threading.Tasks;
+using DeliveryWebApp.Application.Addresses.Commands.CreateAddress;
+using DeliveryWebApp.Application.BasketItems.Queries;
+using DeliveryWebApp.Application.Baskets.Commands.CreateBasket;
+using DeliveryWebApp.Application.Baskets.Commands.UpdateBasket;
+using DeliveryWebApp.Application.Products.Commands.CreateProduct;
 
 namespace DeliveryWebApp.Application.IntegrationTests.Orders.Commands
 {
@@ -51,10 +56,59 @@ namespace DeliveryWebApp.Application.IntegrationTests.Orders.Commands
                 Customer = customer2
             });
 
+            var addressCommand = new CreateAddressCommand
+            {
+                AddressLine1 = "Via Verdi",
+                AddressLine2 = "",
+                City = "Milan",
+                Country = "Italy",
+                PostalCode = "28100",
+                StateProvince = "MI",
+                Number = "2",
+                Latitude = 48.5472M,
+                Longitude = 72.1804M,
+                CustomerId = customer1.Id
+            };
+
+            var address = await SendAsync(addressCommand);
+
+            var basketCommand = new CreateBasketCommand
+            {
+                Customer = customer1
+            };
+
+            var basket = await SendAsync(basketCommand);
+
+            var p1 = await SendAsync(new CreateProductCommand
+            {
+                Image = null,
+                Name = "Pizza",
+                Category = ProductCategory.Pizza,
+                Price = 5.50M,
+                Discount = 12,
+                Quantity = 21,
+                RestaurateurId = restaurateur.Id
+            });
+
+            await SendAsync(new UpdateBasketCommand
+            {
+                Basket = basket,
+                Product = p1,
+                Quantity = 3,
+                RestaurateurId = restaurateur.Id
+            });
+
+            basket.BasketItems = await SendAsync(new GetBasketItemsQuery
+            {
+                Basket = basket
+            });
+
             var orderCommand = new CreateOrderCommand
             {
                 Customer = customer1,
-                Restaurateur = restaurateur
+                Restaurateur = restaurateur,
+                BasketItems = basket.BasketItems,
+                Address = address
             };
 
             var order = await SendAsync(orderCommand);
@@ -64,7 +118,7 @@ namespace DeliveryWebApp.Application.IntegrationTests.Orders.Commands
             order.Status.Should().Be(OrderStatus.New);
             order.RestaurateurId.Should().Be(restaurateur.Id);
             order.CustomerId.Should().Be(customer1.Id);
-            order.TotalPrice.Should().Be(0.00M);
+            order.TotalPrice.Should().Be(14.52M);
 
             try
             {

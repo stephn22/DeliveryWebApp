@@ -18,7 +18,14 @@ namespace DeliveryWebApp.Infrastructure.Persistence.Configurations
                 .HasPrecision(0)
                 .IsRequired();
 
+            builder.Property(o => o.DeliveryDate)
+                .HasColumnType("datetime2")
+                .HasPrecision(0);
+
             builder.Property(u => u.Status)
+                .IsRequired();
+
+            builder.Property(o => o.AddressId)
                 .IsRequired();
 
             builder.HasOne(o => o.Customer)
