@@ -1,6 +1,6 @@
-﻿using DeliveryWebApp.Application.Common.Exceptions;
+﻿using DeliveryWebApp.Application.Baskets.Extensions;
+using DeliveryWebApp.Application.Common.Exceptions;
 using DeliveryWebApp.Application.Common.Interfaces;
-using DeliveryWebApp.Application.Products.Commands.UpdateProducts;
 using DeliveryWebApp.Domain.Entities;
 using MediatR;
 using System.Threading;
@@ -34,6 +34,16 @@ namespace DeliveryWebApp.Application.BasketItems.Commands.DeleteBasketItem
             }
 
             _context.BasketItems.Remove(entity);
+            await _context.SaveChangesAsync(cancellationToken);
+
+            var basket = await _context.Baskets.FindAsync(entity.BasketId);
+
+            if (basket != null)
+            {
+                basket.TotalPrice = await basket.GetBasketTotalPrice(_mediator, _context);
+                _context.Baskets.Update(basket);
+            }
+
             await _context.SaveChangesAsync(cancellationToken);
 
             return entity;

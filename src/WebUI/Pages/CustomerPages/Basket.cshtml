@@ -16,7 +16,7 @@
         Your cart is empty
     </div>
     <div class="text-center">
-        <img src="/icons/undraw_empty_cart_co35.svg" alt="empty_cart" height="500" width="500" />
+        <img src="/icons/undraw_empty_cart_co35.svg" alt="empty_cart" height="500" width="500"/>
     </div>
 }
 else
@@ -25,13 +25,13 @@ else
         You can add products from one food vendor at time.
     </div>
 
-    <partial name="_StatusMessage" for="StatusMessage" />
+    <partial name="_StatusMessage" for="StatusMessage"/>
 
     <div class="text-end">
         <a class="btn" asp-page="/CustomerPages/Checkout">
             <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-cart-check" viewBox="0 0 16 16">
-                <path d="M11.354 6.354a.5.5 0 0 0-.708-.708L8 8.293 6.854 7.146a.5.5 0 1 0-.708.708l1.5 1.5a.5.5 0 0 0 .708 0l3-3z" />
-                <path d="M.5 1a.5.5 0 0 0 0 1h1.11l.401 1.607 1.498 7.985A.5.5 0 0 0 4 12h1a2 2 0 1 0 0 4 2 2 0 0 0 0-4h7a2 2 0 1 0 0 4 2 2 0 0 0 0-4h1a.5.5 0 0 0 .491-.408l1.5-8A.5.5 0 0 0 14.5 3H2.89l-.405-1.621A.5.5 0 0 0 2 1H.5zm3.915 10L3.102 4h10.796l-1.313 7h-8.17zM6 14a1 1 0 1 1-2 0 1 1 0 0 1 2 0zm7 0a1 1 0 1 1-2 0 1 1 0 0 1 2 0z" />
+                <path d="M11.354 6.354a.5.5 0 0 0-.708-.708L8 8.293 6.854 7.146a.5.5 0 1 0-.708.708l1.5 1.5a.5.5 0 0 0 .708 0l3-3z"/>
+                <path d="M.5 1a.5.5 0 0 0 0 1h1.11l.401 1.607 1.498 7.985A.5.5 0 0 0 4 12h1a2 2 0 1 0 0 4 2 2 0 0 0 0-4h7a2 2 0 1 0 0 4 2 2 0 0 0 0-4h1a.5.5 0 0 0 .491-.408l1.5-8A.5.5 0 0 0 14.5 3H2.89l-.405-1.621A.5.5 0 0 0 2 1H.5zm3.915 10L3.102 4h10.796l-1.313 7h-8.17zM6 14a1 1 0 1 1-2 0 1 1 0 0 1 2 0zm7 0a1 1 0 1 1-2 0 1 1 0 0 1 2 0z"/>
             </svg>
             Checkout
         </a>
@@ -41,7 +41,7 @@ else
         <h4>@ViewData["Title"]: @Model.Basket.TotalPrice.ToString("C")</h4>
     </div>
 
-    <hr />
+    <hr/>
 
     <table class="table">
         <thead>
@@ -70,7 +70,7 @@ else
         {
             <tr>
                 <td>
-                    <img class="img-dashboard square rounded img-fluid" style="height: 60px; width: 60px" src="data:image/jpeg;base64,@Convert.ToBase64String(Model.Products[i].Image)" alt="" />
+                    <img class="img-dashboard square rounded img-fluid" style="height: 60px; width: 60px" src="data:image/jpeg;base64,@Convert.ToBase64String(Model.Products[i].Image)" alt=""/>
                 </td>
                 <td>
                     @Html.DisplayFor(model => model.Products[i].Name)
@@ -82,14 +82,14 @@ else
                     @Html.DisplayFor(model => model.BasketItems[i].Quantity)
                 </td>
                 <td>
-                    <a class="link-primary" asp-page="RestaurantDetail/@Model.Restaurateur.Id">@Model.Restaurateur.RestaurantName</a>
+                    <a class="link-primary" asp-page="/CustomerPages/RestaurantDetail" asp-route-id="@Model.Restaurateur.Id">@Model.Restaurateur.RestaurantName</a>
                 </td>
                 <td>
                     @* Edit button opens modal *@
                     <button class="btn btn-outline-primary" title="Edit" id="editBtn-@i" data-bs-toggle="modal" data-bs-target="#editModal-@i">
                         <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-pencil-square" viewBox="0 0 16 16">
-                            <path d="M15.502 1.94a.5.5 0 0 1 0 .706L14.459 3.69l-2-2L13.502.646a.5.5 0 0 1 .707 0l1.293 1.293zm-1.75 2.456-2-2L4.939 9.21a.5.5 0 0 0-.121.196l-.805 2.414a.25.25 0 0 0 .316.316l2.414-.805a.5.5 0 0 0 .196-.12l6.813-6.814z" />
-                            <path fill-rule="evenodd" d="M1 13.5A1.5 1.5 0 0 0 2.5 15h11a1.5 1.5 0 0 0 1.5-1.5v-6a.5.5 0 0 0-1 0v6a.5.5 0 0 1-.5.5h-11a.5.5 0 0 1-.5-.5v-11a.5.5 0 0 1 .5-.5H9a.5.5 0 0 0 0-1H2.5A1.5 1.5 0 0 0 1 2.5v11z" />
+                            <path d="M15.502 1.94a.5.5 0 0 1 0 .706L14.459 3.69l-2-2L13.502.646a.5.5 0 0 1 .707 0l1.293 1.293zm-1.75 2.456-2-2L4.939 9.21a.5.5 0 0 0-.121.196l-.805 2.414a.25.25 0 0 0 .316.316l2.414-.805a.5.5 0 0 0 .196-.12l6.813-6.814z"/>
+                            <path fill-rule="evenodd" d="M1 13.5A1.5 1.5 0 0 0 2.5 15h11a1.5 1.5 0 0 0 1.5-1.5v-6a.5.5 0 0 0-1 0v6a.5.5 0 0 1-.5.5h-11a.5.5 0 0 1-.5-.5v-11a.5.5 0 0 1 .5-.5H9a.5.5 0 0 0 0-1H2.5A1.5 1.5 0 0 0 1 2.5v11z"/>
                         </svg>
                     </button>
 
@@ -116,7 +116,7 @@ else
                                     <div class="row">
                                         <form method="post" asp-page-handler="UpdateBasketItem" asp-route-id="@Model.BasketItems[i].Id">
                                             @* Quantity *@
-                                                
+
                                             <label asp-for="NewQuantity">Quantity</label>
                                             <select asp-for="NewQuantity" class="form-select col-sm">
                                                 @for (var j = 1; j <= Model.Products[i].Quantity; j++)
@@ -139,7 +139,7 @@ else
                                     <div class="modal-footer">
                                         <div class="text-start">
                                             @* Remove from basket option also here *@
-                                            
+
                                             <form asp-page-handler="RemoveFromBasket" asp-route-id="@Model.BasketItems[i].Id" method="post">
                                                 <button class="btn btn-danger" title="Remove from cart" type="submit">
                                                     Remove
@@ -164,8 +164,8 @@ else
                     <form asp-page-handler="RemoveFromBasket" asp-route-id="@Model.BasketItems[i].Id" method="post">
                         <button class="btn btn-outline-danger" title="Remove from cart" type="submit">
                             <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-cart-x" viewBox="0 0 16 16">
-                                <path d="M7.354 5.646a.5.5 0 1 0-.708.708L7.793 7.5 6.646 8.646a.5.5 0 1 0 .708.708L8.5 8.207l1.146 1.147a.5.5 0 0 0 .708-.708L9.207 7.5l1.147-1.146a.5.5 0 0 0-.708-.708L8.5 6.793 7.354 5.646z" />
-                                <path d="M.5 1a.5.5 0 0 0 0 1h1.11l.401 1.607 1.498 7.985A.5.5 0 0 0 4 12h1a2 2 0 1 0 0 4 2 2 0 0 0 0-4h7a2 2 0 1 0 0 4 2 2 0 0 0 0-4h1a.5.5 0 0 0 .491-.408l1.5-8A.5.5 0 0 0 14.5 3H2.89l-.405-1.621A.5.5 0 0 0 2 1H.5zm3.915 10L3.102 4h10.796l-1.313 7h-8.17zM6 14a1 1 0 1 1-2 0 1 1 0 0 1 2 0zm7 0a1 1 0 1 1-2 0 1 1 0 0 1 2 0z" />
+                                <path d="M7.354 5.646a.5.5 0 1 0-.708.708L7.793 7.5 6.646 8.646a.5.5 0 1 0 .708.708L8.5 8.207l1.146 1.147a.5.5 0 0 0 .708-.708L9.207 7.5l1.147-1.146a.5.5 0 0 0-.708-.708L8.5 6.793 7.354 5.646z"/>
+                                <path d="M.5 1a.5.5 0 0 0 0 1h1.11l.401 1.607 1.498 7.985A.5.5 0 0 0 4 12h1a2 2 0 1 0 0 4 2 2 0 0 0 0-4h7a2 2 0 1 0 0 4 2 2 0 0 0 0-4h1a.5.5 0 0 0 .491-.408l1.5-8A.5.5 0 0 0 14.5 3H2.89l-.405-1.621A.5.5 0 0 0 2 1H.5zm3.915 10L3.102 4h10.796l-1.313 7h-8.17zM6 14a1 1 0 1 1-2 0 1 1 0 0 1 2 0zm7 0a1 1 0 1 1-2 0 1 1 0 0 1 2 0z"/>
                             </svg>
                         </button>
                     </form>

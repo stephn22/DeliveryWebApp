@@ -4,6 +4,7 @@ using DeliveryWebApp.Domain.Entities;
 using MediatR;
 using System.Threading;
 using System.Threading.Tasks;
+using DeliveryWebApp.Application.Baskets.Extensions;
 
 namespace DeliveryWebApp.Application.BasketItems.Commands.UpdateBasketItem
 {
@@ -16,10 +17,12 @@ namespace DeliveryWebApp.Application.BasketItems.Commands.UpdateBasketItem
     public class UpdateBasketItemCommandHandler : IRequestHandler<UpdateBasketItemCommand, BasketItem>
     {
         private readonly IApplicationDbContext _context;
+        private readonly IMediator _mediator;
 
-        public UpdateBasketItemCommandHandler(IApplicationDbContext context)
+        public UpdateBasketItemCommandHandler(IApplicationDbContext context, IMediator mediator)
         {
             _context = context;
+            _mediator = mediator;
         }
 
         public async Task<BasketItem> Handle(UpdateBasketItemCommand request, CancellationToken cancellationToken)
@@ -33,6 +36,14 @@ namespace DeliveryWebApp.Application.BasketItems.Commands.UpdateBasketItem
 
             entity.Quantity = request.Quantity;
 
+            var basket = await _context.Baskets.FindAsync(entity.BasketId);
+
+            if (basket != null)
+            {
+                basket.TotalPrice = await basket.GetBasketTotalPrice(_mediator, _context);
+                _context.Baskets.Update(basket);
+            }
+            
             await _context.SaveChangesAsync(cancellationToken);
 
             return entity;
