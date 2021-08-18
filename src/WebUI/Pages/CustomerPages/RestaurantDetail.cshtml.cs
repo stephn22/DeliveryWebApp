@@ -10,6 +10,7 @@ using MediatR;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
+using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 using System;
@@ -17,7 +18,6 @@ using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Threading.Tasks;
-using Microsoft.AspNetCore.Mvc.Rendering;
 
 namespace DeliveryWebApp.WebUI.Pages.CustomerPages
 {
@@ -47,16 +47,11 @@ namespace DeliveryWebApp.WebUI.Pages.CustomerPages
         public List<SelectListItem> Quantities { get; set; }
 
         [BindProperty]
-        public InputModel Input { get; set; }
+        [Required]
+        public int Quantity { get; set; }
 
         [TempData]
         public string StatusMessage { get; set; }
-
-        public class InputModel
-        {
-            [Required]
-            public int Quantity { get; set; }
-        }
 
         public async Task<IActionResult> OnGetAsync(int? id)
         {
@@ -106,15 +101,27 @@ namespace DeliveryWebApp.WebUI.Pages.CustomerPages
             }
 
             Basket = await _mediator.Send(new GetBasketQuery
-                     {
-                         Customer = Customer
-                     }) // If basket does not exist (null), create a new one
+            {
+                Customer = Customer
+            }) // If basket does not exist (null), create a new one
                      ?? await _mediator.Send(new CreateBasketCommand
                      {
                          Customer = Customer
                      });
 
             _logger.LogInformation($"Created new basket with id: {Basket.Id}");
+        }
+
+        public List<SelectListItem> QuantityList(int qty)
+        {
+            Quantities = new List<SelectListItem>(qty);
+
+            for (var i = 1; i <= qty; i++)
+            {
+                Quantities.Add(new SelectListItem { Text = i.ToString(), Value = i.ToString() });
+            }
+
+            return Quantities;
         }
 
         public async Task<IActionResult> OnPostAddToBasketAsync(int id, int productId)
@@ -139,14 +146,15 @@ namespace DeliveryWebApp.WebUI.Pages.CustomerPages
             {
                 Basket = Basket,
                 Product = product,
-                Quantity = Input.Quantity == 0 ? 1 : Input.Quantity
+                Quantity = Quantity,
+                RestaurateurId = Restaurateur.Id
             });
 
             _logger.LogInformation($"Added product with id {product.Id} to the basket of the user {user.Id}");
 
             StatusMessage = "Added product to cart successfully";
 
-            return Page();
+            return RedirectToPage();
         }
     }
 }

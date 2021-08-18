@@ -1,9 +1,12 @@
+using DeliveryWebApp.Application.BasketItems.Commands.DeleteBasketItem;
 using DeliveryWebApp.Application.BasketItems.Queries;
 using DeliveryWebApp.Application.Baskets.Queries;
+using DeliveryWebApp.Application.Common.Exceptions;
 using DeliveryWebApp.Application.Common.Security;
 using DeliveryWebApp.Domain.Entities;
 using DeliveryWebApp.Infrastructure.Identity;
 using DeliveryWebApp.Infrastructure.Persistence;
+using IdentityServer4.Extensions;
 using MediatR;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
@@ -14,11 +17,6 @@ using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Threading.Tasks;
-using DeliveryWebApp.Application.BasketItems.Commands.DeleteBasketItem;
-using DeliveryWebApp.Application.BasketItems.Commands.UpdateBasketItem;
-using DeliveryWebApp.Application.Baskets.Commands.UpdateBasket;
-using DeliveryWebApp.Application.Common.Exceptions;
-using IdentityServer4.Extensions;
 
 namespace DeliveryWebApp.WebUI.Pages.CustomerPages
 {

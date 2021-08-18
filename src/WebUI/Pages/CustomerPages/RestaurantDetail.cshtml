@@ -29,7 +29,7 @@
     </style>
 }
 
-<partial name="_StatusMessage" for="StatusMessage" />
+<partial name="_StatusMessage" for="StatusMessage"/>
 
 <h4>@Model.Restaurateur.RestaurantName</h4>
 
@@ -118,26 +118,23 @@ else
                                     }
                                     else
                                     {
-                                        <div class="row">
-                                            <label asp-for="Input.Quantity">@localizer["Quantity"]</label>
-                                            @{
-                                                Model.Quantities = new List<SelectListItem>();
+                                        <form asp-page-handler="AddToBasket" asp-route-id="@Model.Restaurateur.Id" asp-route-productId="@product.Id" method="post">
+                                            <div class="row">
 
-                                                for (var i = 1; i <= product.Quantity; i++)
-                                                {
-                                                    Model.Quantities.Add(new SelectListItem{ Text = i.ToString(), Value = i.ToString()});
-                                                }
-                                                // FIXME: not picking up quantity
-                                                // FIXME: reloading page causes HttpPost
-                                            }
-                                            <select class="form-select col-1" asp-for="Input.Quantity" asp-items="Model.Quantities"></select>
-                                            <span asp-validation-for="Input.Quantity" class="text-danger"></span>
-                                        </div>
+                                                <label asp-for="Quantity">@localizer["Quantity"]</label>
 
-                                        <div class="modal-footer">
-                                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">@localizer["Close"]</button>
-                                            
-                                            <form asp-page-handler="AddToBasket" asp-route-id="@Model.Restaurateur.Id" asp-route-productId="@product.Id" method="post">
+                                                <select asp-for="Quantity" asp-items="Model.Quantities" class="form-select col-sm">
+                                                    @for (var i = 1; i <= product.Quantity; i++)
+                                                    {
+                                                        <option value="@i">@i</option>
+                                                    }
+                                                </select>
+                                                <span asp-validation-for="Quantity" class="text-danger"></span>
+                                            </div>
+
+                                            <div class="modal-footer">
+                                                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">@localizer["Close"]</button>
+
                                                 <button class="btn btn-primary" type="submit" id="add-to-cart-@product.Id">
                                                     @localizer["Add"]
                                                     <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-cart-plus" viewBox="0 0 16 16">
@@ -145,8 +142,8 @@ else
                                                         <path d="M.5 1a.5.5 0 0 0 0 1h1.11l.401 1.607 1.498 7.985A.5.5 0 0 0 4 12h1a2 2 0 1 0 0 4 2 2 0 0 0 0-4h7a2 2 0 1 0 0 4 2 2 0 0 0 0-4h1a.5.5 0 0 0 .491-.408l1.5-8A.5.5 0 0 0 14.5 3H2.89l-.405-1.621A.5.5 0 0 0 2 1H.5zm3.915 10L3.102 4h10.796l-1.313 7h-8.17zM6 14a1 1 0 1 1-2 0 1 1 0 0 1 2 0zm7 0a1 1 0 1 1-2 0 1 1 0 0 1 2 0z"/>
                                                     </svg>
                                                 </button>
-                                            </form>
-                                        </div>
+                                            </div>
+                                        </form>
                                     }
                                 </div>
                             </div>
