@@ -4,7 +4,9 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using DeliveryWebApp.Application.Common.Interfaces;
+using DeliveryWebApp.Application.OrderItems.Extensions;
 using DeliveryWebApp.Application.OrderItems.Queries;
+using DeliveryWebApp.Application.Products.Extensions;
 using DeliveryWebApp.Domain.Entities;
 using MediatR;
 
@@ -12,26 +14,31 @@ namespace DeliveryWebApp.Application.Orders.Extensions
 {
     public static class OrderExtensions
     {
-        public static async Task<decimal> GetOrderTotalPrice(this Order order, IMediator mediator)
+        public static async Task<decimal> GetOrderTotalPrice(this Order order, IMediator mediator, IApplicationDbContext context)
         {
-            const decimal tot = 0.00M;
+            var tot = 0.00M;
 
             order.OrderItems = await mediator.Send(new GetOrderItemsQuery
             {
                 OrderId = order.Id
             });
 
-            return order.OrderItems?.Sum(item => (item.ProductPrice.DiscountedPrice(item.Discount) * item.Quantity)) ?? tot;
-        }
-
-        private static decimal DiscountedPrice(this decimal price, int discount)
-        {
-            if (discount != 0)
+            if (order.OrderItems == null)
             {
-                return price * ((100.000M - discount) / 100.00M);
+                return tot;
             }
 
-            return price;
+            foreach (var item in order.OrderItems)
+            {
+                var product = await item.GetProduct(context);
+
+                if (product != null)
+                {
+                    tot += (product.DiscountedPrice() * item.Quantity);
+                }
+            }
+
+            return tot;
         }
     }
 }

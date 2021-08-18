@@ -10,5 +10,29 @@
     "inputFiles": [
       "wwwroot/js/classes/address.js"
     ]
+  },
+  {
+    "outputFileName": "wwwroot/js/classes/restaurant.min.js",
+    "inputFiles": [
+      "wwwroot/js/classes/restaurant.js"
+    ]
+  },
+  {
+    "outputFileName": "wwwroot/js/image_utilities.min.js",
+    "inputFiles": [
+      "wwwroot/js/image_utilities.js"
+    ]
+  },
+  {
+    "outputFileName": "wwwroot/css/restaurant-list.min.css",
+    "inputFiles": [
+      "wwwroot/css/restaurant-list.css"
+    ]
+  },
+  {
+    "outputFileName": "wwwroot/css/images.min.css",
+    "inputFiles": [
+      "wwwroot/css/images.css"
+    ]
   }
 ]

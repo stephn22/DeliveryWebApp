@@ -100,19 +100,22 @@ namespace DeliveryWebApp.Application.IntegrationTests.Baskets.Commands
             {
                 Basket = basket,
                 Product = p1,
-                Quantity = 1
+                Quantity = 1,
+                RestaurateurId = restaurateur.Id
             });
             await SendAsync(new UpdateBasketCommand
             {
                 Basket = basket,
                 Product = p2,
-                Quantity = 2
+                Quantity = 2,
+                RestaurateurId = restaurateur.Id
             });
             var updatedBasket = await SendAsync(new UpdateBasketCommand
             {
                 Basket = basket,
                 Product = p3,
-                Quantity = 3
+                Quantity = 3,
+                RestaurateurId = restaurateur.Id
             });
 
             await SendAsync(new PurgeBasketCommand
@@ -127,16 +130,9 @@ namespace DeliveryWebApp.Application.IntegrationTests.Baskets.Commands
 
             var b = await FindAsync<Basket>(basket.Id);
 
-            var product1 = await FindAsync<Product>(p1.Id);
-            var product2 = await FindAsync<Product>(p2.Id);
-            var product3 = await FindAsync<Product>(p3.Id);
-
             b.Should().NotBeNull();
             b.TotalPrice.Should().Be(0.00M);
             items.Should().BeNullOrEmpty();
-            product1.Quantity.Should().Be(p1.Quantity);
-            product2.Quantity.Should().Be(p2.Quantity);
-            product3.Quantity.Should().Be(p3.Quantity);
         }
     }
 }

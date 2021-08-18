@@ -1,20 +1,23 @@
+using DeliveryWebApp.Application.Baskets.Commands.CreateBasket;
 using DeliveryWebApp.Application.Baskets.Commands.UpdateBasket;
+using DeliveryWebApp.Application.Baskets.Queries;
 using DeliveryWebApp.Application.Common.Security;
 using DeliveryWebApp.Application.Products.Queries.GetProducts;
 using DeliveryWebApp.Domain.Entities;
 using DeliveryWebApp.Infrastructure.Identity;
 using DeliveryWebApp.Infrastructure.Persistence;
-using DeliveryWebApp.Infrastructure.Security;
 using MediatR;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
+using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
+using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Threading.Tasks;
-using DeliveryWebApp.Application.Baskets.Queries;
 
 namespace DeliveryWebApp.WebUI.Pages.CustomerPages
 {
@@ -40,58 +43,104 @@ namespace DeliveryWebApp.WebUI.Pages.CustomerPages
         public Restaurateur Restaurateur { get; set; }
         public List<Product> Products { get; set; }
 
+
+        [BindProperty]
+        [Required]
+        public int Quantity { get; set; }
+
+        [TempData]
+        public string StatusMessage { get; set; }
+
         public async Task<IActionResult> OnGetAsync(int? id)
         {
             if (id == null)
             {
-                return NotFound();
+                return NotFound("Unable to find food vendor with that id");
             }
 
             var user = await _userManager.GetUserAsync(User);
             await LoadAsync(user, id);
 
-            if (Basket == null || Restaurateur == null)
+            if (Restaurateur == null)
             {
-                return NotFound();
+                return NotFound("Unable to find food vendor with that id");
             }
-            
+
             return Page();
         }
 
         private async Task LoadAsync(ApplicationUser user, int? id)
         {
-            Customer = await _context.Customers.FirstAsync(c => c.ApplicationUserFk == user.Id);
+            Restaurateur = await _context.Restaurateurs.FindAsync(id);
+
+            try
+            {
+                Products = await _mediator.Send(new GetProductsQuery
+                {
+                    RestaurateurId = Restaurateur.Id
+                });
+            }
+            catch (InvalidOperationException e)
+            {
+                _logger.LogInformation($"Unable to find food vendor with id '{id}': {e.Message}");
+                Restaurateur = null;
+                return;
+            }
+
+            try
+            {
+                Customer = await _context.Customers.FirstAsync(c => c.ApplicationUserFk == user.Id);
+            }
+            catch (InvalidOperationException e)
+            {
+                _logger.LogInformation($"Unable to find customer: {e.Message}");
+                Customer = null;
+                return;
+            }
 
             Basket = await _mediator.Send(new GetBasketQuery
             {
                 Customer = Customer
-            });
+            }) // If basket does not exist (null), create a new one
+                     ?? await _mediator.Send(new CreateBasketCommand
+                     {
+                         Customer = Customer
+                     });
 
-            Restaurateur = await _context.Restaurateurs.FindAsync(id);
-            Products = await _mediator.Send(new GetProductsQuery
-            {
-                RestaurateurId = Restaurateur.Id
-            });
+            _logger.LogInformation($"Created new basket with id: {Basket.Id}");
         }
 
-        public async Task<IActionResult> OnPostAddToCartAsync(int id)
+        public async Task<IActionResult> OnPostAddToBasketAsync(int id, int productId)
         {
+            if (!ModelState.IsValid)
+            {
+                return BadRequest();
+            }
+
             var user = await _userManager.GetUserAsync(User);
 
-            var customer = await _context.Customers.Where(c => c.ApplicationUserFk == user.Id).FirstAsync();
-            var product = await _context.Products.FindAsync(id);
+            await LoadAsync(user, id);
 
+            if (Restaurateur == null || Customer == null)
+            {
+                return NotFound("Unable to find entities");
+            }
+
+            var product = Products.First(p => p.Id == productId);
 
             await _mediator.Send(new UpdateBasketCommand
             {
                 Basket = Basket,
                 Product = product,
-                // TODO: quantity
+                Quantity = Quantity,
+                RestaurateurId = Restaurateur.Id
             });
 
-            _logger.LogInformation($"Added product with id {product.Id} to basket of user {user.Id}");
+            _logger.LogInformation($"Added product with id {product.Id} to the basket of the user {user.Id}");
 
-            return Page();
+            StatusMessage = "Added product to cart successfully";
+
+            return RedirectToPage();
         }
     }
 }

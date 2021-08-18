@@ -1,9 +1,4 @@
-﻿.square {
-    height: 80px;
-    width: 80px;
-}
-
-body {
+﻿body {
     color: #404040;
     font: 400 15px/22px 'Source Sans Pro', 'Helvetica Neue', Sans-serif;
     margin: 0;
@@ -27,9 +22,7 @@ body {
     border-right: 1px solid rgba(0, 0, 0, 0.25);
 }
 
-.pad2 {
-    padding: 20px;
-}
+.pad2 { padding: 20px; }
 
 .mapboxgl-ctrl-geocoder {
     border: 0;
@@ -40,10 +33,10 @@ body {
     margin-top: 0;
 }
 
-    .mapboxgl-ctrl-geocoder > div {
-        min-width: 100%;
-        margin-left: 0;
-    }
+.mapboxgl-ctrl-geocoder > div {
+    min-width: 100%;
+    margin-left: 0;
+}
 
 .map {
     position: absolute;
@@ -66,9 +59,7 @@ a {
     text-decoration: none;
 }
 
-    a:hover {
-        color: #101010;
-    }
+a:hover { color: #101010; }
 
 .heading {
     background: #fff;
@@ -76,7 +67,7 @@ a {
     min-height: 60px;
     line-height: 60px;
     padding: 0 10px;
-    background-color: #00853e;
+    background-color: #1b6ec2;
     color: #fff;
 }
 
@@ -86,35 +77,27 @@ a {
     padding-bottom: 60px;
 }
 
-    .listings .item {
-        display: block;
-        border-bottom: 1px solid #eee;
-        padding: 10px;
-        text-decoration: none;
-    }
+.listings .item {
+    display: block;
+    border-bottom: 1px solid #eee;
+    padding: 10px;
+    text-decoration: none;
+}
 
-        .listings .item:last-child {
-            border-bottom: none;
-        }
+.listings .item:last-child { border-bottom: none; }
 
-        .listings .item .title {
-            display: block;
-            color: #00853e;
-            font-weight: 700;
-        }
+.listings .item .title {
+    display: block;
+    color: #1861ac;
+    font-weight: 700;
+}
 
-            .listings .item .title small {
-                font-weight: 400;
-            }
+.listings .item .title small { font-weight: 400; }
 
-            .listings .item.active .title,
-            .listings .item .title:hover {
-                color: #8cc63f;
-            }
+.listings .item.active .title,
+.listings .item .title:hover { color: #2390FF; }
 
-        .listings .item.active {
-            background-color: #f8f8f8;
-        }
+.listings .item.active { background-color: #f8f8f8; }
 
 ::-webkit-scrollbar {
     width: 3px;
@@ -123,9 +106,7 @@ a {
     background: rgba(0, 0, 0, 0.1);
 }
 
-::-webkit-scrollbar-track {
-    background: none;
-}
+::-webkit-scrollbar-track { background: none; }
 
 ::-webkit-scrollbar-thumb {
     background: #00853e;
@@ -137,31 +118,25 @@ a {
     cursor: pointer;
     height: 56px;
     width: 56px;
-    background-image: url('./img/marker.png');
+    background-image: url('../icons/marker.png');
     background-color: rgba(0, 0, 0, 0);
 }
 
-.clearfix {
-    display: block;
-}
+.clearfix { display: block; }
 
-    .clearfix:after {
-        content: '.';
-        display: block;
-        height: 0;
-        clear: both;
-        visibility: hidden;
-    }
+.clearfix:after {
+    content: '.';
+    display: block;
+    height: 0;
+    clear: both;
+    visibility: hidden;
+}
 
 /* Marker tweaks */
 
-.mapboxgl-popup {
-    padding-bottom: 50px;
-}
+.mapboxgl-popup { padding-bottom: 50px; }
 
-.mapboxgl-popup-close-button {
-    display: none;
-}
+.mapboxgl-popup-close-button { display: none; }
 
 .mapboxgl-popup-content {
     font: 400 15px/22px 'Source Sans Pro', 'Helvetica Neue', Sans-serif;
@@ -169,12 +144,10 @@ a {
     width: 180px;
 }
 
-.mapboxgl-popup-content-wrapper {
-    padding: 1%;
-}
+.mapboxgl-popup-content-wrapper { padding: 1%; }
 
 .mapboxgl-popup-content h3 {
-    background: #91c949;
+    background: #1b6ec2;
     color: #fff;
     margin: 0;
     display: block;
@@ -191,18 +164,18 @@ a {
     font-weight: 400;
 }
 
-.mapboxgl-popup-content div {
-    padding: 10px;
+.mapboxgl-popup-content a {
+    margin: 0;
+    display: block;
+    padding: 10px 10px 10px 10px;
+    font-weight: 100;
 }
 
-.mapboxgl-container .leaflet-marker-icon {
-    cursor: pointer;
-}
+.mapboxgl-popup-content div { padding: 10px; }
 
-.mapboxgl-popup-anchor-top > .mapboxgl-popup-content {
-    margin-top: 15px;
-}
+.mapboxgl-container .leaflet-marker-icon { cursor: pointer; }
 
-.mapboxgl-popup-anchor-top > .mapboxgl-popup-tip {
-    border-bottom-color: #91c949;
-}
+.mapboxgl-popup-anchor-top > .mapboxgl-popup-content { margin-top: 15px; }
+
+.mapboxgl-popup-anchor-top > .mapboxgl-popup-tip { border-bottom-color: #2390FF; }
+

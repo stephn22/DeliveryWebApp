@@ -10,8 +10,7 @@ namespace DeliveryWebApp.Infrastructure.Persistence.Configurations
         public void Configure(EntityTypeBuilder<Basket> builder)
         {
             builder.Property(u => u.TotalPrice)
-                .HasPrecision(16, 3)
-                .HasColumnType(PropertyName.Money)
+                .HasPrecision(16, 4)
                 .IsRequired();
         }
     }

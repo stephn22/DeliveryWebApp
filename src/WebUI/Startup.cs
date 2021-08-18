@@ -4,6 +4,7 @@ using DeliveryWebApp.Infrastructure;
 using DeliveryWebApp.Infrastructure.Persistence;
 using DeliveryWebApp.Infrastructure.Services;
 using DeliveryWebApp.WebUI.Services;
+using FluentValidation.AspNetCore;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Localization;
@@ -14,7 +15,6 @@ using Microsoft.Extensions.Hosting;
 using Newtonsoft.Json;
 using System.Collections.Generic;
 using System.Globalization;
-using FluentValidation.AspNetCore;
 
 namespace DeliveryWebApp.WebUI
 {
@@ -41,32 +41,17 @@ namespace DeliveryWebApp.WebUI
             services.AddHealthChecks()
                 .AddDbContextCheck<ApplicationDbContext>();
 
-            services.AddControllers()
-                .AddNewtonsoftJson(options => options.SerializerSettings.ReferenceLoopHandling = ReferenceLoopHandling.Serialize);
+            services.AddRazorPages()
+                .AddViewLocalization()
+                .AddDataAnnotationsLocalization()
+                .AddFluentValidation();
+
+            services.AddControllers();
 
             services.AddLocalization(options =>
             {
                 options.ResourcesPath = Configuration.GetSection("ResourcePath").Value;
             });
-
-            services.Configure<RequestLocalizationOptions>(options =>
-            {
-                var supportedCultures = new List<CultureInfo>
-                {
-                    new("en-US"),
-                    new("it")
-                };
-
-                options.DefaultRequestCulture = new RequestCulture("en-US");
-                options.SupportedCultures = supportedCultures;
-                options.SupportedUICultures = supportedCultures;
-            });
-
-            services.AddRazorPages()
-                .AddNewtonsoftJson(options => options.SerializerSettings.ReferenceLoopHandling = ReferenceLoopHandling.Serialize)
-                .AddViewLocalization()
-                .AddDataAnnotationsLocalization()
-                .AddFluentValidation();
 
             // Customise default API behaviour
             services.Configure<ApiBehaviorOptions>(options =>
@@ -93,18 +78,22 @@ namespace DeliveryWebApp.WebUI
             var cultures = new[]
             {
                 new CultureInfo("en-US"),
-                new CultureInfo("it")
+                new CultureInfo("en-GB"),
+                new CultureInfo("it"),
+                new CultureInfo("it-IT"),
+                new CultureInfo("it-CH"),
             };
 
             var options = new RequestLocalizationOptions
             {
                 DefaultRequestCulture = new RequestCulture(cultures[0]),
                 SupportedCultures = cultures,
-                SupportedUICultures = cultures
-            };
+                SupportedUICultures = cultures,
+                FallBackToParentUICultures = true,
+                FallBackToParentCultures = true
+        };
 
             app.UseRequestLocalization(options);
-
 
             app.UseHttpsRedirection();
             app.UseStaticFiles();

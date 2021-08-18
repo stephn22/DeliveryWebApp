@@ -9,8 +9,6 @@ namespace DeliveryWebApp.Application.BasketItems.Commands.UpdateBasketItem
             RuleFor(b => b.Id).GreaterThan(0).NotEmpty();
 
             RuleFor(b => b.Quantity).GreaterThan(0).NotEmpty();
-
-            RuleFor(b => b.Product).NotEmpty();
         }
     }
 }

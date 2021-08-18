@@ -1,6 +1,6 @@
-﻿using DeliveryWebApp.Application.Common.Exceptions;
+﻿using DeliveryWebApp.Application.Baskets.Extensions;
+using DeliveryWebApp.Application.Common.Exceptions;
 using DeliveryWebApp.Application.Common.Interfaces;
-using DeliveryWebApp.Application.Products.Commands.UpdateProducts;
 using DeliveryWebApp.Domain.Entities;
 using MediatR;
 using System.Threading;
@@ -33,17 +33,17 @@ namespace DeliveryWebApp.Application.BasketItems.Commands.DeleteBasketItem
                 throw new NotFoundException(nameof(BasketItem), request.Id);
             }
 
-            var product = await _context.Products.FindAsync(entity.ProductId);
-
-            var newQuantity = product.Quantity + entity.Quantity;
-
-            await _mediator.Send(new UpdateProductCommand
-            {
-                Id = product.Id,
-                Quantity = newQuantity
-            }, cancellationToken);
-
             _context.BasketItems.Remove(entity);
+            await _context.SaveChangesAsync(cancellationToken);
+
+            var basket = await _context.Baskets.FindAsync(entity.BasketId);
+
+            if (basket != null)
+            {
+                basket.TotalPrice = await basket.GetBasketTotalPrice(_mediator, _context);
+                _context.Baskets.Update(basket);
+            }
+
             await _context.SaveChangesAsync(cancellationToken);
 
             return entity;

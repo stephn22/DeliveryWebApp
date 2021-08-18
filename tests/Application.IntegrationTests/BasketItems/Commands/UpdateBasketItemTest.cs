@@ -98,20 +98,21 @@ namespace DeliveryWebApp.Application.IntegrationTests.BasketItems.Commands
             var updateBasketItem = new UpdateBasketItemCommand
             {
                 Id = basketItem.Id,
-                Product = newProduct,
                 Quantity = newProductCommand.Quantity
             };
 
             await SendAsync(updateBasketItem);
 
             var update = await FindAsync<BasketItem>(updateBasketItem.Id);
+            var b = await FindAsync<Basket>(basket.Id);
 
             update.Should().NotBeNull();
             update.Id.Should().NotBe(0);
             update.Id.Should().Be(basketItem.Id);
-            update.ProductId.Should().Be(updateBasketItem.Product.Id);
+            update.ProductId.Should().Be(product.Id);
             update.Quantity.Should().Be(updateBasketItem.Quantity);
             update.BasketId.Should().Be(basket.Id);
+            b.TotalPrice.Should().Be(164.56M);
         }
     }
 }

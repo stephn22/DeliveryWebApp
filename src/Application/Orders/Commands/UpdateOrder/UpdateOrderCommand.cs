@@ -69,7 +69,7 @@ namespace DeliveryWebApp.Application.Orders.Commands.UpdateOrder
                 }, cancellationToken);
             }
 
-            entity.TotalPrice = await entity.GetOrderTotalPrice(_mediator);
+            entity.TotalPrice = await entity.GetOrderTotalPrice(_mediator, _context);
 
             await _context.SaveChangesAsync(cancellationToken);
 

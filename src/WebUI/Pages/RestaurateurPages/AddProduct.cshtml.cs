@@ -1,9 +1,8 @@
 using DeliveryWebApp.Application.Common.Security;
+using DeliveryWebApp.Application.Products.Commands.CreateProduct;
 using DeliveryWebApp.Application.Restaurateurs.Extensions;
-using DeliveryWebApp.Domain.Entities;
 using DeliveryWebApp.Infrastructure.Identity;
 using DeliveryWebApp.Infrastructure.Persistence;
-using DeliveryWebApp.Infrastructure.Security;
 using MediatR;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
@@ -16,8 +15,8 @@ using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
 using System.IO;
 using System.Threading.Tasks;
-using DeliveryWebApp.Application.Products.Commands.CreateProduct;
-using DeliveryWebApp.Application.Restaurateurs.Commands.UpdateRestaurateur;
+using DeliveryWebApp.Domain.Constants;
+using Microsoft.EntityFrameworkCore;
 
 namespace DeliveryWebApp.WebUI.Pages.RestaurateurPages
 {
@@ -38,8 +37,19 @@ namespace DeliveryWebApp.WebUI.Pages.RestaurateurPages
             _context = context;
         }
 
-        // TODO: Selectlist item for category
-        [BindProperty] public IEnumerable<SelectListItem> Categories { get; set; }
+        [BindProperty]
+        public IEnumerable<SelectListItem> Categories => new[]
+        {
+            new SelectListItem { Text = ProductCategory.Unassigned, Value = ProductCategory.Unassigned },
+            new SelectListItem { Text = ProductCategory.Hamburger, Value = ProductCategory.Hamburger },
+            new SelectListItem { Text = ProductCategory.Pizza, Value = ProductCategory.Pizza },
+            new SelectListItem { Text = ProductCategory.Sushi, Value = ProductCategory.Sushi },
+            new SelectListItem { Text = ProductCategory.Dessert, Value = ProductCategory.Dessert },
+            new SelectListItem { Text = ProductCategory.Vegan, Value = ProductCategory.Vegan },
+            new SelectListItem { Text = ProductCategory.Chicken, Value = ProductCategory.Chicken },
+            new SelectListItem { Text = ProductCategory.Fish, Value = ProductCategory.Fish },
+            new SelectListItem { Text = ProductCategory.Snacks, Value = ProductCategory.Snacks },
+        };
 
         [BindProperty]
         public InputModel Input { get; set; }
@@ -57,6 +67,7 @@ namespace DeliveryWebApp.WebUI.Pages.RestaurateurPages
 
             [Required]
             [DataType(DataType.Currency, ErrorMessage = "Value isn't a price")]
+            [DisplayFormat(DataFormatString = "{0:C}")]
             public decimal Price { get; set; }
 
             // TODO: Discount required?
@@ -106,7 +117,7 @@ namespace DeliveryWebApp.WebUI.Pages.RestaurateurPages
                 RestaurateurId = restaurateur.Id
             });
 
-            return RedirectToPage("/RestaurateurPages/RestaurantProducts");
+            return Redirect($"/RestaurateurPages/RestaurantProducts/{restaurateur.Id}");
         }
     }
 }

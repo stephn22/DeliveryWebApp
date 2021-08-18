@@ -94,6 +94,8 @@ namespace DeliveryWebApp.WebUI.Areas.Identity.Pages.Account.Manage
 
             Customer = await _context.Customers.FirstAsync(c => c.ApplicationUserFk == user.Id);
 
+            StatusMessage = "";
+
             await LoadAddressesAsync(user);
             return Page();
         }

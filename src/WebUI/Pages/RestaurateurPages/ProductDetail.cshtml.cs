@@ -1,20 +1,21 @@
+using DeliveryWebApp.Application.Common.Security;
+using DeliveryWebApp.Application.Products.Commands.UpdateProducts;
+using DeliveryWebApp.Domain.Constants;
+using DeliveryWebApp.Domain.Entities;
+using DeliveryWebApp.Infrastructure.Identity;
+using DeliveryWebApp.Infrastructure.Persistence;
+using MediatR;
+using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.RazorPages;
+using Microsoft.AspNetCore.Mvc.Rendering;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
 using System.IO;
 using System.Threading.Tasks;
-using DeliveryWebApp.Application.Common.Security;
-using DeliveryWebApp.Application.Products.Commands.UpdateProducts;
-using DeliveryWebApp.Domain.Constants;
-using DeliveryWebApp.Domain.Entities;
-using DeliveryWebApp.Infrastructure.Persistence;
-using DeliveryWebApp.Infrastructure.Security;
-using MediatR;
-using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.RazorPages;
-using Microsoft.AspNetCore.Mvc.Rendering;
-using Microsoft.Extensions.Logging;
+using DeliveryWebApp.Application.Restaurateurs.Extensions;
 
 namespace DeliveryWebApp.WebUI.Pages.RestaurateurPages
 {
@@ -22,17 +23,18 @@ namespace DeliveryWebApp.WebUI.Pages.RestaurateurPages
     public class ProductDetailModel : PageModel
     {
         private readonly ApplicationDbContext _context;
-        private readonly ILogger<ProductDetailModel> _logger;
         private readonly IMediator _mediator;
+        private readonly UserManager<ApplicationUser> _userManager;
 
-        public ProductDetailModel(ApplicationDbContext context, ILogger<ProductDetailModel> logger, IMediator mediator)
+        public ProductDetailModel(ApplicationDbContext context, IMediator mediator, UserManager<ApplicationUser> userManager)
         {
             _context = context;
-            _logger = logger;
             _mediator = mediator;
+            _userManager = userManager;
         }
 
         public Product Product { get; set; }
+        public Restaurateur Restaurateur { get; set; }
 
         [BindProperty]
         public IEnumerable<SelectListItem> Categories => new[]
@@ -80,16 +82,38 @@ namespace DeliveryWebApp.WebUI.Pages.RestaurateurPages
         {
             if (id == null)
             {
-                return NotFound($"Unable to load product with this ID.");
+                return NotFound("Unable to load product with this ID.");
             }
 
-            Product = await _context.Products.FindAsync(id);
+            var user = await _userManager.GetUserAsync(User);
+
+            if (user == null)
+            {
+                return NotFound();
+            }
+
+            await LoadAsync(id, user);
 
             return Page();
         }
 
+        private async Task LoadAsync(int? id, ApplicationUser user)
+        {
+            Product = await _context.Products.FindAsync(id);
+            Restaurateur = await _context.GetRestaurateurByApplicationUserFkAsync(user.Id);
+        }
+
         public async Task<IActionResult> OnPost(int id)
         {
+            var user = await _userManager.GetUserAsync(User);
+
+            if (user == null)
+            {
+                return NotFound();
+            }
+
+            await LoadAsync(id, user);
+
             byte[] bytes = null;
 
             if (Input.Image != null)
@@ -103,15 +127,16 @@ namespace DeliveryWebApp.WebUI.Pages.RestaurateurPages
 
             await _mediator.Send(new UpdateProductCommand
             {
+                Id = Product.Id,
                 Name = Input.Name,
                 Category = Input.Category,
                 Discount = Input.Discount,
                 Image = bytes,
-                Price = Input.Price,
+                Price = Input.Price <= 0.00M ? Product.Price : Input.Price,
                 Quantity = Input.Quantity
             });
 
-            return RedirectToPage(routeValues: id);
+            return RedirectToPage(id);
         }
     }
 }

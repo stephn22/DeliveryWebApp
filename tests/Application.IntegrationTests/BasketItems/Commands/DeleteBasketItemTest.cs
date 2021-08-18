@@ -91,6 +91,9 @@ namespace DeliveryWebApp.Application.IntegrationTests.BasketItems.Commands
 
                 var basketItem = await FindAsync<BasketItem>(item.Id);
                 basketItem.Should().BeNull();
+
+                var b = await FindAsync<Basket>(basket.Id);
+                b.TotalPrice.Should().Be(14.52M);
             }
             catch (NotFoundException e)
             {

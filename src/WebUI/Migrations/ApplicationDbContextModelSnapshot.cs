@@ -16,7 +16,7 @@ namespace DeliveryWebApp.WebUI.Migrations
 #pragma warning disable 612, 618
             modelBuilder
                 .HasAnnotation("Relational:MaxIdentifierLength", 128)
-                .HasAnnotation("ProductVersion", "5.0.8")
+                .HasAnnotation("ProductVersion", "5.0.9")
                 .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
             modelBuilder.Entity("DeliveryWebApp.Domain.Entities.Address", b =>
@@ -25,21 +25,6 @@ namespace DeliveryWebApp.WebUI.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int")
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
-
-                    b.Property<string>("AddressLine1")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("AddressLine2")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("City")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("Country")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
 
                     b.Property<int?>("CustomerId")
                         .HasColumnType("int");
@@ -52,19 +37,12 @@ namespace DeliveryWebApp.WebUI.Migrations
                         .HasPrecision(18, 9)
                         .HasColumnType("decimal(18,9)");
 
-                    b.Property<string>("Number")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("PostalCode")
+                    b.Property<string>("PlaceName")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<int?>("RestaurateurId")
                         .HasColumnType("int");
-
-                    b.Property<string>("StateProvince")
-                        .HasColumnType("nvarchar(max)");
 
                     b.HasKey("Id");
 
@@ -88,8 +66,8 @@ namespace DeliveryWebApp.WebUI.Migrations
                         .HasColumnType("int");
 
                     b.Property<decimal>("TotalPrice")
-                        .HasPrecision(16, 3)
-                        .HasColumnType("Money");
+                        .HasPrecision(16, 4)
+                        .HasColumnType("decimal(16,4)");
 
                     b.HasKey("Id");
 
@@ -174,8 +152,8 @@ namespace DeliveryWebApp.WebUI.Migrations
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<decimal>("TotalPrice")
-                        .HasPrecision(16, 3)
-                        .HasColumnType("Money");
+                        .HasPrecision(16, 4)
+                        .HasColumnType("decimal(16,4)");
 
                     b.HasKey("Id");
 
@@ -205,8 +183,8 @@ namespace DeliveryWebApp.WebUI.Migrations
                         .HasColumnType("int");
 
                     b.Property<decimal>("ProductPrice")
-                        .HasPrecision(16, 3)
-                        .HasColumnType("Money");
+                        .HasPrecision(16, 4)
+                        .HasColumnType("decimal(16,4)");
 
                     b.Property<int>("Quantity")
                         .HasColumnType("int");
@@ -239,8 +217,8 @@ namespace DeliveryWebApp.WebUI.Migrations
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<decimal>("Price")
-                        .HasPrecision(16, 3)
-                        .HasColumnType("Money");
+                        .HasPrecision(16, 4)
+                        .HasColumnType("decimal(16,4)");
 
                     b.Property<int>("Quantity")
                         .HasColumnType("int");

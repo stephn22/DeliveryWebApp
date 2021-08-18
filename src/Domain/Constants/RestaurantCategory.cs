@@ -13,6 +13,6 @@ namespace DeliveryWebApp.Domain.Constants
         public const string Sushi = "Sushi";
         public const string Indian = "Indian";
         public const string Chinese = "Chinese";
-        public const string FastFood = "FastFood";
+        public const string FastFood = "Fast Food";
     }
 }

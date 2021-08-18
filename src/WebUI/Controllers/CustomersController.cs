@@ -38,7 +38,7 @@ namespace DeliveryWebApp.WebUI.Controllers
         [HttpGet]
         public ActionResult Edit(int id)
         {
-            return RedirectToPage("AdminPages/CustomerDetail", routeValues: id);
+            return RedirectToPage("/AdminPages/CustomerDetail", routeValues: id);
         }
 
         [HttpPost]

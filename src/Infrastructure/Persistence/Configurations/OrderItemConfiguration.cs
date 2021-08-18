@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using DeliveryWebApp.Domain.Entities;
+﻿using DeliveryWebApp.Domain.Entities;
 using DeliveryWebApp.Infrastructure.Persistence.Configurations.Constants;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
@@ -15,8 +10,7 @@ namespace DeliveryWebApp.Infrastructure.Persistence.Configurations
         public void Configure(EntityTypeBuilder<OrderItem> builder)
         {
             builder.Property(u => u.ProductPrice)
-                .HasPrecision(16, 3)
-                .HasColumnType(PropertyName.Money)
+                .HasPrecision(16, 4)
                 .IsRequired();
 
             builder.Property(u => u.Quantity)

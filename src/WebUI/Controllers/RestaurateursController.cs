@@ -29,14 +29,5 @@ namespace DeliveryWebApp.WebUI.Controllers
         {
             return await _mediator.Send(new GetRestaurateursQuery());
         }
-
-        [HttpGet("{id:int}")]
-        public async Task<ActionResult<Address>> GetRestaurantAddress(int id)
-        {
-            return await _mediator.Send(new GetRestaurateurAddressQuery
-            {
-                Id = id
-            });
-        }
     }
 }

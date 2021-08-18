@@ -10,7 +10,7 @@ namespace DeliveryWebApp.Application.Products.Commands.CreateProduct
 
             RuleFor(p => p.Category).NotEmpty();
 
-            RuleFor(p => p.Discount).GreaterThanOrEqualTo(0).NotNull();
+            RuleFor(p => p.Discount).GreaterThanOrEqualTo(0).LessThanOrEqualTo(100).NotNull();
 
             RuleFor(p => p.Price).GreaterThan(0.00M).NotEmpty();
 

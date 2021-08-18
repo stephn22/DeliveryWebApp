@@ -1,8 +1,11 @@
 ﻿@page "{id:int?}"
 @using IdentityServer4.Extensions
+@using Microsoft.AspNetCore.Localization
 @model DeliveryWebApp.WebUI.Pages.RestaurateurPages.RestaurantProductsModel
 @{
     ViewData["Title"] = "Restaurant Products";
+    var requestCultureFeature = HttpContext.Features.Get<IRequestCultureFeature>();
+    var requestCulture = requestCultureFeature.RequestCulture;
 }
 
 @section Head {
@@ -76,7 +79,7 @@ else
                         @Html.DisplayFor(model => product.Quantity)
                     </td>
                     <td>
-                        @product.Price €
+                        @product.Price.ToString("C")
                     </td>
                     <td>
                         @Html.DisplayFor(model => product.Discount) %
