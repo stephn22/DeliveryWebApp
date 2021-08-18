@@ -123,7 +123,7 @@ else
 
                                                 <label asp-for="Quantity">@localizer["Quantity"]</label>
 
-                                                <select asp-for="Quantity" asp-items="Model.Quantities" class="form-select col-sm">
+                                                <select asp-for="Quantity" class="form-select col-sm">
                                                     @for (var i = 1; i <= product.Quantity; i++)
                                                     {
                                                         <option value="@i">@i</option>

@@ -97,7 +97,6 @@ namespace DeliveryWebApp.Application.Baskets.Commands.UpdateBasket
                             {
                                 Id = item.Id,
                                 Quantity = newQty,
-                                Product = product
                             }, cancellationToken);
                         }
                         else // otherwise create a new one

@@ -43,8 +43,6 @@ namespace DeliveryWebApp.WebUI.Pages.CustomerPages
         public Restaurateur Restaurateur { get; set; }
         public List<Product> Products { get; set; }
 
-        [BindProperty]
-        public List<SelectListItem> Quantities { get; set; }
 
         [BindProperty]
         [Required]
@@ -110,18 +108,6 @@ namespace DeliveryWebApp.WebUI.Pages.CustomerPages
                      });
 
             _logger.LogInformation($"Created new basket with id: {Basket.Id}");
-        }
-
-        public List<SelectListItem> QuantityList(int qty)
-        {
-            Quantities = new List<SelectListItem>(qty);
-
-            for (var i = 1; i <= qty; i++)
-            {
-                Quantities.Add(new SelectListItem { Text = i.ToString(), Value = i.ToString() });
-            }
-
-            return Quantities;
         }
 
         public async Task<IActionResult> OnPostAddToBasketAsync(int id, int productId)

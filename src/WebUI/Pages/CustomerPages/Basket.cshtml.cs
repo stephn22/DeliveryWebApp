@@ -17,6 +17,7 @@ using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Threading.Tasks;
+using DeliveryWebApp.Application.BasketItems.Commands.UpdateBasketItem;
 
 namespace DeliveryWebApp.WebUI.Pages.CustomerPages
 {
@@ -45,12 +46,7 @@ namespace DeliveryWebApp.WebUI.Pages.CustomerPages
         [TempData]
         public string StatusMessage { get; set; }
 
-        [BindProperty] public InputModel Input { get; set; }
-
-        public class InputModel
-        {
-            [Required] public int NewQuantity { get; set; }
-        }
+        [BindProperty] [Required] public int NewQuantity { get; set; }
 
         public async Task<IActionResult> OnGetAsync()
         {
@@ -104,9 +100,13 @@ namespace DeliveryWebApp.WebUI.Pages.CustomerPages
                     {
                         var p = await _context.Products.FindAsync(item.ProductId);
 
-                        if (p != null)
+                        if (p is { Quantity: > 0 })
                         {
                             Products.Add(p);
+                        }
+                        else // remove from basket items products with quantity == 0
+                        {
+                            BasketItems.RemoveAll(b => b.ProductId == p.Id);
                         }
                     }
 
@@ -118,7 +118,42 @@ namespace DeliveryWebApp.WebUI.Pages.CustomerPages
             }
         }
 
-        public async Task<IActionResult> OnPostRemoveFromBasketAsync(int id, int basketItemId)
+        public async Task<IActionResult> OnPostRemoveFromBasketAsync(int id)
+        {
+            var user = await _userManager.GetUserAsync(User);
+
+            if (user == null)
+            {
+                return NotFound("User not found");
+            }
+
+            await LoadAsync(user);
+
+            if (Customer == null || Basket == null || Products.IsNullOrEmpty() || BasketItems.IsNullOrEmpty())
+            {
+                return NotFound("Unable to find entities");
+            }
+
+            try
+            {
+                await _mediator.Send(new DeleteBasketItemCommand
+                {
+                    Id = id
+                });
+
+                _logger.LogInformation($"Deleted basket item with id: '{id}'");
+
+                StatusMessage = "Successfully removed item from basket";
+            }
+            catch (NotFoundException e)
+            {
+                _logger.LogError($"Unable to find basket item with id '{id}': {e.Message}");
+            }
+
+            return RedirectToPage();
+        }
+
+        public async Task<IActionResult> OnPostUpdateBasketItemAsync(int id)
         {
             if (!ModelState.IsValid)
             {
@@ -141,21 +176,22 @@ namespace DeliveryWebApp.WebUI.Pages.CustomerPages
 
             try
             {
-                await _mediator.Send(new DeleteBasketItemCommand
+                await _mediator.Send(new UpdateBasketItemCommand
                 {
-                    Id = basketItemId
+                    Id = id,
+                    Quantity = NewQuantity
                 });
 
-                _logger.LogInformation($"Deleted basket item with id: '{basketItemId}'");
+                _logger.LogInformation($"Deleted basket item with id: '{id}'");
 
-                StatusMessage = "Successfully removed item from basket";
+                StatusMessage = "Successfully update item";
             }
             catch (NotFoundException e)
             {
-                _logger.LogError($"Unable to find basket item with id '{basketItemId}': {e.Message}");
+                _logger.LogError($"Unable to find basket item with id '{id}': {e.Message}");
             }
 
-            return Page();
+            return RedirectToPage();
         }
     }
 }
