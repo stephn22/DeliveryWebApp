@@ -116,7 +116,6 @@ namespace DeliveryWebApp.WebUI.Pages.AdminPages
                 return NotFound();
             }
 
-
             await LoadAsync((int)id);
 
             await _userManager.UnblockUser(User);
@@ -252,7 +251,7 @@ namespace DeliveryWebApp.WebUI.Pages.AdminPages
 
                 _logger.LogInformation($"Created rider with id {r.Id}");
             }
-            else // update only delivery credit
+            else // update only delivery credit (is a rider already)
             {
                 var rider = await _context.GetRiderByCustomerIdAsync(id);
 

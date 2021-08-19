@@ -69,10 +69,10 @@
                     Username
                 </th>
                 <th>
-                    First RestaurantName
+                    First Name
                 </th>
                 <th>
-                    Last RestaurantName
+                    Last Name
                 </th>
                 <th>
                     Email
@@ -211,10 +211,10 @@
                         Username
                     </th>
                     <th>
-                        First RestaurantName
+                        First Name
                     </th>
                     <th>
-                        Last RestaurantName
+                        Last Name
                     </th>
                     <th>
                         Email
@@ -362,16 +362,13 @@
                         Username
                     </th>
                     <th>
-                        First RestaurantName
+                        First Name
                     </th>
                     <th>
-                        Last RestaurantName
+                        Last Name
                     </th>
                     <th>
                         Email
-                    </th>
-                    <th>
-                        Restaurant
                     </th>
                     <th>
                         Details
@@ -404,10 +401,7 @@
                         @Html.DisplayFor(modelItem => item.Customer.Email)
                     </td>
                     <td>
-                        <a asp-page="#" asp-route-id="@item.Id">Restaurant</a>
-                    </td>
-                    <td>
-                        <a class="btn" asp-page="/AdmiPages/RestaurateurDetail" asp-route-id="@item.Id" title="View details">
+                        <a class="btn" asp-page="/AdminPages/RestaurateurDetail" asp-route-id="@item.Id" title="View details">
                             <img src="/icons/eye.svg" alt="detail" height="16" width="16"/>
                         </a>
                     </td>
