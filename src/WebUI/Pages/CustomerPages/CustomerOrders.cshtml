@@ -1,4 +1,5 @@
 ﻿@page
+@using IdentityServer4.Extensions
 @using Microsoft.AspNetCore.Localization
 @model DeliveryWebApp.WebUI.Pages.CustomerPages.CustomerOrdersModel
 @{
@@ -8,136 +9,147 @@
     // TODO: localize
 }
 
-<div class="text-center">
-    <table class="table">
-        <thead>
-            <tr class="table-primary">
-                <th>
-                    @* Id *@
-                    @Html.DisplayNameFor(model => model.Orders[0].Id)
-                </th>
-                <th>
-                    Date
-                </th>
-                <th>
-                    Delivery Date
-                </th>
-                <th>
-                    Food Vendor
-                </th>
-                <th>
-                    Total
-                </th>
-                <th>
-                    @Html.DisplayNameFor(model => model.Orders[0].Status)
-                </th>
-                <th></th>
-            </tr>
-        </thead>
-        <tbody>
-            @for (var i = 0; i < Model.Orders.Count; i++)
-            {
-                <tr>
-                    <td>
-                        @Model.Orders[i].Id
-                    </td>
-                    <td>
-                        @Model.Orders[i].Date.ToLocalTime().ToString("f")
-                    </td>
-                    <td>
-                        @if (Model.Orders[i].DeliveryDate == null)
-                        {
-                            <p>Yet to arrive</p>
-                        }
-                        else
-                        {
-                            @Model.Orders[i].DeliveryDate.Value.ToLocalTime().ToString("f")
-                        }
-                    </td>
-                    <td>
-                        @* Restaurateur name *@
-                        
-                        <a asp-page="/CustomerPages/RestaurantDetail" asp-route-id="@Model.Restaurateurs[i].Id" class="link-primary">
-                            @Model.Restaurateurs[i].RestaurantName
-                        </a>
+@if (Model.Orders.IsNullOrEmpty())
+{
+    <div class="alert alert-secondary" role="alert">
+        <p class="text-center">
+            You don't have orders at the moment
+        </p>
+    </div>
+}
+else
+{
+    <div class="text-center">
+        <table class="table">
+            <thead>
+                <tr class="table-primary">
+                    <th>
+                        @* Id *@
+                        @Html.DisplayNameFor(model => model.Orders[0].Id)
+                    </th>
+                    <th>
+                        Date
+                    </th>
+                    <th>
+                        Delivery Date
+                    </th>
+                    <th>
+                        Food Vendor
+                    </th>
+                    <th>
+                        Total
+                    </th>
+                    <th>
+                        @Html.DisplayNameFor(model => model.Orders[0].Status)
+                    </th>
+                    <th></th>
+                </tr>
+            </thead>
+            <tbody>
+                @for (var i = 0; i < Model.Orders.Count; i++)
+                {
+                    <tr>
+                        <td>
+                            @Model.Orders[i].Id
+                        </td>
+                        <td>
+                            @Model.Orders[i].Date.ToLocalTime().ToString("f")
+                        </td>
+                        <td>
+                            @if (Model.Orders[i].DeliveryDate == null)
+                            {
+                                <p>N/A</p>
+                            }
+                            else
+                            {
+                                @Model.Orders[i].DeliveryDate.Value.ToLocalTime().ToString("f")
+                            }
+                        </td>
+                        <td>
+                            @* Restaurateur name *@
 
-                    </td>
-                    <td>
-                        @Model.Orders[i].TotalPrice.ToString("C")
-                    </td>
-                    <td>
-                        @Model.Orders[i].Status
-                    </td>
-                    <td>
-                        
-                        <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#modal-@i">
-                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-eye" viewBox="0 0 16 16">
-                                <path d="M16 8s-3-5.5-8-5.5S0 8 0 8s3 5.5 8 5.5S16 8 16 8zM1.173 8a13.133 13.133 0 0 1 1.66-2.043C4.12 4.668 5.88 3.5 8 3.5c2.12 0 3.879 1.168 5.168 2.457A13.133 13.133 0 0 1 14.828 8c-.058.087-.122.183-.195.288-.335.48-.83 1.12-1.465 1.755C11.879 11.332 10.119 12.5 8 12.5c-2.12 0-3.879-1.168-5.168-2.457A13.134 13.134 0 0 1 1.172 8z"/>
-                                <path d="M8 5.5a2.5 2.5 0 1 0 0 5 2.5 2.5 0 0 0 0-5zM4.5 8a3.5 3.5 0 1 1 7 0 3.5 3.5 0 0 1-7 0z"/>
-                            </svg>
-                        </button>
+                            <a asp-page="/CustomerPages/RestaurantDetail" asp-route-id="@Model.Restaurateurs[i].Id" class="link-primary">
+                                @Model.Restaurateurs[i].RestaurantName
+                            </a>
 
-                        <div id="modal-@i" class="modal fade" aria-labelledby="modal-title-@i" aria-hidden="true">
-                            <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable">
-                                <div class="modal-content">
-                                    <div class="modal-header">
-                                        <h5 class="modal-title" id="modal-title-@i">
-                                            Order: @Model.Orders[i].Id
-                                        </h5>
-                                        
-                                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                                    </div>
-                                    
-                                    <div class="modal-body">
-                                        
-                                        <table class="table">
-                                            <thead>
-                                            <tr class="table-secondary">
-                                                <th>
-                                                    @* Product Name *@
-                                                    Product
-                                                </th>
-                                                <th>
-                                                    @* Discounted price *@
-                                                    Price
-                                                </th>
-                                                <th>
-                                                    Quantity
-                                                </th>
-                                            </tr>
-                                            </thead>
-                                            <tbody>
-                                                @for (var j = 0; j < Model.OrderItems.Count; j++)
-                                                {
-                                                    <tr>
-                                                        <td>
-                                                            @Model.Products[j].Name
-                                                        </td>
-                                                        <td>
-                                                            @Model.OrderItems[j].ProductPrice.ToString("C")
-                                                        </td>
-                                                        <td>
-                                                            @Model.OrderItems[j].Quantity
-                                                        </td>
+                        </td>
+                        <td>
+                            @Model.Orders[i].TotalPrice.ToString("C")
+                        </td>
+                        <td>
+                            @Model.Orders[i].Status
+                        </td>
+                        <td>
+
+                            <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#modal-@i">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-eye" viewBox="0 0 16 16">
+                                    <path d="M16 8s-3-5.5-8-5.5S0 8 0 8s3 5.5 8 5.5S16 8 16 8zM1.173 8a13.133 13.133 0 0 1 1.66-2.043C4.12 4.668 5.88 3.5 8 3.5c2.12 0 3.879 1.168 5.168 2.457A13.133 13.133 0 0 1 14.828 8c-.058.087-.122.183-.195.288-.335.48-.83 1.12-1.465 1.755C11.879 11.332 10.119 12.5 8 12.5c-2.12 0-3.879-1.168-5.168-2.457A13.134 13.134 0 0 1 1.172 8z" />
+                                    <path d="M8 5.5a2.5 2.5 0 1 0 0 5 2.5 2.5 0 0 0 0-5zM4.5 8a3.5 3.5 0 1 1 7 0 3.5 3.5 0 0 1-7 0z" />
+                                </svg>
+                            </button>
+
+                            <div id="modal-@i" class="modal fade" aria-labelledby="modal-title-@i" aria-hidden="true">
+                                <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable">
+                                    <div class="modal-content">
+                                        <div class="modal-header">
+                                            <h5 class="modal-title" id="modal-title-@i">
+                                                Order: @Model.Orders[i].Id
+                                            </h5>
+
+                                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                        </div>
+
+                                        <div class="modal-body">
+
+                                            <table class="table">
+                                                <thead>
+                                                    <tr class="table-secondary">
+                                                        <th>
+                                                            @* Product Name *@
+                                                            Product
+                                                        </th>
+                                                        <th>
+                                                            @* Discounted price *@
+                                                            Price
+                                                        </th>
+                                                        <th>
+                                                            Quantity
+                                                        </th>
                                                     </tr>
-                                                }
-                                            </tbody>
-                                        </table>
+                                                </thead>
+                                                <tbody>
+                                                    @for (var j = 0; j < Model.OrderItems.Count; j++)
+                                                    {
+                                                        <tr>
+                                                            <td>
+                                                                @Model.Products[j].Name
+                                                            </td>
+                                                            <td>
+                                                                @Model.OrderItems[j].ProductPrice.ToString("C")
+                                                            </td>
+                                                            <td>
+                                                                @Model.OrderItems[j].Quantity
+                                                            </td>
+                                                        </tr>
+                                                    }
+                                                </tbody>
+                                            </table>
+
+                                        </div>
+
+                                        <div class="modal-footer">
+                                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                                        </div>
 
                                     </div>
-                                    
-                                    <div class="modal-footer">
-                                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                                    </div>
-
                                 </div>
                             </div>
-                        </div>
 
-                    </td>
-                </tr>
-            }
-        
-        </tbody>
-    </table>
-</div>
+                        </td>
+                    </tr>
+                }
+
+            </tbody>
+        </table>
+    </div>
+}

@@ -46,5 +46,11 @@ namespace DeliveryWebApp.Application.Orders.Extensions
             var restaurateur = await context.Restaurateurs.FindAsync(order.RestaurateurId);
             return restaurateur;
         }
+
+        public static async Task<Address> GetAddress(this Order order, IApplicationDbContext context)
+        {
+            var address = await context.Addresses.FindAsync(order.AddressId);
+            return address;
+        }
     }
 }
