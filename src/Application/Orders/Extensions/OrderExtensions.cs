@@ -40,5 +40,11 @@ namespace DeliveryWebApp.Application.Orders.Extensions
 
             return tot;
         }
+
+        public static async Task<Restaurateur> GetRestaurateur(this Order order, IApplicationDbContext context)
+        {
+            var restaurateur = await context.Restaurateurs.FindAsync(order.RestaurateurId);
+            return restaurateur;
+        }
     }
 }

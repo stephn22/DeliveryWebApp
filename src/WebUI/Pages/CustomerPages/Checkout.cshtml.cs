@@ -1,23 +1,24 @@
-using System;
 using DeliveryWebApp.Application.Addresses.Queries.GetAddresses;
 using DeliveryWebApp.Application.BasketItems.Queries;
 using DeliveryWebApp.Application.Baskets.Queries;
+using DeliveryWebApp.Application.Common.Exceptions;
 using DeliveryWebApp.Application.Common.Security;
+using DeliveryWebApp.Application.Orders.Commands.CreateOrder;
 using DeliveryWebApp.Domain.Entities;
 using DeliveryWebApp.Infrastructure.Identity;
 using DeliveryWebApp.Infrastructure.Persistence;
+using IdentityServer4.Extensions;
 using MediatR;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
+using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Threading.Tasks;
-using DeliveryWebApp.Application.Orders.Commands.CreateOrder;
-using IdentityServer4.Extensions;
-using Microsoft.AspNetCore.Mvc.Rendering;
 
 namespace DeliveryWebApp.WebUI.Pages.CustomerPages
 {
@@ -43,7 +44,7 @@ namespace DeliveryWebApp.WebUI.Pages.CustomerPages
         public List<SelectListItem> CustomerAddresses { get; set; }
         public List<Product> Products { get; set; }
         public Restaurateur Restaurateur { get; set; }
-        
+
         [BindProperty] public InputModel Input { get; set; }
 
         public class InputModel
@@ -102,7 +103,8 @@ namespace DeliveryWebApp.WebUI.Pages.CustomerPages
             {
                 CustomerAddresses.Add(new SelectListItem
                 {
-                    Text = addresses[1].PlaceName, Value = addresses[1].PlaceName
+                    Text = addresses[1].PlaceName,
+                    Value = addresses[1].PlaceName
                 });
             }
 
@@ -160,17 +162,24 @@ namespace DeliveryWebApp.WebUI.Pages.CustomerPages
                 return NotFound("Unable to find entities");
             }
 
-            var order = await _mediator.Send(new CreateOrderCommand
+            try
             {
-                Customer = Customer,
-                BasketItems = BasketItems,
-                Restaurateur = Restaurateur,
-                Address = Input.Address
-            });
+                var order = await _mediator.Send(new CreateOrderCommand
+                {
+                    Customer = Customer,
+                    BasketItems = BasketItems,
+                    Restaurateur = Restaurateur,
+                    Address = Input.Address
+                });
 
-            _logger.LogInformation($"Created new order with id: {order.Id}");
+                _logger.LogInformation($"Created new order with id: {order.Id}");
+            }
+            catch (NotFoundException e)
+            {
+                _logger.LogError($"Basket not found: {e.Message}");
+            }
 
-            return Redirect("/CustomerPages/Orders");
+            return Redirect("/CustomerPages/CustomerOrders");
         }
     }
 }

@@ -1,5 +1,7 @@
-﻿using DeliveryWebApp.Application.Common.Interfaces;
+﻿using DeliveryWebApp.Application.Baskets.Commands.PurgeBasket;
+using DeliveryWebApp.Application.Common.Interfaces;
 using DeliveryWebApp.Application.OrderItems.Commands.CreateOrderItem;
+using DeliveryWebApp.Application.Orders.Extensions;
 using DeliveryWebApp.Domain.Constants;
 using DeliveryWebApp.Domain.Entities;
 using MediatR;
@@ -8,7 +10,6 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
-using DeliveryWebApp.Application.Orders.Extensions;
 
 namespace DeliveryWebApp.Application.Orders.Commands.CreateOrder
 {
@@ -47,14 +48,24 @@ namespace DeliveryWebApp.Application.Orders.Commands.CreateOrder
 
             if (request.BasketItems.Any())
             {
+                var basketId = 0;
+
                 foreach (var item in request.BasketItems)
                 {
+                    basketId = item.BasketId;
+
                     await _mediator.Send(new CreateOrderItemCommand
                     {
                         BasketItemId = item.Id,
                         OrderId = entity.Id
                     }, cancellationToken);
                 }
+
+                // purge basket
+                await _mediator.Send(new PurgeBasketCommand
+                {
+                    Id = basketId
+                });
             }
 
             entity.TotalPrice = await entity.GetOrderTotalPrice(_mediator, _context);
