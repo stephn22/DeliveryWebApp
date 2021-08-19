@@ -70,7 +70,7 @@ else
         {
             <tr>
                 <td>
-                    <img class="img-dashboard square rounded img-fluid" style="height: 60px; width: 60px" src="data:image/jpeg;base64,@Convert.ToBase64String(Model.Products[i].Image)" alt=""/>
+                    <img class="img-dashboard square rounded img-fluid" style="height: 60px; width: 60px" src="data:image/jpeg;base64,@Convert.ToBase64String(Model.Products[i].Image)" alt="product_image"/>
                 </td>
                 <td>
                     @Html.DisplayFor(model => model.Products[i].Name)
@@ -175,5 +175,5 @@ else
         </tbody>
     </table>
 
-    <p class="blockquote-footer">Some products may not display due to stock limitations</p>
+    <p class="small text-muted">Some products may not display due to stock limitations</p>
 }

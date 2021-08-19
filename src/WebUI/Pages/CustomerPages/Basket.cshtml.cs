@@ -1,4 +1,5 @@
 using DeliveryWebApp.Application.BasketItems.Commands.DeleteBasketItem;
+using DeliveryWebApp.Application.BasketItems.Commands.UpdateBasketItem;
 using DeliveryWebApp.Application.BasketItems.Queries;
 using DeliveryWebApp.Application.Baskets.Queries;
 using DeliveryWebApp.Application.Common.Exceptions;
@@ -17,7 +18,6 @@ using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Threading.Tasks;
-using DeliveryWebApp.Application.BasketItems.Commands.UpdateBasketItem;
 
 namespace DeliveryWebApp.WebUI.Pages.CustomerPages
 {

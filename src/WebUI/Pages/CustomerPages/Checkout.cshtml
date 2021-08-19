@@ -1,15 +1,20 @@
 ﻿@page
+@using DeliveryWebApp.Application.Products.Extensions
+@using Microsoft.AspNetCore.Localization
 @model DeliveryWebApp.WebUI.Pages.CustomerPages.CheckoutModel
 @{
     ViewData["Title"] = "Checkout";
+    var requestCultureFeature = HttpContext.Features.Get<IRequestCultureFeature>();
+    var requestCulture = requestCultureFeature.RequestCulture;
+    // TODO: localize
 }
 
-<h4>@ViewData["Title"]</h4>
+<h2>@ViewData["Title"]</h2>
 
-<hr/>
+<hr />
 
-<h1>Your cart:</h1>
-
+<h4>Total: @Model.Basket.TotalPrice.ToString("C")</h4>
+<br />
 <table class="table">
     <thead>
         <tr class="table-primary">
@@ -20,77 +25,75 @@
                 @Html.DisplayNameFor(model => model.Products[0].Name)
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.Products[0].Category)
-            </th>
-            <th>
                 @Html.DisplayNameFor(model => model.Products[0].Price)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Products[0].Discount)
             </th>
             <th>
                 @Html.DisplayNameFor(model => model.Products[0].Quantity)
             </th>
-            <th></th>
         </tr>
     </thead>
     <tbody>
-        @foreach (var product in Model.Products)
+        @for (var i = 0; i < Model.Products.Count; i++)
         {
             <tr>
                 <td>
-                    <img src="data:image/jpeg;base64,@Convert.ToBase64String(product.Image)" alt="product_image" />
+                    <img src="data:image/jpeg;base64,@Convert.ToBase64String(Model.Products[i].Image)" style="height: 60px; width: 60px" alt="product_image" />
                 </td>
                 <td>
-                    @Html.DisplayFor(model => product.Name)
+                    @Html.DisplayFor(model => model.Products[i].Name)
                 </td>
                 <td>
-                    @Html.DisplayFor(model => product.Category)
+                    @Model.Products[i].DiscountedPrice().ToString("C")
                 </td>
                 <td>
-                    @Html.DisplayFor(model => product.Price)
-                </td>
-                <td>
-                    @Html.DisplayFor(model => product.Discount)
-                </td>
-                <td>
-                    @Html.DisplayFor(model => product.Quantity)
+                    @Html.DisplayFor(model => model.BasketItems[i].Quantity)
                 </td>
             </tr>
         }
     </tbody>
 </table>
 
-<hr/>
+<hr />
 
-<h1>Deliver to address</h1>
+<h5>Deliver to address</h5>
+<form method="post">
+    <div class="form-group col-md-5">
+        <label asp-for="Input.Address">Address</label>
+        <select class="form-select" asp-items="Model.CustomerAddresses" asp-for="Input.Address"></select>
+        <span asp-validation-for="Input.Address" class="text-danger"></span>
+    </div>
 
-<div class="form-group col-md-5">
-    <select class="form-select" aria-label="Select your address">
-        <option selected id="primary-address" value="@Model.CustomerAddresses[0].ToString()">Primary address</option>
-        <option id="secondary-address" value="@Model.CustomerAddresses[1].ToString()">Secondary address</option>
-    </select>
-</div>
 
-<div class="form-group">
-    <input id="address-selected" class="form-control" />
-</div>
+    <hr />
+
+    <h5>Payment method</h5>
+
+    <button type="button" class="btn btn-warning">
+        <img src="/icons/PayPal.svg" alt="paypal_logo" />
+    </button>
+    <br />
+    <p>or</p>
+
+    <div class="form-group col-sm-4">
+        <label asp-for="Input.CreditCard">Credit Card</label>
+        <div class="input-group">
+            <span class="input-group-text">
+                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-credit-card" viewBox="0 0 16 16">
+                    <path d="M0 4a2 2 0 0 1 2-2h12a2 2 0 0 1 2 2v8a2 2 0 0 1-2 2H2a2 2 0 0 1-2-2V4zm2-1a1 1 0 0 0-1 1v1h14V4a1 1 0 0 0-1-1H2zm13 4H1v5a1 1 0 0 0 1 1h12a1 1 0 0 0 1-1V7z" />
+                    <path d="M2 10a1 1 0 0 1 1-1h1a1 1 0 0 1 1 1v1a1 1 0 0 1-1 1H3a1 1 0 0 1-1-1v-1z" />
+                </svg>
+            </span>
+            <input asp-for="Input.CreditCard" class="form-control" />
+            <small class="form-text text-muted">We'll never save your payment method or share it with anyone else</small>
+        </div>
+        <span asp-validation-for="Input.CreditCard" class="text-danger"></span>
+    </div>
+    
+    <button type="submit" class="btn btn-outline-success">Pay</button>
+    <input type="reset" class="btn btn-outline-danger" src="icons/x.svg"/>
+</form>
 
 @section Scripts
 {
-    <script type="text/javascript">
-        $(function() {
-            if ($("#primary-address").selected === true) {
-                $("#address-selected").value = $("#primary-address").value;
-            }
-            if ($("#secondary-address").selected === true) {
-                $("#address-selected").value = $("#secondary-address").value;
-            }
-        });
-    </script>
+    <partial name="_ValidationScriptsPartial" />
 }
-
-<hr/>
-
-<h1>Payment method</h1>
-
