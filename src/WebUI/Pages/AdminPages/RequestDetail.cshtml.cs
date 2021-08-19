@@ -46,8 +46,8 @@ namespace DeliveryWebApp.WebUI.Pages.AdminPages
         public class InputModel
         {
             [Required]
-            [DataType(DataType.Currency)]
-            [Display(Name = "Delivery Credit")]
+            [DataType(DataType.Currency, ErrorMessage = "Value isn't a price")]
+            [DisplayFormat(DataFormatString = "{0:C}")]
             public decimal DeliveryCredit { get; set; } // TODO: Culture
         }
 

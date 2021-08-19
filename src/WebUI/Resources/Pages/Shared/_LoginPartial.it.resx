@@ -129,7 +129,7 @@
   <data name="Delivery History" xml:space="preserve">
     <value>Cronologia consegne</value>
   </data>
-  <data name="Open Orders" xml:space="preserve">
+  <data name="New Orders" xml:space="preserve">
     <value>Ordini aperti</value>
   </data>
   <data name="Order History" xml:space="preserve">

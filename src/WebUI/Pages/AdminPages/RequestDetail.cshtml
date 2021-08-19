@@ -1,7 +1,10 @@
 ﻿@page "{id:int?}"
+@using Microsoft.AspNetCore.Localization
 @model DeliveryWebApp.WebUI.Pages.AdminPages.RequestDetailModel
 @{
     ViewData["Title"] = "Request Detail";
+    var requestCultureFeature = HttpContext.Features.Get<IRequestCultureFeature>();
+    var requestCulture = requestCultureFeature.RequestCulture;
 }
 
 <a asp-page="/AdminPages/Requests" title="Back to list" id="back">
@@ -43,10 +46,10 @@
         {
             <div class="form-group col-1">
                 <div class="input-group">
-                    <label asp-for="Input.DeliveryCredit"></label>
+                    <label asp-for="Input.DeliveryCredit">Delivery Credit</label>
                     <input asp-for="Input.DeliveryCredit" class="form-control" />
                     <div class="input-group-append">
-                        <span class="input-group-text">€</span>
+                        <span class="input-group-text">@requestCulture.Culture.NumberFormat.CurrencySymbol</span>
                     </div>
                     <span asp-validation-for="Input.DeliveryCredit" class="text-danger"></span>
                 </div>
