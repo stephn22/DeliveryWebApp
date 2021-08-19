@@ -1,6 +1,3 @@
-using System;
-using DeliveryWebApp.Application.Addresses.Commands.CreateAddress;
-using DeliveryWebApp.Application.Addresses.Commands.UpdateAddress;
 using DeliveryWebApp.Application.Common.Exceptions;
 using DeliveryWebApp.Application.Common.Security;
 using DeliveryWebApp.Application.Restaurateurs.Commands.UpdateRestaurateur;
@@ -16,13 +13,13 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.AspNetCore.Mvc.Rendering;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.IO;
 using System.Threading.Tasks;
-using DeliveryWebApp.Application.Restaurateurs.Queries.GetRestaurateurAddress;
-using Microsoft.EntityFrameworkCore;
 
 namespace DeliveryWebApp.WebUI.Pages.RestaurateurPages
 {
@@ -144,7 +141,7 @@ namespace DeliveryWebApp.WebUI.Pages.RestaurateurPages
                     _logger.LogWarning($"{e.Message}");
                     RestaurantAddress = null;
                 }
-               
+
                 HasRestaurant = RestaurantAddress != null && Restaurateur.Logo != null &&
                                 Restaurateur.RestaurantName != null && Restaurateur.RestaurantCategory != null;
             }

@@ -12,7 +12,7 @@ using System.Threading.Tasks;
 
 namespace DeliveryWebApp.WebUI.Controllers
 {
-    [Authorize(Roles = RoleName.Admin)]
+    [Authorize(Roles = RoleName.Rider)]
     [Route("api/[controller]")]
     [ApiController]
     public class OrdersController : ControllerBase
