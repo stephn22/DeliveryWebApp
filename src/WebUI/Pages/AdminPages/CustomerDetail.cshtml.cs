@@ -1,8 +1,3 @@
-using System;
-using System.ComponentModel.DataAnnotations;
-using System.Linq;
-using System.Security.Claims;
-using System.Threading.Tasks;
 using DeliveryWebApp.Application.Common.Security;
 using DeliveryWebApp.Application.Customers.Commands.DeleteCustomer;
 using DeliveryWebApp.Application.Restaurateurs.Commands.CreateRestaurateur;
@@ -15,7 +10,6 @@ using DeliveryWebApp.Application.Riders.Extensions;
 using DeliveryWebApp.Domain.Entities;
 using DeliveryWebApp.Infrastructure.Identity;
 using DeliveryWebApp.Infrastructure.Persistence;
-using DeliveryWebApp.Infrastructure.Security;
 using DeliveryWebApp.Infrastructure.Services.Utilities;
 using MediatR;
 using Microsoft.AspNetCore.Identity;
@@ -23,6 +17,11 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
+using System;
+using System.ComponentModel.DataAnnotations;
+using System.Linq;
+using System.Security.Claims;
+using System.Threading.Tasks;
 
 namespace DeliveryWebApp.WebUI.Pages.AdminPages
 {
@@ -33,9 +32,7 @@ namespace DeliveryWebApp.WebUI.Pages.AdminPages
         private readonly ILogger<CustomerDetailModel> _logger;
         private readonly UserManager<ApplicationUser> _userManager;
         private readonly IMediator _mediator;
-
-        // TODO: complete logger
-
+        
         public CustomerDetailModel(ApplicationDbContext context, ILogger<CustomerDetailModel> logger,
             UserManager<ApplicationUser> userManager, IMediator mediator)
         {
@@ -46,6 +43,7 @@ namespace DeliveryWebApp.WebUI.Pages.AdminPages
         }
 
         public Customer Customer { get; set; }
+        public ApplicationUser User { get; set; }
         public string CurrentRole { get; set; }
 
         [BindProperty] public InputModel Input { get; set; }
@@ -58,6 +56,16 @@ namespace DeliveryWebApp.WebUI.Pages.AdminPages
             public decimal DeliveryCredit { get; set; }
         }
 
+        private async Task LoadAsync(int id)
+        {
+            // get customer by id
+            Customer = await _context.Customers.FindAsync(id);
+
+            User = await _userManager.FindByIdAsync(Customer.ApplicationUserFk);
+
+            CurrentRole = await _userManager.GetRoleAsync(User);
+        }
+
         public async Task<IActionResult> OnGetAsync(int? id)
         {
             if (id == null)
@@ -65,12 +73,12 @@ namespace DeliveryWebApp.WebUI.Pages.AdminPages
                 return NotFound();
             }
 
-            // get customer by id
-            Customer = await _context.Customers.FindAsync(id);
+            await LoadAsync((int)id);
 
-            var user = await _userManager.FindByIdAsync(Customer.ApplicationUserFk);
-
-            CurrentRole = await _userManager.GetRoleAsync(user);
+            if (Customer == null)
+            {
+                return NotFound("Unable to load entities");
+            }
 
             return Page();
         }
@@ -82,13 +90,16 @@ namespace DeliveryWebApp.WebUI.Pages.AdminPages
                 return Page();
             }
 
-            Customer = await _context.Customers.FindAsync(id);
+            if (id == null)
+            {
+                return NotFound();
+            }
 
-            var user = await _userManager.FindByIdAsync(Customer.ApplicationUserFk);
+            await LoadAsync((int)id);
 
-            await _userManager.BlockUser(user);
+            await _userManager.BlockUser(User);
 
-            _logger.LogInformation($"Blocked user with id '{user.Id}");
+            _logger.LogInformation($"Blocked user with id '{User.Id}");
 
             return RedirectToPage("/AdminPages/UserList");
         }
@@ -100,13 +111,17 @@ namespace DeliveryWebApp.WebUI.Pages.AdminPages
                 return Page();
             }
 
-            Customer = await _context.Customers.FindAsync(id);
+            if (id == null)
+            {
+                return NotFound();
+            }
 
-            var user = await _userManager.FindByIdAsync(Customer.ApplicationUserFk);
 
-            await _userManager.UnblockUser(user);
+            await LoadAsync((int)id);
 
-            _logger.LogInformation($"Unblocked user with id '{user.Id}");
+            await _userManager.UnblockUser(User);
+
+            _logger.LogInformation($"Unblocked user with id '{User.Id}");
 
             return RedirectToPage("/AdminPages/UserList");
         }
@@ -118,11 +133,15 @@ namespace DeliveryWebApp.WebUI.Pages.AdminPages
                 return Page();
             }
 
-            Customer = await _context.Customers.FindAsync(id);
+            if (id == null)
+            {
+                return NotFound();
+            }
 
-            var user = await _userManager.FindByIdAsync(Customer.ApplicationUserFk);
 
-            await _userManager.DeleteAsync(user);
+            await LoadAsync((int)id);
+
+            await _userManager.DeleteAsync(User);
 
             await _mediator.Send(new DeleteCustomerCommand
             {
@@ -141,18 +160,20 @@ namespace DeliveryWebApp.WebUI.Pages.AdminPages
                 return Page();
             }
 
-            Customer = await _context.Customers.FindAsync(id);
+            if (id == null)
+            {
+                return NotFound();
+            }
 
-            var user = await _userManager.FindByIdAsync(Customer.ApplicationUserFk);
-            CurrentRole = await _userManager.GetRoleAsync(user);
+            await LoadAsync((int)id);
 
             if (CurrentRole != RoleName.Default)
             {
                 // update claim
-                var oldClaim = await _userManager.GetClaimByTypeAsync(user, ClaimName.Role);
-                await _userManager.ReplaceClaimAsync(user, oldClaim, new Claim(ClaimName.Role, RoleName.Default));
+                var oldClaim = await _userManager.GetClaimByTypeAsync(User, ClaimName.Role);
+                await _userManager.ReplaceClaimAsync(User, oldClaim, new Claim(ClaimName.Role, RoleName.Default));
 
-                // update tables TODO: check if cascade
+                // update tables
                 switch (CurrentRole)
                 {
                     case RoleName.Rider: // remove from table if rider
@@ -162,6 +183,9 @@ namespace DeliveryWebApp.WebUI.Pages.AdminPages
                         {
                             Id = rider.Id
                         });
+
+                        _logger.LogInformation($"Deleted rider with id {rider.Id}");
+
                         break;
 
                     case RoleName.Restaurateur: // remove from table if restaurateur
@@ -171,6 +195,9 @@ namespace DeliveryWebApp.WebUI.Pages.AdminPages
                         {
                             Id = restaurateur.Id
                         });
+
+                        _logger.LogInformation($"Deleted restaurateur with id {restaurateur.Id}");
+
                         break;
                 }
             }
@@ -185,16 +212,19 @@ namespace DeliveryWebApp.WebUI.Pages.AdminPages
                 return Page();
             }
 
-            Customer = await _context.Customers.FindAsync(id);
+            if (id == null)
+            {
+                return NotFound();
+            }
 
-            var user = await _userManager.FindByIdAsync(Customer.ApplicationUserFk);
-            CurrentRole = await _userManager.GetRoleAsync(user);
+
+            await LoadAsync((int)id);
 
             if (CurrentRole != RoleName.Rider)
             {
-                var oldClaim = await _userManager.GetClaimByTypeAsync(user, ClaimName.Role);
+                var oldClaim = await _userManager.GetClaimByTypeAsync(User, ClaimName.Role);
 
-                await _userManager.ReplaceClaimAsync(user, oldClaim, new Claim(ClaimName.Role, RoleName.Rider));
+                await _userManager.ReplaceClaimAsync(User, oldClaim, new Claim(ClaimName.Role, RoleName.Rider));
 
                 try // if user was a restaurateur delete from table
                 {
@@ -204,6 +234,8 @@ namespace DeliveryWebApp.WebUI.Pages.AdminPages
                     {
                         Id = restaurateur.Id
                     });
+
+                    _logger.LogInformation($"Deleted restaurateur with id {restaurateur.Id}");
                 }
                 catch (InvalidOperationException)
                 {
@@ -212,11 +244,13 @@ namespace DeliveryWebApp.WebUI.Pages.AdminPages
 
                 // update table
 
-                await _mediator.Send(new CreateRiderCommand
+                var r = await _mediator.Send(new CreateRiderCommand
                 {
                     Customer = Customer,
                     DeliveryCredit = Input.DeliveryCredit
                 });
+
+                _logger.LogInformation($"Created rider with id {r.Id}");
             }
             else // update only delivery credit
             {
@@ -227,6 +261,8 @@ namespace DeliveryWebApp.WebUI.Pages.AdminPages
                     Id = rider.Id,
                     DeliveryCredit = Input.DeliveryCredit
                 });
+
+                _logger.LogInformation($"Updated rider with id {rider.Id}");
             }
 
             return RedirectToPage("/AdminPages/UserList");
@@ -240,15 +276,18 @@ namespace DeliveryWebApp.WebUI.Pages.AdminPages
                 return Page();
             }
 
-            Customer = await _context.Customers.FindAsync(id);
+            if (id == null)
+            {
+                return NotFound();
+            }
 
-            var user = await _userManager.FindByIdAsync(Customer.ApplicationUserFk);
-            CurrentRole = await _userManager.GetRoleAsync(user);
+            await LoadAsync((int)id);
+
 
             if (CurrentRole != RoleName.Restaurateur)
             {
-                var oldClaim = await _userManager.GetClaimByTypeAsync(user, ClaimName.Role);
-                await _userManager.ReplaceClaimAsync(user, oldClaim, new Claim(ClaimName.Role, RoleName.Restaurateur));
+                var oldClaim = await _userManager.GetClaimByTypeAsync(User, ClaimName.Role);
+                await _userManager.ReplaceClaimAsync(User, oldClaim, new Claim(ClaimName.Role, RoleName.Restaurateur));
 
                 // update tables
 
@@ -260,16 +299,21 @@ namespace DeliveryWebApp.WebUI.Pages.AdminPages
                     {
                         Id = rider.Id
                     });
+
+                    _logger.LogInformation($"Deleted rider with id {rider.Id}");
                 }
                 catch (InvalidOperationException)
                 {
                     // otherwise do nothing
                 }
-                
-                await _mediator.Send(new CreateRestaurateurCommand
+
+                var r = await _mediator.Send(new CreateRestaurateurCommand
                 {
                     Customer = Customer
                 });
+
+                _logger.LogInformation($"Created restaurateur with id {r.Id}");
+
             }
             return RedirectToPage("/AdminPages/UserList");
         }
