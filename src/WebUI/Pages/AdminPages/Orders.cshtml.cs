@@ -1,11 +1,11 @@
 using DeliveryWebApp.Application.Common.Security;
+using DeliveryWebApp.Application.Orders.Queries.GetOrders;
 using DeliveryWebApp.Domain.Entities;
 using DeliveryWebApp.Infrastructure.Persistence;
+using MediatR;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
-using Microsoft.EntityFrameworkCore;
 using System.Collections.Generic;
-using System.Linq;
 using System.Threading.Tasks;
 
 namespace DeliveryWebApp.WebUI.Pages.AdminPages
@@ -14,23 +14,26 @@ namespace DeliveryWebApp.WebUI.Pages.AdminPages
     public class OrdersModel : PageModel
     {
         private readonly ApplicationDbContext _context;
+        private readonly IMediator _mediator;
 
-        public OrdersModel(ApplicationDbContext context)
+        public OrdersModel(ApplicationDbContext context, IMediator mediator)
         {
             _context = context;
+            _mediator = mediator;
         }
 
         public IList<Order> Orders { get; set; }
 
         public async Task<IActionResult> OnGetAsync()
         {
-            var orders = from o in _context.Orders
-                         orderby o.Date descending
-                         select o;
-
-            Orders = await orders.ToListAsync();
+            await LoadAsync();
 
             return Page();
+        }
+
+        private async Task LoadAsync()
+        {
+            Orders = await _mediator.Send(new GetOrdersQuery());
         }
     }
 }
