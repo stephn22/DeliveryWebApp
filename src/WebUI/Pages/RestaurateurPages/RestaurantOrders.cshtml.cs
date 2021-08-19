@@ -73,7 +73,7 @@ namespace DeliveryWebApp.WebUI.Pages.RestaurateurPages
                             OrderId = order.Id
                         });
 
-                        var a = await order.GetAddress(_context);
+                        var a = await order.GetAddressAsync(_context);
 
                         OrderItems.AddRange(partialList);
                         Addresses.Add(a);

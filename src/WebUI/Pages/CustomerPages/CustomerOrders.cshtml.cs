@@ -89,7 +89,7 @@ namespace DeliveryWebApp.WebUI.Pages.CustomerPages
                         OrderId = order.Id
                     });
 
-                    var r = await order.GetRestaurateur(_context);
+                    var r = await order.GetRestaurateurAsync(_context);
 
                     if (r != null)
                     {

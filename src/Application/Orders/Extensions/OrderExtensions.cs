@@ -41,13 +41,19 @@ namespace DeliveryWebApp.Application.Orders.Extensions
             return tot;
         }
 
-        public static async Task<Restaurateur> GetRestaurateur(this Order order, IApplicationDbContext context)
+        public static async Task<Customer> GetCustomerAsync(this Order order, IApplicationDbContext context)
+        {
+            var customer = await context.Customers.FindAsync(order.CustomerId);
+            return customer;
+        }
+
+        public static async Task<Restaurateur> GetRestaurateurAsync(this Order order, IApplicationDbContext context)
         {
             var restaurateur = await context.Restaurateurs.FindAsync(order.RestaurateurId);
             return restaurateur;
         }
 
-        public static async Task<Address> GetAddress(this Order order, IApplicationDbContext context)
+        public static async Task<Address> GetAddressAsync(this Order order, IApplicationDbContext context)
         {
             var address = await context.Addresses.FindAsync(order.AddressId);
             return address;
