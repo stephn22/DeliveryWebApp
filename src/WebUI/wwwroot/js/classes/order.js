@@ -1,5 +1,6 @@
 ﻿class Order {
-    constructor(date, restaurateurId, status, addressId) {
+    constructor(id, date, restaurateurId, status, addressId) {
+        this.id = id;
         this.date = date;
         this.restaurateurId = restaurateurId;
         this.status = status;
