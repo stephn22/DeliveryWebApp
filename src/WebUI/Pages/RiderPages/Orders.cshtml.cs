@@ -1,13 +1,14 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 using DeliveryWebApp.Application.Common.Security;
+using DeliveryWebApp.Domain.Entities;
 using DeliveryWebApp.Infrastructure.Persistence;
-using DeliveryWebApp.Infrastructure.Security;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
+using DeliveryWebApp.Application.Orders.Queries.GetOrders;
+using DeliveryWebApp.Domain.Constants;
 
 namespace DeliveryWebApp.WebUI.Pages.RiderPages
 {
@@ -23,8 +24,14 @@ namespace DeliveryWebApp.WebUI.Pages.RiderPages
             _mediator = mediator;
         }
 
-        public void OnGet()
+        public List<Order> Orders { get; set; }
+
+        public async Task<IActionResult> OnGet()
         {
+            var orders = await _mediator.Send(new GetOrdersQuery());
+            Orders = orders.Where(o => o.Status == OrderStatus.New).ToList();
+
+            return Page();
         }
     }
 }

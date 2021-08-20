@@ -1,14 +1,12 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading;
-using System.Threading.Tasks;
-using DeliveryWebApp.Application.Common.Interfaces;
+﻿using DeliveryWebApp.Application.Common.Interfaces;
 using DeliveryWebApp.Domain.Entities;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Logging;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading;
+using System.Threading.Tasks;
 
 namespace DeliveryWebApp.Application.Orders.Queries.GetOrders
 {
@@ -21,12 +19,10 @@ namespace DeliveryWebApp.Application.Orders.Queries.GetOrders
     public class GetOrdersQueryHandler : IRequestHandler<GetOrdersQuery, List<Order>>
     {
         private readonly IApplicationDbContext _context;
-        private readonly ILogger<GetOrdersQuery> _logger;
 
-        public GetOrdersQueryHandler(IApplicationDbContext context, ILogger<GetOrdersQuery> logger)
+        public GetOrdersQueryHandler(IApplicationDbContext context)
         {
             _context = context;
-            _logger = logger;
         }
 
         public async Task<List<Order>> Handle(GetOrdersQuery request, CancellationToken cancellationToken)
@@ -45,13 +41,10 @@ namespace DeliveryWebApp.Application.Orders.Queries.GetOrders
                 }
 
                 // for customer
-                return await (from o in _context.Orders
-                    where o.CustomerId == request.CustomerId
-                    select o).ToListAsync(cancellationToken);
+                return await (_context.Orders.Where(o => o.CustomerId == request.CustomerId)).ToListAsync(cancellationToken);
             }
             catch (InvalidOperationException e)
             {
-                _logger.LogWarning($"{nameof(Customer)}, {e.Message}");
                 return null;
             }
         }
