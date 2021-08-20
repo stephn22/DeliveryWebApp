@@ -9,6 +9,7 @@ using MediatR;
 using Microsoft.AspNetCore.Mvc;
 using System.Collections.Generic;
 using System.Threading.Tasks;
+using DeliveryWebApp.Application.Orders.Queries.GetSingleOrder;
 
 namespace DeliveryWebApp.WebUI.Controllers
 {
@@ -30,6 +31,15 @@ namespace DeliveryWebApp.WebUI.Controllers
         public async Task<List<Order>> Read()
         {
             return await _mediator.Send(new GetOrdersQuery());
+        }
+
+        [HttpGet("{id:int}")]
+        public async Task<Order> ReadSingle(int id)
+        {
+            return await _mediator.Send(new GetSingleOrderQuery
+            {
+                Id = id
+            });
         }
 
         [HttpPut]

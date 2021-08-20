@@ -1,0 +1,73 @@
+﻿@page
+@using IdentityServer4.Extensions
+@model DeliveryWebApp.WebUI.Pages.RiderPages.DeliveryHistoryModel
+@{
+    ViewData["Title"] = "Delivery History";
+    // TODO: localize
+}
+
+<h1>@ViewData["Title"]</h1>
+
+@if (Model.Orders.IsNullOrEmpty())
+{
+    <div class="alert alert-secondary text-center" role="alert">
+        You haven't delivered yet
+    </div>
+}
+else
+{
+    <div class="text-center">
+        <table class="table">
+            <thead>
+            <tr class="table-primary">
+                <th>
+                    @Html.DisplayNameFor(model => model.Orders[0].Id)
+                </th>
+                <th>
+                    Order Date
+                </th>
+                <th>
+                    Delivery Date
+                </th>
+                <th>
+                    Food Vendor
+                </th>
+                <th>
+                    Status
+                </th>
+            </tr>
+            </thead>
+            <tbody>
+                @for (var i = 0; i < Model.Orders.Count; i++)
+                {
+                    <tr>
+                        <td>
+                            @Html.DisplayFor(model => model.Orders[i].Id)
+                        </td>
+                        <td>
+                            @Model.Orders[i].Date.ToLocalTime().ToString("F")
+                        </td>
+                        <td>
+                            @if (Model.Orders[i].DeliveryDate == null)
+                            {
+                                <p>N/A</p>
+                            }
+                            else
+                            {
+                                <p>@Model.Orders[i].DeliveryDate.Value.ToLocalTime().ToString("F")</p>
+                            }
+                        </td>
+                        <td>
+                            <a asp-page="/CustomerPages/RestaurantDetail" asp-route-id="@Model.Restaurateurs[i].Id" class="link-primary">
+                                @Model.Restaurateurs[i].RestaurantName
+                            </a>
+                        </td>
+                        <td>
+                            @Html.DisplayFor(model => model.Orders[i].Status)
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+}

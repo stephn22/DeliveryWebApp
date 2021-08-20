@@ -40,5 +40,11 @@
     "inputFiles": [
       "wwwroot/js/classes/order.js"
     ]
+  },
+  {
+    "outputFileName": "wwwroot/css/directions.min.css",
+    "inputFiles": [
+      "wwwroot/css/directions.css"
+    ]
   }
 ]
