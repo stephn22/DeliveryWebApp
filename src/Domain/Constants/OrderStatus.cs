@@ -13,6 +13,7 @@
         public const string New = "New";
 
         public const string Checkout = "Checkout";
+        public const string Taken = "Taken";
 
         public const string Paid = "Paid";
 

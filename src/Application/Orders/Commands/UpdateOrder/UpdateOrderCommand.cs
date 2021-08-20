@@ -15,6 +15,7 @@ namespace DeliveryWebApp.Application.Orders.Commands.UpdateOrder
         public int Id { get; set; }
         public string OrderStatus { get; set; }
         public DateTime? DeliveryDate { get; set; }
+        public Rider Rider { get; set; }
     }
 
     public class UpdateOrderCommandHandler : IRequestHandler<UpdateOrderCommand, Order>
@@ -45,6 +46,11 @@ namespace DeliveryWebApp.Application.Orders.Commands.UpdateOrder
             if (!string.IsNullOrEmpty(request.OrderStatus))
             {
                 entity.Status = request.OrderStatus;
+            }
+
+            if (request.Rider != null)
+            {
+                entity.RiderId = request.Rider.Id;
             }
 
             await _context.SaveChangesAsync(cancellationToken);
