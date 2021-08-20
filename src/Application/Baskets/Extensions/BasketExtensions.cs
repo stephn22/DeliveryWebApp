@@ -1,10 +1,10 @@
 ﻿using DeliveryWebApp.Application.BasketItems.Extensions;
 using DeliveryWebApp.Application.BasketItems.Queries;
 using DeliveryWebApp.Application.Common.Interfaces;
+using DeliveryWebApp.Application.Products.Extensions;
 using DeliveryWebApp.Domain.Entities;
 using MediatR;
 using System.Threading.Tasks;
-using DeliveryWebApp.Application.Products.Extensions;
 
 namespace DeliveryWebApp.Application.Baskets.Extensions
 {

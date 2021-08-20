@@ -2,10 +2,10 @@
 using DeliveryWebApp.Application.Customers.Commands.CreateCustomer;
 using DeliveryWebApp.Application.Products.Commands.CreateProduct;
 using DeliveryWebApp.Application.Restaurateurs.Commands.CreateRestaurateur;
+using DeliveryWebApp.Domain.Constants;
 using FluentAssertions;
 using NUnit.Framework;
 using System.Threading.Tasks;
-using DeliveryWebApp.Domain.Constants;
 
 namespace DeliveryWebApp.Application.IntegrationTests.Products.Commands
 {

@@ -10,8 +10,6 @@ using System.Linq;
 using System.Reflection;
 using System.Threading;
 using System.Threading.Tasks;
-using DeliveryWebApp.Infrastructure.Persistence.Configurations.Constants;
-using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
 namespace DeliveryWebApp.Infrastructure.Persistence
 {
@@ -86,7 +84,10 @@ namespace DeliveryWebApp.Infrastructure.Persistence
                     .Select(x => x.Entity.DomainEvents)
                     .SelectMany(x => x)
                     .FirstOrDefault(domainEvent => !domainEvent.IsPublished);
-                if (domainEventEntity == null) break;
+                if (domainEventEntity == null)
+                {
+                    break;
+                }
 
                 domainEventEntity.IsPublished = true;
                 await _domainEventService.Publish(domainEventEntity);

@@ -1,18 +1,20 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading;
-using System.Threading.Tasks;
-using DeliveryWebApp.Application.Common.Exceptions;
+﻿using DeliveryWebApp.Application.Common.Exceptions;
 using DeliveryWebApp.Application.Common.Interfaces;
 using DeliveryWebApp.Domain.Entities;
 using MediatR;
+using System.Threading;
+using System.Threading.Tasks;
 
 namespace DeliveryWebApp.Application.Addresses.Queries.GetSingleAddress
 {
+    /// <summary>
+    /// Used in controllers
+    /// </summary>
     public class GetSingleAddressQuery : IRequest<Address>
     {
+        /// <summary>
+        /// Address Id
+        /// </summary>
         public int Id { get; set; }
     }
 

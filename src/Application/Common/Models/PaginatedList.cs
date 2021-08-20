@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace DeliveryWebApp.Application.Common.Models
 {
-    public class PaginatedList<T> 
+    public class PaginatedList<T>
     {
         public List<T> Items { get; }
         public int PageIndex { get; }

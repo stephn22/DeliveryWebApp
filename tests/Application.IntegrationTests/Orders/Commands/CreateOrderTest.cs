@@ -1,17 +1,17 @@
-﻿using DeliveryWebApp.Application.Common.Exceptions;
+﻿using DeliveryWebApp.Application.Addresses.Commands.CreateAddress;
+using DeliveryWebApp.Application.BasketItems.Queries;
+using DeliveryWebApp.Application.Baskets.Commands.CreateBasket;
+using DeliveryWebApp.Application.Baskets.Commands.UpdateBasket;
+using DeliveryWebApp.Application.Common.Exceptions;
 using DeliveryWebApp.Application.Customers.Commands.CreateCustomer;
 using DeliveryWebApp.Application.Orders.Commands.CreateOrder;
+using DeliveryWebApp.Application.Products.Commands.CreateProduct;
 using DeliveryWebApp.Application.Restaurateurs.Commands.CreateRestaurateur;
 using DeliveryWebApp.Domain.Constants;
 using FluentAssertions;
 using NUnit.Framework;
 using System;
 using System.Threading.Tasks;
-using DeliveryWebApp.Application.Addresses.Commands.CreateAddress;
-using DeliveryWebApp.Application.BasketItems.Queries;
-using DeliveryWebApp.Application.Baskets.Commands.CreateBasket;
-using DeliveryWebApp.Application.Baskets.Commands.UpdateBasket;
-using DeliveryWebApp.Application.Products.Commands.CreateProduct;
 
 namespace DeliveryWebApp.Application.IntegrationTests.Orders.Commands
 {

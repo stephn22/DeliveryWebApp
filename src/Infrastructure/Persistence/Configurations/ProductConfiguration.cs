@@ -1,10 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using DeliveryWebApp.Domain.Entities;
-using DeliveryWebApp.Infrastructure.Persistence.Configurations.Constants;
+﻿using DeliveryWebApp.Domain.Entities;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 

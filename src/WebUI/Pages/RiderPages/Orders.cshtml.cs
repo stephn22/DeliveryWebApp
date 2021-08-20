@@ -1,4 +1,6 @@
 using DeliveryWebApp.Application.Common.Security;
+using DeliveryWebApp.Application.Orders.Queries.GetOrders;
+using DeliveryWebApp.Domain.Constants;
 using DeliveryWebApp.Domain.Entities;
 using DeliveryWebApp.Infrastructure.Persistence;
 using MediatR;
@@ -7,8 +9,6 @@ using Microsoft.AspNetCore.Mvc.RazorPages;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using DeliveryWebApp.Application.Orders.Queries.GetOrders;
-using DeliveryWebApp.Domain.Constants;
 
 namespace DeliveryWebApp.WebUI.Pages.RiderPages
 {

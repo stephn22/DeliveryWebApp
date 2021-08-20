@@ -32,7 +32,7 @@ namespace DeliveryWebApp.WebUI.Pages.AdminPages
         private readonly ILogger<CustomerDetailModel> _logger;
         private readonly UserManager<ApplicationUser> _userManager;
         private readonly IMediator _mediator;
-        
+
         public CustomerDetailModel(ApplicationDbContext context, ILogger<CustomerDetailModel> logger,
             UserManager<ApplicationUser> userManager, IMediator mediator)
         {

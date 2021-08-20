@@ -1,16 +1,13 @@
-﻿using System;
-using AutoMapper;
+﻿using DeliveryWebApp.Application.Common.Exceptions;
 using DeliveryWebApp.Application.Common.Security;
 using DeliveryWebApp.Application.Restaurateurs.Queries.GetRestaurateurs;
+using DeliveryWebApp.Application.Restaurateurs.Queries.GetSingleRestaurateur;
 using DeliveryWebApp.Domain.Entities;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Logging;
 using System.Collections.Generic;
 using System.Threading.Tasks;
-using DeliveryWebApp.Application.Addresses.Queries.GetSingleAddress;
-using DeliveryWebApp.Application.Common.Exceptions;
-using DeliveryWebApp.Application.Restaurateurs.Queries.GetSingleRestaurateur;
-using Microsoft.Extensions.Logging;
 
 namespace DeliveryWebApp.WebUI.Controllers
 {

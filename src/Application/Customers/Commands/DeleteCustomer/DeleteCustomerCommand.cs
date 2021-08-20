@@ -1,18 +1,16 @@
-﻿using System;
+﻿using AutoMapper;
+using DeliveryWebApp.Application.Addresses.Queries.GetAddresses;
+using DeliveryWebApp.Application.Baskets.Commands.DeleteBasket;
 using DeliveryWebApp.Application.Common.Exceptions;
 using DeliveryWebApp.Application.Common.Interfaces;
+using DeliveryWebApp.Application.Restaurateurs.Commands.DeleteRestaurateur;
+using DeliveryWebApp.Application.Riders.Commands.DeleteRider;
 using DeliveryWebApp.Domain.Entities;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
-using System.Linq;
+using System;
 using System.Threading;
 using System.Threading.Tasks;
-using AutoMapper;
-using DeliveryWebApp.Application.Addresses.Queries.GetAddresses;
-using DeliveryWebApp.Application.Baskets.Commands.DeleteBasket;
-using DeliveryWebApp.Application.Restaurateurs.Commands.DeleteRestaurateur;
-using DeliveryWebApp.Application.Riders.Commands.DeleteRider;
-using Microsoft.Extensions.Logging;
 
 namespace DeliveryWebApp.Application.Customers.Commands.DeleteCustomer
 {
@@ -71,7 +69,7 @@ namespace DeliveryWebApp.Application.Customers.Commands.DeleteCustomer
             catch (InvalidOperationException)
             {
             }
-            
+
             // search if customer has basket and delete it
             try
             {
@@ -85,7 +83,7 @@ namespace DeliveryWebApp.Application.Customers.Commands.DeleteCustomer
             catch (InvalidOperationException)
             {
             }
-            
+
             var addresses = await _mediator.Send(new GetAddressesQuery
             {
                 CustomerId = entity.Id
@@ -94,7 +92,7 @@ namespace DeliveryWebApp.Application.Customers.Commands.DeleteCustomer
             if (addresses is { Count: > 0 })
             {
                 _context.Addresses.RemoveRange(addresses);
-            } 
+            }
 
             _context.Customers.Remove(entity);
             await _context.SaveChangesAsync(cancellationToken);

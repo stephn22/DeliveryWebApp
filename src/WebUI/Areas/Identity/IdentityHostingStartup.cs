@@ -1,12 +1,4 @@
-﻿using System;
-using DeliveryWebApp.Infrastructure.Identity;
-using DeliveryWebApp.Infrastructure.Persistence;
-using Microsoft.AspNetCore.Hosting;
-using Microsoft.AspNetCore.Identity;
-using Microsoft.AspNetCore.Identity.UI;
-using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Configuration;
-using Microsoft.Extensions.DependencyInjection;
+﻿using Microsoft.AspNetCore.Hosting;
 
 [assembly: HostingStartup(typeof(DeliveryWebApp.WebUI.Areas.Identity.IdentityHostingStartup))]
 namespace DeliveryWebApp.WebUI.Areas.Identity
@@ -15,7 +7,8 @@ namespace DeliveryWebApp.WebUI.Areas.Identity
     {
         public void Configure(IWebHostBuilder builder)
         {
-            builder.ConfigureServices((context, services) => {
+            builder.ConfigureServices((context, services) =>
+            {
             });
         }
     }

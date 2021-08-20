@@ -1,4 +1,5 @@
-﻿using DeliveryWebApp.Application.Common.Exceptions;
+﻿using DeliveryWebApp.Application.Baskets.Commands.CreateBasket;
+using DeliveryWebApp.Application.Common.Exceptions;
 using DeliveryWebApp.Application.Customers.Commands.CreateCustomer;
 using DeliveryWebApp.Application.Customers.Commands.DeleteCustomer;
 using DeliveryWebApp.Application.Restaurateurs.Commands.CreateRestaurateur;
@@ -7,7 +8,6 @@ using DeliveryWebApp.Domain.Entities;
 using FluentAssertions;
 using NUnit.Framework;
 using System.Threading.Tasks;
-using DeliveryWebApp.Application.Baskets.Commands.CreateBasket;
 
 namespace DeliveryWebApp.Application.IntegrationTests.Customers.Commands
 {

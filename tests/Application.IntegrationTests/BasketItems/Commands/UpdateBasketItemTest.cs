@@ -1,15 +1,15 @@
 ﻿using DeliveryWebApp.Application.BasketItems.Commands.CreateBasketItem;
 using DeliveryWebApp.Application.BasketItems.Commands.UpdateBasketItem;
 using DeliveryWebApp.Application.Baskets.Commands.CreateBasket;
+using DeliveryWebApp.Application.Common.Exceptions;
 using DeliveryWebApp.Application.Customers.Commands.CreateCustomer;
 using DeliveryWebApp.Application.Products.Commands.CreateProduct;
 using DeliveryWebApp.Application.Restaurateurs.Commands.CreateRestaurateur;
 using DeliveryWebApp.Domain.Constants;
+using DeliveryWebApp.Domain.Entities;
 using FluentAssertions;
 using NUnit.Framework;
 using System.Threading.Tasks;
-using DeliveryWebApp.Application.Common.Exceptions;
-using DeliveryWebApp.Domain.Entities;
 
 namespace DeliveryWebApp.Application.IntegrationTests.BasketItems.Commands
 {

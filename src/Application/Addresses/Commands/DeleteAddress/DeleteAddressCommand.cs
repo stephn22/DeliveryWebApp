@@ -9,6 +9,9 @@ namespace DeliveryWebApp.Application.Addresses.Commands.DeleteAddress
 {
     public class DeleteAddressCommand : IRequest<Address>
     {
+        /// <summary>
+        /// Address id
+        /// </summary>
         public int Id { get; set; }
     }
 

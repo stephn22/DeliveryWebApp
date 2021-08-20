@@ -1,5 +1,4 @@
-﻿using DeliveryWebApp.Domain.Constants;
-using FluentValidation;
+﻿using FluentValidation;
 
 namespace DeliveryWebApp.Application.Requests.Commands.UpdateRequest
 {

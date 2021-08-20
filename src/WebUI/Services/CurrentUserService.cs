@@ -1,10 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Security.Claims;
-using System.Threading.Tasks;
-using DeliveryWebApp.Application.Common.Interfaces;
+﻿using DeliveryWebApp.Application.Common.Interfaces;
 using Microsoft.AspNetCore.Http;
+using System.Security.Claims;
 
 namespace DeliveryWebApp.WebUI.Services
 {

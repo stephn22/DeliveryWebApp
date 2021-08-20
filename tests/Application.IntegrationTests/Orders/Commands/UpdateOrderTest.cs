@@ -1,4 +1,5 @@
 ﻿using AutoMapper.Internal;
+using DeliveryWebApp.Application.Addresses.Commands.CreateAddress;
 using DeliveryWebApp.Application.BasketItems.Queries;
 using DeliveryWebApp.Application.Baskets.Commands.CreateBasket;
 using DeliveryWebApp.Application.Baskets.Commands.UpdateBasket;
@@ -15,7 +16,6 @@ using FluentAssertions.Common;
 using NUnit.Framework;
 using System;
 using System.Threading.Tasks;
-using DeliveryWebApp.Application.Addresses.Commands.CreateAddress;
 
 namespace DeliveryWebApp.Application.IntegrationTests.Orders.Commands
 {
@@ -160,7 +160,7 @@ namespace DeliveryWebApp.Application.IntegrationTests.Orders.Commands
             await SendAsync(updateOrder);
 
             order = await FindAsync<Order>(updateOrder.Id);
-            
+
             order.Should().NotBeNull();
             order.Id.Should().BeGreaterThan(0);
             order.CustomerId.Should().Be(customer1.Id);

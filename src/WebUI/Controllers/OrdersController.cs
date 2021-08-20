@@ -1,15 +1,14 @@
 ﻿using AutoMapper;
 using DeliveryWebApp.Application.Common.Security;
-using DeliveryWebApp.Application.Orders.Commands.CreateOrder;
 using DeliveryWebApp.Application.Orders.Commands.DeleteOrder;
 using DeliveryWebApp.Application.Orders.Commands.UpdateOrder;
 using DeliveryWebApp.Application.Orders.Queries.GetOrders;
+using DeliveryWebApp.Application.Orders.Queries.GetSingleOrder;
 using DeliveryWebApp.Domain.Entities;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
 using System.Collections.Generic;
 using System.Threading.Tasks;
-using DeliveryWebApp.Application.Orders.Queries.GetSingleOrder;
 
 namespace DeliveryWebApp.WebUI.Controllers
 {

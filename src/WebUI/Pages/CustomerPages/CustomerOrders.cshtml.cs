@@ -1,4 +1,8 @@
 using DeliveryWebApp.Application.Common.Security;
+using DeliveryWebApp.Application.OrderItems.Extensions;
+using DeliveryWebApp.Application.OrderItems.Queries;
+using DeliveryWebApp.Application.Orders.Extensions;
+using DeliveryWebApp.Application.Orders.Queries.GetOrders;
 using DeliveryWebApp.Domain.Entities;
 using DeliveryWebApp.Infrastructure.Identity;
 using DeliveryWebApp.Infrastructure.Persistence;
@@ -11,10 +15,6 @@ using Microsoft.Extensions.Logging;
 using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
-using DeliveryWebApp.Application.OrderItems.Extensions;
-using DeliveryWebApp.Application.OrderItems.Queries;
-using DeliveryWebApp.Application.Orders.Extensions;
-using DeliveryWebApp.Application.Orders.Queries.GetOrders;
 
 namespace DeliveryWebApp.WebUI.Pages.CustomerPages
 {
@@ -98,7 +98,7 @@ namespace DeliveryWebApp.WebUI.Pages.CustomerPages
 
                     foreach (var item in OrderItems)
                     {
-                        
+
 
                         var p = await item.GetProduct(_context);
 

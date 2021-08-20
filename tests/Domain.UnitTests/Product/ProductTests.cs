@@ -1,6 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
+﻿using System.Collections.Generic;
 using Xunit;
 
 
@@ -12,8 +10,8 @@ namespace DeliveryWebApp.Domain.UnitTests.Product
         [Fact]
         public void Discount()
         {
-            var p1 = new Entities.Product {Price = 22.50M, Discount = 10};
-            var p2 = new Entities.Product {Price = 25.50M, Discount = 0};
+            var p1 = new Entities.Product { Price = 22.50M, Discount = 10 };
+            var p2 = new Entities.Product { Price = 25.50M, Discount = 0 };
 
             //var finalPrice = p1.ApplyDiscount(); TODO: complete tests
             //var noDiscount = p2.ApplyDiscount();

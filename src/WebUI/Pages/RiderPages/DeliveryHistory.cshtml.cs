@@ -1,4 +1,5 @@
 using DeliveryWebApp.Application.Common.Security;
+using DeliveryWebApp.Application.Orders.Extensions;
 using DeliveryWebApp.Domain.Entities;
 using DeliveryWebApp.Infrastructure.Identity;
 using DeliveryWebApp.Infrastructure.Persistence;
@@ -12,7 +13,6 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using DeliveryWebApp.Application.Orders.Extensions;
 
 namespace DeliveryWebApp.WebUI.Pages.RiderPages
 {

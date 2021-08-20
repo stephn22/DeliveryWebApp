@@ -1,12 +1,12 @@
-using Microsoft.AspNetCore.Authorization;
-using System.Text;
-using System.Threading.Tasks;
 using DeliveryWebApp.Infrastructure.Identity;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.UI.Services;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.AspNetCore.WebUtilities;
+using System.Text;
+using System.Threading.Tasks;
 
 namespace DeliveryWebApp.WebUI.Areas.Identity.Pages.Account
 {
@@ -43,7 +43,10 @@ namespace DeliveryWebApp.WebUI.Areas.Identity.Pages.Account
 
             Email = email;
 
-            if (!DisplayConfirmAccountLink) return Page();
+            if (!DisplayConfirmAccountLink)
+            {
+                return Page();
+            }
 
             var userId = await _userManager.GetUserIdAsync(user);
             var code = await _userManager.GenerateEmailConfirmationTokenAsync(user);

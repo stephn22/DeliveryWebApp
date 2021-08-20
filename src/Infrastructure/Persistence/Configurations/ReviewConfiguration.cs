@@ -1,10 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using DeliveryWebApp.Domain.Entities;
+﻿using DeliveryWebApp.Domain.Entities;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
@@ -31,7 +25,7 @@ namespace DeliveryWebApp.Infrastructure.Persistence.Configurations
 
             builder.HasIndex(r => r.CustomerId)
                 .IsUnique();
-            
+
             builder.HasIndex(r => r.RestaurateurId)
                 .IsUnique();
 

@@ -1,14 +1,10 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using DeliveryWebApp.Application.Common.Interfaces;
+﻿using DeliveryWebApp.Application.Common.Interfaces;
 using DeliveryWebApp.Application.OrderItems.Extensions;
 using DeliveryWebApp.Application.OrderItems.Queries;
 using DeliveryWebApp.Application.Products.Extensions;
 using DeliveryWebApp.Domain.Entities;
 using MediatR;
+using System.Threading.Tasks;
 
 namespace DeliveryWebApp.Application.Orders.Extensions
 {

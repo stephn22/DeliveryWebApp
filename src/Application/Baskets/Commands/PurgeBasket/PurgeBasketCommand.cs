@@ -1,5 +1,4 @@
-﻿using AutoMapper;
-using DeliveryWebApp.Application.BasketItems.Commands.DeleteBasketItem;
+﻿using DeliveryWebApp.Application.BasketItems.Commands.DeleteBasketItem;
 using DeliveryWebApp.Application.BasketItems.Queries;
 using DeliveryWebApp.Application.Common.Exceptions;
 using DeliveryWebApp.Application.Common.Interfaces;

@@ -1,5 +1,4 @@
 ﻿using DeliveryWebApp.Domain.Entities;
-using DeliveryWebApp.Infrastructure.Persistence.Configurations.Constants;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 

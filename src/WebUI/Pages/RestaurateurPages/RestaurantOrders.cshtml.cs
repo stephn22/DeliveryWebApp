@@ -1,16 +1,16 @@
 ﻿using DeliveryWebApp.Application.Common.Interfaces;
 using DeliveryWebApp.Application.Common.Security;
+using DeliveryWebApp.Application.OrderItems.Extensions;
+using DeliveryWebApp.Application.OrderItems.Queries;
+using DeliveryWebApp.Application.Orders.Extensions;
 using DeliveryWebApp.Application.Orders.Queries.GetOrders;
 using DeliveryWebApp.Domain.Entities;
+using IdentityServer4.Extensions;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using System.Collections.Generic;
 using System.Threading.Tasks;
-using DeliveryWebApp.Application.OrderItems.Extensions;
-using DeliveryWebApp.Application.OrderItems.Queries;
-using DeliveryWebApp.Application.Orders.Extensions;
-using IdentityServer4.Extensions;
 
 namespace DeliveryWebApp.WebUI.Pages.RestaurateurPages
 {

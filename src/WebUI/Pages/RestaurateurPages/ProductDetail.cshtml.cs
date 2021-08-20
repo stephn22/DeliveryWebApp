@@ -1,5 +1,6 @@
 using DeliveryWebApp.Application.Common.Security;
 using DeliveryWebApp.Application.Products.Commands.UpdateProducts;
+using DeliveryWebApp.Application.Restaurateurs.Extensions;
 using DeliveryWebApp.Domain.Constants;
 using DeliveryWebApp.Domain.Entities;
 using DeliveryWebApp.Infrastructure.Identity;
@@ -15,7 +16,6 @@ using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
 using System.IO;
 using System.Threading.Tasks;
-using DeliveryWebApp.Application.Restaurateurs.Extensions;
 
 namespace DeliveryWebApp.WebUI.Pages.RestaurateurPages
 {

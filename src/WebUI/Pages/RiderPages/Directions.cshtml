@@ -4,6 +4,7 @@
     ViewData["Title"] = "Orders";
     Layout = "../Views/_MapLayout";
     // TODO: localize
+    // FIXME: Order is null
 }
 
 @section Head
@@ -18,8 +19,6 @@
     <link rel="stylesheet" href="/css/images.min.css"/>
 
     <style type="text/css">
-        .controls { }
-
         li {
             margin-top: 1rem;
             margin-left: 1rem;
@@ -31,7 +30,7 @@
     <div class="heading">
         <h1>Delivery of order n°: @Model.Order.Id</h1>
     </div>
-    <div class="controls">
+    <div>
         <ul class="list-unstyled">
             <li>
                 <button class="btn btn-primary" id="start">

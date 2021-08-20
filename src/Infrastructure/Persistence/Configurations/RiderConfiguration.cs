@@ -13,7 +13,7 @@ namespace DeliveryWebApp.Infrastructure.Persistence.Configurations
                 .HasPrecision(19, 4)
                 .HasColumnType(PropertyName.Money)
                 .IsRequired();
-            
+
             builder.Property(r => r.TotalCredit)
                 .HasPrecision(19, 4)
                 .HasColumnType(PropertyName.Money)

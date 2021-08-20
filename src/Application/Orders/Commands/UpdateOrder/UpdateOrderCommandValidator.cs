@@ -1,6 +1,5 @@
-﻿using System;
-using DeliveryWebApp.Domain.Constants;
-using FluentValidation;
+﻿using FluentValidation;
+using System;
 
 namespace DeliveryWebApp.Application.Orders.Commands.UpdateOrder
 {

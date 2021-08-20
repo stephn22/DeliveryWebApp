@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using DeliveryWebApp.Application.Common.Security;
 using DeliveryWebApp.Application.Customers.Commands.CreateCustomer;
 using DeliveryWebApp.Application.Customers.Commands.DeleteCustomer;
 using DeliveryWebApp.Application.Customers.Commands.UpdateCustomer;
@@ -8,8 +9,6 @@ using MediatR;
 using Microsoft.AspNetCore.Mvc;
 using System.Collections.Generic;
 using System.Threading.Tasks;
-using DeliveryWebApp.Application.Common.Security;
-using Newtonsoft.Json.Linq;
 
 namespace DeliveryWebApp.WebUI.Controllers
 {

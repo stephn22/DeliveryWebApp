@@ -12,8 +12,6 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
-using Newtonsoft.Json;
-using System.Collections.Generic;
 using System.Globalization;
 
 namespace DeliveryWebApp.WebUI
@@ -91,7 +89,7 @@ namespace DeliveryWebApp.WebUI
                 SupportedUICultures = cultures,
                 FallBackToParentUICultures = true,
                 FallBackToParentCultures = true
-        };
+            };
 
             app.UseRequestLocalization(options);
 

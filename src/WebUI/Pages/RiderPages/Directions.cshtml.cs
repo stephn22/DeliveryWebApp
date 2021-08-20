@@ -29,6 +29,7 @@ namespace DeliveryWebApp.WebUI.Pages.RiderPages
             _userManager = userManager;
         }
 
+        public int Id { get; set; }
         public Order Order { get; set; }
         public Rider Rider { get; set; }
         public Restaurateur Restaurateur { get; set; }
