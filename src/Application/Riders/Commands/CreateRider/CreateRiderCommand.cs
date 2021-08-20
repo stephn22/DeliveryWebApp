@@ -25,7 +25,8 @@ namespace DeliveryWebApp.Application.Riders.Commands.CreateRider
                 var entity = new Rider
                 {
                     CustomerId = request.Customer.Id,
-                    DeliveryCredit = request.DeliveryCredit
+                    DeliveryCredit = request.DeliveryCredit,
+                    TotalCredit = 0
                 };
 
                 _context.Riders.Add(entity);

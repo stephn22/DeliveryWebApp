@@ -1,13 +1,17 @@
-using System;
 using DeliveryWebApp.Application.Common.Security;
+using DeliveryWebApp.Application.Orders.Commands.UpdateOrder;
+using DeliveryWebApp.Application.Riders.Commands.UpdateRider;
+using DeliveryWebApp.Domain.Constants;
 using DeliveryWebApp.Domain.Entities;
+using DeliveryWebApp.Infrastructure.Identity;
 using DeliveryWebApp.Infrastructure.Persistence;
 using MediatR;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
+using Microsoft.EntityFrameworkCore;
+using System;
 using System.Threading.Tasks;
-using DeliveryWebApp.Application.Orders.Commands.UpdateOrder;
-using DeliveryWebApp.Domain.Constants;
 
 namespace DeliveryWebApp.WebUI.Pages.RiderPages
 {
@@ -16,14 +20,17 @@ namespace DeliveryWebApp.WebUI.Pages.RiderPages
     {
         private readonly ApplicationDbContext _context;
         private readonly IMediator _mediator;
+        private readonly UserManager<ApplicationUser> _userManager;
 
-        public DirectionsModel(ApplicationDbContext context, IMediator mediator)
+        public DirectionsModel(ApplicationDbContext context, IMediator mediator, UserManager<ApplicationUser> userManager)
         {
             _context = context;
             _mediator = mediator;
+            _userManager = userManager;
         }
 
         public Order Order { get; set; }
+        public Rider Rider { get; set; }
         public Restaurateur Restaurateur { get; set; }
 
         public async Task<IActionResult> OnGetASync(int? id)
@@ -33,7 +40,14 @@ namespace DeliveryWebApp.WebUI.Pages.RiderPages
                 return NotFound();
             }
 
-            await LoadAsync((int)id);
+            var user = await _userManager.GetUserAsync(User);
+
+            if (user == null)
+            {
+                return NotFound();
+            }
+
+            await LoadAsync((int)id, user);
 
             if (Order == null || Restaurateur == null)
             {
@@ -50,7 +64,14 @@ namespace DeliveryWebApp.WebUI.Pages.RiderPages
                 return NotFound();
             }
 
-            await LoadAsync((int)id);
+            var user = await _userManager.GetUserAsync(User);
+
+            if (user == null)
+            {
+                return NotFound();
+            }
+
+            await LoadAsync((int)id, user);
 
             if (Order == null || Restaurateur == null)
             {
@@ -64,7 +85,13 @@ namespace DeliveryWebApp.WebUI.Pages.RiderPages
                 OrderStatus = OrderStatus.Delivered
             });
 
-            return RedirectToPage(); // TODO: redirect to rider dashboard
+            await _mediator.Send(new UpdateTotalCredit
+            {
+                Id = Rider.Id
+            });
+
+
+            return Redirect("/RiderPages/DeliveryHistory");
         }
 
         public async Task<IActionResult> OnPostFailedAsync(int? id)
@@ -74,7 +101,14 @@ namespace DeliveryWebApp.WebUI.Pages.RiderPages
                 return NotFound();
             }
 
-            await LoadAsync((int)id);
+            var user = await _userManager.GetUserAsync(User);
+
+            if (user == null)
+            {
+                return NotFound();
+            }
+
+            await LoadAsync((int)id, user);
 
             if (Order == null || Restaurateur == null)
             {
@@ -87,10 +121,10 @@ namespace DeliveryWebApp.WebUI.Pages.RiderPages
                 OrderStatus = OrderStatus.Failed
             });
 
-            return RedirectToPage(); // TODO: redirect to rider dashboard
+            return Redirect("/RiderPages/DeliveryHistory");
         }
 
-        private async Task LoadAsync(int id)
+        private async Task LoadAsync(int id, ApplicationUser user)
         {
             Order = await _context.Orders.FindAsync(id);
 
@@ -98,6 +132,17 @@ namespace DeliveryWebApp.WebUI.Pages.RiderPages
             {
                 Restaurateur = await _context.Restaurateurs.FindAsync(Order.RestaurateurId);
 
+            }
+
+            try
+            {
+                var customer = await _context.Customers.FirstAsync(c => c.ApplicationUserFk == user.Id);
+
+                Rider = await _context.Riders.FirstAsync(r => r.CustomerId == customer.Id);
+            }
+            catch (InvalidOperationException)
+            {
+                Rider = null;
             }
         }
     }

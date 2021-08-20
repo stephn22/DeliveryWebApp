@@ -1,9 +1,12 @@
 ﻿@page
+@using DeliveryWebApp.Domain.Constants
 @using IdentityServer4.Extensions
+@using Microsoft.AspNetCore.Localization
 @model DeliveryWebApp.WebUI.Pages.RiderPages.DeliveryHistoryModel
 @{
     ViewData["Title"] = "Delivery History";
-    // TODO: localize
+    var requestCultureFeature = HttpContext.Features.Get<IRequestCultureFeature>();
+    var requestCulture = requestCultureFeature.RequestCulture;
 }
 
 <h1>@ViewData["Title"]</h1>
@@ -16,6 +19,8 @@
 }
 else
 {
+    <h4>Total Delivery Credit: @Model.Rider.TotalCredit.ToString("C")</h4>
+
     <div class="text-center">
         <table class="table">
             <thead>
