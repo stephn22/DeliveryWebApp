@@ -35,23 +35,6 @@ namespace DeliveryWebApp.WebUI.Controllers
             return await _mediator.Send(_mapper.Map<CreateAddressCommand>(request));
         }
 
-        [HttpGet("/orders/{id:int}")]
-        public async Task<ActionResult<Address>> OrdersRead(int id)
-        {
-            try
-            {
-                return await _mediator.Send(new GetSingleAddressQuery
-                {
-                    Id = id
-                });
-            }
-            catch (NotFoundException e)
-            {
-                _logger.LogWarning($"{e.Message}");
-                return null;
-            }
-        }
-
 
         [HttpGet("{id:int}")]
         public async Task<ActionResult<Address>> Read(int id)

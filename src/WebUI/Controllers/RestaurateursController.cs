@@ -34,8 +34,8 @@ namespace DeliveryWebApp.WebUI.Controllers
             return await _mediator.Send(new GetRestaurateursQuery());
         }
 
-        [HttpGet("/orders/{id:int}")]
-        public async Task<Restaurateur> OrdersRead(int id)
+        [HttpGet("{id:int}")]
+        public async Task<Restaurateur> ReadSingle(int id)
         {
             try
             {
