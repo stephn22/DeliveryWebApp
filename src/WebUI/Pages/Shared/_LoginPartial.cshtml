@@ -49,18 +49,9 @@
                                 @localizer["Dashboard"]
                             </a>
                         </li>
-                        @*<li>
-                                <a class="dropdown-item">Products</a>
-                            </li>*@
                     }
                     @if (isRider)
                     {
-                        <li>
-                            <a class="dropdown-item">
-                                <img src="/icons/piggy-bank.svg" alt="piggy-bank" height="16" width="16" />
-                                @localizer["Credit"]
-                            </a>
-                        </li>
                         <li>
                             <a class="dropdown-item" asp-page="/RiderPages/Orders">
                                 <img src="/icons/inbox.svg" alt="inbox" />
