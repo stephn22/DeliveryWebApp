@@ -1,10 +1,16 @@
 ﻿@page "{id:int?}"
 @using DeliveryWebApp.Application.Products.Extensions
+@using DeliveryWebApp.Application.Reviews.Extensions
+@using DeliveryWebApp.Infrastructure.Identity
+@using DeliveryWebApp.Infrastructure.Persistence
 @using IdentityServer4.Extensions
+@using Microsoft.AspNetCore.Identity
 @using Microsoft.AspNetCore.Localization
 @using Microsoft.Extensions.Localization
 @model DeliveryWebApp.WebUI.Pages.CustomerPages.RestaurantDetailModel
 @inject IStringLocalizer<RestaurantDetailModel> localizer
+@inject UserManager<ApplicationUser> userManager
+@inject ApplicationDbContext context
 @{
     ViewData["Title"] = "Browse Food Vendor";
     var requestCultureFeature = HttpContext.Features.Get<IRequestCultureFeature>();
@@ -121,15 +127,15 @@ else
                                         <form asp-page-handler="AddToBasket" asp-route-id="@Model.Restaurateur.Id" asp-route-productId="@product.Id" method="post">
                                             <div class="row">
 
-                                                <label asp-for="Quantity">@localizer["Quantity"]</label>
+                                                <label asp-for="Input.Quantity">@localizer["Quantity"]</label>
 
-                                                <select asp-for="Quantity" class="form-select col-sm">
+                                                <select asp-for="Input.Quantity" class="form-select col-sm">
                                                     @for (var i = 1; i <= product.Quantity; i++)
                                                     {
                                                         <option value="@i">@i</option>
                                                     }
                                                 </select>
-                                                <span asp-validation-for="Quantity" class="text-danger"></span>
+                                                <span asp-validation-for="Input.Quantity" class="text-danger"></span>
                                             </div>
 
                                             <div class="modal-footer">
@@ -155,9 +161,111 @@ else
     </div>
 }
 <hr/>
-TODO: Reviews
+@if (Model.AvailableReviews > 0)
+{
+    <div class="text-end">
+        <button class="btn btn-primary" type="button" data-bs-toggle="modal" data-bs-target="#newReviewModal">
+            Review
+            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-plus-square-fill" viewBox="0 0 16 16">
+                <path d="M2 0a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V2a2 2 0 0 0-2-2H2zm6.5 4.5v3h3a.5.5 0 0 1 0 1h-3v3a.5.5 0 0 1-1 0v-3h-3a.5.5 0 0 1 0-1h3v-3a.5.5 0 0 1 1 0z"/>
+            </svg>
+        </button>
+    </div>
+
+    // Review modal
+
+    <div class="modal fade show" id="newReviewModal" aria-labeledBy="newReviewModalTitle" aria-modal="true" role="dialog">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="newReviewModalTitle">
+                        Add a review
+                    </h5>
+                </div>
+                
+                <div class="modal-body">
+                    <form method="post" asp-page-handler="AddReview" asp-route-id="@Model.Restaurateur.Id">
+                        <div class="mb-2">
+                            <label asp-for="Input.Title" class="form-label">Title</label>
+                            <input asp-for="Input.Title" class="form-control"/>
+                            <span asp-validation-for="Input.Title" class="text-danger"></span>
+                        </div>
+                        <div class="mb-3">
+                            <label asp-for="Input.Text" class="form-label"></label>
+                            <textarea class="form-control" rows="5" asp-for="Input.Text"></textarea>
+                            <span asp-validation-for="Input.Text" class="text-danger"></span>
+                        </div>
+                        <div class="mb-3">
+                            
+                            <label asp-for="Input.Rating">Rating: <span id="range-output"></span></label>
+                            <input type="range" asp-for="Input.Rating" class="form-range" min="1" max="5" step="1" id="rating-range"/>
+                            <span asp-validation-for="Input.Rating" class="text-danger"></span>
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">@localizer["Close"]</button>
+                            
+                            <button type="submit" class="btn btn-primary">
+                                Submit
+                                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-check2" viewBox="0 0 16 16">
+                                    <path d="M13.854 3.646a.5.5 0 0 1 0 .708l-7 7a.5.5 0 0 1-.708 0l-3.5-3.5a.5.5 0 1 1 .708-.708L6.5 10.293l6.646-6.647a.5.5 0 0 1 .708 0z"/>
+                                </svg>
+                            </button>
+                        </div>
+
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+}
+
+@if (!Model.Reviews.IsNullOrEmpty())
+{
+    @foreach (var review in Model.Reviews)
+    {
+        <div class="text-start">
+            <ul class="list-group">
+                <li class="list-group-item d-flex justify-content-between align-items-start">
+                    <div class="ms-2 me-auto">
+                        <div class="fw-bold">
+                            @Html.DisplayFor(model => review.Title)
+                        </div>
+                        @Html.DisplayFor(model => review.Text)
+                        <hr/>
+                        @{
+                            var customer = await review.GetCustomerAsync(context);
+                            var user = await userManager.FindByIdAsync(customer.ApplicationUserFk);
+                        }
+
+                    <small class="text-muted text-info">@Html.DisplayFor(model => user.UserName) &middot; @review.Date.ToLocalTime().ToString("d")</small>
+
+                    </div>
+                    <span class="badge bg-primary rounded-pill">@Html.DisplayFor(model => review.Rating) / 5</span>
+
+                    
+                </li>
+            </ul>
+        </div>
+    }
+}
+
 
 @section Scripts
 {
     <partial name="_ValidationScriptsPartial"/>
+    
+    <script type="text/javascript">
+        $(function() {
+            "use strict";
+
+            const range = document.getElementById("rating-range");
+            const output = document.getElementById("range-output");
+
+            output.innerHTML = range.value;
+
+            range.oninput = function() {
+                output.innerHTML = this.value;
+            }
+        });
+    </script>
 }

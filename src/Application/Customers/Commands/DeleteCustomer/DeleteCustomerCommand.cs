@@ -84,6 +84,7 @@ namespace DeliveryWebApp.Application.Customers.Commands.DeleteCustomer
             {
             }
 
+            // search if customer has addresses and delete it
             var addresses = await _mediator.Send(new GetAddressesQuery
             {
                 CustomerId = entity.Id
@@ -93,6 +94,8 @@ namespace DeliveryWebApp.Application.Customers.Commands.DeleteCustomer
             {
                 _context.Addresses.RemoveRange(addresses);
             }
+
+            // TODO: search if customer has reviews and delete them
 
             _context.Customers.Remove(entity);
             await _context.SaveChangesAsync(cancellationToken);
