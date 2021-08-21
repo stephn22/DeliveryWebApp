@@ -117,34 +117,28 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
-  <data name="0 for no discount" xml:space="preserve">
-    <value>0 per nessuno sconto</value>
+  <data name="Confirm password" xml:space="preserve">
+    <value>Conferma password</value>
   </data>
-  <data name="Category" xml:space="preserve">
-    <value>Categoria</value>
+  <data name="Create a new account." xml:space="preserve">
+    <value>Crea un nuovo account.</value>
   </data>
-  <data name="Chicken" xml:space="preserve">
-    <value>Pollo</value>
-  </data>
-  <data name="Choose an image for the new product" xml:space="preserve">
-    <value>Scegli un'immagine per il nuovo prodotto</value>
-  </data>
-  <data name="Fish" xml:space="preserve">
-    <value>Pesce</value>
-  </data>
-  <data name="Name" xml:space="preserve">
+  <data name="First Name" xml:space="preserve">
     <value>Nome</value>
   </data>
-  <data name="Price" xml:space="preserve">
-    <value>Prezzo</value>
+  <data name="Last Name" xml:space="preserve">
+    <value>Cognome</value>
   </data>
-  <data name="Quantity" xml:space="preserve">
-    <value>Quantità</value>
+  <data name="Register" xml:space="preserve">
+    <value>Registrati</value>
   </data>
-  <data name="Submit" xml:space="preserve">
-    <value>Invia</value>
+  <data name="The password and confirmation password do not match." xml:space="preserve">
+    <value>La password e conferma password non corrispondono</value>
   </data>
-  <data name="Unassigned" xml:space="preserve">
-    <value>Non assegnato</value>
+  <data name="The {0} must be at least {2} and at max {1} characters long." xml:space="preserve">
+    <value>La {0} deve essere di almeno {2} e un massimo di {3} caratteri lunga.</value>
+  </data>
+  <data name="Use another service to register." xml:space="preserve">
+    <value>Utilizza un altro servizio per registrarti</value>
   </data>
 </root>

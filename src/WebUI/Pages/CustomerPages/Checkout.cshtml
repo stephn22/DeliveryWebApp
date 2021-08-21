@@ -59,7 +59,7 @@
 <h5>@localizer["Deliver to address"]</h5>
 <form method="post">
     <div class="form-group col-md-5">
-        <label asp-for="Input.Address"></label>
+        <label asp-for="Input.Address">@localizer["Address"]</label>
         <select class="form-select" asp-items="Model.CustomerAddresses" asp-for="Input.Address"></select>
         <span asp-validation-for="Input.Address" class="text-danger"></span>
     </div>
@@ -76,7 +76,7 @@
     <p>@localizer["or"]</p>
 
     <div class="form-group col-sm-4">
-        <label asp-for="Input.CreditCard"></label>
+        <label asp-for="Input.CreditCard">@localizer["Credit Card"]</label>
         <div class="input-group">
             <span class="input-group-text">
                 <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-credit-card" viewBox="0 0 16 16">

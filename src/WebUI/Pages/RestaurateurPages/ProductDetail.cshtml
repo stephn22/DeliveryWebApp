@@ -1,6 +1,8 @@
 ﻿@page "{id:int?}"
 @using IdentityServer4.Extensions
+@using Microsoft.Extensions.Localization
 @model DeliveryWebApp.WebUI.Pages.RestaurateurPages.ProductDetailModel
+@inject IStringLocalizer<ProductDetailModel> localizer
 @{
     ViewData["Title"] = "Product Detail";
 }
@@ -153,7 +155,7 @@
                     <div class="form-row">
                         <div class="col-12">
                             <p class="form-label">
-                                Quantity:
+                                @localizer["Quantity"]:
                                 <p id="range-output"> </p>
                             </p>
                             <input type="range" asp-for="Input.Quantity" class="form-range col-3" value="0" step="1" min="0" max="500" id="quantityRange">

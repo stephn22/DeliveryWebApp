@@ -117,22 +117,8 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
-  <data name="ConfirmationPwdError" xml:space="preserve">
-    <value>La password e conferma password non corrispondono</value>
-  </data>
-  <data name="ConfirmPassword" xml:space="preserve">
-    <value>Conferma Password</value>
-  </data>
-  <data name="Create a new account." xml:space="preserve">
-    <value>Crea un nuovo account.</value>
-  </data>
-  <data name="Create new account." xml:space="preserve">
-    <value>Crea un nuovo account.</value>
-  </data>
-  <data name="ErrorPwd" xml:space="preserve">
-    <value>La password deve essere lunga minimo 6 caratteri e massimo 100</value>
-  </data>
-  <data name="Register" xml:space="preserve">
-    <value>Registrati</value>
+  <assembly alias="System.Windows.Forms" name="System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" />
+  <data name="AddProductModel.it" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>AddProductModel.it.resx;System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089;utf-8</value>
   </data>
 </root>

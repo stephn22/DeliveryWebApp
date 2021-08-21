@@ -12,12 +12,15 @@ using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.AspNetCore.WebUtilities;
 using Microsoft.Extensions.Logging;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Security.Claims;
 using System.Text;
 using System.Text.Encodings.Web;
 using System.Threading.Tasks;
+using IdentityServer4.Models;
+using Microsoft.Extensions.Localization;
 
 namespace DeliveryWebApp.WebUI.Areas.Identity.Pages.Account
 {
@@ -57,12 +60,10 @@ namespace DeliveryWebApp.WebUI.Areas.Identity.Pages.Account
         public class InputModel
         {
             [Required]
-            [Display(Name = "First Name")]
             [DataType(DataType.Text)]
             public string FName { get; set; }
 
             [Required]
-            [Display(Name = "Last Name")]
             [DataType(DataType.Text)]
             public string LName { get; set; }
 
@@ -83,7 +84,6 @@ namespace DeliveryWebApp.WebUI.Areas.Identity.Pages.Account
             public string Password { get; set; }
 
             [DataType(DataType.Password)]
-            [Display(Name = "Confirm password")]
             [Compare("Password", ErrorMessage = "The password and confirmation password do not match.")]
             public string ConfirmPassword { get; set; }
         }

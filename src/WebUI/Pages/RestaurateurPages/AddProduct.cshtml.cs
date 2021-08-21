@@ -72,7 +72,6 @@ namespace DeliveryWebApp.WebUI.Pages.RestaurateurPages
             public decimal Price { get; set; }
 
             [RegularExpression("^[0-9][0-9]?$|^100$", ErrorMessage = "The {0} must be digits only from 0 to 100.")]
-            [DisplayName("Discount (0 for no discount)")]
             public int Discount { get; set; }
 
             [DataType(DataType.Text)] public string Category { get; set; }

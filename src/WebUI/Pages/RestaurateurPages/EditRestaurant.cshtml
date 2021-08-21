@@ -1,4 +1,6 @@
-﻿@model DeliveryWebApp.WebUI.Pages.RestaurateurPages.RestaurantDashboardModel
+﻿@using Microsoft.Extensions.Localization
+@model DeliveryWebApp.WebUI.Pages.RestaurateurPages.RestaurantDashboardModel
+@inject IStringLocalizer<RestaurantDashboardModel> localizer
 
 @section Head
 {
@@ -82,7 +84,7 @@
     @* Category *@
     <form method="post" asp-page-handler="NewCategory" asp-route-id="@Model.Restaurateur.Id">
         <div class="form-group">
-            <label asp-for="Input.Category"></label>
+            <label asp-for="Input.Category">@localizer["Category"]</label>
             <input class="form-control" asp-for="Input.Category" value="@Model.Restaurateur.RestaurantCategory" disabled readonly>
         </div>
 
@@ -124,12 +126,12 @@
         <div class="card card-body">
             <div class="form-row">
                 <div class="form-group col-md-6">
-                    <label asp-for="Input.AddressLine1"></label>
+                    <label asp-for="Input.AddressLine1">@localizer["Address Line 1"]</label>
                     <input class="form-control" asp-for="Input.AddressLine1" placeholder="Address Line 1" id="update-addressline1">
                     <span asp-validation-for="Input.AddressLine1" class="text-danger"></span>
                 </div>
                 <div class="form-group col-md-6">
-                    <label asp-for="Input.AddressLine2"></label>
+                    <label asp-for="Input.AddressLine2">@localizer["Address Line 2"]</label>
                     <input class="form-control" asp-for="Input.AddressLine2" placeholder="Address Line 2" id="update-addressline2">
                     <span asp-validation-for="Input.AddressLine2" class="text-danger"></span>
                 </div>
@@ -142,7 +144,7 @@
                     <span asp-validation-for="Input.Number" class="text-danger"></span>
                 </div>
                 <div class="form-group col-md-6">
-                    <label asp-for="Input.City"></label>
+                    <label asp-for="Input.City">@localizer["City"]</label>
                     <input class="form-control" asp-for="Input.City" placeholder="City" id="update-city">
                     <span asp-validation-for="Input.City" class="text-danger"></span>
                 </div>
@@ -150,17 +152,17 @@
 
             <div class="form-row">
                 <div class="form-group col-md-6">
-                    <label asp-for="Input.PostalCode"></label>
+                    <label asp-for="Input.PostalCode">@localizer["Postal Code"]</label>
                     <input class="form-control" asp-for="Input.PostalCode" placeholder="Postal Code: 20020..." id="update-postalcode">
                     <span asp-validation-for="Input.PostalCode" class="text-danger"></span>
                 </div>
                 <div class="form-group col-md-6">
-                    <label asp-for="Input.StateProvince"></label>
+                    <label asp-for="Input.StateProvince">@localizer["State/Province"]</label>
                     <input class="form-control" asp-for="Input.StateProvince" placeholder="CA, NY, ..." id="update-stateprovince">
                     <span asp-validation-for="Input.StateProvince" class="text-danger"></span>
                 </div>
                 <div class="form-group col-md-7">
-                    <label asp-for="Input.Country"></label>
+                    <label asp-for="Input.Country">@localizer["Country"]</label>
                     <select class="form-select" aria-label="Select country" asp-for="Input.Country" asp-items="Model.Countries" id="update-country">
                     </select>
                     <span asp-validation-for="Input.Country" class="text-danger"></span>

@@ -87,41 +87,41 @@
 
                         <div class="form-row">
                             <div class="form-group col-md-6">
-                                <label asp-for="Input.AddressLine1"></label>
+                                <label asp-for="Input.AddressLine1">@localizer["Address Line 1"]</label>
                                 <input class="form-control" asp-for="Input.AddressLine1" placeholder="@localizer["Street..."]" id="addressline1">
                                 <span asp-validation-for="Input.AddressLine1" class="text-danger"></span>
                             </div>
                             <div class="form-group col-md-6">
-                                <label asp-for="Input.AddressLine2"></label>
+                                <label asp-for="Input.AddressLine2">@localizer["Address Line 2"]</label>
                                 <input class="form-control" asp-for="Input.AddressLine2" placeholder="@localizer["Building n°... (optional)"]" id="addressline2">
                                 <span asp-validation-for="Input.AddressLine2" class="text-danger"></span>
                             </div>
                         </div>
                         <div class="form-row">
                             <div class="form-group col-md-1">
-                                <label asp-for="Input.Number"></label>
+                                <label asp-for="Input.Number">N°</label>
                                 <input class="form-control" asp-for="Input.Number" placeholder="1, 21B..." id="number">
                                 <span asp-validation-for="Input.Number" class="text-danger"></span>
                             </div>
                             <div class="form-group col-md-6">
-                                <label asp-for="Input.City"></label>
+                                <label asp-for="Input.City">@localizer["City"]</label>
                                 <input class="form-control" asp-for="Input.City" placeholder="@localizer["City"]" id="city">
                                 <span asp-validation-for="Input.City" class="text-danger"></span>
                             </div>
                         </div>
                         <div class="form-row">
                             <div class="form-group col-md-6">
-                                <label asp-for="Input.StateProvince"></label>
+                                <label asp-for="Input.StateProvince">@localizer["State/Province"]</label>
                                 <input class="form-control" asp-for="Input.StateProvince" placeholder="CA, TO, NY, ..." id="stateprovince">
                                 <span asp-validation-for="Input.StateProvince" class="text-danger"></span>
                             </div>
                             <div class="form-group col-md-6">
-                                <label asp-for="Input.PostalCode"></label>
+                                <label asp-for="Input.PostalCode">@localizer["Postal Code"]</label>
                                 <input class="form-control" asp-for="Input.PostalCode" placeholder="20020..." id="postalcode">
                                 <span asp-validation-for="Input.PostalCode" class="text-danger"></span>
                             </div>
                             <div class="form-group col-md-4">
-                                <label asp-for="Input.Country"></label>
+                                <label asp-for="Input.Country">@localizer["Country"]</label>
                                 <select class="form-select" aria-label="Select country" asp-for="Input.Country" asp-items="Model.Countries" id="country">
                                 </select>
                                 <span asp-validation-for="Input.Country" class="text-danger"></span>

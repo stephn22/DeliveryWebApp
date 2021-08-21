@@ -34,7 +34,6 @@ namespace DeliveryWebApp.WebUI
             services.AddDatabaseDeveloperPageExceptionFilter();
 
             services.AddSingleton<ICurrentUserService, CurrentUserService>();
-            services.AddSingleton<IdentityLocalizationService>();
 
             services.AddHealthChecks()
                 .AddDbContextCheck<ApplicationDbContext>();
