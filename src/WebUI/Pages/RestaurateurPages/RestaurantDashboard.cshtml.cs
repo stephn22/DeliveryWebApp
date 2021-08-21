@@ -20,10 +20,10 @@ using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.IO;
 using System.Threading.Tasks;
+using Microsoft.Extensions.Localization;
 
 namespace DeliveryWebApp.WebUI.Pages.RestaurateurPages
 {
-    // TODO: localize
     [Authorize(Policy = PolicyName.IsRestaurateur)]
     public class RestaurantDashboardModel : PageModel
     {
@@ -31,13 +31,15 @@ namespace DeliveryWebApp.WebUI.Pages.RestaurateurPages
         private readonly ILogger<RestaurantDashboardModel> _logger;
         private readonly IMediator _mediator;
         private readonly UserManager<ApplicationUser> _userManager;
+        private readonly IStringLocalizer<RestaurantDashboardModel> _stringLocalizer;
 
-        public RestaurantDashboardModel(ApplicationDbContext context, ILogger<RestaurantDashboardModel> logger, IMediator mediator, UserManager<ApplicationUser> userManager)
+        public RestaurantDashboardModel(ApplicationDbContext context, ILogger<RestaurantDashboardModel> logger, IMediator mediator, UserManager<ApplicationUser> userManager, IStringLocalizer<RestaurantDashboardModel> stringLocalizer)
         {
             _context = context;
             _logger = logger;
             _mediator = mediator;
             _userManager = userManager;
+            _stringLocalizer = stringLocalizer;
         }
 
         public bool HasRestaurant { get; set; }
@@ -51,7 +53,7 @@ namespace DeliveryWebApp.WebUI.Pages.RestaurateurPages
         [BindProperty]
         public IEnumerable<SelectListItem> Categories => new[]
         {
-            new SelectListItem {Text = "Select a category", Value = "", Selected = true},
+            new SelectListItem {Text = _stringLocalizer["Select a category"], Value = "", Selected = true},
             new SelectListItem {Text = RestaurantCategory.FastFood, Value = RestaurantCategory.FastFood},
             new SelectListItem {Text = RestaurantCategory.Sushi, Value = RestaurantCategory.Sushi},
             new SelectListItem {Text = RestaurantCategory.Indian, Value = RestaurantCategory.Indian},
@@ -86,7 +88,7 @@ namespace DeliveryWebApp.WebUI.Pages.RestaurateurPages
 
             [Required]
             [DataType(DataType.Text)]
-            [Display(Name = "Number")]
+            [Display(Name = "N°")]
             public string Number { get; set; }
 
             [Required]

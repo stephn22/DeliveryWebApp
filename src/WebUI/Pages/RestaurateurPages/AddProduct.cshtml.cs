@@ -16,37 +16,39 @@ using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
 using System.IO;
 using System.Threading.Tasks;
+using Microsoft.Extensions.Localization;
 
 namespace DeliveryWebApp.WebUI.Pages.RestaurateurPages
 {
     [Authorize(Policy = PolicyName.IsRestaurateur)]
     public class AddProductModel : PageModel
     {
-        // TODO: culture and localize
         private readonly IMediator _mediator;
         private readonly ILogger<AddProductModel> _logger;
         private readonly UserManager<ApplicationUser> _userManager;
         private readonly ApplicationDbContext _context;
+        private readonly IStringLocalizer<AddProductModel> _stringLocalizer;
 
-        public AddProductModel(IMediator mediator, ILogger<AddProductModel> logger, UserManager<ApplicationUser> userManager, ApplicationDbContext context)
+        public AddProductModel(IMediator mediator, ILogger<AddProductModel> logger, UserManager<ApplicationUser> userManager, ApplicationDbContext context, IStringLocalizer<AddProductModel> stringLocalizer)
         {
             _mediator = mediator;
             _logger = logger;
             _userManager = userManager;
             _context = context;
+            _stringLocalizer = stringLocalizer;
         }
 
         [BindProperty]
         public IEnumerable<SelectListItem> Categories => new[]
         {
-            new SelectListItem { Text = ProductCategory.Unassigned, Value = ProductCategory.Unassigned },
+            new SelectListItem { Text = _stringLocalizer[ProductCategory.Unassigned], Value = ProductCategory.Unassigned },
             new SelectListItem { Text = ProductCategory.Hamburger, Value = ProductCategory.Hamburger },
             new SelectListItem { Text = ProductCategory.Pizza, Value = ProductCategory.Pizza },
             new SelectListItem { Text = ProductCategory.Sushi, Value = ProductCategory.Sushi },
             new SelectListItem { Text = ProductCategory.Dessert, Value = ProductCategory.Dessert },
             new SelectListItem { Text = ProductCategory.Vegan, Value = ProductCategory.Vegan },
-            new SelectListItem { Text = ProductCategory.Chicken, Value = ProductCategory.Chicken },
-            new SelectListItem { Text = ProductCategory.Fish, Value = ProductCategory.Fish },
+            new SelectListItem { Text = _stringLocalizer[ProductCategory.Chicken], Value =  ProductCategory.Chicken},
+            new SelectListItem { Text = _stringLocalizer[ProductCategory.Fish], Value =  ProductCategory.Fish},
             new SelectListItem { Text = ProductCategory.Snacks, Value = ProductCategory.Snacks },
         };
 

@@ -1,11 +1,12 @@
 ﻿@page "{id:int?}"
 @using Microsoft.AspNetCore.Localization
+@using Microsoft.Extensions.Localization
 @model DeliveryWebApp.WebUI.Pages.RestaurateurPages.RestaurantOrdersModel
+@inject IStringLocalizer<RestaurantOrdersModel> localizer
 @{
-    ViewData["Title"] = "Restaurant Orders";
+    ViewData["Title"] = "Orders";
     var requestCultureFeature = HttpContext.Features.Get<IRequestCultureFeature>();
     var requestCulture = requestCultureFeature.RequestCulture;
-    // TODO: localize
 }
 
 <a asp-page="/RestaurateurPages/RestaurantDashboard" title="Back to dashboard" id="back">
@@ -24,19 +25,19 @@
                     @Html.DisplayNameFor(model => model.Orders[0].Id)
                 </th>
                 <th>
-                    Date
+                    @localizer["Date"]
                 </th>
                 <th>
-                    Delivery Date
+                    @localizer["Delivery Date"]
                 </th>
                 <th>
-                    Address
+                    @localizer["Address"]
                 </th>
                 <th>
-                    Total
+                    @localizer["Total"]
                 </th>
                 <th>
-                    @Html.DisplayNameFor(model => model.Orders[0].Status)
+                    @localizer["Status"]
                 </th>
                 <th></th>
             </tr>
@@ -85,7 +86,7 @@
                                 <div class="modal-content">
                                     <div class="modal-header">
                                         <h5 class="modal-title" id="modal-title-@i">
-                                            Products of order: @Model.Orders[i].Id
+                                            @localizer["Products of order"]: @Model.Orders[i].Id
                                         </h5>
 
                                         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
@@ -101,17 +102,17 @@
                                                 </th>
                                                 <th>
                                                     @* Product Name *@
-                                                    Product
+                                                    @localizer["Product"]
                                                 </th>
                                                 <th>
                                                     @* Discounted price *@
-                                                    Price
+                                                    @localizer["Price"]
                                                 </th>
                                                 <th>
-                                                    Discount
+                                                    @localizer["Discount"]
                                                 </th>
                                                 <th>
-                                                    Quantity
+                                                    @localizer["Quantity"]
                                                 </th>
                                             </tr>
                                             </thead>
@@ -138,12 +139,12 @@
                                             }
                                             </tbody>
                                         </table>
-                                        <small class="small text-muted">Discount based on time of purchase</small>
+                                        <small class="small text-muted">@localizer["Discount based on time of purchase"]</small>
 
                                     </div>
 
                                     <div class="modal-footer">
-                                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">@localizer["Close"]</button>
                                     </div>
 
                                 </div>
