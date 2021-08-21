@@ -134,8 +134,6 @@ namespace DeliveryWebApp.WebUI.Pages.AdminPages
                 Status = RequestStatus.Accepted
             });
 
-            // TODO push notification to client
-
             return RedirectToPage("/AdminPages/Requests");
         }
 
@@ -150,7 +148,6 @@ namespace DeliveryWebApp.WebUI.Pages.AdminPages
                 Status = RequestStatus.Rejected
             });
 
-            // TODO push notification to client
             return RedirectToPage("/AdminPages/Requests");
         }
     }

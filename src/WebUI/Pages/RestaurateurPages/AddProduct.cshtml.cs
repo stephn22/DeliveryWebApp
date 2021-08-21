@@ -71,8 +71,6 @@ namespace DeliveryWebApp.WebUI.Pages.RestaurateurPages
             [DisplayFormat(DataFormatString = "{0:C}")]
             public decimal Price { get; set; }
 
-            // TODO: Discount required?
-            [Required]
             [RegularExpression("^[0-9][0-9]?$|^100$", ErrorMessage = "The {0} must be digits only from 0 to 100.")]
             [DisplayName("Discount (0 for no discount)")]
             public int Discount { get; set; }

@@ -141,11 +141,23 @@
   <data name="Home page" xml:space="preserve">
     <value>Home</value>
   </data>
+  <data name="Login" xml:space="preserve">
+    <value>Accedi</value>
+  </data>
   <data name="Next" xml:space="preserve">
     <value>Successivo</value>
   </data>
   <data name="Previous" xml:space="preserve">
     <value>Precedente</value>
+  </data>
+  <data name="Register" xml:space="preserve">
+    <value>Registrati</value>
+  </data>
+  <data name="Register or Log in" xml:space="preserve">
+    <value>Registrati o Accedi</value>
+  </data>
+  <data name="Register or log in to start accessing features" xml:space="preserve">
+    <value>Registrati o accedi per iniziare ad usufruire dei servizi</value>
   </data>
   <data name="Sign up" xml:space="preserve">
     <value>Registrati</value>

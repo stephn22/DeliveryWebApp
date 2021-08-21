@@ -30,17 +30,17 @@
     {
         <main class="px-3">
             <h1>@localizer["Register or Log in"]</h1>
-            <p class="lead">
+            <p class="lead text-dark">
                 @localizer["Register or log in to start accessing features"]
             </p>
             <p class="lead">
 
                 <a class="btn btn-outline-dark rounded-pill" asp-area="Identity" asp-page="/Account/Register">
-                    Register
+                    @localizer["Register"]
                 </a>
 
                 <a class="btn btn-outline-dark rounded-pill" asp-area="Identity" asp-page="/Account/Login">
-                    Login
+                    @localizer["Login"]
                 </a>
             </p>
             <img src="/icons/undraw_healthy_options_sdo3.svg" alt="index-image" width="420" height="420" />
