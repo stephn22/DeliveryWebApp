@@ -11,7 +11,7 @@ namespace DeliveryWebApp.Infrastructure.Persistence.Configurations
             builder.Property(r => r.Title)
                 .IsRequired();
 
-            builder.Property(r => r.Grade)
+            builder.Property(r => r.Rating)
                 .IsRequired();
 
             builder.Property(r => r.Date)
