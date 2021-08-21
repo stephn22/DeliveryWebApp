@@ -18,6 +18,7 @@ using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 using System;
+using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Security.Claims;
@@ -53,6 +54,7 @@ namespace DeliveryWebApp.WebUI.Pages.AdminPages
 
             [Required]
             [DataType(DataType.Currency)]
+            [DisplayName("Delivery Credit")]
             public decimal DeliveryCredit { get; set; }
         }
 
@@ -166,39 +168,36 @@ namespace DeliveryWebApp.WebUI.Pages.AdminPages
 
             await LoadAsync((int)id);
 
-            if (CurrentRole != RoleName.Default)
+            // update claim
+            var oldClaim = await _userManager.GetClaimByTypeAsync(User, ClaimName.Role);
+            await _userManager.ReplaceClaimAsync(User, oldClaim, new Claim(ClaimName.Role, RoleName.Default));
+
+            // update tables
+            switch (CurrentRole)
             {
-                // update claim
-                var oldClaim = await _userManager.GetClaimByTypeAsync(User, ClaimName.Role);
-                await _userManager.ReplaceClaimAsync(User, oldClaim, new Claim(ClaimName.Role, RoleName.Default));
+                case RoleName.Rider: // remove from table if rider
+                    var rider = await _context.GetRiderByCustomerIdAsync(id);
 
-                // update tables
-                switch (CurrentRole)
-                {
-                    case RoleName.Rider: // remove from table if rider
-                        var rider = await _context.GetRiderByCustomerIdAsync(id);
+                    await _mediator.Send(new DeleteRiderCommand
+                    {
+                        Id = rider.Id
+                    });
 
-                        await _mediator.Send(new DeleteRiderCommand
-                        {
-                            Id = rider.Id
-                        });
+                    _logger.LogInformation($"Deleted rider with id {rider.Id}");
 
-                        _logger.LogInformation($"Deleted rider with id {rider.Id}");
+                    break;
 
-                        break;
+                case RoleName.Restaurateur: // remove from table if restaurateur
+                    var restaurateur = await _context.GetRestaurateurByCustomerIdAsync(id);
 
-                    case RoleName.Restaurateur: // remove from table if restaurateur
-                        var restaurateur = await _context.GetRestaurateurByCustomerIdAsync(id);
+                    await _mediator.Send(new DeleteRestaurateurCommand
+                    {
+                        Id = restaurateur.Id
+                    });
 
-                        await _mediator.Send(new DeleteRestaurateurCommand
-                        {
-                            Id = restaurateur.Id
-                        });
+                    _logger.LogInformation($"Deleted restaurateur with id {restaurateur.Id}");
 
-                        _logger.LogInformation($"Deleted restaurateur with id {restaurateur.Id}");
-
-                        break;
-                }
+                    break;
             }
 
             return RedirectToPage("/AdminPages/UserList");
@@ -282,38 +281,34 @@ namespace DeliveryWebApp.WebUI.Pages.AdminPages
 
             await LoadAsync((int)id);
 
+            var oldClaim = await _userManager.GetClaimByTypeAsync(User, ClaimName.Role);
+            await _userManager.ReplaceClaimAsync(User, oldClaim, new Claim(ClaimName.Role, RoleName.Restaurateur));
 
-            if (CurrentRole != RoleName.Restaurateur)
+            // update tables
+
+            try // if user was a rider, delete from table
             {
-                var oldClaim = await _userManager.GetClaimByTypeAsync(User, ClaimName.Role);
-                await _userManager.ReplaceClaimAsync(User, oldClaim, new Claim(ClaimName.Role, RoleName.Restaurateur));
+                var rider = await _context.Riders.Where(r => r.CustomerId == Customer.Id).FirstAsync();
 
-                // update tables
-
-                try // if user was a rider, delete from table
+                await _mediator.Send(new DeleteRiderCommand
                 {
-                    var rider = await _context.Riders.Where(r => r.CustomerId == Customer.Id).FirstAsync();
-
-                    await _mediator.Send(new DeleteRiderCommand
-                    {
-                        Id = rider.Id
-                    });
-
-                    _logger.LogInformation($"Deleted rider with id {rider.Id}");
-                }
-                catch (InvalidOperationException)
-                {
-                    // otherwise do nothing
-                }
-
-                var r = await _mediator.Send(new CreateRestaurateurCommand
-                {
-                    Customer = Customer
+                    Id = rider.Id
                 });
 
-                _logger.LogInformation($"Created restaurateur with id {r.Id}");
-
+                _logger.LogInformation($"Deleted rider with id {rider.Id}");
             }
+            catch (InvalidOperationException)
+            {
+                // otherwise do nothing
+            }
+
+            var r = await _mediator.Send(new CreateRestaurateurCommand
+            {
+                Customer = Customer
+            });
+
+            _logger.LogInformation($"Created restaurateur with id {r.Id}");
+
             return RedirectToPage("/AdminPages/UserList");
         }
     }
