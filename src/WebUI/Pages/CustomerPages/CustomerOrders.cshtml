@@ -1,19 +1,20 @@
 ﻿@page
 @using IdentityServer4.Extensions
 @using Microsoft.AspNetCore.Localization
+@using Microsoft.Extensions.Localization
 @model DeliveryWebApp.WebUI.Pages.CustomerPages.CustomerOrdersModel
+@inject IStringLocalizer<CustomerOrdersModel> localizer
 @{
     ViewData["Title"] = "Orders";
     var requestCultureFeature = HttpContext.Features.Get<IRequestCultureFeature>();
     var requestCulture = requestCultureFeature.RequestCulture;
-    // TODO: localize
 }
 
 @if (Model.Orders.IsNullOrEmpty())
 {
     <div class="alert alert-secondary" role="alert">
         <p class="text-center">
-            You don't have orders at the moment
+            @localizer["You don't have orders at the moment"]
         </p>
     </div>
 }
@@ -28,19 +29,19 @@ else
                         @Html.DisplayNameFor(model => model.Orders[0].Id)
                     </th>
                     <th>
-                        Date
+                        @localizer["Date"]
                     </th>
                     <th>
-                        Delivery Date
+                        @localizer["Delivery Date"]
                     </th>
                     <th>
-                        Food Vendor
+                        @localizer["Food Vendor"]
                     </th>
                     <th>
-                        Total
+                        @localizer["Total"]
                     </th>
                     <th>
-                        @Html.DisplayNameFor(model => model.Orders[0].Status)
+                        @localizer["Status"]
                     </th>
                     <th></th>
                 </tr>
@@ -106,14 +107,14 @@ else
                                                     <tr class="table-secondary">
                                                         <th>
                                                             @* Product Name *@
-                                                            Product
+                                                            @localizer["Product"]
                                                         </th>
                                                         <th>
                                                             @* Discounted price *@
-                                                            Price
+                                                            @localizer["Price"]
                                                         </th>
                                                         <th>
-                                                            Quantity
+                                                            @localizer["Quantity"]
                                                         </th>
                                                     </tr>
                                                 </thead>
@@ -138,7 +139,7 @@ else
                                         </div>
 
                                         <div class="modal-footer">
-                                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">@localizer["Close"]</button>
                                         </div>
 
                                     </div>

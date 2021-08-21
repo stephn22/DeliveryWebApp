@@ -117,29 +117,29 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
-  <data name="Add" xml:space="preserve">
-    <value>Aggiungi</value>
+  <data name="Cart" xml:space="preserve">
+    <value>Carrello</value>
   </data>
-  <data name="Add a review" xml:space="preserve">
-    <value>Aggiungi una recensione</value>
-  </data>
-  <data name="Add to basket" xml:space="preserve">
-    <value>Aggiungi al carrello</value>
-  </data>
-  <data name="Added product to cart successfully" xml:space="preserve">
-    <value>Prodotto aggiunto al carrello con successo</value>
+  <data name="Checkout" xml:space="preserve">
+    <value>Procedi all'ordine</value>
   </data>
   <data name="Close" xml:space="preserve">
     <value>Chiudi</value>
   </data>
+  <data name="Confirm" xml:space="preserve">
+    <value>Conferma</value>
+  </data>
   <data name="Discount" xml:space="preserve">
     <value>Sconto</value>
   </data>
-  <data name="In stock" xml:space="preserve">
-    <value>Quantità disponibile</value>
+  <data name="Food Vendor" xml:space="preserve">
+    <value>Ristoratore</value>
   </data>
-  <data name="Out of stock" xml:space="preserve">
-    <value>Non disponibile</value>
+  <data name="Image" xml:space="preserve">
+    <value>Immagine</value>
+  </data>
+  <data name="Name" xml:space="preserve">
+    <value>Nome</value>
   </data>
   <data name="Price" xml:space="preserve">
     <value>Prezzo</value>
@@ -147,22 +147,16 @@
   <data name="Quantity" xml:space="preserve">
     <value>Quantità</value>
   </data>
-  <data name="Review" xml:space="preserve">
-    <value>Recensione</value>
+  <data name="Remove" xml:space="preserve">
+    <value>Rimuovi</value>
   </data>
-  <data name="Reviews" xml:space="preserve">
-    <value>Recensioni</value>
+  <data name="Some products may not display due to stock limitations" xml:space="preserve">
+    <value>Alcuni prodotti potrebbero non essere più mostrati a causa della limitata disponibilità</value>
   </data>
-  <data name="Some products may not have an image because food vendors are not required to upload one" xml:space="preserve">
-    <value>Alcuni prodotti potrebbero non avere un'immagine, poiché i ristoratori non sono obbligati a caricarne una</value>
+  <data name="You can add products from one food vendor at time." xml:space="preserve">
+    <value>Puoi aggiungere prodotti da un solo ristoratore per volta</value>
   </data>
-  <data name="Submit" xml:space="preserve">
-    <value>Invia</value>
-  </data>
-  <data name="Text" xml:space="preserve">
-    <value>Testo</value>
-  </data>
-  <data name="Title" xml:space="preserve">
-    <value>Titolo</value>
+  <data name="Your cart is empty" xml:space="preserve">
+    <value>Il tuo carrello è vuoto</value>
   </data>
 </root>

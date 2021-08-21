@@ -117,29 +117,26 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
-  <data name="Add" xml:space="preserve">
-    <value>Aggiungi</value>
+  <data name="Address" xml:space="preserve">
+    <value>Indirizzo</value>
   </data>
-  <data name="Add a review" xml:space="preserve">
-    <value>Aggiungi una recensione</value>
+  <data name="Deliver to address" xml:space="preserve">
+    <value>Consegna all'indirizzo</value>
   </data>
-  <data name="Add to basket" xml:space="preserve">
-    <value>Aggiungi al carrello</value>
+  <data name="Image" xml:space="preserve">
+    <value>Immagine</value>
   </data>
-  <data name="Added product to cart successfully" xml:space="preserve">
-    <value>Prodotto aggiunto al carrello con successo</value>
+  <data name="Name" xml:space="preserve">
+    <value>Nome</value>
   </data>
-  <data name="Close" xml:space="preserve">
-    <value>Chiudi</value>
+  <data name="or" xml:space="preserve">
+    <value>oppure</value>
   </data>
-  <data name="Discount" xml:space="preserve">
-    <value>Sconto</value>
+  <data name="Pay" xml:space="preserve">
+    <value>Paga</value>
   </data>
-  <data name="In stock" xml:space="preserve">
-    <value>Quantità disponibile</value>
-  </data>
-  <data name="Out of stock" xml:space="preserve">
-    <value>Non disponibile</value>
+  <data name="Payment method" xml:space="preserve">
+    <value>Metodo di pagamento</value>
   </data>
   <data name="Price" xml:space="preserve">
     <value>Prezzo</value>
@@ -147,22 +144,10 @@
   <data name="Quantity" xml:space="preserve">
     <value>Quantità</value>
   </data>
-  <data name="Review" xml:space="preserve">
-    <value>Recensione</value>
+  <data name="Total" xml:space="preserve">
+    <value>Totale</value>
   </data>
-  <data name="Reviews" xml:space="preserve">
-    <value>Recensioni</value>
-  </data>
-  <data name="Some products may not have an image because food vendors are not required to upload one" xml:space="preserve">
-    <value>Alcuni prodotti potrebbero non avere un'immagine, poiché i ristoratori non sono obbligati a caricarne una</value>
-  </data>
-  <data name="Submit" xml:space="preserve">
-    <value>Invia</value>
-  </data>
-  <data name="Text" xml:space="preserve">
-    <value>Testo</value>
-  </data>
-  <data name="Title" xml:space="preserve">
-    <value>Titolo</value>
+  <data name="We'll never save your payment method or share it with third parties" xml:space="preserve">
+    <value>Non salveremo mai il tuo metodo di pagamento o condivideremo con terze parti</value>
   </data>
 </root>

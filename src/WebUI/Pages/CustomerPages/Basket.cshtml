@@ -2,10 +2,11 @@
 @using DeliveryWebApp.Application.Products.Extensions
 @using IdentityServer4.Extensions
 @using Microsoft.AspNetCore.Localization
+@using Microsoft.Extensions.Localization
 @model DeliveryWebApp.WebUI.Pages.CustomerPages.BasketModel
+@inject IStringLocalizer<BasketModel> localizer
 @{
     ViewData["Title"] = "Cart";
-    // TODO: localize
     var requestCultureFeature = HttpContext.Features.Get<IRequestCultureFeature>();
     var requestCulture = requestCultureFeature.RequestCulture;
 }
@@ -13,7 +14,7 @@
 @if (Model.BasketItems.IsNullOrEmpty() || Model.Basket == null)
 {
     <div class="alert alert-secondary" role="alert">
-        Your cart is empty
+        @localizer["Your cart is empty"]
     </div>
     <div class="text-center">
         <img src="/icons/undraw_empty_cart_co35.svg" alt="empty_cart" height="500" width="500"/>
@@ -22,7 +23,7 @@
 else
 {
     <div class="alert alert-secondary" role="alert">
-        You can add products from one food vendor at time.
+        @localizer["You can add products from one food vendor at time."]
     </div>
 
     <partial name="_StatusMessage" for="StatusMessage"/>
@@ -33,12 +34,12 @@ else
                 <path d="M11.354 6.354a.5.5 0 0 0-.708-.708L8 8.293 6.854 7.146a.5.5 0 1 0-.708.708l1.5 1.5a.5.5 0 0 0 .708 0l3-3z"/>
                 <path d="M.5 1a.5.5 0 0 0 0 1h1.11l.401 1.607 1.498 7.985A.5.5 0 0 0 4 12h1a2 2 0 1 0 0 4 2 2 0 0 0 0-4h7a2 2 0 1 0 0 4 2 2 0 0 0 0-4h1a.5.5 0 0 0 .491-.408l1.5-8A.5.5 0 0 0 14.5 3H2.89l-.405-1.621A.5.5 0 0 0 2 1H.5zm3.915 10L3.102 4h10.796l-1.313 7h-8.17zM6 14a1 1 0 1 1-2 0 1 1 0 0 1 2 0zm7 0a1 1 0 1 1-2 0 1 1 0 0 1 2 0z"/>
             </svg>
-            Checkout
+            @localizer["Checkout"]
         </a>
     </div>
 
     <div class="text-start">
-        <h4>@ViewData["Title"]: @Model.Basket.TotalPrice.ToString("C")</h4>
+        <h4>@localizer["Cart"]: @Model.Basket.TotalPrice.ToString("C")</h4>
     </div>
 
     <hr/>
@@ -47,19 +48,19 @@ else
         <thead>
         <tr class="table-primary">
             <th>
-                @Html.DisplayNameFor(model => model.Products[0].Image)
+                @localizer["Image"]
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.Products[0].Name)
+                @localizer["Name"]
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.Products[0].Price)
+                @localizer["Price"]
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.BasketItems[0].Quantity)
+                @localizer["Quantity"]
             </th>
             <th>
-                Food Vendor
+                @localizer["Food Vendor"]
             </th>
             <th></th>
             <th></th>
@@ -105,19 +106,19 @@ else
                                     <div class="row">
                                         @if (Model.Products[i].Discount > 0)
                                         {
-                                            <p>Price: <del class="text-muted">@Model.Products[i].Price.ToString("C")</del> @Model.Products[i].DiscountedPrice().ToString("C")</p>
-                                            <p>Discount: @Model.Products[i].Discount %</p>
+                                            <p>@localizer["Price"]: <del class="text-muted">@Model.Products[i].Price.ToString("C")</del> @Model.Products[i].DiscountedPrice().ToString("C")</p>
+                                            <p>@localizer["Discount"]: @Model.Products[i].Discount %</p>
                                         }
                                         else
                                         {
-                                            <p>Price: @Model.Products[i].DiscountedPrice().ToString("C")</p>
+                                            <p>@localizer["Price"]: @Model.Products[i].DiscountedPrice().ToString("C")</p>
                                         }
                                     </div>
                                     <div class="row">
                                         <form method="post" asp-page-handler="UpdateBasketItem" asp-route-id="@Model.BasketItems[i].Id">
                                             @* Quantity *@
 
-                                            <label asp-for="NewQuantity">Quantity</label>
+                                            <label asp-for="NewQuantity">@localizer["Quantity"]</label>
                                             <select asp-for="NewQuantity" class="form-select col-sm">
                                                 @for (var j = 1; j <= Model.Products[i].Quantity; j++)
                                                 {
@@ -127,7 +128,7 @@ else
                                             <span asp-validation-for="NewQuantity" class="text-danger"></span>
 
                                             <button type="submit" class="btn btn-primary" style="margin-top: 1rem; margin-bottom: 1rem;">
-                                                Confirm
+                                                @localizer["Confirm"]
                                                 <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-check2" viewBox="0 0 16 16">
                                                     <path d="M13.854 3.646a.5.5 0 0 1 0 .708l-7 7a.5.5 0 0 1-.708 0l-3.5-3.5a.5.5 0 1 1 .708-.708L6.5 10.293l6.646-6.647a.5.5 0 0 1 .708 0z"/>
                                                 </svg>
@@ -142,7 +143,7 @@ else
 
                                             <form asp-page-handler="RemoveFromBasket" asp-route-id="@Model.BasketItems[i].Id" method="post">
                                                 <button class="btn btn-danger" title="Remove from cart" type="submit">
-                                                    Remove
+                                                    @localizer["Remove"]
                                                     <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-cart-x" viewBox="0 0 16 16">
                                                         <path d="M7.354 5.646a.5.5 0 1 0-.708.708L7.793 7.5 6.646 8.646a.5.5 0 1 0 .708.708L8.5 8.207l1.146 1.147a.5.5 0 0 0 .708-.708L9.207 7.5l1.147-1.146a.5.5 0 0 0-.708-.708L8.5 6.793 7.354 5.646z"/>
                                                         <path d="M.5 1a.5.5 0 0 0 0 1h1.11l.401 1.607 1.498 7.985A.5.5 0 0 0 4 12h1a2 2 0 1 0 0 4 2 2 0 0 0 0-4h7a2 2 0 1 0 0 4 2 2 0 0 0 0-4h1a.5.5 0 0 0 .491-.408l1.5-8A.5.5 0 0 0 14.5 3H2.89l-.405-1.621A.5.5 0 0 0 2 1H.5zm3.915 10L3.102 4h10.796l-1.313 7h-8.17zM6 14a1 1 0 1 1-2 0 1 1 0 0 1 2 0zm7 0a1 1 0 1 1-2 0 1 1 0 0 1 2 0z"/>
@@ -151,7 +152,7 @@ else
                                             </form>
                                         </div>
 
-                                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">@localizer["Close"]</button>
                                     </div>
                                 </div>
                             </div>
@@ -175,5 +176,5 @@ else
         </tbody>
     </table>
 
-    <p class="small text-muted">Some products may not display due to stock limitations</p>
+    <p class="small text-muted">@localizer["Some products may not display due to stock limitations"]</p>
 }

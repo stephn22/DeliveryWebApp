@@ -17,9 +17,11 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Threading.Tasks;
+using Microsoft.Extensions.Localization;
 
 namespace DeliveryWebApp.WebUI.Pages.CustomerPages
 {
@@ -30,14 +32,16 @@ namespace DeliveryWebApp.WebUI.Pages.CustomerPages
         private readonly IMediator _mediator;
         private readonly UserManager<ApplicationUser> _userManager;
         private readonly ILogger<RestaurantDetailModel> _logger;
+        private readonly IStringLocalizer<RestaurantDetailModel> _localizer;
 
         public RestaurantDetailModel(ApplicationDbContext context, IMediator mediator,
-            UserManager<ApplicationUser> userManager, ILogger<RestaurantDetailModel> logger)
+            UserManager<ApplicationUser> userManager, ILogger<RestaurantDetailModel> logger, IStringLocalizer<RestaurantDetailModel> localizer)
         {
             _context = context;
             _mediator = mediator;
             _userManager = userManager;
             _logger = logger;
+            _localizer = localizer;
         }
 
         public Customer Customer { get; set; }
@@ -57,14 +61,17 @@ namespace DeliveryWebApp.WebUI.Pages.CustomerPages
         public class InputModel
         {
             [Required]
+            [DisplayName("Quantity")]
             public int Quantity { get; set; }
 
             [Required]
             [DataType(DataType.Text)]
+            [DisplayName("Title")]
             public string Title { get; set; }
 
             [DataType(DataType.Text)]
             [StringLength(250)]
+            [DisplayName("Text")]
             public string Text { get; set; }
 
             [Required]
@@ -172,7 +179,7 @@ namespace DeliveryWebApp.WebUI.Pages.CustomerPages
 
             _logger.LogInformation($"Added product with id {product.Id} to the basket of the user {user.Id}");
 
-            StatusMessage = "Added product to cart successfully";
+            StatusMessage = _localizer["Added product to cart successfully"];
 
             return RedirectToPage();
         }

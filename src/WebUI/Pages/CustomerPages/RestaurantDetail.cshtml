@@ -127,7 +127,7 @@ else
                                         <form asp-page-handler="AddToBasket" asp-route-id="@Model.Restaurateur.Id" asp-route-productId="@product.Id" method="post">
                                             <div class="row">
 
-                                                <label asp-for="Input.Quantity">@localizer["Quantity"]</label>
+                                                <label asp-for="Input.Quantity"></label>
 
                                                 <select asp-for="Input.Quantity" class="form-select col-sm">
                                                     @for (var i = 1; i <= product.Quantity; i++)
@@ -165,7 +165,7 @@ else
 {
     <div class="text-end">
         <button class="btn btn-primary" type="button" data-bs-toggle="modal" data-bs-target="#newReviewModal">
-            Review
+            
             <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-plus-square-fill" viewBox="0 0 16 16">
                 <path d="M2 0a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V2a2 2 0 0 0-2-2H2zm6.5 4.5v3h3a.5.5 0 0 1 0 1h-3v3a.5.5 0 0 1-1 0v-3h-3a.5.5 0 0 1 0-1h3v-3a.5.5 0 0 1 1 0z"/>
             </svg>
@@ -179,14 +179,14 @@ else
             <div class="modal-content">
                 <div class="modal-header">
                     <h5 class="modal-title" id="newReviewModalTitle">
-                        Add a review
+                        @localizer["Add a review"]
                     </h5>
                 </div>
                 
                 <div class="modal-body">
                     <form method="post" asp-page-handler="AddReview" asp-route-id="@Model.Restaurateur.Id">
                         <div class="mb-2">
-                            <label asp-for="Input.Title" class="form-label">Title</label>
+                            <label asp-for="Input.Title" class="form-label"></label>
                             <input asp-for="Input.Title" class="form-control"/>
                             <span asp-validation-for="Input.Title" class="text-danger"></span>
                         </div>
@@ -205,7 +205,7 @@ else
                             <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">@localizer["Close"]</button>
                             
                             <button type="submit" class="btn btn-primary">
-                                Submit
+                                
                                 <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-check2" viewBox="0 0 16 16">
                                     <path d="M13.854 3.646a.5.5 0 0 1 0 .708l-7 7a.5.5 0 0 1-.708 0l-3.5-3.5a.5.5 0 1 1 .708-.708L6.5 10.293l6.646-6.647a.5.5 0 0 1 .708 0z"/>
                                 </svg>
@@ -221,6 +221,8 @@ else
 
 @if (!Model.Reviews.IsNullOrEmpty())
 {
+    <h5>@localizer["Reviews"]</h5>
+
     @foreach (var review in Model.Reviews)
     {
         <div class="text-start">

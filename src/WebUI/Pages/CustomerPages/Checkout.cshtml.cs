@@ -17,6 +17,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
 using System.Threading.Tasks;
 
@@ -50,10 +51,13 @@ namespace DeliveryWebApp.WebUI.Pages.CustomerPages
         public class InputModel
         {
             [Required]
+            [DataType(DataType.Text)]
+            [DisplayName("Address")]
             public Address Address { get; set; }
 
             [Required]
             [DataType(DataType.CreditCard)]
+            [DisplayName("Credit Card")]
             public string CreditCard { get; set; }
         }
 
