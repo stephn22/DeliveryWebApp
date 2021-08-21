@@ -36,7 +36,7 @@ namespace DeliveryWebApp.Application.Baskets.Commands.UpdateBasket
 
         public async Task<Basket> Handle(UpdateBasketCommand request, CancellationToken cancellationToken)
         {
-            // TODO: check if mediator is useless
+            // TODO: check if mapper is useless
 
             var entity = _mapper.Map<Basket>(request.Basket);
 

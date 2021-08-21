@@ -117,46 +117,10 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
-  <data name="Become a restaurateur" xml:space="preserve">
-    <value>Diventa un ristoratore</value>
+  <data name="Browse New Orders" xml:space="preserve">
+    <value>Sfoglia Nuovi Ordini</value>
   </data>
-  <data name="Become a restaurateur, register your restaurant and start the business" xml:space="preserve">
-    <value>Diventa un ristoratore, registra il tuo ristorante e inizia l'attività</value>
-  </data>
-  <data name="Become a rider" xml:space="preserve">
-    <value>Diventa un rider</value>
-  </data>
-  <data name="Become a rider and start delivering food to customers" xml:space="preserve">
-    <value>Diventa un rider e inizia a a consegnare cibo ai clienti</value>
-  </data>
-  <data name="Browse" xml:space="preserve">
-    <value>Sfoglia</value>
-  </data>
-  <data name="Browse food vendors in your area" xml:space="preserve">
-    <value>Sfoglia i ristoratori nella tua area</value>
-  </data>
-  <data name="Browse food vendors list, select one and start ordering food" xml:space="preserve">
-    <value>Sfoglia la lista dei ristoratori, scegli quello che preferisci e inizia a ordinare</value>
-  </data>
-  <data name="Home page" xml:space="preserve">
-    <value>Home</value>
-  </data>
-  <data name="Next" xml:space="preserve">
-    <value>Successivo</value>
-  </data>
-  <data name="Previous" xml:space="preserve">
-    <value>Precedente</value>
-  </data>
-  <data name="Sign up" xml:space="preserve">
-    <value>Registrati</value>
-  </data>
-  <data name="Sign up today" xml:space="preserve">
-    <value>Registrati oggi</value>
-  </data>
-  <data name="Welcome" xml:space="preserve">
-    <value>Benvenuto</value>
-  </data>
-  <data name="Welcome Administrator" xml:space="preserve">
-    <value>Benvenuto Amministratore</value>
+  <data name="There are no orders to deliver at the moment" xml:space="preserve">
+    <value>Non ci sono ordini da consegnare al momento</value>
   </data>
 </root>

@@ -29,10 +29,33 @@ namespace DeliveryWebApp.WebUI.Pages.RiderPages
             _userManager = userManager;
         }
 
-        public int Id { get; set; }
+        [BindProperty(SupportsGet = true)]
         public Order Order { get; set; }
         public Rider Rider { get; set; }
+
         public Restaurateur Restaurateur { get; set; }
+
+        private async Task LoadAsync(int id, ApplicationUser user)
+        {
+            Order = await _context.Orders.FindAsync(id);
+
+            if (Order != null)
+            {
+                Restaurateur = await _context.Restaurateurs.FindAsync(Order.RestaurateurId);
+
+            }
+
+            try
+            {
+                var customer = await _context.Customers.FirstAsync(c => c.ApplicationUserFk == user.Id);
+
+                Rider = await _context.Riders.FirstAsync(r => r.CustomerId == customer.Id);
+            }
+            catch (InvalidOperationException)
+            {
+                Rider = null;
+            }
+        }
 
         public async Task<IActionResult> OnGetASync(int? id)
         {
@@ -123,28 +146,6 @@ namespace DeliveryWebApp.WebUI.Pages.RiderPages
             });
 
             return Redirect("/RiderPages/DeliveryHistory");
-        }
-
-        private async Task LoadAsync(int id, ApplicationUser user)
-        {
-            Order = await _context.Orders.FindAsync(id);
-
-            if (Order != null)
-            {
-                Restaurateur = await _context.Restaurateurs.FindAsync(Order.RestaurateurId);
-
-            }
-
-            try
-            {
-                var customer = await _context.Customers.FirstAsync(c => c.ApplicationUserFk == user.Id);
-
-                Rider = await _context.Riders.FirstAsync(r => r.CustomerId == customer.Id);
-            }
-            catch (InvalidOperationException)
-            {
-                Rider = null;
-            }
         }
     }
 }

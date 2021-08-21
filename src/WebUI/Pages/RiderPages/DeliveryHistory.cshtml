@@ -1,7 +1,9 @@
 ﻿@page
 @using IdentityServer4.Extensions
 @using Microsoft.AspNetCore.Localization
+@using Microsoft.Extensions.Localization
 @model DeliveryWebApp.WebUI.Pages.RiderPages.DeliveryHistoryModel
+@inject IStringLocalizer<DeliveryHistoryModel> localizer
 @{
     ViewData["Title"] = "Delivery History";
     var requestCultureFeature = HttpContext.Features.Get<IRequestCultureFeature>();
@@ -13,33 +15,33 @@
 @if (Model.Orders.IsNullOrEmpty())
 {
     <div class="alert alert-secondary text-center" role="alert">
-        You haven't delivered yet
+        @localizer["You haven't delivered yet"]
     </div>
 }
 else
 {
-    <h4>Total Delivery Credit: @Model.Rider.TotalCredit.ToString("C")</h4>
+    <h4>@localizer["Total Delivery Credit"]: @Model.Rider.TotalCredit.ToString("C")</h4>
 
     <div class="text-center">
         <table class="table">
             <thead>
-            <tr class="table-primary">
-                <th>
-                    @Html.DisplayNameFor(model => model.Orders[0].Id)
-                </th>
-                <th>
-                    Order Date
-                </th>
-                <th>
-                    Delivery Date
-                </th>
-                <th>
-                    Food Vendor
-                </th>
-                <th>
-                    Status
-                </th>
-            </tr>
+                <tr class="table-primary">
+                    <th>
+                        @Html.DisplayNameFor(model => model.Orders[0].Id)
+                    </th>
+                    <th>
+                        @localizer["Order Date"]
+                    </th>
+                    <th>
+                        @localizer["Delivery Date"]
+                    </th>
+                    <th>
+                        @localizer["Food Vendor"]
+                    </th>
+                    <th>
+                        @localizer["Status"]
+                    </th>
+                </tr>
             </thead>
             <tbody>
                 @for (var i = 0; i < Model.Orders.Count; i++)
