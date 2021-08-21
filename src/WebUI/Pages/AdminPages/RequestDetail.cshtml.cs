@@ -1,3 +1,4 @@
+using System.ComponentModel;
 using DeliveryWebApp.Application.Common.Security;
 using DeliveryWebApp.Application.Customers.Extensions;
 using DeliveryWebApp.Application.Requests.Commands.UpdateRequest;
@@ -47,8 +48,9 @@ namespace DeliveryWebApp.WebUI.Pages.AdminPages
         {
             [Required]
             [DataType(DataType.Currency, ErrorMessage = "Value isn't a price")]
+            [DisplayName("Delivery Credit")]
             [DisplayFormat(DataFormatString = "{0:C}")]
-            public decimal DeliveryCredit { get; set; } // TODO: Culture
+            public decimal DeliveryCredit { get; set; }
         }
 
         public async Task<IActionResult> OnGetAsync(int? id)

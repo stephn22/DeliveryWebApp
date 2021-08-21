@@ -117,73 +117,19 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
-  <data name="Addresses" xml:space="preserve">
-    <value>Indirizzi</value>
+  <data name="Details" xml:space="preserve">
+    <value>Dettagli</value>
   </data>
-  <data name="Block User" xml:space="preserve">
-    <value>Blocca Utente</value>
+  <data name="Role Requested" xml:space="preserve">
+    <value>Ruolo Richiesto</value>
   </data>
-  <data name="Change delivery credit" xml:space="preserve">
-    <value>Cambia credito consegne</value>
+  <data name="There are no requests at the moment" xml:space="preserve">
+    <value>Non ci sono richieste al momento</value>
   </data>
-  <data name="Current Role" xml:space="preserve">
-    <value>Ruolo Corrente</value>
+  <data name="User" xml:space="preserve">
+    <value>Utente</value>
   </data>
-  <data name="Customer" xml:space="preserve">
-    <value>Cliente</value>
-  </data>
-  <data name="Delivery Credit" xml:space="preserve">
-    <value>Credito Consegne</value>
-  </data>
-  <data name="Detail of customer" xml:space="preserve">
-    <value>Dettaglio cliente</value>
-  </data>
-  <data name="Edit" xml:space="preserve">
-    <value>Modifica</value>
-  </data>
-  <data name="First Name" xml:space="preserve">
-    <value>Nome</value>
-  </data>
-  <data name="Food Vendor" xml:space="preserve">
-    <value>Ristoratore</value>
-  </data>
-  <data name="Insert delivery credit" xml:space="preserve">
-    <value>Inserisci credito consegne</value>
-  </data>
-  <data name="Last Name" xml:space="preserve">
-    <value>Cognome</value>
-  </data>
-  <data name="Submit" xml:space="preserve">
-    <value>Invia</value>
-  </data>
-  <data name="This user is already a Customer" xml:space="preserve">
-    <value>Questo utente è già un cliente</value>
-  </data>
-  <data name="This user is already a Food vendor" xml:space="preserve">
-    <value>Questo utente è già un ristoratore</value>
-  </data>
-  <data name="This user is already a Rider" xml:space="preserve">
-    <value>Questo utente è già un rider</value>
-  </data>
-  <data name="to" xml:space="preserve">
-    <value>a</value>
-  </data>
-  <data name="To Customer" xml:space="preserve">
-    <value>Modifica in cliente</value>
-  </data>
-  <data name="To Food Vendor" xml:space="preserve">
-    <value>Modifica in ristoratore</value>
-  </data>
-  <data name="To Rider" xml:space="preserve">
-    <value>Modifica in rider</value>
-  </data>
-  <data name="Unblock User" xml:space="preserve">
-    <value>Sblocca Utente</value>
-  </data>
-  <data name="You are going to change this user role from" xml:space="preserve">
-    <value>Stai per cambiare il ruolo di questo utente da</value>
-  </data>
-  <data name="You are going to downgrade this user to" xml:space="preserve">
-    <value>Stai per degradare il ruolo di questo utente in</value>
+  <data name="Users Requests" xml:space="preserve">
+    <value>Richieste Utenti</value>
   </data>
 </root>

@@ -117,73 +117,67 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
-  <data name="Addresses" xml:space="preserve">
-    <value>Indirizzi</value>
+  <data name="Are you sure you want to" xml:space="preserve">
+    <value>Sei sicuro/a di voler </value>
   </data>
-  <data name="Block User" xml:space="preserve">
-    <value>Blocca Utente</value>
+  <data name="Are you sure you want to block this user?" xml:space="preserve">
+    <value>Sei sicuro di voler bloccare questo utente?</value>
   </data>
-  <data name="Change delivery credit" xml:space="preserve">
-    <value>Cambia credito consegne</value>
+  <data name="Block" xml:space="preserve">
+    <value>Blocca</value>
   </data>
-  <data name="Current Role" xml:space="preserve">
-    <value>Ruolo Corrente</value>
+  <data name="Block user" xml:space="preserve">
+    <value>Blocca utente</value>
   </data>
-  <data name="Customer" xml:space="preserve">
-    <value>Cliente</value>
+  <data name="Close" xml:space="preserve">
+    <value>Chiudi</value>
+  </data>
+  <data name="Confirm" xml:space="preserve">
+    <value>Conferma</value>
+  </data>
+  <data name="Customers" xml:space="preserve">
+    <value>Clienti</value>
+  </data>
+  <data name="Delete" xml:space="preserve">
+    <value>Dettagli</value>
+  </data>
+  <data name="Delete user" xml:space="preserve">
+    <value>Elimina utente</value>
   </data>
   <data name="Delivery Credit" xml:space="preserve">
     <value>Credito Consegne</value>
   </data>
-  <data name="Detail of customer" xml:space="preserve">
-    <value>Dettaglio cliente</value>
+  <data name="Details" xml:space="preserve">
+    <value>Dettagli</value>
   </data>
-  <data name="Edit" xml:space="preserve">
-    <value>Modifica</value>
+  <data name="Email" xml:space="preserve">
+    <value>Email</value>
   </data>
   <data name="First Name" xml:space="preserve">
     <value>Nome</value>
   </data>
-  <data name="Food Vendor" xml:space="preserve">
-    <value>Ristoratore</value>
-  </data>
-  <data name="Insert delivery credit" xml:space="preserve">
-    <value>Inserisci credito consegne</value>
+  <data name="Food Vendors" xml:space="preserve">
+    <value>Ristoratori</value>
   </data>
   <data name="Last Name" xml:space="preserve">
     <value>Cognome</value>
   </data>
-  <data name="Submit" xml:space="preserve">
-    <value>Invia</value>
+  <data name="permanently delete" xml:space="preserve">
+    <value>eliminare in modo permanente</value>
   </data>
-  <data name="This user is already a Customer" xml:space="preserve">
-    <value>Questo utente è già un cliente</value>
+  <data name="There are no customers registered at the moment" xml:space="preserve">
+    <value>Non ci sono clienti al momento</value>
   </data>
-  <data name="This user is already a Food vendor" xml:space="preserve">
-    <value>Questo utente è già un ristoratore</value>
+  <data name="There are no restaurateurs registered at the moment" xml:space="preserve">
+    <value>Non ci sono ristoratori registrati al momento</value>
   </data>
-  <data name="This user is already a Rider" xml:space="preserve">
-    <value>Questo utente è già un rider</value>
+  <data name="There are no riders registered at the moment" xml:space="preserve">
+    <value>Non ci sono rider registrati al momento</value>
   </data>
-  <data name="to" xml:space="preserve">
-    <value>a</value>
+  <data name="this user?" xml:space="preserve">
+    <value>questo utente?</value>
   </data>
-  <data name="To Customer" xml:space="preserve">
-    <value>Modifica in cliente</value>
-  </data>
-  <data name="To Food Vendor" xml:space="preserve">
-    <value>Modifica in ristoratore</value>
-  </data>
-  <data name="To Rider" xml:space="preserve">
-    <value>Modifica in rider</value>
-  </data>
-  <data name="Unblock User" xml:space="preserve">
-    <value>Sblocca Utente</value>
-  </data>
-  <data name="You are going to change this user role from" xml:space="preserve">
-    <value>Stai per cambiare il ruolo di questo utente da</value>
-  </data>
-  <data name="You are going to downgrade this user to" xml:space="preserve">
-    <value>Stai per degradare il ruolo di questo utente in</value>
+  <data name="Username" xml:space="preserve">
+    <value>Nome Utente</value>
   </data>
 </root>

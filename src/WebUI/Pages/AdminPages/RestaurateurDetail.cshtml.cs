@@ -1,3 +1,4 @@
+using System.ComponentModel;
 using DeliveryWebApp.Application.Common.Security;
 using DeliveryWebApp.Application.Restaurateurs.Commands.DeleteRestaurateur;
 using DeliveryWebApp.Application.Riders.Commands.CreateRider;
@@ -43,6 +44,7 @@ namespace DeliveryWebApp.WebUI.Pages.AdminPages
         {
             [Required]
             [DataType(DataType.Currency)]
+            [DisplayName("Delivery Credit")]
             public decimal DeliveryCredit { get; set; }
         }
 

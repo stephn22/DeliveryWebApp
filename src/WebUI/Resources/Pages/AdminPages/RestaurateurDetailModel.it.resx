@@ -123,29 +123,29 @@
   <data name="Block User" xml:space="preserve">
     <value>Blocca Utente</value>
   </data>
-  <data name="Change delivery credit" xml:space="preserve">
-    <value>Cambia credito consegne</value>
-  </data>
-  <data name="Current Role" xml:space="preserve">
-    <value>Ruolo Corrente</value>
-  </data>
   <data name="Customer" xml:space="preserve">
     <value>Cliente</value>
   </data>
-  <data name="Delivery Credit" xml:space="preserve">
-    <value>Credito Consegne</value>
-  </data>
-  <data name="Detail of customer" xml:space="preserve">
-    <value>Dettaglio cliente</value>
+  <data name="Detail of food vendor" xml:space="preserve">
+    <value>Dettaglio del ristoratore</value>
   </data>
   <data name="Edit" xml:space="preserve">
     <value>Modifica</value>
   </data>
+  <data name="Email" xml:space="preserve">
+    <value>Email</value>
+  </data>
   <data name="First Name" xml:space="preserve">
     <value>Nome</value>
   </data>
-  <data name="Food Vendor" xml:space="preserve">
-    <value>Ristoratore</value>
+  <data name="First Name1" xml:space="preserve">
+    <value>Nome</value>
+  </data>
+  <data name="Food Vendor Address" xml:space="preserve">
+    <value>Indirizzo Ristoratore</value>
+  </data>
+  <data name="Food Vendor Name" xml:space="preserve">
+    <value>Nome Ristoratore</value>
   </data>
   <data name="Insert delivery credit" xml:space="preserve">
     <value>Inserisci credito consegne</value>
@@ -156,26 +156,14 @@
   <data name="Submit" xml:space="preserve">
     <value>Invia</value>
   </data>
-  <data name="This user is already a Customer" xml:space="preserve">
-    <value>Questo utente è già un cliente</value>
-  </data>
-  <data name="This user is already a Food vendor" xml:space="preserve">
-    <value>Questo utente è già un ristoratore</value>
-  </data>
-  <data name="This user is already a Rider" xml:space="preserve">
-    <value>Questo utente è già un rider</value>
-  </data>
   <data name="to" xml:space="preserve">
     <value>a</value>
   </data>
   <data name="To Customer" xml:space="preserve">
-    <value>Modifica in cliente</value>
-  </data>
-  <data name="To Food Vendor" xml:space="preserve">
-    <value>Modifica in ristoratore</value>
+    <value>Modifica in Cliente</value>
   </data>
   <data name="To Rider" xml:space="preserve">
-    <value>Modifica in rider</value>
+    <value>Modifica in Rider</value>
   </data>
   <data name="Unblock User" xml:space="preserve">
     <value>Sblocca Utente</value>

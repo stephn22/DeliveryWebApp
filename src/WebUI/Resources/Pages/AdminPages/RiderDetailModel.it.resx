@@ -132,11 +132,8 @@
   <data name="Customer" xml:space="preserve">
     <value>Cliente</value>
   </data>
-  <data name="Delivery Credit" xml:space="preserve">
-    <value>Credito Consegne</value>
-  </data>
-  <data name="Detail of customer" xml:space="preserve">
-    <value>Dettaglio cliente</value>
+  <data name="Detail of rider" xml:space="preserve">
+    <value>Dettagli del rider</value>
   </data>
   <data name="Edit" xml:space="preserve">
     <value>Modifica</value>
@@ -147,23 +144,11 @@
   <data name="Food Vendor" xml:space="preserve">
     <value>Ristoratore</value>
   </data>
-  <data name="Insert delivery credit" xml:space="preserve">
-    <value>Inserisci credito consegne</value>
-  </data>
   <data name="Last Name" xml:space="preserve">
     <value>Cognome</value>
   </data>
   <data name="Submit" xml:space="preserve">
     <value>Invia</value>
-  </data>
-  <data name="This user is already a Customer" xml:space="preserve">
-    <value>Questo utente è già un cliente</value>
-  </data>
-  <data name="This user is already a Food vendor" xml:space="preserve">
-    <value>Questo utente è già un ristoratore</value>
-  </data>
-  <data name="This user is already a Rider" xml:space="preserve">
-    <value>Questo utente è già un rider</value>
   </data>
   <data name="to" xml:space="preserve">
     <value>a</value>
@@ -173,9 +158,6 @@
   </data>
   <data name="To Food Vendor" xml:space="preserve">
     <value>Modifica in ristoratore</value>
-  </data>
-  <data name="To Rider" xml:space="preserve">
-    <value>Modifica in rider</value>
   </data>
   <data name="Unblock User" xml:space="preserve">
     <value>Sblocca Utente</value>

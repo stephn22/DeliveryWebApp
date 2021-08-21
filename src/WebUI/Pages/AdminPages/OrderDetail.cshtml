@@ -1,5 +1,7 @@
 ﻿@page "{id:int?}"
+@using Microsoft.Extensions.Localization
 @model DeliveryWebApp.WebUI.Pages.AdminPages.OrderDetailsModel
+@inject IStringLocalizer<OrderDetailsModel> localizer
 @{
     ViewData["Title"] = "Details";
 }
@@ -12,38 +14,38 @@
 
 <hr />
 
-<h1>Details of order: @Model.Order.Id</h1>
+<h1>@localizer["Details of order"]: @Model.Order.Id</h1>
 
 <div>
-    <h4>Order</h4>
+    <h4>@localizer["Order"]</h4>
     <hr />
     <dl class="row">
         <dt class="col-sm-2">
-            @Html.DisplayNameFor(model => model.Order.Date)
+            @localizer["Date"]
         </dt>
         <dd class="col-sm-10">
             @Html.DisplayFor(model => model.Order.Date)
         </dd>
         <dt class="col-sm-2">
-            Delivery Address
+            @localizer["Delivery Address"]
         </dt>
         <dd class="col-sm-10">
             @Html.DisplayFor(model => model.Address.PlaceName)
         </dd>
         <dt class="col-sm-2">
-            @Html.DisplayNameFor(model => model.Order.Restaurateur.RestaurantName)
+            @localizer["Food Vendor"]
         </dt>
         <dd class="col-sm-10">
             @Html.DisplayFor(model => model.Restaurateur.RestaurantName)
         </dd>
         <dt class="col-sm-2">
-            @Html.DisplayNameFor(model => model.Order.Restaurateur.RestaurantCategory)
+            @localizer["Category"]
         </dt>
         <dd class="col-sm-10">
             @Html.DisplayFor(model => model.Restaurateur.RestaurantCategory)
         </dd>
         <dt class="col-sm-2">
-            @Html.DisplayNameFor(model => model.Order.Status)
+            @localizer[""]
         </dt>
         <dd class="col-sm-10">
             @Html.DisplayFor(model => model.Order.Status)

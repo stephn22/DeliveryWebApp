@@ -1,6 +1,8 @@
 ﻿@page
 @using IdentityServer4.Extensions
+@using Microsoft.Extensions.Localization
 @model DeliveryWebApp.WebUI.Pages.AdminPages.RequestsModel
+@inject IStringLocalizer<RequestsModel> localizer
 @{
     ViewData["Title"] = "Requests";
 }
@@ -14,12 +16,12 @@
     </style>
 }
 
-<h1>Users Requests</h1>
+<h1>@localizer["Users Requests"]</h1>
 
 @if (Model.Requests.IsNullOrEmpty())
 {
     <div class="alert alert-secondary" role="alert">
-        <p>There are no user requests at the moment</p>
+        <p>@localizer["There are no requests at the moment"]</p>
     </div>
 }
 else
@@ -31,10 +33,10 @@ else
                 @Html.DisplayNameFor(model => model.Requests[0].Id)
             </th>
             <th>
-                User
+                @localizer["User"]
             </th>
             <th>
-                Role Requested
+                @localizer["Role Requested"]
             </th>
             <th>
             </th>
@@ -59,7 +61,7 @@ else
                     @Html.DisplayFor(modelItem => item.Role)
                 </td>
                 <td>
-                    <a asp-page="/AdminPages/RequestDetail" asp-route-id="@item.Id">Details</a>
+                    <a asp-page="/AdminPages/RequestDetail" asp-route-id="@item.Id">@localizer["Details"]</a>
                 </td>
             </tr>
         }

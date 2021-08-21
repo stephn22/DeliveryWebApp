@@ -3,13 +3,14 @@
 @using DeliveryWebApp.Infrastructure.Persistence
 @using IdentityServer4.Extensions
 @using Microsoft.AspNetCore.Localization
+@using Microsoft.Extensions.Localization
 @model DeliveryWebApp.WebUI.Pages.AdminPages.OrdersModel
 @inject ApplicationDbContext context
+@inject IStringLocalizer<OrdersModel> localizer
 @{
     ViewData["Title"] = "Orders";
     var requestCultureFeature = HttpContext.Features.Get<IRequestCultureFeature>();
     var requestCulture = requestCultureFeature.RequestCulture;
-    // TODO: localize
 }
 
 <h1>@ViewData["Title"]</h1>
@@ -18,7 +19,7 @@
 {
     <div class="alert-secondary alert" role="alert">
         <p class="text-center">
-            There are no orders at the moment
+            @localizer["There are no orders at the moment"]
         </p>
     </div>
 }
@@ -33,19 +34,19 @@ else
                     @Html.DisplayNameFor(model => model.Orders[0].Id)
                 </th>
                 <th>
-                    Customer
+                    @localizer["Customer Id"]
                 </th>
                 <th>
-                    Food Vendor
+                    @localizer["Food Vendor"]
                 </th>
                 <th>
-                    Date
+                    @localizer["Date"]
                 </th>
                 <th>
-                    Delivery Date
+                    @localizer["Delivery Date"]
                 </th>
                 <th>
-                    Status
+                    @localizer["Status"]
                 </th>
                 <th></th>
             </tr>
