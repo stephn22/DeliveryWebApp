@@ -17,6 +17,7 @@ using Microsoft.Extensions.Logging;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Threading.Tasks;
+using Microsoft.Extensions.Localization;
 
 namespace DeliveryWebApp.WebUI.Areas.Identity.Pages.Account.Manage
 {
@@ -27,14 +28,16 @@ namespace DeliveryWebApp.WebUI.Areas.Identity.Pages.Account.Manage
         private readonly ILogger<AddressModel> _logger;
         private readonly ApplicationDbContext _context;
         private readonly IMediator _mediator;
+        private readonly IStringLocalizer<AddressModel> _localizer;
 
         public AddressModel(UserManager<ApplicationUser> userManager, ILogger<AddressModel> logger,
-            ApplicationDbContext context, IMediator mediator)
+            ApplicationDbContext context, IMediator mediator, IStringLocalizer<AddressModel> localizer)
         {
             _userManager = userManager;
             _logger = logger;
             _context = context;
             _mediator = mediator;
+            _localizer = localizer;
         }
 
         [TempData] public string StatusMessage { get; set; }
@@ -113,7 +116,7 @@ namespace DeliveryWebApp.WebUI.Areas.Identity.Pages.Account.Manage
             });
 
             _logger.LogInformation($"Deleted address with id '{id}'.");
-            StatusMessage = "Your address has been deleted";
+            StatusMessage = _localizer["Your address has been deleted"];
 
             return RedirectToPage();
         }

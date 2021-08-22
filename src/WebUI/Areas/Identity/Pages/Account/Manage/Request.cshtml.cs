@@ -73,9 +73,7 @@ namespace DeliveryWebApp.WebUI.Areas.Identity.Pages.Account.Manage
         {
             try
             {
-                UserRequest = await (from r in _context.Requests
-                                     where r.Customer.ApplicationUserFk == user.Id
-                                     select r).FirstOrDefaultAsync();
+                UserRequest = await (_context.Requests.FirstAsync(r => r.Customer.ApplicationUserFk == user.Id));
             }
             catch (InvalidOperationException e)
             {

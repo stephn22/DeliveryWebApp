@@ -117,55 +117,19 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
-  <data name="Add your main delivery address" xml:space="preserve">
-    <value>Aggiungi il tuo indirizzo di consegna principale</value>
+  <data name="Confirmation link to change email sent. Please check your email." xml:space="preserve">
+    <value>Il link di conferma cambio email è stato inviato. Per favore controlla la tua email.</value>
   </data>
-  <data name="Add your secondary address" xml:space="preserve">
-    <value>Aggiungi l'indirizzo secondario</value>
+  <data name="Manage Email" xml:space="preserve">
+    <value>Gestisci Email</value>
   </data>
-  <data name="Address Line 1" xml:space="preserve">
-    <value>Linea Indirizzo 1</value>
+  <data name="New email" xml:space="preserve">
+    <value>Nuova email</value>
   </data>
-  <data name="Address Line 2" xml:space="preserve">
-    <value>Linea Indirizzo 2</value>
+  <data name="Verification email sent. Please check your email." xml:space="preserve">
+    <value>Email di verifica inviata. Per favore controlla la tua email.</value>
   </data>
-  <data name="Building n°... (optional)" xml:space="preserve">
-    <value>N° edificio (opzionale)</value>
-  </data>
-  <data name="City" xml:space="preserve">
-    <value>Città</value>
-  </data>
-  <data name="Country" xml:space="preserve">
-    <value>Nazione</value>
-  </data>
-  <data name="Edit" xml:space="preserve">
-    <value>Modifica</value>
-  </data>
-  <data name="Insert Manually" xml:space="preserve">
-    <value>Inserisci Manualmente</value>
-  </data>
-  <data name="Main Address" xml:space="preserve">
-    <value>Indirizzo Principale</value>
-  </data>
-  <data name="Postal Code" xml:space="preserve">
-    <value>CAP</value>
-  </data>
-  <data name="Primary Address" xml:space="preserve">
-    <value>Indirizzo Principale</value>
-  </data>
-  <data name="Save" xml:space="preserve">
-    <value>Salva</value>
-  </data>
-  <data name="Secondary Address" xml:space="preserve">
-    <value>Indirizzo Secondario</value>
-  </data>
-  <data name="State/Province" xml:space="preserve">
-    <value>Stato/Provincia</value>
-  </data>
-  <data name="Street..." xml:space="preserve">
-    <value>Via...</value>
-  </data>
-  <data name="Your address has been deleted" xml:space="preserve">
-    <value>Il tuo indirizzo è stato eliminato</value>
+  <data name="Your email is unchanged." xml:space="preserve">
+    <value>La tua email non è stata cambiata.</value>
   </data>
 </root>

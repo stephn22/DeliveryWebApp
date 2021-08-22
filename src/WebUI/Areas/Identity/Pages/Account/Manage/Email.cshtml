@@ -1,12 +1,13 @@
 @page
-@using IdentityServer4.Extensions
+@using Microsoft.Extensions.Localization
 @model EmailModel
+@inject IStringLocalizer<EmailModel> localizer
 @{
     ViewData["Title"] = "Manage Email";
     ViewData["ActivePage"] = ManageNavPages.Email;
 }
 
-<h4>@ViewData["Title"]</h4>
+<h4>@localizer["Manage Email"]</h4>
 
 <partial name="_StatusMessage" for="StatusMessage" />
 
@@ -32,7 +33,7 @@
                 }
             </div>
             <div class="form-group">
-                <label asp-for="Input.NewEmail"></label>
+                <label asp-for="Input.NewEmail">@localizer["New email"]</label>
                 <input asp-for="Input.NewEmail" class="form-control"/>
                 <span asp-validation-for="Input.NewEmail" class="text-danger"></span>
             </div>

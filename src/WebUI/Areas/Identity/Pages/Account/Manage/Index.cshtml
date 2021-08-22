@@ -1,6 +1,8 @@
 @page
 @using DeliveryWebApp.Application.Common.Security
+@using Microsoft.Extensions.Localization
 @model IndexModel
+@inject IStringLocalizer<IndexModel> localizer
 @{
     ViewData["Title"] = "Profile";
     ViewData["ActivePage"] = ManageNavPages.Index;
@@ -8,7 +10,7 @@
     var isAdmin = User.IsInRole(RoleName.Admin);
 }
 
-<h4>@ViewData["Title"]</h4>
+<h4>@localizer["Profile"]</h4>
 <partial name="_StatusMessage" model="Model.StatusMessage" />
 <div class="row">
     <div class="col-md-6">
@@ -21,31 +23,31 @@
             @if (!isAdmin)
             {
                 <div class="form-group">
-                    <label asp-for="FName">First Name</label>
+                    <label asp-for="FName">@localizer["First Name"]</label>
                     <input asp-for="FName" class="form-control" disabled />
                 </div>
                 <div class="form-group">
-                    <label asp-for="Input.NewFName"></label>
+                    <label asp-for="Input.NewFName">@localizer["New First Name"]</label>
                     <input asp-for="Input.NewFName" class="form-control" />
                     <span asp-validation-for="Input.NewFName" class="text-danger"></span>
                 </div>
 
                 <div class="form-group">
-                    <label asp-for="LName">Last Name</label>
+                    <label asp-for="LName">@localizer["Last Name"]</label>
                     <input asp-for="LName" class="form-control" disabled />
                 </div>
                 <div class="form-group">
-                    <label asp-for="Input.NewLName"></label>
+                    <label asp-for="Input.NewLName">@localizer["New Last Name"]</label>
                     <input asp-for="Input.NewLName" class="form-control" />
                     <span asp-validation-for="Input.NewLName" class="text-danger"></span>
                 </div>
 
                 <div class="form-group">
-                    <label asp-for="Input.PhoneNumber"></label>
+                    <label asp-for="Input.PhoneNumber">@localizer["Phone number"]</label>
                     <input asp-for="Input.PhoneNumber" class="form-control" />
                     <span asp-validation-for="Input.PhoneNumber" class="text-danger"></span>
                 </div>
-                <button id="update-profile-button" type="submit" class="btn btn-primary">Save</button>
+                <button id="update-profile-button" type="submit" class="btn btn-primary">@localizer["Save"]</button>
             }
         </form>
     </div>
