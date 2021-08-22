@@ -3,7 +3,7 @@
 @model DeliveryWebApp.WebUI.Pages.AdminPages.OrderDetailsModel
 @inject IStringLocalizer<OrderDetailsModel> localizer
 @{
-    ViewData["Title"] = "Details";
+    ViewData["Title"] = localizer["Order Details"];
 }
 
 <a asp-page="/AdminPages/Orders" title="Back to list" id="back">

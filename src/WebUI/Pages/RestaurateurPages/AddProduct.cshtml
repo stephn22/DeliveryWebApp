@@ -4,7 +4,7 @@
 @model DeliveryWebApp.WebUI.Pages.RestaurateurPages.AddProductModel
 @inject IStringLocalizer<AddProductModel> localizer
 @{
-    ViewData["Title"] = "Add Product";
+    ViewData["Title"] = localizer["Add Product"];
     var requestCultureFeature = HttpContext.Features.Get<IRequestCultureFeature>();
     var requestCulture = requestCultureFeature.RequestCulture;
 }

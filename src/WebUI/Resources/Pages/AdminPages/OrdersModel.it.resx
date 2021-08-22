@@ -129,6 +129,9 @@
   <data name="Food Vendor" xml:space="preserve">
     <value>Ristoratore</value>
   </data>
+  <data name="Orders" xml:space="preserve">
+    <value>Ordini</value>
+  </data>
   <data name="Status" xml:space="preserve">
     <value>Stato</value>
   </data>

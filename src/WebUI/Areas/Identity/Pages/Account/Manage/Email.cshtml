@@ -3,11 +3,11 @@
 @model EmailModel
 @inject IStringLocalizer<EmailModel> localizer
 @{
-    ViewData["Title"] = "Manage Email";
+    ViewData["Title"] = localizer["Manage Email"];
     ViewData["ActivePage"] = ManageNavPages.Email;
 }
 
-<h4>@localizer["Manage Email"]</h4>
+<h4>@ViewData["Title"]</h4>
 
 <partial name="_StatusMessage" for="StatusMessage" />
 

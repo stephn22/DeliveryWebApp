@@ -4,7 +4,7 @@
 @model DeliveryWebApp.WebUI.Pages.AdminPages.RequestDetailModel
 @inject IStringLocalizer<RequestDetailModel> localizer
 @{
-    ViewData["Title"] = "Request Detail";
+    ViewData["Title"] = localizer["Request Detail"];
     var requestCultureFeature = HttpContext.Features.Get<IRequestCultureFeature>();
     var requestCulture = requestCultureFeature.RequestCulture;
 }

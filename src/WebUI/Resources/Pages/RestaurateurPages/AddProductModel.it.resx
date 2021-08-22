@@ -120,6 +120,9 @@
   <data name="0 for no discount" xml:space="preserve">
     <value>0 per nessuno sconto</value>
   </data>
+  <data name="Add Product" xml:space="preserve">
+    <value>Aggiungi un Prodotto</value>
+  </data>
   <data name="Category" xml:space="preserve">
     <value>Categoria</value>
   </data>

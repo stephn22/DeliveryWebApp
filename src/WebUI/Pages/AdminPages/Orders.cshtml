@@ -8,7 +8,7 @@
 @inject ApplicationDbContext context
 @inject IStringLocalizer<OrdersModel> localizer
 @{
-    ViewData["Title"] = "Orders";
+    ViewData["Title"] = localizer["Orders"];
     var requestCultureFeature = HttpContext.Features.Get<IRequestCultureFeature>();
     var requestCulture = requestCultureFeature.RequestCulture;
 }

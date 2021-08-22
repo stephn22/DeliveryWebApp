@@ -132,6 +132,9 @@
   <data name="Customer" xml:space="preserve">
     <value>Cliente</value>
   </data>
+  <data name="Customer Detail" xml:space="preserve">
+    <value>Dettaglio Cliente</value>
+  </data>
   <data name="Delivery Credit" xml:space="preserve">
     <value>Credito Consegne</value>
   </data>

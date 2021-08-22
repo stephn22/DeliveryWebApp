@@ -138,6 +138,9 @@
   <data name="Edit" xml:space="preserve">
     <value>Modifica</value>
   </data>
+  <data name="Food Vendor" xml:space="preserve">
+    <value>Ristoratore</value>
+  </data>
   <data name="In stock" xml:space="preserve">
     <value>Quantità disponibile</value>
   </data>

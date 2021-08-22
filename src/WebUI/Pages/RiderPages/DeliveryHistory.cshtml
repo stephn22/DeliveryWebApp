@@ -5,7 +5,7 @@
 @model DeliveryWebApp.WebUI.Pages.RiderPages.DeliveryHistoryModel
 @inject IStringLocalizer<DeliveryHistoryModel> localizer
 @{
-    ViewData["Title"] = "Delivery History";
+    ViewData["Title"] = localizer["Delivery History"];
     var requestCultureFeature = HttpContext.Features.Get<IRequestCultureFeature>();
     var requestCulture = requestCultureFeature.RequestCulture;
 }

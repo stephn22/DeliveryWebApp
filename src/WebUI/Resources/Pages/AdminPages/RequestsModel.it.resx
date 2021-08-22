@@ -120,6 +120,9 @@
   <data name="Details" xml:space="preserve">
     <value>Dettagli</value>
   </data>
+  <data name="Requests" xml:space="preserve">
+    <value>Richieste</value>
+  </data>
   <data name="Role Requested" xml:space="preserve">
     <value>Ruolo Richiesto</value>
   </data>

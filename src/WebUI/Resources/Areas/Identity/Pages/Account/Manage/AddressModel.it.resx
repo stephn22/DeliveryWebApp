@@ -168,4 +168,7 @@
   <data name="Your address has been deleted" xml:space="preserve">
     <value>Il tuo indirizzo è stato eliminato</value>
   </data>
+  <data name="Your addresses" xml:space="preserve">
+    <value>I tuoi indirizzi</value>
+  </data>
 </root>

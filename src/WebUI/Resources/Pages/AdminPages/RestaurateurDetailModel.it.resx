@@ -144,6 +144,9 @@
   <data name="Food Vendor Address" xml:space="preserve">
     <value>Indirizzo Ristoratore</value>
   </data>
+  <data name="Food Vendor Detail" xml:space="preserve">
+    <value>Dettaglio Ristoratore</value>
+  </data>
   <data name="Food Vendor Name" xml:space="preserve">
     <value>Nome Ristoratore</value>
   </data>

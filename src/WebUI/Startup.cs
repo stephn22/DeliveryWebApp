@@ -2,7 +2,6 @@ using DeliveryWebApp.Application;
 using DeliveryWebApp.Application.Common.Interfaces;
 using DeliveryWebApp.Infrastructure;
 using DeliveryWebApp.Infrastructure.Persistence;
-using DeliveryWebApp.Infrastructure.Services;
 using DeliveryWebApp.WebUI.Services;
 using FluentValidation.AspNetCore;
 using Microsoft.AspNetCore.Builder;

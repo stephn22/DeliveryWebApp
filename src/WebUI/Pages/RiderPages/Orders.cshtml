@@ -5,9 +5,9 @@
 @model DeliveryWebApp.WebUI.Pages.RiderPages.OrdersModel
 @inject IStringLocalizer<OrdersModel> localizer
 @{
-    ViewData["Title"] = "Orders";
+    ViewData["Title"] = localizer["Orders"];
     Layout = "../Views/_MapLayout";
-    // FIXME: Route not working
+    // FIXME: Route double click
 }
 
 @section Head

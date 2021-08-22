@@ -2,18 +2,6 @@
 @model DeliveryWebApp.WebUI.Pages.RestaurateurPages.RestaurantDashboardModel
 @inject IStringLocalizer<RestaurantDashboardModel> localizer
 
-@section Head
-{
-    <link rel="stylesheet" href="/css/images.css" type="text/css" />
-
-    @* Google fonts *@
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@100;300;500&display=swap" rel="stylesheet">
-}
-
-<partial name="_StatusMessage" for="StatusMessage" />
-
 <div class="row">
 
     <div class="col">
@@ -32,22 +20,6 @@
                     <input type="file" id="new-img-input" style="display: none;" asp-for="Input.Logo" onchange="changeImage(this);this.form.submit();" />
                 </div>
             </div>
-
-            <script type="text/javascript">
-                function changeImage(input) {
-                    if (input.files && input.files[0]) {
-                        const reader = new FileReader();
-
-                        reader.onload = function (i) {
-                            $("#dashboard-img")
-                                .attr("src", i.target.result);
-                        };
-
-                        reader.readAsDataURL(input.files[0]);
-                    }
-                }
-            </script>
-
         </form>
 
     </div>

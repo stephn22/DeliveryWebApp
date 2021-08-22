@@ -14,13 +14,13 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Localization;
 using Microsoft.Extensions.Logging;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.IO;
 using System.Threading.Tasks;
-using Microsoft.Extensions.Localization;
 
 namespace DeliveryWebApp.WebUI.Pages.RestaurateurPages
 {
@@ -31,15 +31,17 @@ namespace DeliveryWebApp.WebUI.Pages.RestaurateurPages
         private readonly ILogger<RestaurantDashboardModel> _logger;
         private readonly IMediator _mediator;
         private readonly UserManager<ApplicationUser> _userManager;
-        private readonly IStringLocalizer<RestaurantDashboardModel> _stringLocalizer;
+        private readonly IStringLocalizer<RestaurantDashboardModel> _localizer;
 
-        public RestaurantDashboardModel(ApplicationDbContext context, ILogger<RestaurantDashboardModel> logger, IMediator mediator, UserManager<ApplicationUser> userManager, IStringLocalizer<RestaurantDashboardModel> stringLocalizer)
+        public RestaurantDashboardModel(ApplicationDbContext context, ILogger<RestaurantDashboardModel> logger,
+            IMediator mediator, UserManager<ApplicationUser> userManager,
+            IStringLocalizer<RestaurantDashboardModel> localizer)
         {
             _context = context;
             _logger = logger;
             _mediator = mediator;
             _userManager = userManager;
-            _stringLocalizer = stringLocalizer;
+            _localizer = localizer;
         }
 
         public bool HasRestaurant { get; set; }
@@ -53,13 +55,13 @@ namespace DeliveryWebApp.WebUI.Pages.RestaurateurPages
         [BindProperty]
         public IEnumerable<SelectListItem> Categories => new[]
         {
-            new SelectListItem {Text = _stringLocalizer["Select a category"], Value = "", Selected = true},
-            new SelectListItem {Text = RestaurantCategory.FastFood, Value = RestaurantCategory.FastFood},
-            new SelectListItem {Text = RestaurantCategory.Sushi, Value = RestaurantCategory.Sushi},
-            new SelectListItem {Text = RestaurantCategory.Indian, Value = RestaurantCategory.Indian},
-            new SelectListItem {Text = RestaurantCategory.Italian, Value = RestaurantCategory.Italian},
-            new SelectListItem {Text = RestaurantCategory.Chinese, Value = RestaurantCategory.Chinese},
-            new SelectListItem {Text = RestaurantCategory.Pizzeria, Value = RestaurantCategory.Pizzeria},
+            new SelectListItem { Text = _localizer["Select a category"], Value = "", Selected = true },
+            new SelectListItem { Text = RestaurantCategory.FastFood, Value = RestaurantCategory.FastFood },
+            new SelectListItem { Text = RestaurantCategory.Sushi, Value = RestaurantCategory.Sushi },
+            new SelectListItem { Text = RestaurantCategory.Indian, Value = RestaurantCategory.Indian },
+            new SelectListItem { Text = RestaurantCategory.Italian, Value = RestaurantCategory.Italian },
+            new SelectListItem { Text = RestaurantCategory.Chinese, Value = RestaurantCategory.Chinese },
+            new SelectListItem { Text = RestaurantCategory.Pizzeria, Value = RestaurantCategory.Pizzeria },
         };
 
         [BindProperty] public InputModel Input { get; set; }

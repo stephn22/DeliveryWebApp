@@ -1,5 +1,4 @@
 ﻿@page "{id:int}"
-@using DeliveryWebApp.Application.Common.Security
 @using DeliveryWebApp.Infrastructure.Identity
 @using IdentityServer4.Extensions
 @using Microsoft.AspNetCore.Identity
@@ -9,7 +8,7 @@
 @inject UserManager<ApplicationUser> userManager
 @inject IStringLocalizer<RiderDetailModel> localizer
 @{
-    ViewData["Title"] = "Restaurateur Detail";
+    ViewData["Title"] = localizer["Rider Detail"];
     var requestCultureFeature = HttpContext.Features.Get<IRequestCultureFeature>();
     var requestCulture = requestCultureFeature.RequestCulture;
     // TODO: delivery credit

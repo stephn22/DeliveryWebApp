@@ -4,7 +4,7 @@
 @model DeliveryWebApp.WebUI.Pages.RiderPages.OrderDetailModel
 @inject IStringLocalizer<OrderDetailModel> localizer
 @{
-    ViewData["Title"] = "Order Selection";
+    ViewData["Title"] = localizer["Order Selected"];
     var requestCultureFeature = HttpContext.Features.Get<IRequestCultureFeature>();
     var requestCulture = requestCultureFeature.RequestCulture;
 }

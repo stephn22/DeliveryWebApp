@@ -1,13 +1,13 @@
 ﻿using DeliveryWebApp.Application.Common.Interfaces;
+using DeliveryWebApp.Application.Orders.Queries.GetOrders;
+using DeliveryWebApp.Application.Reviews.Queries.GetReviews;
+using DeliveryWebApp.Domain.Constants;
 using DeliveryWebApp.Domain.Entities;
+using MediatR;
 using Microsoft.EntityFrameworkCore;
 using System;
 using System.Linq;
 using System.Threading.Tasks;
-using DeliveryWebApp.Application.Orders.Queries.GetOrders;
-using DeliveryWebApp.Application.Reviews.Queries.GetReviews;
-using DeliveryWebApp.Domain.Constants;
-using MediatR;
 
 namespace DeliveryWebApp.Application.Customers.Extensions
 {

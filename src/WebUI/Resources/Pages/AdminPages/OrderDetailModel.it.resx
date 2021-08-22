@@ -135,6 +135,9 @@
   <data name="Order" xml:space="preserve">
     <value>Ordine</value>
   </data>
+  <data name="Order Details" xml:space="preserve">
+    <value>Dettagli ordine</value>
+  </data>
   <data name="Status" xml:space="preserve">
     <value>Stato</value>
   </data>

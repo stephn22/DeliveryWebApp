@@ -117,8 +117,56 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
+  <data name="0 for no discount" xml:space="preserve">
+    <value>0 per nessuno sconto</value>
+  </data>
   <assembly alias="System.Windows.Forms" name="System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" />
   <data name="AddProductModel.it" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>AddProductModel.it.resx;System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089;utf-8</value>
+  </data>
+  <data name="Category" xml:space="preserve">
+    <value>Categoria</value>
+  </data>
+  <data name="Chicken" xml:space="preserve">
+    <value>Pollo</value>
+  </data>
+  <data name="Choose an image for the new product" xml:space="preserve">
+    <value>Scegli un'immagine per il nuovo prodotto</value>
+  </data>
+  <data name="Detail of Product" xml:space="preserve">
+    <value>Dettaglio prodotto</value>
+  </data>
+  <data name="Fish" xml:space="preserve">
+    <value>Pesce</value>
+  </data>
+  <data name="Name" xml:space="preserve">
+    <value>Nome</value>
+  </data>
+  <data name="New Discount" xml:space="preserve">
+    <value>Nuovo Sconto</value>
+  </data>
+  <data name="New Name" xml:space="preserve">
+    <value>Nuovo Nome</value>
+  </data>
+  <data name="New Price" xml:space="preserve">
+    <value>Nuovo Prezzo</value>
+  </data>
+  <data name="Price" xml:space="preserve">
+    <value>Prezzo</value>
+  </data>
+  <data name="Product Detail" xml:space="preserve">
+    <value>Dettaglio Prodotto</value>
+  </data>
+  <data name="Quantity" xml:space="preserve">
+    <value>Quantità</value>
+  </data>
+  <data name="Save" xml:space="preserve">
+    <value>Salva</value>
+  </data>
+  <data name="Submit" xml:space="preserve">
+    <value>Invia</value>
+  </data>
+  <data name="Unassigned" xml:space="preserve">
+    <value>Non assegnato</value>
   </data>
 </root>

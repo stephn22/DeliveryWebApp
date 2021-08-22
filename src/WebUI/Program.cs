@@ -5,9 +5,9 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Serilog;
+using Serilog.Events;
 using System;
 using System.Threading.Tasks;
-using Serilog.Events;
 
 namespace DeliveryWebApp.WebUI
 {

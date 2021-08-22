@@ -9,7 +9,7 @@
 @model DeliveryWebApp.WebUI.Pages.AdminPages.CustomerDetailModel
 @inject IStringLocalizer<CustomerDetailModel> localizer
 @{
-    ViewData["Title"] = "Customer Detail";
+    ViewData["Title"] = localizer["Customer Detail"];
     var requestCultureFeature = HttpContext.Features.Get<IRequestCultureFeature>();
     var requestCulture = requestCultureFeature.RequestCulture;
 }

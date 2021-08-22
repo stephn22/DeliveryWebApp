@@ -1,4 +1,3 @@
-using System.ComponentModel;
 using DeliveryWebApp.Application.Common.Security;
 using DeliveryWebApp.Application.Customers.Extensions;
 using DeliveryWebApp.Application.Requests.Commands.UpdateRequest;
@@ -15,6 +14,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
+using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
 using System.Security.Claims;
 using System.Threading.Tasks;

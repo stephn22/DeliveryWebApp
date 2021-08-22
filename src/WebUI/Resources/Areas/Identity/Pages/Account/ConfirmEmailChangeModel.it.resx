@@ -117,52 +117,7 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
-  <data name="Cart" xml:space="preserve">
-    <value>Carrello</value>
-  </data>
-  <data name="Checkout" xml:space="preserve">
-    <value>Procedi all'ordine</value>
-  </data>
-  <data name="Close" xml:space="preserve">
-    <value>Chiudi</value>
-  </data>
-  <data name="Confirm" xml:space="preserve">
-    <value>Conferma</value>
-  </data>
-  <data name="Discount" xml:space="preserve">
-    <value>Sconto</value>
-  </data>
-  <data name="Food Vendor" xml:space="preserve">
-    <value>Ristoratore</value>
-  </data>
-  <data name="Image" xml:space="preserve">
-    <value>Immagine</value>
-  </data>
-  <data name="Name" xml:space="preserve">
-    <value>Nome</value>
-  </data>
-  <data name="Price" xml:space="preserve">
-    <value>Prezzo</value>
-  </data>
-  <data name="Quantity" xml:space="preserve">
-    <value>Quantità</value>
-  </data>
-  <data name="Remove" xml:space="preserve">
-    <value>Rimuovi</value>
-  </data>
-  <data name="Some products may not display due to stock limitations" xml:space="preserve">
-    <value>Alcuni prodotti potrebbero non essere più mostrati a causa della limitata disponibilità</value>
-  </data>
-  <data name="Successfully removed item from basket" xml:space="preserve">
-    <value>Il prodotto è stato rimosso dal carrello con successo</value>
-  </data>
-  <data name="Successfully updated basket" xml:space="preserve">
-    <value>Carrello aggiornato con successo</value>
-  </data>
-  <data name="You can add products from one food vendor at time." xml:space="preserve">
-    <value>Puoi aggiungere prodotti da un solo ristoratore per volta</value>
-  </data>
-  <data name="Your cart is empty" xml:space="preserve">
-    <value>Il tuo carrello è vuoto</value>
+  <data name="Confirm email change" xml:space="preserve">
+    <value>Conferma cambio email</value>
   </data>
 </root>

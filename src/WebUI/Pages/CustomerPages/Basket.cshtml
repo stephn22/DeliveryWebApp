@@ -6,7 +6,7 @@
 @model DeliveryWebApp.WebUI.Pages.CustomerPages.BasketModel
 @inject IStringLocalizer<BasketModel> localizer
 @{
-    ViewData["Title"] = "Cart";
+    ViewData["Title"] = localizer["Cart"];
     var requestCultureFeature = HttpContext.Features.Get<IRequestCultureFeature>();
     var requestCulture = requestCultureFeature.RequestCulture;
 }
@@ -39,7 +39,7 @@ else
     </div>
 
     <div class="text-start">
-        <h4>@localizer["Cart"]: @Model.Basket.TotalPrice.ToString("C")</h4>
+        <h4>@ViewData["Title"]: @Model.Basket.TotalPrice.ToString("C")</h4>
     </div>
 
     <hr/>

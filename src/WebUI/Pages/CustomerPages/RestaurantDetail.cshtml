@@ -12,7 +12,7 @@
 @inject UserManager<ApplicationUser> userManager
 @inject ApplicationDbContext context
 @{
-    ViewData["Title"] = "Browse Food Vendor";
+    ViewData["Title"] = localizer["Food Vendor"];
     var requestCultureFeature = HttpContext.Features.Get<IRequestCultureFeature>();
     var requestCulture = requestCultureFeature.RequestCulture;
 }

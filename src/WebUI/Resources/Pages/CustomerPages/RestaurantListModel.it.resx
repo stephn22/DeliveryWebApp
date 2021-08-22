@@ -117,7 +117,7 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
-  <data name="Browse food vendors" xml:space="preserve">
+  <data name="Browse Food Vendors" xml:space="preserve">
     <value>Sfoglia ristoratori</value>
   </data>
   <data name="Go to your" xml:space="preserve">

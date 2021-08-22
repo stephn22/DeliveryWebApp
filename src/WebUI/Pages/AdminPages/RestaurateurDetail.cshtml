@@ -9,7 +9,7 @@
 @inject UserManager<ApplicationUser> userManager
 @inject IStringLocalizer<RestaurateurDetailModel> localizer
 @{
-    ViewData["Title"] = "Restaurateur Detail";
+    ViewData["Title"] = localizer["Food Vendor Detail"];
     var requestCultureFeature = HttpContext.Features.Get<IRequestCultureFeature>();
     var requestCulture = requestCultureFeature.RequestCulture;
 }

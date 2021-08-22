@@ -120,4 +120,7 @@
   <data name="Please check your email to confirm your account." xml:space="preserve">
     <value>Per favore controlla la tua email per confermare il tuo account.</value>
   </data>
+  <data name="Register confirmation" xml:space="preserve">
+    <value>Conferma registrazione</value>
+  </data>
 </root>

@@ -3,7 +3,7 @@
 @model DeliveryWebApp.WebUI.Pages.RiderPages.DirectionsModel
 @inject IStringLocalizer<DirectionsModel> localizer
 @{
-    ViewData["Title"] = "Orders";
+    ViewData["Title"] = localizer["Delivery"];
     Layout = "../Views/_MapLayout";
     // FIXME: model.restaurateur null
 }

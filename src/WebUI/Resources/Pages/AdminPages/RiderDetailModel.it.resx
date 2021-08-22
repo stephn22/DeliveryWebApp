@@ -147,6 +147,9 @@
   <data name="Last Name" xml:space="preserve">
     <value>Cognome</value>
   </data>
+  <data name="Rider Detail" xml:space="preserve">
+    <value>Dettaglio Rider</value>
+  </data>
   <data name="Submit" xml:space="preserve">
     <value>Invia</value>
   </data>

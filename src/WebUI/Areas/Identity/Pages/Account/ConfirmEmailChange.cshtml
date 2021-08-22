@@ -1,7 +1,9 @@
 @page
+@using Microsoft.Extensions.Localization
 @model ConfirmEmailChangeModel
+@inject IStringLocalizer<ConfirmEmailChangeModel> localizer
 @{
-    ViewData["Title"] = "Confirm email change";
+    ViewData["Title"] = localizer["Confirm email change"];
 }
 
 <h1>@ViewData["Title"]</h1>

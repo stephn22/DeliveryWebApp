@@ -120,6 +120,9 @@
   <data name="Browse New Orders" xml:space="preserve">
     <value>Sfoglia Nuovi Ordini</value>
   </data>
+  <data name="Orders" xml:space="preserve">
+    <value>Ordini</value>
+  </data>
   <data name="There are no orders to deliver at the moment" xml:space="preserve">
     <value>Non ci sono ordini da consegnare al momento</value>
   </data>

@@ -5,10 +5,10 @@
 @model DeliveryWebApp.WebUI.Areas.Identity.Pages.Account.Manage.RequestModel
 @inject IStringLocalizer<RequestModel> localizer
 @{
-    ViewData["Title"] = "Change User Role Request";
+    ViewData["Title"] = localizer["Change User Role Request"];
 }
 
-<h4>@localizer["Change User Role Request"]</h4>
+<h4>@ViewData["Title"]</h4>
 
 <h6>@localizer["If you want to become a rider or a restaurateur and manage your own food business, send a request to the system admin"]</h6>
 <br/>

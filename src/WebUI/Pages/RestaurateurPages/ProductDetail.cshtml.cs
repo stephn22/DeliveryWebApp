@@ -11,6 +11,7 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.AspNetCore.Mvc.Rendering;
+using Microsoft.Extensions.Localization;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
@@ -25,12 +26,15 @@ namespace DeliveryWebApp.WebUI.Pages.RestaurateurPages
         private readonly ApplicationDbContext _context;
         private readonly IMediator _mediator;
         private readonly UserManager<ApplicationUser> _userManager;
+        private readonly IStringLocalizer<ProductDetailModel> _localizer;
 
-        public ProductDetailModel(ApplicationDbContext context, IMediator mediator, UserManager<ApplicationUser> userManager)
+        public ProductDetailModel(ApplicationDbContext context, IMediator mediator,
+            UserManager<ApplicationUser> userManager, IStringLocalizer<ProductDetailModel> localizer)
         {
             _context = context;
             _mediator = mediator;
             _userManager = userManager;
+            _localizer = localizer;
         }
 
         public Product Product { get; set; }
@@ -39,35 +43,30 @@ namespace DeliveryWebApp.WebUI.Pages.RestaurateurPages
         [BindProperty]
         public IEnumerable<SelectListItem> Categories => new[]
         {
-            new SelectListItem {Text = ProductCategory.Unassigned, Value = ProductCategory.Unassigned},
-            new SelectListItem {Text = ProductCategory.Chicken, Value = ProductCategory.Chicken},
-            new SelectListItem {Text = ProductCategory.Dessert, Value = ProductCategory.Dessert},
-            new SelectListItem {Text = ProductCategory.Sushi, Value = ProductCategory.Sushi},
-            new SelectListItem {Text = ProductCategory.Vegan, Value = ProductCategory.Vegan},
-            new SelectListItem {Text = ProductCategory.Hamburger, Value = ProductCategory.Hamburger},
-            new SelectListItem {Text = ProductCategory.Fish, Value = ProductCategory.Fish},
-            new SelectListItem {Text = ProductCategory.Drink, Value = ProductCategory.Drink},
-            new SelectListItem {Text = ProductCategory.Pizza, Value = ProductCategory.Pizza}
+            new SelectListItem { Text = _localizer[ProductCategory.Unassigned], Value = ProductCategory.Unassigned },
+            new SelectListItem { Text = ProductCategory.Hamburger, Value = ProductCategory.Hamburger },
+            new SelectListItem { Text = ProductCategory.Pizza, Value = ProductCategory.Pizza },
+            new SelectListItem { Text = ProductCategory.Sushi, Value = ProductCategory.Sushi },
+            new SelectListItem { Text = ProductCategory.Dessert, Value = ProductCategory.Dessert },
+            new SelectListItem { Text = ProductCategory.Vegan, Value = ProductCategory.Vegan },
+            new SelectListItem { Text = _localizer[ProductCategory.Chicken], Value =  ProductCategory.Chicken},
+            new SelectListItem { Text = _localizer[ProductCategory.Fish], Value =  ProductCategory.Fish},
+            new SelectListItem { Text = ProductCategory.Snacks, Value = ProductCategory.Snacks },
         };
 
-        [BindProperty]
-        public InputModel Input { get; set; }
+        [BindProperty] public InputModel Input { get; set; }
 
         public class InputModel
         {
-            [Required]
-            [DataType(DataType.Text)]
-            public string Name { get; set; }
+            [Required] [DataType(DataType.Text)] public string Name { get; set; }
+
+            [Required] [DataType(DataType.Upload)] public IFormFile Image { get; set; }
+
+            [Required] [DataType(DataType.Text)] public string Category { get; set; }
 
             [Required]
-            [DataType(DataType.Upload)]
-            public IFormFile Image { get; set; }
-
-            [Required]
-            [DataType(DataType.Text)]
-            public string Category { get; set; }
-
-            [Required]
+            [DataType(DataType.Currency, ErrorMessage = "Value isn't a price")]
+            [DisplayFormat(DataFormatString = "{0:C}")]
             public decimal Price { get; set; }
 
             [Required]

@@ -120,6 +120,9 @@
   <data name="Delivery Date" xml:space="preserve">
     <value>Data Consegna</value>
   </data>
+  <data name="Delivery History" xml:space="preserve">
+    <value>Cronologia Consegne</value>
+  </data>
   <data name="Food Vendor" xml:space="preserve">
     <value>Ristoratore</value>
   </data>

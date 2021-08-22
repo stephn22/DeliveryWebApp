@@ -4,6 +4,7 @@ using DeliveryWebApp.Application.Baskets.Queries;
 using DeliveryWebApp.Application.Common.Security;
 using DeliveryWebApp.Application.Customers.Extensions;
 using DeliveryWebApp.Application.Products.Queries.GetProducts;
+using DeliveryWebApp.Application.Restaurateurs.Extensions;
 using DeliveryWebApp.Application.Reviews.Commands.CreateReview;
 using DeliveryWebApp.Application.Reviews.Queries.GetReviews;
 using DeliveryWebApp.Domain.Entities;
@@ -14,6 +15,7 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Localization;
 using Microsoft.Extensions.Logging;
 using System;
 using System.Collections.Generic;
@@ -21,8 +23,6 @@ using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Threading.Tasks;
-using DeliveryWebApp.Application.Restaurateurs.Extensions;
-using Microsoft.Extensions.Localization;
 
 namespace DeliveryWebApp.WebUI.Pages.CustomerPages
 {

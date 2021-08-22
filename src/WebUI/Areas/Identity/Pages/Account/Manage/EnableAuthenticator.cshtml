@@ -4,13 +4,13 @@
 @model EnableAuthenticatorModel
 @inject IStringLocalizer<EnableAuthenticatorModel> localizer
 @{
-    ViewData["Title"] = "Configure authenticator app";
+    ViewData["Title"] = localizer["Configure authenticator app"];
     ViewData["ActivePage"] = ManageNavPages.TwoFactorAuthentication;
 }
 
 <partial name="_StatusMessage" for="StatusMessage" />
 
-<h4>@localizer["Configure authenticator app"]</h4>
+<h4>@ViewData["Title"]</h4>
 <div>
     <p>@localizer["To use an authenticator app go through the following steps"]:</p>
     <ol class="list">

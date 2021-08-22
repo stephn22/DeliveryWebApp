@@ -177,6 +177,15 @@
   <data name="this user?" xml:space="preserve">
     <value>questo utente?</value>
   </data>
+  <data name="User blocked successfully" xml:space="preserve">
+    <value>L'utente è stato bloccato con successo</value>
+  </data>
+  <data name="User deleted successfully" xml:space="preserve">
+    <value>L'utente è stato eliminato con successo</value>
+  </data>
+  <data name="User unblocked successfully" xml:space="preserve">
+    <value>L'utente è stato sbloccato con successo</value>
+  </data>
   <data name="Username" xml:space="preserve">
     <value>Nome Utente</value>
   </data>
