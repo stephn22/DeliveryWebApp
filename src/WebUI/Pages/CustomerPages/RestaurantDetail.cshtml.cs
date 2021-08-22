@@ -21,6 +21,7 @@ using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Threading.Tasks;
+using DeliveryWebApp.Application.Restaurateurs.Extensions;
 using Microsoft.Extensions.Localization;
 
 namespace DeliveryWebApp.WebUI.Pages.CustomerPages
@@ -48,6 +49,11 @@ namespace DeliveryWebApp.WebUI.Pages.CustomerPages
         public Basket Basket { get; set; }
         public Restaurateur Restaurateur { get; set; }
         public List<Product> Products { get; set; }
+
+        /// <summary>
+        /// Average rating for the current food vendor
+        /// </summary>
+        public double AverageRating { get; set; }
 
         // how many reviews the customer can post
         public int AvailableReviews { get; set; }
@@ -105,6 +111,8 @@ namespace DeliveryWebApp.WebUI.Pages.CustomerPages
         private async Task LoadAsync(ApplicationUser user, int? id)
         {
             Restaurateur = await _context.Restaurateurs.FindAsync(id);
+
+            AverageRating = await Restaurateur.GetRestaurateurAverageRating(_mediator);
 
             try
             {

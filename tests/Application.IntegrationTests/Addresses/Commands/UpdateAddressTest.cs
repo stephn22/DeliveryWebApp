@@ -53,12 +53,12 @@ namespace DeliveryWebApp.Application.IntegrationTests.Addresses.Commands
 
             var address = await SendAsync(addressCommand);
 
+            const string newPlaceName = "Via Verdi, Palazzo Tartara, 2, Milan, MI, 28100, Italy";
+
             var updateCommand = new UpdateAddressCommand
             {
                 Id = address.Id,
-                AddressLine2 = "Palazzo Tartara",
-                PostalCode = "18200",
-                Number = "13",
+                PlaceName = newPlaceName,
                 Latitude = 23.4535M,
                 Longitude = 15.7628M,
             };
@@ -69,12 +69,7 @@ namespace DeliveryWebApp.Application.IntegrationTests.Addresses.Commands
 
             update.Should().NotBeNull();
             update.Id.Should().BeGreaterThan(0);
-            address.PlaceName.Should()
-                .Be(
-                    $"{addressCommand.AddressLine1}, {addressCommand.AddressLine2}, " +
-                    $"{addressCommand.Number}, {addressCommand.City}, " +
-                    $"{addressCommand.StateProvince}, {addressCommand.PostalCode}, " +
-                    $"{addressCommand.Country}");
+            address.PlaceName.Should().Be(updateCommand.PlaceName);
             update.Latitude.Should().Be(updateCommand.Latitude);
             update.Longitude.Should().Be(updateCommand.Longitude);
         }

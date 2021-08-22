@@ -56,7 +56,13 @@ namespace DeliveryWebApp.WebUI.Controllers
         [HttpPut("{id:int}")]
         public async Task<ActionResult<Address>> Update(Address request, int id)
         {
-            return await _mediator.Send(_mapper.Map<UpdateAddressCommand>(request));
+            return await _mediator.Send(new UpdateAddressCommand
+            {
+                Id = id,
+                PlaceName = request.PlaceName,
+                Latitude = request.Latitude,
+                Longitude = request.Longitude
+            });
         }
 
         [HttpDelete]

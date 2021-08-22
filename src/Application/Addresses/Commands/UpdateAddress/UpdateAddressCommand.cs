@@ -10,13 +10,7 @@ namespace DeliveryWebApp.Application.Addresses.Commands.UpdateAddress
     public class UpdateAddressCommand : IRequest<Address>
     {
         public int Id { get; set; }
-        public string AddressLine1 { get; set; }
-        public string AddressLine2 { get; set; }
-        public string Number { get; set; }
-        public string City { get; set; }
-        public string StateProvince { get; set; }
-        public string PostalCode { get; set; }
-        public string Country { get; set; }
+        public string PlaceName { get; set; }
         public decimal Longitude { get; set; }
         public decimal Latitude { get; set; }
     }
@@ -39,15 +33,7 @@ namespace DeliveryWebApp.Application.Addresses.Commands.UpdateAddress
                 throw new NotFoundException(nameof(Address), request.Id);
             }
 
-            var line = $"{request.AddressLine1}, " +
-                       $"{request.AddressLine2}, " +
-                       $"{request.Number}, " +
-                       $"{request.City}, " +
-                       $"{request.StateProvince}, " +
-                       $"{request.PostalCode}, " +
-                       $"{request.Country}";
-
-            entity.PlaceName = line;
+            entity.PlaceName = request.PlaceName;
 
             entity.Latitude = request.Latitude;
             entity.Longitude = request.Longitude;

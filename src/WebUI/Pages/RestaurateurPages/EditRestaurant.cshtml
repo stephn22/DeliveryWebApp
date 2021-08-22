@@ -34,18 +34,18 @@
             </div>
 
             <script type="text/javascript">
-                                function changeImage(input) {
-                                    if (input.files && input.files[0]) {
-                                        const reader = new FileReader();
+                function changeImage(input) {
+                    if (input.files && input.files[0]) {
+                        const reader = new FileReader();
 
-                                        reader.onload = function (i) {
-                                            $("#dashboard-img")
-                                                .attr("src", i.target.result);
-                                        };
+                        reader.onload = function (i) {
+                            $("#dashboard-img")
+                                .attr("src", i.target.result);
+                        };
 
-                                        reader.readAsDataURL(input.files[0]);
-                                    }
-                                }
+                        reader.readAsDataURL(input.files[0]);
+                    }
+                }
             </script>
 
         </form>
@@ -62,7 +62,7 @@
             </div>
 
             <div class="input-group">
-                <input asp-for="Input.Name" class="form-control" placeholder="Restaurant new name" aria-label="Restaurant new name">
+                <input asp-for="Input.Name" class="form-control" placeholder="@localizer["New name"]" aria-label="Restaurant new name">
                 <div class="input-group-append">
                     <button class="btn btn-secondary" type="submit" value="NewName">
                         <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-pencil-square" viewBox="0 0 16 16">
@@ -104,10 +104,10 @@
     </form>
 </div>
 
-<form method="post"> @*  asp-page-handler="UpdateAddress" *@
+<form>
     <div class="row">
         <div class="form-group">
-            <label>Address</label>
+            <label>@localizer["Address"]</label>
             <div class="input-group col-lg-10">
                 <input class="form-control" value="@Model.RestaurantAddress.ToString()" disabled readonly>
                 <div class="input-group-append">
@@ -145,7 +145,7 @@
                 </div>
                 <div class="form-group col-md-6">
                     <label asp-for="Input.City">@localizer["City"]</label>
-                    <input class="form-control" asp-for="Input.City" placeholder="City" id="update-city">
+                    <input class="form-control" asp-for="Input.City" placeholder="@localizer["City"]" id="update-city">
                     <span asp-validation-for="Input.City" class="text-danger"></span>
                 </div>
             </div>
@@ -153,12 +153,12 @@
             <div class="form-row">
                 <div class="form-group col-md-6">
                     <label asp-for="Input.PostalCode">@localizer["Postal Code"]</label>
-                    <input class="form-control" asp-for="Input.PostalCode" placeholder="Postal Code: 20020..." id="update-postalcode">
+                    <input class="form-control" asp-for="Input.PostalCode" placeholder="20020.." id="update-postalcode">
                     <span asp-validation-for="Input.PostalCode" class="text-danger"></span>
                 </div>
                 <div class="form-group col-md-6">
                     <label asp-for="Input.StateProvince">@localizer["State/Province"]</label>
-                    <input class="form-control" asp-for="Input.StateProvince" placeholder="CA, NY, ..." id="update-stateprovince">
+                    <input class="form-control" asp-for="Input.StateProvince" placeholder="MI, TO, NY, ..." id="update-stateprovince">
                     <span asp-validation-for="Input.StateProvince" class="text-danger"></span>
                 </div>
                 <div class="form-group col-md-7">
@@ -168,15 +168,9 @@
                     <span asp-validation-for="Input.Country" class="text-danger"></span>
                 </div>
             </div>
-            <div class="form-group col-md-6">
-                <input class="form-control" asp-for="Input.Latitude" id="update-latitude" hidden>
-            </div>
-            <div class="form-group col-md-6">
-                <input class="form-control" asp-for="Input.Longitude" id="update-longitude" hidden>
-            </div>
         </div>
 
-        <button type="submit" class="btn btn-primary" id="save-btn">Save</button>
+        <button type="button" class="btn btn-primary" id="save-btn">@localizer["Save"]</button>
     </div>
 
 </form>

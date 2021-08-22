@@ -221,7 +221,7 @@ else
 
 @if (!Model.Reviews.IsNullOrEmpty())
 {
-    <h5>@localizer["Reviews"]</h5>
+    <h5>@localizer["Reviews"] &ndash; @Model.AverageRating.ToString("F1") / 5</h5>
 
     @foreach (var review in Model.Reviews)
     {
@@ -243,8 +243,6 @@ else
 
                     </div>
                     <span class="badge bg-primary rounded-pill">@Html.DisplayFor(model => review.Rating) / 5</span>
-
-                    
                 </li>
             </ul>
         </div>

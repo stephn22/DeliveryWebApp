@@ -230,11 +230,11 @@ else
                              * by the distance property added earlier
                              */
                             stores.features.sort(function(a, b) {
-                                if (a.properties.distance > b.properties.distance) {
+                                if (a.properties.distance < range.value) {
                                     return 1;
                                 }
 
-                                if (a.properties.distance < b.properties.distance) {
+                                if (a.properties.distance > range.value) {
                                     return -1;
                                 }
 
@@ -345,6 +345,10 @@ else
                                 const roundedDistance = Math.round(prop.distance * 100) / 100;
                                 details.innerHTML += `<p><strong></p>${roundedDistance} @localizer["kilometers away"]</strong></p>`;
                             }
+
+                            // initialize range value with the first store distance in the list
+                            //range.value = stores.features[0].properties.distance;
+                            //output.innerHTML = `Range (Km): ${range.value}`;
 
                             /**
                              * Listen to the element and when it is clicked, do four things:

@@ -47,12 +47,7 @@ namespace DeliveryWebApp.Application.UnitTests.Common.Mappings
         {
             var entity = new UpdateAddressCommand
             {
-                AddressLine1 = "Via Alessandro Manzoni", // new data
-                AddressLine2 = "",
-                City = "Milan",
-                Country = "Italy",
-                Number = "21", // new data
-                PostalCode = "20090"
+                // TODO:
             };
 
             var result = _mapper.Map<UpdateAddressCommand>(entity);
