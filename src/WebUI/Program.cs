@@ -7,6 +7,7 @@ using Microsoft.Extensions.Hosting;
 using Serilog;
 using System;
 using System.Threading.Tasks;
+using Serilog.Events;
 
 namespace DeliveryWebApp.WebUI
 {
@@ -17,11 +18,13 @@ namespace DeliveryWebApp.WebUI
             try
             {
                 Log.Logger = new LoggerConfiguration()
-                    .MinimumLevel.Information()
+                    .MinimumLevel.Override("Microsoft", LogEventLevel.Information)
+                    .Enrich.FromLogContext()
                     .WriteTo.Console()
                     .WriteTo.File("Log/log-.txt", rollingInterval: RollingInterval.Day)
                     .CreateLogger();
 
+                Log.Information("Starting web host");
                 var host = CreateHostBuilder(args).Build();
 
                 using (var scope = host.Services.CreateScope())
