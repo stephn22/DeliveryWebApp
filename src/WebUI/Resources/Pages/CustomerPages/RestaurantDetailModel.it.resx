@@ -135,6 +135,9 @@
   <data name="Discount" xml:space="preserve">
     <value>Sconto</value>
   </data>
+  <data name="Edit" xml:space="preserve">
+    <value>Modifica</value>
+  </data>
   <data name="In stock" xml:space="preserve">
     <value>Quantità disponibile</value>
   </data>

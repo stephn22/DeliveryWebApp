@@ -126,6 +126,9 @@
   <data name="Address Line 2" xml:space="preserve">
     <value>Linea Indirizzo 2</value>
   </data>
+  <data name="Begin" xml:space="preserve">
+    <value>Inizia</value>
+  </data>
   <data name="Building n°... (optional)" xml:space="preserve">
     <value>N° edificio (opzionale)</value>
   </data>
@@ -147,6 +150,9 @@
   <data name="Name" xml:space="preserve">
     <value>Nome</value>
   </data>
+  <data name="New name" xml:space="preserve">
+    <value>Nuovo nome</value>
+  </data>
   <data name="Orders" xml:space="preserve">
     <value>Ordini</value>
   </data>
@@ -156,13 +162,22 @@
   <data name="Products" xml:space="preserve">
     <value>Prodotti</value>
   </data>
+  <data name="Save" xml:space="preserve">
+    <value>Salva</value>
+  </data>
   <data name="Select a category" xml:space="preserve">
     <value>Seleziona una categoria</value>
   </data>
   <data name="State/Province" xml:space="preserve">
     <value>Stato/Provincia</value>
   </data>
+  <data name="Street, N°, City, Postal Code, State/Province, Country" xml:space="preserve">
+    <value>Via, N°, Città, CAP, Provincia, Nazione</value>
+  </data>
   <data name="Street..." xml:space="preserve">
     <value>Via...</value>
+  </data>
+  <data name="Submit" xml:space="preserve">
+    <value>Invia</value>
   </data>
 </root>
