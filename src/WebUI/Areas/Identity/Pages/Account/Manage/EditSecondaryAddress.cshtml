@@ -43,12 +43,6 @@
         </select>
         <span asp-validation-for="Input.Country" class="text-danger"></span>
     </div>
-    <div class="form-group col-md-6">
-        <input class="form-control" asp-for="Input.Latitude" value="@Model.Addresses[1].Latitude" id="update-address1-latitude" hidden>
-    </div>
-    <div class="form-group col-md-6">
-        <input class="form-control" asp-for="Input.Longitude" value="@Model.Addresses[1].Longitude" id="update-address1-longitude" hidden>
-    </div>
 </div>
 
 <button type="button" class="btn btn-primary" id="update-address-1">

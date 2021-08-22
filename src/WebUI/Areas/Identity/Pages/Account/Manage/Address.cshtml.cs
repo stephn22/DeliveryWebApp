@@ -79,9 +79,6 @@ namespace DeliveryWebApp.WebUI.Areas.Identity.Pages.Account.Manage
             public string StateProvince { get; set; }
 
             [Required] [DataType(DataType.Text)] public string Country { get; set; }
-
-            public decimal Latitude { get; set; }
-            public decimal Longitude { get; set; }
         }
 
         public async Task<IActionResult> OnGetAsync()
