@@ -120,6 +120,9 @@
   <data name="Browse Food Vendors" xml:space="preserve">
     <value>Sfoglia ristoratori</value>
   </data>
+  <data name="Go to vendor page" xml:space="preserve">
+    <value>Vai alla pagina del ristoratore</value>
+  </data>
   <data name="Go to your" xml:space="preserve">
     <value>Vai al</value>
   </data>

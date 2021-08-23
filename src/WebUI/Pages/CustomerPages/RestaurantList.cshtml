@@ -59,7 +59,7 @@ else
             <div id="range-info" style="margin: 10px 10px 10px 10px;">
                 <p id="range-output">Range (Km): </p>
                 <label for="range"></label>
-                <input type="range" class="form-range col-3" value="1" step="1" min="1" max="30" id="range"/>
+                <input type="range" class="form-range col-3" value="1" step="1" min="1" max="50" id="range"/>
             </div>
             <hr/>
             <div id="listings" class="listings"></div>
@@ -218,7 +218,7 @@ else
                                 Object.defineProperty(store.properties,
                                     "distance",
                                     {
-                                        value: turf.distance(point.features[0].geometry, store.geometry, options),
+                                        value: turf.distance(store.geometry, point.features[0].geometry, options),
                                         writable: true,
                                         enumerable: true,
                                         configurable: true
@@ -230,15 +230,7 @@ else
                              * by the distance property added earlier
                              */
                             stores.features.sort(function(a, b) {
-                                if (a.properties.distance < range.value) {
-                                    return 1;
-                                }
-
-                                if (a.properties.distance > range.value) {
-                                    return -1;
-                                }
-
-                                return 0;
+                                return Math.abs(range.value - a.properties.distance) - Math.abs(range.value - b.properties.distance);
                             });
 
                             /*
@@ -383,7 +375,7 @@ else
                     function flyToStore(currentFeature) {
                         map.flyTo({
                             center: currentFeature.geometry.coordinates,
-                            zoom: 15
+                            zoom: 11
                         });
                     }
 
@@ -397,7 +389,7 @@ else
                         const popup = new mapboxgl.Popup({ closeOnClick: false })
                             .setLngLat(currentFeature.geometry.coordinates)
                             .setHTML(
-                                `<h3>${currentFeature.properties.name}</h3><h4>${currentFeature.properties.address}</h4><a href="RestaurantDetail/${currentFeature.properties.restaurateurId}">Go to vendor page</a>`
+                                `<h3>${currentFeature.properties.name}</h3><h4>${currentFeature.properties.address}</h4><a href="RestaurantDetail/${currentFeature.properties.restaurateurId}">@localizer["Go to vendor page"]</a>`
                             )
                             .addTo(map);
                     }
