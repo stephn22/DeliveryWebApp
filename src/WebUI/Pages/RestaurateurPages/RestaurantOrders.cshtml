@@ -1,8 +1,15 @@
 ﻿@page "{id:int?}"
+@using DeliveryWebApp.Application.OrderItems.Extensions
+@using DeliveryWebApp.Application.OrderItems.Queries
+@using DeliveryWebApp.Domain.Entities
+@using DeliveryWebApp.Infrastructure.Persistence
+@using MediatR
 @using Microsoft.AspNetCore.Localization
 @using Microsoft.Extensions.Localization
 @model DeliveryWebApp.WebUI.Pages.RestaurateurPages.RestaurantOrdersModel
 @inject IStringLocalizer<RestaurantOrdersModel> localizer
+@inject IMediator mediator
+@inject ApplicationDbContext context
 @{
     ViewData["Title"] = "Orders";
     var requestCultureFeature = HttpContext.Features.Get<IRequestCultureFeature>();
@@ -117,7 +124,27 @@
                                             </tr>
                                             </thead>
                                             <tbody>
-                                            @for (var j = 0; j < Model.OrderItems.Count; j++)
+                                            @{
+                                                var orderItems = await mediator.Send(new GetOrderItemsQuery
+                                                {
+                                                    OrderId = Model.Orders[i].Id
+                                                });
+
+                                                Model.Products = new List<Product>();
+
+                                                foreach (var item in orderItems)
+                                                {
+                                                    var p = await item.GetProduct(context);
+
+                                                    if (p != null)
+                                                    {
+                                                        Model.Products.Add(p);
+                                                    }
+                                                }
+                                            }
+                                            
+
+                                            @for (var j = 0; j < orderItems.Count; j++)
                                             {
                                                 <tr>
                                                     <td>
@@ -127,13 +154,13 @@
                                                         @Model.Products[j].Name
                                                     </td>
                                                     <td>
-                                                        @Model.OrderItems[j].ProductPrice.ToString("C")
+                                                        @orderItems[j].ProductPrice.ToString("C")
                                                     </td>
                                                     <td>
-                                                        @Model.OrderItems[j].Discount %
+                                                        @orderItems[j].Discount %
                                                     </td>
                                                     <td>
-                                                        @Model.OrderItems[j].Quantity
+                                                        @orderItems[j].Quantity
                                                     </td>
                                                 </tr>
                                             }

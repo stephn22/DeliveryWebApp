@@ -29,7 +29,6 @@ namespace DeliveryWebApp.WebUI.Pages.RestaurateurPages
         public Restaurateur Restaurateur { get; set; }
 
         public List<Order> Orders { get; set; }
-        public List<OrderItem> OrderItems { get; set; }
         public List<Product> Products { get; set; }
         public List<Address> Addresses { get; set; }
 
@@ -63,36 +62,14 @@ namespace DeliveryWebApp.WebUI.Pages.RestaurateurPages
 
                 if (!Orders.IsNullOrEmpty())
                 {
-                    OrderItems = new List<OrderItem>();
                     Addresses = new List<Address>();
+                    Products = new List<Product>();
 
                     foreach (var order in Orders)
                     {
-                        var partialList = await _mediator.Send(new GetOrderItemsQuery
-                        {
-                            OrderId = order.Id
-                        });
-
                         var a = await order.GetAddressAsync(_context);
 
-                        OrderItems.AddRange(partialList);
                         Addresses.Add(a);
-                    }
-
-                    if (!OrderItems.IsNullOrEmpty())
-                    {
-                        Products = new List<Product>();
-
-                        foreach (var item in OrderItems)
-                        {
-                            var p = await item.GetProduct(_context);
-
-                            if (p != null)
-                            {
-                                Products.Add(p);
-                            }
-
-                        }
                     }
                 }
             }

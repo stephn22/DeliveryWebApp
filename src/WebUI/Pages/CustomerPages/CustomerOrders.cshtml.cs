@@ -69,7 +69,6 @@ namespace DeliveryWebApp.WebUI.Pages.CustomerPages
                 return;
             }
 
-            Products = new List<Product>();
             Restaurateurs = new List<Restaurateur>();
 
             Orders = await _mediator.Send(new GetOrdersQuery
