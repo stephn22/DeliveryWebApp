@@ -5,7 +5,6 @@ using DeliveryWebApp.Domain.Entities;
 using MediatR;
 using System.Threading;
 using System.Threading.Tasks;
-using DeliveryWebApp.Application.Baskets.Extensions;
 
 namespace DeliveryWebApp.Application.BasketItems.Commands.UpdateBasketItem
 {

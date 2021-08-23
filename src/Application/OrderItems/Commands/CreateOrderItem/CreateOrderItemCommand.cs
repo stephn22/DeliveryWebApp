@@ -5,7 +5,6 @@ using DeliveryWebApp.Domain.Entities;
 using MediatR;
 using System.Threading;
 using System.Threading.Tasks;
-using DeliveryWebApp.Application.Products.Commands.UpdateProducts;
 
 namespace DeliveryWebApp.Application.OrderItems.Commands.CreateOrderItem
 {

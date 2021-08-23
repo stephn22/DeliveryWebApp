@@ -5,8 +5,6 @@ using DeliveryWebApp.Application.Addresses.Commands.UpdateAddress;
 using DeliveryWebApp.Application.Addresses.Queries.GetSingleAddress;
 using DeliveryWebApp.Application.Common.Exceptions;
 using DeliveryWebApp.Application.Common.Security;
-using DeliveryWebApp.Application.Restaurateurs.Queries.GetRestaurateurAddress;
-using DeliveryWebApp.Application.Restaurateurs.Queries.GetRestaurateurs;
 using DeliveryWebApp.Domain.Entities;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;

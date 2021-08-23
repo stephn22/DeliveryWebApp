@@ -21,8 +21,6 @@ using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.IO;
 using System.Threading.Tasks;
-using DeliveryWebApp.Application.Restaurateurs.Queries.GetRestaurateurAddress;
-using Microsoft.EntityFrameworkCore;
 
 namespace DeliveryWebApp.WebUI.Pages.RestaurateurPages
 {

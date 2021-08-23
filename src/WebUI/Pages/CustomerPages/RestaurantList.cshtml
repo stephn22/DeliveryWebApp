@@ -13,7 +13,7 @@
 
 @section Head
 {
-    <link href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:400,700" rel="stylesheet"/>
+    <link href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:400,700" rel="stylesheet" />
 
     <script src="https://api.mapbox.com/mapbox-gl-js/v2.4.0/mapbox-gl.js"></script>
 
@@ -25,15 +25,15 @@
 
     <link href="https://api.mapbox.com/mapbox-gl-js/v2.4.0/mapbox-gl.css" rel="stylesheet">
     <link rel="stylesheet" href="https://api.mapbox.com/mapbox-gl-js/plugins/mapbox-gl-geocoder/v4.7.2/mapbox-gl-geocoder.css" type="text/css">
-    <link rel="stylesheet" href="/css/restaurant-list.min.css"/>
-    <link rel="stylesheet" href="/css/images.min.css"/>
+    <link rel="stylesheet" href="/css/restaurant-list.min.css" />
+    <link rel="stylesheet" href="/css/images.min.css" />
 }
 
 @if (Model.Customer.Addresses.IsNullOrEmpty())
 {
     <div class="alert alert-warning" role="alert">
         @localizer["In order to buy from food vendors you have to register at least 1 address to your profile."]
-        <br/>
+        <br />
         @localizer["Go to your"] <a asp-area="Identity" asp-page="/Account/Manage/Address" class="alert-link">@localizer["profile"]</a> @localizer["to set one"].
     </div>
 }
@@ -52,27 +52,27 @@ else
                 <h1>@ViewData["Title"]</h1>
                 <a class="nav-link link-light" asp-page="../Index">
                     <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-house-door" viewBox="0 0 16 16">
-                        <path d="M8.354 1.146a.5.5 0 0 0-.708 0l-6 6A.5.5 0 0 0 1.5 7.5v7a.5.5 0 0 0 .5.5h4.5a.5.5 0 0 0 .5-.5v-4h2v4a.5.5 0 0 0 .5.5H14a.5.5 0 0 0 .5-.5v-7a.5.5 0 0 0-.146-.354L13 5.793V2.5a.5.5 0 0 0-.5-.5h-1a.5.5 0 0 0-.5.5v1.293L8.354 1.146zM2.5 14V7.707l5.5-5.5 5.5 5.5V14H10v-4a.5.5 0 0 0-.5-.5h-3a.5.5 0 0 0-.5.5v4H2.5z"/>
+                        <path d="M8.354 1.146a.5.5 0 0 0-.708 0l-6 6A.5.5 0 0 0 1.5 7.5v7a.5.5 0 0 0 .5.5h4.5a.5.5 0 0 0 .5-.5v-4h2v4a.5.5 0 0 0 .5.5H14a.5.5 0 0 0 .5-.5v-7a.5.5 0 0 0-.146-.354L13 5.793V2.5a.5.5 0 0 0-.5-.5h-1a.5.5 0 0 0-.5.5v1.293L8.354 1.146zM2.5 14V7.707l5.5-5.5 5.5 5.5V14H10v-4a.5.5 0 0 0-.5-.5h-3a.5.5 0 0 0-.5.5v4H2.5z" />
                     </svg>
                 </a>
             </div>
             <div id="range-info" style="margin: 10px 10px 10px 10px;">
                 <p id="range-output">Range (Km): </p>
                 <label for="range"></label>
-                <input type="range" class="form-range col-3" value="1" step="1" min="1" max="50" id="range"/>
+                <input type="range" class="form-range col-3" value="1" step="1" min="1" max="50" id="range" />
             </div>
-            <hr/>
+            <hr />
             <div id="listings" class="listings"></div>
         </div>
         <div id="map" class="map"></div>
 
-@section Scripts
+        @section Scripts
 {
-    <script type="text/javascript" src="/js/image_utilities.min.js"></script>
-    <script type="text/javascript" src="/js/classes/address.min.js"></script>
-    <script type="text/javascript" src="/js/classes/restaurant.min.js"></script>
+            <script type="text/javascript" src="/js/image_utilities.min.js"></script>
+            <script type="text/javascript" src="/js/classes/address.min.js"></script>
+            <script type="text/javascript" src="/js/classes/restaurant.min.js"></script>
 
-    <script type="text/javascript">
+            <script type="text/javascript">
         $(function() {
             if (!('remove' in Element.prototype)) {
                 Element.prototype.remove = function() {
@@ -81,26 +81,19 @@ else
                     }
                 };
             }
-
             const range = document.getElementById("range");
             const output = document.getElementById("range-output");
             output.innerHTML = `Range (Km): ${range.value}`;
-
             range.oninput = function() {
                 output.innerHTML = `Range (Km): ${this.value}`;
             }
-
             mapboxgl.accessToken = 'pk.eyJ1Ijoic3RlY3JvdHRpMSIsImEiOiJja3Bna2kzbHYyaThoMm9ueHl1dzlnaTc1In0.EpALSOaDOmuM8XGS_IQzvA';
-
             let map;
-
             let point;
-
             const stores = {
                 "type": "FeatureCollection",
                 "features": []
             };
-
             // get restaurants
             $.ajax({
                 type: "GET",
@@ -108,9 +101,7 @@ else
                 dataType: "JSON",
                 contentType: "application/json; charset=utf-8",
                 success: function(data, status, xhr) {
-
                     for (let i = 0; i < data.length; i++) {
-
                         const restaurateur = new Restaurateur(
                             data[i].id,
                             data[i].restaurantName,
@@ -119,23 +110,19 @@ else
                             data[i].restaurantCategory,
                             data[i].customerId
                         );
-
                         $.ajax({
                             type: "GET",
                             url: `/api/addresses/${restaurateur.restaurantAddressId}`,
                             dataType: "JSON",
                             contentType: "application/json; charset=utf-8",
                             success: function(addressData, status, xhr) {
-
                                 navigator.geolocation.getCurrentPosition(showMap);
-
                                 const address = new Address(
                                     addressData.placeName,
                                     parseFloat(addressData.longitude),
                                     parseFloat(addressData.latitude),
                                     addressData.customerId,
                                     addressData.restaurateurId);
-
                                 stores.features.push({
                                     "type": "Feature",
                                     "geometry": {
@@ -149,7 +136,6 @@ else
                                         "address": address.placeName
                                     }
                                 });
-
                             },
                             error: function() {
                                 console.log(xhr);
@@ -157,7 +143,6 @@ else
                             }
                         });
                     }
-
                     /**
                      * Assign a unique id to each store. This `id` is used
                      * later to associate each point on the map with a listing
@@ -166,7 +151,6 @@ else
                     stores.features.forEach(function (store, i) {
                         value: store.properties.id = i;
                     });
-
                     function showMap(center) {
                         map = new mapboxgl.Map({
                             container: 'map',
@@ -175,16 +159,13 @@ else
                             zoom: 12,
                             scrollZoom: true
                         });
-
                         map.on('load',
                             function(e) {
-
                                 map.addSource('places',
                                     {
                                         'type': 'geojson',
                                         'data': stores
                                     });
-
                                 point = {
                                     "type": "FeatureCollection",
                                     "features": [
@@ -197,34 +178,13 @@ else
                                         }
                                     ]
                                 }
-
                                 buildLocationList(stores);
                                 addMarkers();
                             });
                     }
-
-                                point = {
-                                    "type": "FeatureCollection",
-                                    "features": [
-                                        {
-                                            "type": "Feature",
-                                            "geometry": {
-                                                "type": "Point",
-                                                "coordinates": [center.coords.longitude, center.coords.latitude]
-                                            }
-                                        }
-                                    ]
-                                }
-
-                                buildLocationList(stores);
-                                addMarkers();
-                            });
-                    }
-
                     range.addEventListener("mouseup",
                         function(e) {
                             var options = { units: "kilometers" };
-
                             /**
                              * Loop to iterate through all the store locations,
                              * define a new property for each object called distance, and set the value
@@ -242,7 +202,6 @@ else
                                         configurable: true
                                     });
                             });
-
                             /**
                              * Sort the objects in the stores array
                              * by the distance property added earlier
@@ -250,7 +209,6 @@ else
                             stores.features.sort(function(a, b) {
                                 return Math.abs(range.value - a.properties.distance) - Math.abs(range.value - b.properties.distance);
                             });
-
                             /*
                              * Remove the current list of stores and
                              * rebuild the list using the reordered array created
@@ -259,34 +217,25 @@ else
                             while (listings.firstChild) {
                                 listings.removeChild(listings.firstChild);
                             }
-
                             buildLocationList(stores);
-
                             const activeListing = document.getElementById(`listing-${0}`);
                             activeListing.classList.add("active");
-
                             var bbox = getBbox(stores, 0, point.features[0].geometry);
                             map.fitBounds(bbox,
                                 {
                                     padding: 100
                                 });
-
                             createPopUp(stores.features[0]);
                         });
-
                     function addMarkers() {
                         /* For each feature in the GeoJSON object above: */
                         stores.features.forEach(function(marker) {
-
                             /* Create a div element for the marker. */
                             const el = document.createElement("div");
-
                             /* Assign a unique `id` to the marker. */
                             el.id = `marker-${marker.properties.id}`;
-
                             /* Assign the `marker` class to each marker for styling. */
                             el.className = "marker";
-
                             /**
                              * Create a marker using the div element
                              * defined above and add it to the map.
@@ -294,7 +243,6 @@ else
                             new mapboxgl.Marker(el, { offset: [0, -23] })
                                 .setLngLat(marker.geometry.coordinates)
                                 .addTo(map);
-
                             /**
                              * Listen to the element and when it is clicked, do three things:
                              * 1. Fly to the point
@@ -310,56 +258,45 @@ else
                                     /* Highlight listing in sidebar */
                                     const activeItem = document.getElementsByClassName("active");
                                     e.stopPropagation();
-
                                     if (activeItem[0]) {
                                         activeItem[0].classList.remove("active");
                                     }
-
                                     const listing = document.getElementById(`listing-${marker.properties.id}`);
                                     listing.classList.add("active");
                                 });
                         });
                     }
-
                     /**
                      * Add a listing for each store to the sidebar.
                     **/
                     function buildLocationList(data) {
                         data.features.forEach(function(store, i) {
                             const prop = store.properties;
-
                             /* Add a new listing section to the sidebar. */
                             const listings = document.getElementById("listings");
-
                             const listing = listings.appendChild(document.createElement("div"));
                             /* Assign a unique `id` to the listing. */
                             listing.id = `listing-${i}`;
                             /* Assign the `item` class to each listing for styling. */
                             listing.className = "item";
-
                             /* Add the link to the individual listing created above. */
                             const link = listing.appendChild(document.createElement("a"));
                             link.href = "#";
                             link.className = "title";
                             link.id = `link-${i}`;
                             link.innerHTML = prop.name;
-
                             /* Add details to the individual listing. */
                             const details = listing.appendChild(document.createElement("div"));
-
                             if (prop.category) {
                                 details.innerHTML += prop.category;
                             }
-
                             if (prop.distance) {
                                 const roundedDistance = Math.round(prop.distance * 100) / 100;
                                 details.innerHTML += `<p><strong></p>${roundedDistance} @localizer["kilometers away"]</strong></p>`;
                             }
-
                             // initialize range value with the first store distance in the list
                             //range.value = stores.features[0].properties.distance;
                             //output.innerHTML = `Range (Km): ${range.value}`;
-
                             /**
                              * Listen to the element and when it is clicked, do four things:
                              * 1. Update the `currentFeature` to the store associated with the clicked link
@@ -376,7 +313,6 @@ else
                                             createPopUp(clickedListing);
                                         }
                                     }
-
                                     const activeItem = document.getElementsByClassName("active");
                                     if (activeItem[0]) {
                                         activeItem[0].classList.remove('active');
@@ -385,7 +321,6 @@ else
                                 });
                         });
                     }
-
                     /**
                      * Use Mapbox GL JS's `flyTo` to move the camera smoothly
                      * a given center point.
@@ -396,14 +331,12 @@ else
                             zoom: 11
                         });
                     }
-
                     /**
                      * Create a Mapbox GL JS `Popup`.
                     **/
                     function createPopUp(currentFeature) {
                         const popUps = document.getElementsByClassName('mapboxgl-popup');
                         if (popUps[0]) popUps[0].remove();
-
                         const popup = new mapboxgl.Popup({ closeOnClick: false })
                             .setLngLat(currentFeature.geometry.coordinates)
                             .setHTML(
@@ -411,28 +344,22 @@ else
                             )
                             .addTo(map);
                     }
-
                     function getBbox(sortedStores, storeIdentifier, searchResult) {
                         const lats = [
                             sortedStores.features[storeIdentifier].geometry.coordinates[1], searchResult.coordinates[1]
                         ];
-
                         const lons = [
                             sortedStores.features[storeIdentifier].geometry.coordinates[0], searchResult.coordinates[0]
                         ];
-
                         const sortedLons = lons.sort(function(a, b) {
                             if (a > b) {
                                 return 1;
                             }
-
                             if (a.distance < b.distance) {
                                 return -1;
                             }
-
                             return 0;
                         });
-
                         const sortedLats = lats.sort(function(a, b) {
                             if (a > b) {
                                 return 1;
@@ -442,16 +369,14 @@ else
                             }
                             return 0;
                         });
-
                         return [[sortedLons[0], sortedLats[0]], [sortedLons[1], sortedLats[1]]];
                     }
-
                 },
                 error: function() {
                     console.log("Error");
                 }
             });
         });
-    </script>
-}    }
+            </script>
+        }               }
 }

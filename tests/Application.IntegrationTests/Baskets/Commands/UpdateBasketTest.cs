@@ -12,7 +12,6 @@ using NUnit.Framework;
 using System;
 using System.Linq;
 using System.Threading.Tasks;
-using DeliveryWebApp.Application.BasketItems.Queries;
 
 namespace DeliveryWebApp.Application.IntegrationTests.Baskets.Commands
 {
