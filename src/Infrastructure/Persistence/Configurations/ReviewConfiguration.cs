@@ -24,12 +24,6 @@ namespace DeliveryWebApp.Infrastructure.Persistence.Configurations
                 .HasMaxLength(250)
                 .IsRequired();
 
-            builder.HasIndex(r => r.CustomerId)
-                .IsUnique();
-
-            builder.HasIndex(r => r.RestaurateurId)
-                .IsUnique();
-
             builder.HasOne(r => r.Customer)
                 .WithMany(c => c.Reviews)
                 .HasForeignKey(r => r.CustomerId)
