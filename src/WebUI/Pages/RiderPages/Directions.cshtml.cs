@@ -42,7 +42,6 @@ namespace DeliveryWebApp.WebUI.Pages.RiderPages
             if (Order != null)
             {
                 Restaurateur = await _context.Restaurateurs.FindAsync(Order.RestaurateurId);
-
             }
 
             try
@@ -57,7 +56,7 @@ namespace DeliveryWebApp.WebUI.Pages.RiderPages
             }
         }
 
-        public async Task<IActionResult> OnGetASync(int? id)
+        public async Task<IActionResult> OnGetAsync(int? id)
         {
             if (id == null)
             {
@@ -106,7 +105,8 @@ namespace DeliveryWebApp.WebUI.Pages.RiderPages
             {
                 DeliveryDate = DateTime.UtcNow,
                 Id = Order.Id,
-                OrderStatus = OrderStatus.Delivered
+                OrderStatus = OrderStatus.Delivered,
+                Rider = Rider
             });
 
             await _mediator.Send(new UpdateTotalCredit
@@ -142,7 +142,8 @@ namespace DeliveryWebApp.WebUI.Pages.RiderPages
             await _mediator.Send(new UpdateOrderCommand
             {
                 Id = Order.Id,
-                OrderStatus = OrderStatus.Failed
+                OrderStatus = OrderStatus.Failed,
+                Rider = Rider
             });
 
             return Redirect("/RiderPages/DeliveryHistory");

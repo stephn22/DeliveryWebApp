@@ -143,7 +143,7 @@ namespace DeliveryWebApp.Application.IntegrationTests.Orders.Commands
                 Customer = customer1,
                 Restaurateur = restaurateur,
                 BasketItems = updatedBasket.BasketItems,
-                Address = address
+                AddressId = address.Id
             };
 
             var order = await SendAsync(createOrder);

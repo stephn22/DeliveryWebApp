@@ -148,7 +148,7 @@ namespace DeliveryWebApp.WebUI.Pages.RiderPages
 
             _logger.LogInformation($"Updated order with id: {Order.Id}");
 
-            return Redirect($"/RiderPages/Directions/{Order.Id}");
+            return Redirect($"/RiderPages/Directions/{id}");
         }
     }
 }

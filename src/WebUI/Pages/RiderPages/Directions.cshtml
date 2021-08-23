@@ -5,7 +5,6 @@
 @{
     ViewData["Title"] = localizer["Delivery"];
     Layout = "../Views/_MapLayout";
-    // FIXME: model.restaurateur null
 }
 
 @section Head
@@ -23,6 +22,18 @@
         li {
             margin-top: 1rem;
             margin-left: 1rem;
+        }
+
+        #instructions {
+            height: 60%;
+            margin-left: 10px;
+            width: 90%;
+            top: 0;
+            background-color: rgba(255, 255, 255, 0.9);
+            overflow-y: scroll;
+            font-family: Roboto;
+            font-size: 0.8em;
+            line-height: 2em;
         }
     </style>
 }
@@ -118,10 +129,37 @@
                         zoom: 12
                     });
 
+                    $("#start").on("click",
+                        function(e) {
+                            this.disabled = true;
+
+                            getRoute();
+                            getRoute();
+
+                            map.flyTo({
+                                center: start,
+                                zoom: 15
+                            });
+
+                            const delivery = {
+                                type: "FeatureCollection",
+                                features: [
+                                    {
+                                        type: "Feature",
+                                        properties: {},
+                                        geometry: {
+                                            type: "Point",
+                                            coordinates: end
+                                        }
+                                    }
+                                ]
+                            };
+                        });
+
                     // initialize the map canvas to interact with later
                     const canvas = map.getCanvasContainer();
 
-                    function getRoute(end) {
+                    function getRoute() {
                         const url = `https://api.mapbox.com/directions/v5/mapbox/driving/${start[0]},${start[1]};${end[0]},${end[1]}?steps=true&geometries=geojson&access_token=${mapboxgl.accessToken}`;
 
                         var req = new XMLHttpRequest();
@@ -138,6 +176,16 @@
                                     coordinates: route
                                 }
                             };
+
+                            // get the sidebar and add the instructions
+                            const instructions = document.getElementById('instructions');
+                            const steps = data.legs[0].steps;
+
+                            const tripInstructions = [];
+                            for (var i = 0; i < steps.length; i++) {
+                                tripInstructions.push('<br><li>' + steps[i].maneuver.instruction) + '</li>';
+                                instructions.innerHTML = `<br><span class="duration">Trip duration: ${Math.floor(data.duration / 60)} min </span>${tripInstructions}`;
+                            }
 
                             // if the route already exists on the map, reset it using setData
                             if (map.getSource('route')) {
@@ -218,56 +266,31 @@
                                 }
                             });
 
-                            $("#start").on("click",
-                                function(e) {
-                                    $("#start").disabled = true;
-
-                                    map.flyTo({
-                                        center: start,
-                                        zoom: 15
-                                    });
-
-                                    const delivery = {
-                                        type: "FeatureCollection",
+                            // Add end point to the map
+                            map.addLayer({
+                                id: 'end',
+                                type: 'circle',
+                                source: {
+                                    type: 'geojson',
+                                    data: {
+                                        type: 'FeatureCollection',
                                         features: [
                                             {
-                                                type: "Feature",
+                                                type: 'Feature',
                                                 properties: {},
                                                 geometry: {
-                                                    type: "Point",
+                                                    type: 'Point',
                                                     coordinates: end
                                                 }
                                             }
                                         ]
-                                    };
-
-                                    map.addLayer({
-                                        id: 'end',
-                                        type: 'circle',
-                                        source: {
-                                            type: 'geojson',
-                                            data: {
-                                                type: 'FeatureCollection',
-                                                features: [
-                                                    {
-                                                        type: 'Feature',
-                                                        properties: {},
-                                                        geometry: {
-                                                            type: 'Point',
-                                                            coordinates: end
-                                                        }
-                                                    }
-                                                ]
-                                            }
-                                        },
-                                        paint: {
-                                            'circle-radius': 10,
-                                            'circle-color': '#f30'
-                                        }
-                                    });
-
-                                    getRoute(end);
-                                });
+                                    }
+                                },
+                                paint: {
+                                    'circle-radius': 10,
+                                    'circle-color': '#f30'
+                                }
+                            });
                         });
                 };
                 dAddressReq.send();

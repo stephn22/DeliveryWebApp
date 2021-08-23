@@ -7,7 +7,6 @@
 @{
     ViewData["Title"] = localizer["Orders"];
     Layout = "../Views/_MapLayout";
-    // FIXME: Route double click
 }
 
 @section Head
@@ -112,7 +111,7 @@ else
                                 url: `/api/addresses/${order.addressId}`,
                                 dataType: "JSON",
                                 contentType: "application/json; charset=utf-8",
-                                success: function (addressData, status, xhr) {
+                                success: function(addressData, status, xhr) {
 
                                     const address = new Address(
                                         addressData.placeName,
@@ -127,7 +126,7 @@ else
                                         url: `/api/restaurateurs/${order.restaurateurId}`,
                                         dataType: "JSON",
                                         contentType: "application/json; charset=utf-8",
-                                        success: function (restaurateurData, status, xhr) {
+                                        success: function(restaurateurData, status, xhr) {
 
                                             const restaurateur = new Restaurateur(
                                                 restaurateurData.id,
@@ -144,7 +143,7 @@ else
                                                 url: `/api/addresses/${restaurateur.restaurantAddressId}`,
                                                 dataType: "JSON",
                                                 contentType: "application/json; charset=utf-8",
-                                                success: function (restaurantAddressData, status, xhr) {
+                                                success: function(restaurantAddressData, status, xhr) {
 
                                                     navigator.geolocation.getCurrentPosition(showMap);
 
@@ -180,14 +179,14 @@ else
                                             });
 
                                         },
-                                        error: function () {
+                                        error: function() {
                                             console.log(xhr);
                                             return null;
                                         }
                                     });
                                 },
                                 error:
-                                    function () {
+                                    function() {
                                         console.log(xhr);
                                         return null;
                                     }
@@ -364,6 +363,7 @@ else
                                             const end = prop.addressLngLat.coordinates;
 
                                             getRoute(start, end);
+                                            getRoute(start, end);
 
                                             flyToStore(clickedListing);
                                             createPopUp(clickedListing);
@@ -484,9 +484,8 @@ else
                             }
                         };
                         req.send();
-
-
                     }
+
 
                     /**
                      * Use Mapbox GL JS's `flyTo` to move the camera smoothly
@@ -508,9 +507,10 @@ else
 
                         const popup = new mapboxgl.Popup({ closeOnClick: false })
                             .setLngLat(currentFeature.geometry.coordinates)
-                            .setHTML(// TODO: link & localize
-                                `<h3>${currentFeature.properties.name}</h3><h4>${currentFeature.properties.restaurantAddress}</h4><a href="/RiderPages/OrderDetail/${currentFeature.properties.orderId}">See details</a>`
-                            )
+                            .setHTML(
+                                `<h3>${currentFeature.properties.name}</h3><h4>${currentFeature.properties.restaurantAddress}</h4><a href="/RiderPages/OrderDetail/${currentFeature.properties.orderId}">@localizer["See details"]</a>`
+                        )
+
                             .addTo(map);
                     }
                 },

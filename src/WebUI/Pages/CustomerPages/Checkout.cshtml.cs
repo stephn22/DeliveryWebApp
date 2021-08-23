@@ -1,7 +1,6 @@
 using DeliveryWebApp.Application.Addresses.Queries.GetAddresses;
 using DeliveryWebApp.Application.BasketItems.Queries;
 using DeliveryWebApp.Application.Baskets.Queries;
-using DeliveryWebApp.Application.Common.Exceptions;
 using DeliveryWebApp.Application.Common.Security;
 using DeliveryWebApp.Application.Orders.Commands.CreateOrder;
 using DeliveryWebApp.Domain.Entities;
@@ -42,9 +41,12 @@ namespace DeliveryWebApp.WebUI.Pages.CustomerPages
         public Basket Basket { get; set; }
         public List<BasketItem> BasketItems { get; set; }
         public Customer Customer { get; set; }
-        public List<SelectListItem> CustomerAddresses { get; set; }
+
         public List<Product> Products { get; set; }
         public Restaurateur Restaurateur { get; set; }
+
+        [BindProperty]
+        public List<SelectListItem> CustomerAddresses { get; set; }
 
         [BindProperty] public InputModel Input { get; set; }
 
@@ -53,7 +55,7 @@ namespace DeliveryWebApp.WebUI.Pages.CustomerPages
             [Required]
             [DataType(DataType.Text)]
             [DisplayName("Address")]
-            public Address Address { get; set; }
+            public int AddressId { get; set; }
 
             [Required]
             [DataType(DataType.CreditCard)]
@@ -98,18 +100,16 @@ namespace DeliveryWebApp.WebUI.Pages.CustomerPages
                 CustomerId = Customer.Id
             });
 
-            CustomerAddresses = new List<SelectListItem>
+            if (!addresses.IsNullOrEmpty())
             {
-                new() { Text = addresses[0].PlaceName, Value = addresses[0].PlaceName },
-            };
+                CustomerAddresses = new List<SelectListItem>();
 
-            if (addresses.Count == 2)
-            {
-                CustomerAddresses.Add(new SelectListItem
+                foreach (var address in addresses)
                 {
-                    Text = addresses[1].PlaceName,
-                    Value = addresses[1].PlaceName
-                });
+                    CustomerAddresses.Add(new SelectListItem { Text = address.PlaceName, Value = address.Id.ToString() });
+                }
+
+                CustomerAddresses[0].Selected = true;
             }
 
             Basket = await _mediator.Send(new GetBasketQuery
@@ -166,22 +166,15 @@ namespace DeliveryWebApp.WebUI.Pages.CustomerPages
                 return NotFound("Unable to find entities");
             }
 
-            try
+            var order = await _mediator.Send(new CreateOrderCommand
             {
-                var order = await _mediator.Send(new CreateOrderCommand
-                {
-                    Customer = Customer,
-                    BasketItems = BasketItems,
-                    Restaurateur = Restaurateur,
-                    Address = Input.Address
-                });
+                Customer = Customer,
+                BasketItems = BasketItems,
+                Restaurateur = Restaurateur,
+                AddressId = Input.AddressId
+            });
 
-                _logger.LogInformation($"Created new order with id: {order.Id}");
-            }
-            catch (NotFoundException e)
-            {
-                _logger.LogError($"Basket not found: {e.Message}");
-            }
+            _logger.LogInformation($"Created new order with id: {order.Id}");
 
             return Redirect("/CustomerPages/CustomerOrders");
         }

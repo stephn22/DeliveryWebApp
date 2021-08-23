@@ -59,9 +59,9 @@
 <h5>@localizer["Deliver to address"]</h5>
 <form method="post">
     <div class="form-group col-md-5">
-        <label asp-for="Input.Address">@localizer["Address"]</label>
-        <select class="form-select" asp-items="Model.CustomerAddresses" asp-for="Input.Address"></select>
-        <span asp-validation-for="Input.Address" class="text-danger"></span>
+        <label asp-for="Input.AddressId">@localizer["Address"]</label>
+        <select class="form-select" asp-for="Input.AddressId" asp-items="Model.CustomerAddresses"></select>
+        <span asp-validation-for="Input.AddressId" class="text-danger"></span>
     </div>
 
 
@@ -69,11 +69,11 @@
 
     <h5>@localizer["Payment method"]</h5>
 
-    <button type="button" class="btn btn-warning">
+    @*<button type="button" class="btn btn-warning">
         <img src="/icons/PayPal.svg" alt="paypal_logo" />
     </button>
     <br />
-    <p>@localizer["or"]</p>
+    <p>@localizer["or"]</p>*@
 
     <div class="form-group col-sm-4">
         <label asp-for="Input.CreditCard">@localizer["Credit Card"]</label>

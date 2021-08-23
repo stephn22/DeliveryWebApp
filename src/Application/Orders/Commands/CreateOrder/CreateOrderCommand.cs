@@ -18,7 +18,7 @@ namespace DeliveryWebApp.Application.Orders.Commands.CreateOrder
         public Customer Customer { get; set; }
         public Restaurateur Restaurateur { get; set; }
         public IEnumerable<BasketItem> BasketItems { get; set; }
-        public Address Address { get; set; }
+        public int AddressId { get; set; }
     }
 
     public class CreateOrderCommandHandler : IRequestHandler<CreateOrderCommand, Order>
@@ -40,7 +40,7 @@ namespace DeliveryWebApp.Application.Orders.Commands.CreateOrder
                 CustomerId = request.Customer.Id,
                 Status = OrderStatus.New,
                 Date = DateTime.UtcNow,
-                AddressId = request.Address.Id
+                AddressId = request.AddressId
             };
 
             _context.Orders.Add(entity);
@@ -65,7 +65,7 @@ namespace DeliveryWebApp.Application.Orders.Commands.CreateOrder
                 await _mediator.Send(new PurgeBasketCommand
                 {
                     Id = basketId
-                });
+                }, cancellationToken);
             }
 
             entity.TotalPrice = await entity.GetOrderTotalPrice(_mediator, _context);

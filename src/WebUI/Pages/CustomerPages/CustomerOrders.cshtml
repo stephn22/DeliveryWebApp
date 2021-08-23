@@ -1,9 +1,16 @@
 ﻿@page
+@using DeliveryWebApp.Application.OrderItems.Extensions
+@using DeliveryWebApp.Application.OrderItems.Queries
+@using DeliveryWebApp.Domain.Entities
+@using DeliveryWebApp.Infrastructure.Persistence
 @using IdentityServer4.Extensions
+@using MediatR
 @using Microsoft.AspNetCore.Localization
 @using Microsoft.Extensions.Localization
 @model DeliveryWebApp.WebUI.Pages.CustomerPages.CustomerOrdersModel
 @inject IStringLocalizer<CustomerOrdersModel> localizer
+@inject IMediator mediator
+@inject ApplicationDbContext context
 @{
     ViewData["Title"] = localizer["Orders"];
     var requestCultureFeature = HttpContext.Features.Get<IRequestCultureFeature>();
@@ -119,22 +126,41 @@ else
                                                     </tr>
                                                 </thead>
                                                 <tbody>
-                                                    @for (var j = 0; j < Model.OrderItems.Count; j++)
+                                                @{
+                                                    var orderItems = await mediator.Send(new GetOrderItemsQuery
                                                     {
-                                                        <tr>
-                                                            <td>
-                                                                @Model.Products[j].Name
-                                                            </td>
-                                                            <td>
-                                                                @Model.OrderItems[j].ProductPrice.ToString("C")
-                                                            </td>
-                                                            <td>
-                                                                @Model.OrderItems[j].Quantity
-                                                            </td>
-                                                        </tr>
+                                                        OrderId = Model.Orders[i].Id
+                                                    });
+
+                                                    Model.Products = new List<Product>();
+
+                                                    foreach (var item in orderItems)
+                                                    {
+                                                        var p = await item.GetProduct(context);
+
+                                                        if (p != null)
+                                                        {
+                                                            Model.Products.Add(p);
+                                                        }
                                                     }
+                                                }
+                                                @for (var j = 0; j < orderItems.Count; j++)
+                                                {
+                                                    <tr>
+                                                        <td>
+                                                            @Model.Products[j].Name
+                                                        </td>
+                                                        <td>
+                                                            @orderItems[j].ProductPrice.ToString("C")
+                                                        </td>
+                                                        <td>
+                                                            @orderItems[j].Quantity
+                                                        </td>
+                                                    </tr>
+                                                }
                                                 </tbody>
                                             </table>
+                                            <small class="small text-muted">@localizer["Discount and price based on time of purchase"]</small>
 
                                         </div>
 

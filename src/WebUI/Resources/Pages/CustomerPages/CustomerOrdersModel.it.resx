@@ -126,6 +126,9 @@
   <data name="Delivery Date" xml:space="preserve">
     <value>Data Consegna</value>
   </data>
+  <data name="Discount and price based on time of purchase" xml:space="preserve">
+    <value>Sconto e prezzo in base al momento dell'acquisto</value>
+  </data>
   <data name="Food Vendor" xml:space="preserve">
     <value>Ristoratore</value>
   </data>

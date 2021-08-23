@@ -18,7 +18,7 @@ namespace DeliveryWebApp.Application.Orders.Commands.CreateOrder
 
             RuleFor(c => c.BasketItems).NotEmpty();
 
-            RuleFor(c => c.Address).NotEmpty();
+            RuleFor(c => c.AddressId).GreaterThan(0).NotEmpty();
         }
     }
 }

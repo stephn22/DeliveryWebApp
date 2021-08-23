@@ -36,7 +36,6 @@ namespace DeliveryWebApp.WebUI.Pages.CustomerPages
 
         public Customer Customer { get; set; }
         public List<Order> Orders { get; set; }
-        public List<OrderItem> OrderItems { get; set; }
         public List<Product> Products { get; set; }
         public List<Restaurateur> Restaurateurs { get; set; }
 
@@ -84,28 +83,11 @@ namespace DeliveryWebApp.WebUI.Pages.CustomerPages
             {
                 foreach (var order in Orders)
                 {
-                    OrderItems = await _mediator.Send(new GetOrderItemsQuery
-                    {
-                        OrderId = order.Id
-                    });
-
                     var r = await order.GetRestaurateurAsync(_context);
 
                     if (r != null)
                     {
                         Restaurateurs.Add(r);
-                    }
-
-                    foreach (var item in OrderItems)
-                    {
-
-
-                        var p = await item.GetProduct(_context);
-
-                        if (p != null)
-                        {
-                            Products.Add(p);
-                        }
                     }
                 }
             }
