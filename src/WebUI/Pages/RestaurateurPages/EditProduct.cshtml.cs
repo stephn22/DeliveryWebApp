@@ -14,10 +14,8 @@ using Microsoft.Extensions.Logging;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
-using System.Globalization;
 using System.IO;
 using System.Threading.Tasks;
-using CsvHelper.Configuration.Attributes;
 
 namespace DeliveryWebApp.WebUI.Pages.RestaurateurPages
 {
@@ -83,7 +81,7 @@ namespace DeliveryWebApp.WebUI.Pages.RestaurateurPages
             }
 
             await LoadAsync((int)id);
-            
+
             if (Product == null)
             {
                 return NotFound();
@@ -129,7 +127,7 @@ namespace DeliveryWebApp.WebUI.Pages.RestaurateurPages
                     Category = Input.Category,
                     Discount = Input.Discount,
                     Name = Input.Name,
-                    Price =  Input.Price, /*decimal.Parse(Input.Price.ToString(CultureInfo.InvariantCulture)),*/
+                    Price = Input.Price, /*decimal.Parse(Input.Price.ToString(CultureInfo.InvariantCulture)),*/
                     Quantity = Input.Quantity
                 });
 

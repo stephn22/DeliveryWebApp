@@ -15,7 +15,6 @@ using Microsoft.Extensions.Logging;
 using System.ComponentModel.DataAnnotations;
 using System.Security.Claims;
 using System.Threading.Tasks;
-using DeliveryWebApp.WebUI.Migrations;
 
 namespace DeliveryWebApp.WebUI.Pages.AdminPages
 {

@@ -1,4 +1,3 @@
-using System;
 using DeliveryWebApp.Application.Common.Security;
 using DeliveryWebApp.Application.Products.Commands.CreateProduct;
 using DeliveryWebApp.Application.Restaurateurs.Extensions;
@@ -16,10 +15,8 @@ using Microsoft.Extensions.Logging;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
-using System.Globalization;
 using System.IO;
 using System.Threading.Tasks;
-using Microsoft.AspNetCore.Localization;
 
 namespace DeliveryWebApp.WebUI.Pages.RestaurateurPages
 {

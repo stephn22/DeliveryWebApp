@@ -1,21 +1,11 @@
 using DeliveryWebApp.Application.Common.Security;
-using DeliveryWebApp.Application.Products.Commands.UpdateProducts;
 using DeliveryWebApp.Application.Restaurateurs.Extensions;
-using DeliveryWebApp.Domain.Constants;
 using DeliveryWebApp.Domain.Entities;
 using DeliveryWebApp.Infrastructure.Identity;
 using DeliveryWebApp.Infrastructure.Persistence;
-using MediatR;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
-using Microsoft.AspNetCore.Mvc.Rendering;
-using Microsoft.Extensions.Localization;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.ComponentModel.DataAnnotations;
-using System.IO;
 using System.Threading.Tasks;
 
 namespace DeliveryWebApp.WebUI.Pages.RestaurateurPages
