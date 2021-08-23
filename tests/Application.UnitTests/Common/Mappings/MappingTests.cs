@@ -47,7 +47,7 @@ namespace DeliveryWebApp.Application.UnitTests.Common.Mappings
         {
             var entity = new UpdateAddressCommand
             {
-                // TODO:
+                // TODO: mapping test
             };
 
             var result = _mapper.Map<UpdateAddressCommand>(entity);

@@ -136,6 +136,9 @@
   <data name="Detail of Product" xml:space="preserve">
     <value>Dettaglio prodotto</value>
   </data>
+  <data name="Edit" xml:space="preserve">
+    <value>Modifica</value>
+  </data>
   <data name="Fish" xml:space="preserve">
     <value>Pesce</value>
   </data>
@@ -162,6 +165,9 @@
   </data>
   <data name="Save" xml:space="preserve">
     <value>Salva</value>
+  </data>
+  <data name="String1" xml:space="preserve">
+    <value />
   </data>
   <data name="Submit" xml:space="preserve">
     <value>Invia</value>

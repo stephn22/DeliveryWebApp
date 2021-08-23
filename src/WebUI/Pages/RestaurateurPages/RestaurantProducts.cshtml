@@ -88,17 +88,17 @@ else
                         <a asp-page="/RestaurateurPages/ProductDetail" asp-route-id="@product.Id">@localizer["Details"]</a>
                     </td>
                     <td>
-                        <a class="btn" title="Delete product" data-bs-toggle="modal" data-bs-target="#product-@product.Id-delete-modal">
+                        <button class="btn" title="Delete product" data-bs-toggle="modal" data-bs-target="#product-@product.Id-delete-modal">
                             <img src="/icons/trash.svg" alt="delete" height="16" width="16" />
-                        </a>
+                        </button>
 
                         @* Vertically centered modal to confirm action *@
 
-                        <div class="modal fade show" id="customer-@product.Id-delete-modal" aria-labelledby="customer-@product.Id-delete-modal-title" aria-modal="true" role="dialog">
+                        <div class="modal fade show" id="product-@product.Id-delete-modal" aria-labelledby="product-@product.Id-delete-modal-title" aria-modal="true" role="dialog">
                             <div id="" class="modal-dialog modal-dialog-centered">
                                 <div class="modal-content">
                                     <div class="modal-header">
-                                        <h5 class="modal-title" id="customer-@product.Id-delete-modal-title">@localizer["Delete product"]: @product.Name</h5>
+                                        <h5 class="modal-title" id="product-@product.Id-delete-modal-title">@localizer["Delete product"]: @product.Name</h5>
                                         <button class="btn-close" data-bs-dismiss="modal" aria-label="close"></button>
                                     </div>
                                     <div class="modal-body">
@@ -107,8 +107,8 @@ else
                                     <div class="modal-footer">
                                         <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">@localizer["Close"]</button>
 
-                                        <form method="post">
-                                            <button type="submit" class="btn btn-primary" value="DeleteProduct" asp-page-handler="DeleteProduct" asp-route-id="@product.Id">@localizer["Confirm"]</button>
+                                        <form method="post" asp-page-handler="DeleteProduct" asp-route-id="@product.Id">
+                                            <button type="submit" class="btn btn-primary" value="DeleteProduct">@localizer["Confirm"]</button>
                                         </form>
 
                                     </div>

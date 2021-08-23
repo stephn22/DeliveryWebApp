@@ -1,6 +1,8 @@
+using DeliveryWebApp.Application.Common.Exceptions;
 using DeliveryWebApp.Application.Common.Security;
 using DeliveryWebApp.Application.Restaurateurs.Commands.CreateRestaurateur;
 using DeliveryWebApp.Application.Riders.Commands.DeleteRider;
+using DeliveryWebApp.Application.Riders.Commands.UpdateRider;
 using DeliveryWebApp.Domain.Entities;
 using DeliveryWebApp.Infrastructure.Identity;
 using DeliveryWebApp.Infrastructure.Persistence;
@@ -13,6 +15,7 @@ using Microsoft.Extensions.Logging;
 using System.ComponentModel.DataAnnotations;
 using System.Security.Claims;
 using System.Threading.Tasks;
+using DeliveryWebApp.WebUI.Migrations;
 
 namespace DeliveryWebApp.WebUI.Pages.AdminPages
 {
@@ -41,7 +44,8 @@ namespace DeliveryWebApp.WebUI.Pages.AdminPages
         public class InputModel
         {
             [Required]
-            [DataType(DataType.Currency)]
+            [DataType(DataType.Currency, ErrorMessage = "Value isn't a price")]
+            [DisplayFormat(ApplyFormatInEditMode = true, DataFormatString = "{0:c}")]
             public decimal DeliveryCredit { get; set; }
         }
 
@@ -88,7 +92,7 @@ namespace DeliveryWebApp.WebUI.Pages.AdminPages
 
             if (id == null)
             {
-                return NotFound();
+                return NotFound("Could not find rider with that id");
             }
 
             await LoadAsync((int)id);
@@ -109,7 +113,7 @@ namespace DeliveryWebApp.WebUI.Pages.AdminPages
 
             if (id == null)
             {
-                return NotFound();
+                return NotFound("Could not find rider with that id");
             }
 
             await LoadAsync((int)id);
@@ -130,19 +134,28 @@ namespace DeliveryWebApp.WebUI.Pages.AdminPages
 
             if (id == null)
             {
-                return NotFound();
+                return NotFound("Could not find rider with that id");
             }
 
             await LoadAsync((int)id);
 
             await _userManager.DeleteAsync(User);
 
-            await _mediator.Send(new DeleteRiderCommand
+            try
             {
-                Id = Rider.Id
-            });
+                await _mediator.Send(new DeleteRiderCommand
+                {
+                    Id = Rider.Id
+                });
 
-            _logger.LogInformation($"Deleted rider with id '{Rider.Id}");
+                _logger.LogInformation($"Deleted rider with id '{Rider.Id}");
+
+            }
+            catch (NotFoundException e)
+            {
+                _logger.LogError($"Could not find rider with id {id}: {e.Message}");
+                return NotFound("Could not find rider with that id");
+            }
 
             return RedirectToPage("/AdminPages/UserList");
         }
@@ -156,7 +169,7 @@ namespace DeliveryWebApp.WebUI.Pages.AdminPages
 
             if (id == null)
             {
-                return NotFound();
+                return NotFound("Could not find rider with that id");
             }
 
             await LoadAsync((int)id);
@@ -164,13 +177,21 @@ namespace DeliveryWebApp.WebUI.Pages.AdminPages
             var oldClaim = await _userManager.GetClaimByTypeAsync(User, ClaimName.Role);
             await _userManager.ReplaceClaimAsync(User, oldClaim, new Claim(ClaimName.Role, RoleName.Default));
 
-            // update tables
-            await _mediator.Send(new DeleteRiderCommand
+            try
             {
-                Id = Rider.Id
-            });
+                // update tables
+                await _mediator.Send(new DeleteRiderCommand
+                {
+                    Id = Rider.Id
+                });
 
-            _logger.LogInformation($"Deleted rider with id {Rider.Id}");
+                _logger.LogInformation($"Deleted rider with id {Rider.Id}");
+            }
+            catch (NotFoundException e)
+            {
+                _logger.LogError($"Could not find rider with id {id}: {e.Message}");
+                return NotFound("Could not find rider with that id");
+            }
 
             return RedirectToPage("/AdminPages/UserList");
         }
@@ -184,7 +205,7 @@ namespace DeliveryWebApp.WebUI.Pages.AdminPages
 
             if (id == null)
             {
-                return NotFound();
+                return NotFound("Could not find rider with that id");
             }
 
             await LoadAsync((int)id);
@@ -193,21 +214,60 @@ namespace DeliveryWebApp.WebUI.Pages.AdminPages
             await _userManager.ReplaceClaimAsync(User, oldClaim, new Claim(ClaimName.Role, RoleName.Restaurateur));
 
             // update tables
-            await _mediator.Send(new DeleteRiderCommand
+            try
             {
-                Id = Rider.Id
-            });
+                await _mediator.Send(new DeleteRiderCommand
+                {
+                    Id = Rider.Id
+                });
 
-            _logger.LogInformation($"Deleted rider with id {Rider.Id}");
+                _logger.LogInformation($"Deleted rider with id {Rider.Id}");
 
-            var restaurateur = await _mediator.Send(new CreateRestaurateurCommand
+                var restaurateur = await _mediator.Send(new CreateRestaurateurCommand
+                {
+                    Customer = Customer
+                });
+
+                _logger.LogInformation($"Created rider with id {restaurateur.Id}");
+            }
+            catch (NotFoundException e)
             {
-                Customer = Customer
-            });
-
-            _logger.LogInformation($"Created rider with id {restaurateur.Id}");
+                _logger.LogError($"Could not find rider with id {id}: {e.Message}");
+                return NotFound("Could not find rider with that id");
+            }
 
             return RedirectToPage("/AdminPages/UserList");
+        }
+
+        public async Task<IActionResult> OnPostAsync(int? id)
+        {
+            if (!ModelState.IsValid)
+            {
+                return Page();
+            }
+
+            if (id == null)
+            {
+                return NotFound("Could not find rider with that id");
+            }
+
+            await LoadAsync((int)id);
+
+            try
+            {
+                await _mediator.Send(new UpdateRiderCommand
+                {
+                    Id = Rider.Id,
+                    DeliveryCredit = Input.DeliveryCredit
+                });
+            }
+            catch (NotFoundException e)
+            {
+                _logger.LogError($"Could not find rider with id {id}: {e.Message}");
+                return NotFound("Could not find rider with that id");
+            }
+
+            return RedirectToPage();
         }
     }
 }

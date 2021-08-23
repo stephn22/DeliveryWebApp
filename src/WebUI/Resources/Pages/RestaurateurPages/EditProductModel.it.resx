@@ -117,40 +117,55 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
-  <data name="Address" xml:space="preserve">
-    <value>Indirizzo</value>
+  <data name="0 for no discount" xml:space="preserve">
+    <value>0 per nessuno sconto</value>
   </data>
-  <data name="Close" xml:space="preserve">
-    <value>Chiudi</value>
+  <data name="Category" xml:space="preserve">
+    <value>Categoria</value>
   </data>
-  <data name="Date" xml:space="preserve">
-    <value>Data</value>
+  <data name="Chicken" xml:space="preserve">
+    <value>Pollo</value>
   </data>
-  <data name="Delivery Date" xml:space="preserve">
-    <value>Data Consegna</value>
+  <data name="Choose an image for the new product" xml:space="preserve">
+    <value>Scegli un'immagine per il nuovo prodotto</value>
   </data>
-  <data name="Discount" xml:space="preserve">
-    <value>Sconto</value>
+  <data name="Detail of Product" xml:space="preserve">
+    <value>Dettaglio prodotto</value>
   </data>
-  <data name="Discount and price based on time of purchase" xml:space="preserve">
-    <value>Sconto e prezzo in base al momento dell'acquisto</value>
+  <data name="Edit" xml:space="preserve">
+    <value>Modifica</value>
+  </data>
+  <data name="Name" xml:space="preserve">
+    <value>Nome</value>
+  </data>
+  <data name="New Discount" xml:space="preserve">
+    <value>Nuovo Sconto</value>
+  </data>
+  <data name="New Name" xml:space="preserve">
+    <value>Nuovo Nome</value>
+  </data>
+  <data name="New Price" xml:space="preserve">
+    <value>Nuovo Prezzo</value>
   </data>
   <data name="Price" xml:space="preserve">
     <value>Prezzo</value>
   </data>
-  <data name="Product" xml:space="preserve">
-    <value>Prodotto</value>
-  </data>
-  <data name="Products of order" xml:space="preserve">
-    <value>Prodotti dell'ordine</value>
+  <data name="Product Detail" xml:space="preserve">
+    <value>Dettaglio Prodotto</value>
   </data>
   <data name="Quantity" xml:space="preserve">
     <value>Quantità</value>
   </data>
-  <data name="Status" xml:space="preserve">
-    <value>Stato</value>
+  <data name="Save" xml:space="preserve">
+    <value>Salva</value>
   </data>
-  <data name="Total" xml:space="preserve">
-    <value>Totale</value>
+  <data name="Submit" xml:space="preserve">
+    <value>Invia</value>
+  </data>
+  <data name="Unassigned" xml:space="preserve">
+    <value>Non assegnato</value>
+  </data>
+  <data name="Values separated by a ','" xml:space="preserve">
+    <value>Valori separati da ','</value>
   </data>
 </root>
