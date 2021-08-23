@@ -1,14 +1,10 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using DeliveryWebApp.Application.Common.Interfaces;
+﻿using DeliveryWebApp.Application.Common.Interfaces;
 using DeliveryWebApp.Application.OrderItems.Extensions;
 using DeliveryWebApp.Application.OrderItems.Queries;
 using DeliveryWebApp.Application.Products.Extensions;
 using DeliveryWebApp.Domain.Entities;
 using MediatR;
+using System.Threading.Tasks;
 
 namespace DeliveryWebApp.Application.Orders.Extensions
 {
@@ -39,6 +35,24 @@ namespace DeliveryWebApp.Application.Orders.Extensions
             }
 
             return tot;
+        }
+
+        public static async Task<Customer> GetCustomerAsync(this Order order, IApplicationDbContext context)
+        {
+            var customer = await context.Customers.FindAsync(order.CustomerId);
+            return customer;
+        }
+
+        public static async Task<Restaurateur> GetRestaurateurAsync(this Order order, IApplicationDbContext context)
+        {
+            var restaurateur = await context.Restaurateurs.FindAsync(order.RestaurateurId);
+            return restaurateur;
+        }
+
+        public static async Task<Address> GetAddressAsync(this Order order, IApplicationDbContext context)
+        {
+            var address = await context.Addresses.FindAsync(order.AddressId);
+            return address;
         }
     }
 }

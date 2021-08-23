@@ -1,5 +1,4 @@
-﻿using System.Text.RegularExpressions;
-using FluentValidation;
+﻿using FluentValidation;
 
 namespace DeliveryWebApp.Application.Customers.Commands.CreateCustomer
 {

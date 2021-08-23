@@ -1,5 +1,6 @@
-﻿@model DeliveryWebApp.WebUI.Pages.RestaurateurPages.RestaurantDashboardModel
-
+﻿@using Microsoft.Extensions.Localization
+@model DeliveryWebApp.WebUI.Pages.RestaurateurPages.RestaurantDashboardModel
+@inject IStringLocalizer<RestaurantDashboardModel> localizer
 @section Head
 {
     <link rel="stylesheet" href="/css/images.css" type="text/css" />
@@ -16,10 +17,10 @@
     <hr />
     <h6>
         <img src="/icons/shop.svg" alt="shop" height="32" width="32" />
-        Register your restaurant
+
     </h6>
     <br />
-    <button id="begin" class="btn btn-primary" type="button" data-bs-toggle="collapse" data-bs-target="#collapseForm" aria-expanded="false" aria-controls="collapseForm">Begin</button>
+    <button id="begin" class="btn btn-primary" type="button" data-bs-toggle="collapse" data-bs-target="#collapseForm" aria-expanded="false" aria-controls="collapseForm">@localizer["Begin"]</button>
 
     <div class="collapse" id="collapseForm">
         <div class="card card-body">
@@ -27,7 +28,7 @@
 
                 <div class="form-row">
                     <div class="mb-3">
-                        <label asp-for="Input.Logo" class="form-label">Choose a logo for your restaurant</label>
+                        <label asp-for="Input.Logo" class="form-label">@localizer["Choose a logo"]</label>
                         <input class="form-control" type="file" asp-for="Input.Logo" onchange="readUrl(this);">
                         <span asp-validation-for="Input.Logo" class="text-danger"></span>
                     </div>
@@ -37,13 +38,13 @@
                 </div>
                 <div class="form-row">
                     <div class="form-group col-md-6">
-                        <label asp-for="Input.Name"></label>
+                        <label asp-for="Input.Name">@localizer["Name"]</label>
                         <input class="form-control" asp-for="Input.Name">
                         <span asp-validation-for="Input.Name" class="text-danger"></span>
                     </div>
                     <div class="form-group col-md-7">
                         <div class="form-group col-md-3">
-                            <label asp-for="Input.Category"></label>
+                            <label asp-for="Input.Category">@localizer["Category"]</label>
                             <select class="form-select" aria-label="Select category" asp-for="Input.Category" asp-items="Model.Categories">
                             </select>
                             <span asp-validation-for="Input.Category" class="text-danger"></span>
@@ -54,7 +55,7 @@
                 @* Address *@
 
                 <div class="form-group col-md-7">
-                    <label class="form-label">Address</label>
+                    <label class="form-label">@localizer["Address"]</label>
                     <div class="input-group col-7">
                         <input class="form-control" id="input-address" value="" disabled />
                         <div class="input-group-append">
@@ -64,79 +65,16 @@
                                     <path d="M8 8a2 2 0 1 1 0-4 2 2 0 0 1 0 4zm0 1a3 3 0 1 0 0-6 3 3 0 0 0 0 6z" />
                                 </svg>
                             </button>
-                            <button id="ok-btn" type="button" class="btn btn-outline-success">
-                                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-check2" viewBox="0 0 16 16">
-                                    <path d="M13.854 3.646a.5.5 0 0 1 0 .708l-7 7a.5.5 0 0 1-.708 0l-3.5-3.5a.5.5 0 1 1 .708-.708L6.5 10.293l6.646-6.647a.5.5 0 0 1 .708 0z" />
+                            <button id="clear" type="button" class="btn btn-outline-danger">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-x" viewBox="0 0 16 16">
+                                    <path d="M4.646 4.646a.5.5 0 0 1 .708 0L8 7.293l2.646-2.647a.5.5 0 0 1 .708.708L8.707 8l2.647 2.646a.5.5 0 0 1-.708.708L8 8.707l-2.646 2.647a.5.5 0 0 1-.708-.708L7.293 8 4.646 5.354a.5.5 0 0 1 0-.708z" />
                                 </svg>
                             </button>
                         </div>
                     </div>
                 </div>
 
-                <button class="btn btn-outline-secondary edit-btn" data-bs-toggle="collapse" data-bs-target="#address-0-collapse" aria-expanded="false" aria-controls="address-0-collapse">
-                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-pencil-square" viewBox="0 0 16 16">
-                        <path d="M15.502 1.94a.5.5 0 0 1 0 .706L14.459 3.69l-2-2L13.502.646a.5.5 0 0 1 .707 0l1.293 1.293zm-1.75 2.456-2-2L4.939 9.21a.5.5 0 0 0-.121.196l-.805 2.414a.25.25 0 0 0 .316.316l2.414-.805a.5.5 0 0 0 .196-.12l6.813-6.814z" />
-                        <path fill-rule="evenodd" d="M1 13.5A1.5 1.5 0 0 0 2.5 15h11a1.5 1.5 0 0 0 1.5-1.5v-6a.5.5 0 0 0-1 0v6a.5.5 0 0 1-.5.5h-11a.5.5 0 0 1-.5-.5v-11a.5.5 0 0 1 .5-.5H9a.5.5 0 0 0 0-1H2.5A1.5 1.5 0 0 0 1 2.5v11z" />
-                    </svg>
-                    Insert Manually
-                </button>
-
-                <div class="collapse" id="address-0-collapse">
-                    <div class="card card-body">
-
-                        <div class="form-row">
-                            <div class="form-group col-md-6">
-                                <label asp-for="Input.AddressLine1"></label>
-                                <input class="form-control" asp-for="Input.AddressLine1" placeholder="Address Line 1" id="addressline1">
-                                <span asp-validation-for="Input.AddressLine1" class="text-danger"></span>
-                            </div>
-                            <div class="form-group col-md-6">
-                                <label asp-for="Input.AddressLine2"></label>
-                                <input class="form-control" asp-for="Input.AddressLine2" placeholder="Address Line 2" id="addressline2">
-                                <span asp-validation-for="Input.AddressLine2" class="text-danger"></span>
-                            </div>
-                        </div>
-                        <div class="form-row">
-                            <div class="form-group col-md-1">
-                                <label asp-for="Input.Number"></label>
-                                <input class="form-control" asp-for="Input.Number" placeholder="1, 21B..." id="number">
-                                <span asp-validation-for="Input.Number" class="text-danger"></span>
-                            </div>
-                            <div class="form-group col-md-6">
-                                <label asp-for="Input.City"></label>
-                                <input class="form-control" asp-for="Input.City" placeholder="City" id="city">
-                                <span asp-validation-for="Input.City" class="text-danger"></span>
-                            </div>
-                        </div>
-                        <div class="form-row">
-                            <div class="form-group col-md-6">
-                                <label asp-for="Input.StateProvince"></label>
-                                <input class="form-control" asp-for="Input.StateProvince" placeholder="CA, NY, ..." id="stateprovince">
-                                <span asp-validation-for="Input.StateProvince" class="text-danger"></span>
-                            </div>
-                            <div class="form-group col-md-6">
-                                <label asp-for="Input.PostalCode"></label>
-                                <input class="form-control" asp-for="Input.PostalCode" placeholder="Postal Code: 20020..." id="postalcode">
-                                <span asp-validation-for="Input.PostalCode" class="text-danger"></span>
-                            </div>
-                            <div class="form-group col-md-4">
-                                <label asp-for="Input.Country"></label>
-                                <select class="form-select" aria-label="Select country" asp-for="Input.Country" asp-items="Model.Countries" id="country">
-                                </select>
-                                <span asp-validation-for="Input.Country" class="text-danger"></span>
-                            </div>
-                        </div>
-                        <div class="form-group col-md-6">
-                            <input class="form-control" asp-for="Input.Latitude" id="latitude" hidden>
-                        </div>
-                        <div class="form-group col-md-6">
-                            <input class="form-control" asp-for="Input.Longitude" id="longitude" hidden>
-                        </div>
-
-                    </div>
-                </div>
-
-                <button type="submit" id="new-restaurant-btn" class="btn btn-primary" value="NewRestaurant">Submit</button>
+                <button type="submit" id="new-restaurant-btn" class="btn btn-primary" value="NewRestaurant">@localizer["Submit"]</button>
             </form>
 
         </div>

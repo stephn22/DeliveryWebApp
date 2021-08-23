@@ -3,7 +3,6 @@ using DeliveryWebApp.Application.Common.Interfaces;
 using DeliveryWebApp.Application.Customers.Commands.CreateCustomer;
 using Microsoft.Extensions.Logging;
 using Moq;
-using NUnit.Framework;
 using System.Threading;
 using System.Threading.Tasks;
 using Xunit;

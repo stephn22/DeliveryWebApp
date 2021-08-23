@@ -117,10 +117,10 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
-  <data name="Become a restaurateur" xml:space="preserve">
+  <data name="Become a food vendor" xml:space="preserve">
     <value>Diventa un ristoratore</value>
   </data>
-  <data name="Become a restaurateur, register your restaurant and start the business" xml:space="preserve">
+  <data name="Become a food vendor, register your restaurant and start the business" xml:space="preserve">
     <value>Diventa un ristoratore, registra il tuo ristorante e inizia l'attività</value>
   </data>
   <data name="Become a rider" xml:space="preserve">
@@ -140,6 +140,30 @@
   </data>
   <data name="Home page" xml:space="preserve">
     <value>Home</value>
+  </data>
+  <data name="Login" xml:space="preserve">
+    <value>Accedi</value>
+  </data>
+  <data name="Manage your restaurant" xml:space="preserve">
+    <value>Gestisci la tua attività</value>
+  </data>
+  <data name="Manage your restaurant through the dashboard" xml:space="preserve">
+    <value>Gestisci la tua attività con la dashboard</value>
+  </data>
+  <data name="Next" xml:space="preserve">
+    <value>Successivo</value>
+  </data>
+  <data name="Previous" xml:space="preserve">
+    <value>Precedente</value>
+  </data>
+  <data name="Register" xml:space="preserve">
+    <value>Registrati</value>
+  </data>
+  <data name="Register or Log in" xml:space="preserve">
+    <value>Registrati o Accedi</value>
+  </data>
+  <data name="Register or log in to start accessing features" xml:space="preserve">
+    <value>Registrati o accedi per iniziare ad usufruire dei servizi</value>
   </data>
   <data name="Sign up" xml:space="preserve">
     <value>Registrati</value>

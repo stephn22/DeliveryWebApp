@@ -1,11 +1,13 @@
 @page
+@using Microsoft.Extensions.Localization
 @model ConfirmEmailModel
+@inject IStringLocalizer<ConfirmEmailModel> localizer
 @{
-    ViewData["Title"] = "Confirm email";
+    ViewData["Title"] = localizer["Confirm email"];
 }
 
 <h1>@ViewData["Title"]</h1>
 <hr/>
 <div class="alert alert-success" role="alert">
-    Your email has been confirmed. You can now <a asp-area="Identity" asp-page="/Account/Login" class="alert-link">login</a>
+    @localizer["Your email has been confirmed. You can now"] <a asp-area="Identity" asp-page="/Account/Login" class="alert-link">@localizer["login"]</a>
 </div>

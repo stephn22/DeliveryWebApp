@@ -1,21 +1,17 @@
-﻿using Microsoft.AspNetCore.Mvc;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using AutoMapper;
+﻿using AutoMapper;
 using DeliveryWebApp.Application.Addresses.Commands.CreateAddress;
 using DeliveryWebApp.Application.Addresses.Commands.DeleteAddress;
 using DeliveryWebApp.Application.Addresses.Commands.UpdateAddress;
-using DeliveryWebApp.Application.Addresses.Queries.GetAddresses;
+using DeliveryWebApp.Application.Addresses.Queries.GetSingleAddress;
 using DeliveryWebApp.Application.Common.Exceptions;
 using DeliveryWebApp.Application.Common.Security;
 using DeliveryWebApp.Application.Restaurateurs.Queries.GetRestaurateurAddress;
 using DeliveryWebApp.Application.Restaurateurs.Queries.GetRestaurateurs;
 using DeliveryWebApp.Domain.Entities;
 using MediatR;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
-using Newtonsoft.Json.Linq;
+using System.Threading.Tasks;
 
 namespace DeliveryWebApp.WebUI.Controllers
 {
@@ -41,12 +37,13 @@ namespace DeliveryWebApp.WebUI.Controllers
             return await _mediator.Send(_mapper.Map<CreateAddressCommand>(request));
         }
 
+
         [HttpGet("{id:int}")]
         public async Task<ActionResult<Address>> Read(int id)
         {
             try
             {
-                return await _mediator.Send(new GetRestaurateurAddressQuery
+                return await _mediator.Send(new GetSingleAddressQuery
                 {
                     Id = id
                 });
@@ -61,7 +58,13 @@ namespace DeliveryWebApp.WebUI.Controllers
         [HttpPut("{id:int}")]
         public async Task<ActionResult<Address>> Update(Address request, int id)
         {
-            return await _mediator.Send(_mapper.Map<UpdateAddressCommand>(request));
+            return await _mediator.Send(new UpdateAddressCommand
+            {
+                Id = id,
+                PlaceName = request.PlaceName,
+                Latitude = request.Latitude,
+                Longitude = request.Longitude
+            });
         }
 
         [HttpDelete]

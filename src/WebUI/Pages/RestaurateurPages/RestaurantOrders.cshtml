@@ -1,13 +1,12 @@
 ﻿@page "{id:int?}"
+@using Microsoft.AspNetCore.Localization
+@using Microsoft.Extensions.Localization
 @model DeliveryWebApp.WebUI.Pages.RestaurateurPages.RestaurantOrdersModel
+@inject IStringLocalizer<RestaurantOrdersModel> localizer
 @{
-    ViewData["Title"] = "Restaurant Orders";
-    Layout = "../Views/_RestaurantOrdersLayout";
-}
-
-@section Head {
-    <link type="text/css" rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/jsgrid/1.5.3/jsgrid.min.css" />
-    <link type="text/css" rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/jsgrid/1.5.3/jsgrid-theme.min.css" />
+    ViewData["Title"] = "Orders";
+    var requestCultureFeature = HttpContext.Features.Get<IRequestCultureFeature>();
+    var requestCulture = requestCultureFeature.RequestCulture;
 }
 
 <a asp-page="/RestaurateurPages/RestaurantDashboard" title="Back to dashboard" id="back">
@@ -16,91 +15,147 @@
     </svg>
 </a>
 
-<div id="jsGrid" style="padding-bottom: 7rem; display: table"></div>
+<div class="text-center">
+    
+    <table class="table">
+        <thead>
+            <tr class="table-primary">
+                <th>
+                    @* Id *@
+                    @Html.DisplayNameFor(model => model.Orders[0].Id)
+                </th>
+                <th>
+                    @localizer["Date"]
+                </th>
+                <th>
+                    @localizer["Delivery Date"]
+                </th>
+                <th>
+                    @localizer["Address"]
+                </th>
+                <th>
+                    @localizer["Total"]
+                </th>
+                <th>
+                    @localizer["Status"]
+                </th>
+                <th></th>
+            </tr>
+        </thead>
+        <tbody>
+            @for (var i = 0; i < Model.Orders.Count; i++)
+            {
+                <tr>
+                    <td>
+                        @Model.Orders[i].Id
+                    </td>
+                    <td>
+                        @Model.Orders[i].Date.ToLocalTime().ToString("f")
+                    </td>
+                    <td>
+                        @if (Model.Orders[i].DeliveryDate == null)
+                        {
+                            <p>N/A</p>
+                        }
+                        else
+                        {
+                            @Model.Orders[i].DeliveryDate.Value.ToLocalTime().ToString("f")
+                        }
+                    </td>
+                    <td>
+                       @* Address *@
+                        @Model.Addresses[i].PlaceName
+                    </td>
+                    <td>
+                        @Model.Orders[i].TotalPrice.ToString("C")
+                    </td>
+                    <td>
+                        @Model.Orders[i].Status
+                    </td>
+                    <td>
 
-@section Scripts {
-    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/jsgrid/1.5.3/jsgrid.min.js"></script>
+                        <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#modal-@i">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-eye" viewBox="0 0 16 16">
+                                <path d="M16 8s-3-5.5-8-5.5S0 8 0 8s3 5.5 8 5.5S16 8 16 8zM1.173 8a13.133 13.133 0 0 1 1.66-2.043C4.12 4.668 5.88 3.5 8 3.5c2.12 0 3.879 1.168 5.168 2.457A13.133 13.133 0 0 1 14.828 8c-.058.087-.122.183-.195.288-.335.48-.83 1.12-1.465 1.755C11.879 11.332 10.119 12.5 8 12.5c-2.12 0-3.879-1.168-5.168-2.457A13.134 13.134 0 0 1 1.172 8z" />
+                                <path d="M8 5.5a2.5 2.5 0 1 0 0 5 2.5 2.5 0 0 0 0-5zM4.5 8a3.5 3.5 0 1 1 7 0 3.5 3.5 0 0 1-7 0z" />
+                            </svg>
+                        </button>
 
-    <script>
-        $(function () {
-            const id = @Model.Id;
-            const url = `/api/orders/${id}`;
+                        <div id="modal-@i" class="modal fade" aria-labelledby="modal-title-@i" aria-hidden="true">
+                            <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable">
+                                <div class="modal-content">
+                                    <div class="modal-header">
+                                        <h5 class="modal-title" id="modal-title-@i">
+                                            @localizer["Products of order"]: @Model.Orders[i].Id
+                                        </h5>
 
-            const ajax = function (item, verb, json = true) {
-                return $.ajax({
-                    type: verb,
-                    url: url,
-                    data: json ? JSON.stringify(item) : item,
-                    dataType: "json",
-                    contentType: json ? "application/json" : "text/plain"
-                });
-            };
+                                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                    </div>
 
-            const DateField = function (config) {
-                jsGrid.Field.call(this, config);
-            };
+                                    <div class="modal-body">
 
-            DateField.prototype = new jsGrid.DateField({
+                                        <table class="table">
+                                            <thead>
+                                            <tr class="table-secondary">
+                                                <th>
+                                                    Id
+                                                </th>
+                                                <th>
+                                                    @* Product Name *@
+                                                    @localizer["Product"]
+                                                </th>
+                                                <th>
+                                                    @* Discounted price *@
+                                                    @localizer["Price"]
+                                                </th>
+                                                <th>
+                                                    @localizer["Discount"]
+                                                </th>
+                                                <th>
+                                                    @localizer["Quantity"]
+                                                </th>
+                                            </tr>
+                                            </thead>
+                                            <tbody>
+                                            @for (var j = 0; j < Model.OrderItems.Count; j++)
+                                            {
+                                                <tr>
+                                                    <td>
+                                                        @Model.Products[j].Id
+                                                    </td>
+                                                    <td>
+                                                        @Model.Products[j].Name
+                                                    </td>
+                                                    <td>
+                                                        @Model.OrderItems[j].ProductPrice.ToString("C")
+                                                    </td>
+                                                    <td>
+                                                        @Model.OrderItems[j].Discount %
+                                                    </td>
+                                                    <td>
+                                                        @Model.OrderItems[j].Quantity
+                                                    </td>
+                                                </tr>
+                                            }
+                                            </tbody>
+                                        </table>
+                                        <small class="small text-muted">@localizer["Discount and price based on time of purchase"]</small>
 
-                css: "date",
-                align: "center",
+                                    </div>
 
-                myCustomProperty: "orderDate",
+                                    <div class="modal-footer">
+                                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">@localizer["Close"]</button>
+                                    </div>
 
-                sorter: function(date1, date2) {
-                    return new Date(date1) - new Date(date2);
-                },
+                                </div>
+                            </div>
+                        </div>
 
-                itemTemplate: function(value) {
-                    return new Date(value).toDateString();
-                },
+                    </td>
+                </tr>
+            }
 
-                insertTemplate: function(value) {
-                    return this._insertPicker = $("<input>").datepicker({ defaultDate: new Date() });
-                },
+        </tbody>
+    </table>
 
-                editTemplate: function(value) {
-                    return this._editPicker = $("<input>").datepicker().datepicker("setDate", new Date(value));
-                },
-
-                insertValue: function () {
-                    return this._insertPicker.datepicker("getDate").toISOString();
-                },
-
-                editValue: function () {
-                    return this._editPicker.datepicker("getDate").toISOString();
-                }
-            });
-
-            jsGrid.fields.date = DateField;
-
-            $("#jsGrid").jsGrid({
-                height: "90%",
-                width: "100%",
-                filtering: true,
-                inserting: false,
-                editing: false,
-                sorting: true,
-                paging: true,
-                autoload: true,
-                pageSize: 15,
-                pageButtonCount: 5,
-                deleteConfirm: "Do you really want to delete this item?", //TODO: localize
-                controller: {
-                    loadData: filter => ajax(filter, "GET", json = false),
-                    insertItem: item => ajax(item, "POST"),
-                    updateItem: item => ajax(item, "PUT"),
-                    deleteItem: item => ajax(item, "DELETE"),
-                },
-                fields: [
-                    { name: "customerId", type: "text", width: 150, title: "CustomerId" },
-                    { name: "date", type: "DateField", width: 50, title: "Date" },
-                    { name: "totalPrice", type: "number", width: 50, title: "Total Price" },
-                    { name: "status", type: "text", width: 150, title: "Status" },
-                    { name: "deliveryDate", type: "DateField", width: 50, title: "Delivery Date" },
-                    { type: "control" }
-                ]
-            });
-        });
-    </script>
-}
+</div>

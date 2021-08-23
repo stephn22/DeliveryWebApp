@@ -1,9 +1,9 @@
-﻿using System.Collections.Generic;
+﻿using FluentValidation;
+using MediatR;
+using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
-using FluentValidation;
-using MediatR;
 using ValidationException = DeliveryWebApp.Application.Common.Exceptions.ValidationException;
 
 namespace DeliveryWebApp.Application.Common.Behaviours
@@ -28,7 +28,9 @@ namespace DeliveryWebApp.Application.Common.Behaviours
                 var failures = validationResults.SelectMany(r => r.Errors).Where(f => f != null).ToList();
 
                 if (failures.Count != 0)
+                {
                     throw new ValidationException(failures);
+                }
             }
             return await next();
         }

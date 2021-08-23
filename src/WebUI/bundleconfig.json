@@ -34,5 +34,17 @@
     "inputFiles": [
       "wwwroot/css/images.css"
     ]
+  },
+  {
+    "outputFileName": "wwwroot/js/classes/order.min.js",
+    "inputFiles": [
+      "wwwroot/js/classes/order.js"
+    ]
+  },
+  {
+    "outputFileName": "wwwroot/css/directions.min.css",
+    "inputFiles": [
+      "wwwroot/css/directions.css"
+    ]
   }
 ]

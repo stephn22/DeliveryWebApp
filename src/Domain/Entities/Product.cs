@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-
-namespace DeliveryWebApp.Domain.Entities
+﻿namespace DeliveryWebApp.Domain.Entities
 {
     public class Product : BaseEntity
     {

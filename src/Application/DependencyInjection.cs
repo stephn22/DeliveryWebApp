@@ -1,5 +1,4 @@
-﻿using AutoMapper;
-using DeliveryWebApp.Application.Common.Behaviours;
+﻿using DeliveryWebApp.Application.Common.Behaviours;
 using FluentValidation;
 using MediatR;
 using Microsoft.Extensions.DependencyInjection;

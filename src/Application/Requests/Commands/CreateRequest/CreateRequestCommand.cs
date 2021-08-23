@@ -1,12 +1,12 @@
-﻿using System;
+﻿using AutoMapper;
 using DeliveryWebApp.Application.Common.Interfaces;
+using DeliveryWebApp.Application.Requests.Commands.DeleteRequest;
 using DeliveryWebApp.Domain.Entities;
 using MediatR;
+using Microsoft.EntityFrameworkCore;
+using System;
 using System.Threading;
 using System.Threading.Tasks;
-using AutoMapper;
-using DeliveryWebApp.Application.Requests.Commands.DeleteRequest;
-using Microsoft.EntityFrameworkCore;
 
 namespace DeliveryWebApp.Application.Requests.Commands.CreateRequest
 {
@@ -48,7 +48,7 @@ namespace DeliveryWebApp.Application.Requests.Commands.CreateRequest
             catch (InvalidOperationException)
             {
             }
-            
+
             _context.Requests.Add(entity);
             await _context.SaveChangesAsync(cancellationToken);
 

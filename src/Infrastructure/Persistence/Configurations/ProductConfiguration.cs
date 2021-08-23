@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using DeliveryWebApp.Domain.Entities;
+﻿using DeliveryWebApp.Domain.Entities;
 using DeliveryWebApp.Infrastructure.Persistence.Configurations.Constants;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
@@ -21,7 +16,7 @@ namespace DeliveryWebApp.Infrastructure.Persistence.Configurations
                 .IsRequired();
 
             builder.Property(p => p.Price)
-                .HasPrecision(16, 4)
+                .HasColumnType(ColumnType.Money)
                 .IsRequired();
 
             builder.HasOne(p => p.Restaurateur)

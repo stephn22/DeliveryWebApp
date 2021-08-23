@@ -129,8 +129,11 @@
   <data name="Delivery History" xml:space="preserve">
     <value>Cronologia consegne</value>
   </data>
-  <data name="Open Orders" xml:space="preserve">
-    <value>Ordini aperti</value>
+  <data name="Login" xml:space="preserve">
+    <value>Accedi</value>
+  </data>
+  <data name="New Orders" xml:space="preserve">
+    <value>Nuovi ordini</value>
   </data>
   <data name="Order History" xml:space="preserve">
     <value>Cronologia Ordini</value>
@@ -140,6 +143,9 @@
   </data>
   <data name="Profile" xml:space="preserve">
     <value>Profilo</value>
+  </data>
+  <data name="Register" xml:space="preserve">
+    <value>Registrati</value>
   </data>
   <data name="Role Request" xml:space="preserve">
     <value>Cambio Utente</value>

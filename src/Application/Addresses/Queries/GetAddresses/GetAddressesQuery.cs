@@ -10,6 +10,10 @@ using System.Threading.Tasks;
 
 namespace DeliveryWebApp.Application.Addresses.Queries.GetAddresses
 {
+    /// <summary>
+    /// Used in controllers
+    /// Get all addresses of a customer
+    /// </summary>
     public class GetAddressesQuery : IRequest<List<Address>>
     {
         public int CustomerId { get; set; }

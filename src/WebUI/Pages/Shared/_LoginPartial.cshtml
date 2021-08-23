@@ -49,27 +49,18 @@
                                 @localizer["Dashboard"]
                             </a>
                         </li>
-                        @*<li>
-                                <a class="dropdown-item">Products</a>
-                            </li>*@
                     }
                     @if (isRider)
                     {
                         <li>
-                            <a class="dropdown-item">
-                                <img src="/icons/piggy-bank.svg" alt="piggy-bank" height="16" width="16" />
-                                @localizer["Credit"]
-                            </a>
-                        </li>
-                        <li>
-                            <a class="dropdown-item">
+                            <a class="dropdown-item" asp-page="/RiderPages/Orders">
                                 <img src="/icons/inbox.svg" alt="inbox" />
-                                @localizer["Open Orders"]
+                                @localizer["New Orders"]
                             </a>
                         </li>
                         <li>
-                            <a class="dropdown-item">
-                                <img src="/icons/clock-history.svg" alt="clock-history" height="16" width="16" />
+                            <a class="dropdown-item" asp-page="/RiderPages/DeliveryHistory">
+                                <img src="/icons/truck.svg" alt="clock-history" height="16" width="16" />
                                 @localizer["Delivery History"]
                             </a>
                         </li>
@@ -77,7 +68,7 @@
                     @if (isCustomer)
                     {
                         <li>
-                            <a class="dropdown-item" asp-page="/CustomerPages/Orders">
+                            <a class="dropdown-item" asp-page="/CustomerPages/CustomerOrders">
                                 <img src="/icons/clock-history.svg" alt="clock-history" height="16" width="16" />
                                 @localizer["Order History"]
                             </a>
@@ -128,10 +119,10 @@
     else
     {
         <li class="nav-item">
-            <a class="nav-link text-dark" asp-area="Identity" asp-page="/Account/Register">Register</a>
+            <a class="nav-link text-dark" asp-area="Identity" asp-page="/Account/Register">@localizer["Register"]</a>
         </li>
         <li class="nav-item">
-            <a class="nav-link text-dark" asp-area="Identity" asp-page="/Account/Login">Login</a>
+            <a class="nav-link text-dark" asp-area="Identity" asp-page="/Account/Login">@localizer["Login"]</a>
         </li>
     }
 </ul>

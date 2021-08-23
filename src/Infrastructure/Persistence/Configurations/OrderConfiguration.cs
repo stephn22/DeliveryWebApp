@@ -10,15 +10,22 @@ namespace DeliveryWebApp.Infrastructure.Persistence.Configurations
         public void Configure(EntityTypeBuilder<Order> builder)
         {
             builder.Property(u => u.TotalPrice)
-                .HasPrecision(16, 4)
+                .HasColumnType(ColumnType.Money)
                 .IsRequired();
 
             builder.Property(o => o.Date)
-                .HasColumnType("datetime2")
+                .HasColumnType(ColumnType.DateTime)
                 .HasPrecision(0)
                 .IsRequired();
 
+            builder.Property(o => o.DeliveryDate)
+                .HasColumnType(ColumnType.DateTime)
+                .HasPrecision(0);
+
             builder.Property(u => u.Status)
+                .IsRequired();
+
+            builder.Property(o => o.AddressId)
                 .IsRequired();
 
             builder.HasOne(o => o.Customer)

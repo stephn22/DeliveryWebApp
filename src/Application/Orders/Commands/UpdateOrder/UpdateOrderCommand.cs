@@ -1,11 +1,8 @@
 ﻿using DeliveryWebApp.Application.Common.Exceptions;
 using DeliveryWebApp.Application.Common.Interfaces;
-using DeliveryWebApp.Application.OrderItems.Commands.CreateOrderItem;
-using DeliveryWebApp.Application.Orders.Extensions;
 using DeliveryWebApp.Domain.Entities;
 using MediatR;
 using System;
-using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -15,9 +12,8 @@ namespace DeliveryWebApp.Application.Orders.Commands.UpdateOrder
     {
         public int Id { get; set; }
         public string OrderStatus { get; set; }
-        public ICollection<BasketItem> BasketItems { get; set; }
-        public DateTime? Date { get; set; }
         public DateTime? DeliveryDate { get; set; }
+        public Rider Rider { get; set; }
     }
 
     public class UpdateOrderCommandHandler : IRequestHandler<UpdateOrderCommand, Order>
@@ -40,11 +36,6 @@ namespace DeliveryWebApp.Application.Orders.Commands.UpdateOrder
                 throw new NotFoundException(nameof(Order), request.Id);
             }
 
-            if (request.Date != null)
-            {
-                entity.Date = (DateTime)request.Date;
-            }
-
             if (request.DeliveryDate != null)
             {
                 entity.DeliveryDate = request.DeliveryDate;
@@ -55,21 +46,10 @@ namespace DeliveryWebApp.Application.Orders.Commands.UpdateOrder
                 entity.Status = request.OrderStatus;
             }
 
-            if (request.BasketItems is not { Count: > 0 })
+            if (request.Rider != null)
             {
-                return entity;
+                entity.RiderId = request.Rider.Id;
             }
-
-            foreach (var item in request.BasketItems)
-            {
-                await _mediator.Send(new CreateOrderItemCommand
-                {
-                    BasketItemId = item.Id,
-                    OrderId = entity.Id
-                }, cancellationToken);
-            }
-
-            entity.TotalPrice = await entity.GetOrderTotalPrice(_mediator, _context);
 
             await _context.SaveChangesAsync(cancellationToken);
 

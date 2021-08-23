@@ -1,18 +1,16 @@
-using System;
-using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations;
-using System.Linq;
-using System.Threading.Tasks;
 using DeliveryWebApp.Application.Common.Security;
 using DeliveryWebApp.Application.Customers.Commands.UpdateCustomer;
 using DeliveryWebApp.Infrastructure.Identity;
 using DeliveryWebApp.Infrastructure.Persistence;
-using DeliveryWebApp.Infrastructure.Security;
 using MediatR;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Localization;
+using System.ComponentModel.DataAnnotations;
+using System.Linq;
+using System.Threading.Tasks;
 
 namespace DeliveryWebApp.WebUI.Areas.Identity.Pages.Account.Manage
 {
@@ -23,17 +21,20 @@ namespace DeliveryWebApp.WebUI.Areas.Identity.Pages.Account.Manage
         private readonly SignInManager<ApplicationUser> _signInManager;
         private readonly ApplicationDbContext _context;
         private readonly IMediator _mediator;
+        private readonly IStringLocalizer<IndexModel> _localizer;
 
         public IndexModel(
             UserManager<ApplicationUser> userManager,
             SignInManager<ApplicationUser> signInManager,
             ApplicationDbContext context,
-            IMediator mediator)
+            IMediator mediator,
+            IStringLocalizer<IndexModel> localizer)
         {
             _userManager = userManager;
             _signInManager = signInManager;
             _context = context;
             _mediator = mediator;
+            _localizer = localizer;
         }
 
         public string Username { get; set; }
@@ -124,13 +125,13 @@ namespace DeliveryWebApp.WebUI.Areas.Identity.Pages.Account.Manage
                 var setPhoneResult = await _userManager.SetPhoneNumberAsync(user, Input.PhoneNumber);
                 if (!setPhoneResult.Succeeded)
                 {
-                    StatusMessage = "Unexpected error when trying to set phone number.";
+                    StatusMessage = _localizer["Unexpected error when trying to set phone number."];
                     return RedirectToPage();
                 }
             }
 
             await _signInManager.RefreshSignInAsync(user);
-            StatusMessage = "Your profile has been updated";
+            StatusMessage = _localizer["Your profile has been updated"];
             return RedirectToPage();
         }
     }

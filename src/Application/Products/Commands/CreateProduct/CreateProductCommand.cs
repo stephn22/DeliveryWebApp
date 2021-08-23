@@ -1,9 +1,9 @@
-﻿using DeliveryWebApp.Application.Common.Interfaces;
+﻿using AutoMapper;
+using DeliveryWebApp.Application.Common.Interfaces;
 using DeliveryWebApp.Domain.Entities;
 using MediatR;
 using System.Threading;
 using System.Threading.Tasks;
-using AutoMapper;
 
 namespace DeliveryWebApp.Application.Products.Commands.CreateProduct
 {

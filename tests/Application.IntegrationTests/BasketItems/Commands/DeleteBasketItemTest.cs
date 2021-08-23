@@ -93,7 +93,7 @@ namespace DeliveryWebApp.Application.IntegrationTests.BasketItems.Commands
                 basketItem.Should().BeNull();
 
                 var b = await FindAsync<Basket>(basket.Id);
-                b.TotalPrice.Should().Be(14.52M);
+                b.TotalPrice.Should().Be(0M);
             }
             catch (NotFoundException e)
             {

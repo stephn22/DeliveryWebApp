@@ -30,17 +30,17 @@
     {
         <main class="px-3">
             <h1>@localizer["Register or Log in"]</h1>
-            <p class="lead">
+            <p class="lead text-dark">
                 @localizer["Register or log in to start accessing features"]
             </p>
             <p class="lead">
 
                 <a class="btn btn-outline-dark rounded-pill" asp-area="Identity" asp-page="/Account/Register">
-                    Register
+                    @localizer["Register"]
                 </a>
 
                 <a class="btn btn-outline-dark rounded-pill" asp-area="Identity" asp-page="/Account/Login">
-                    Login
+                    @localizer["Login"]
                 </a>
             </p>
             <img src="/icons/undraw_healthy_options_sdo3.svg" alt="index-image" width="420" height="420" />
@@ -98,13 +98,13 @@
                                 <h1>@localizer["Manage your restaurant"]</h1>
                                 <p class="word">@localizer["Manage your restaurant through the dashboard"]</p>
                                 <p>
-                                    <a class="btn btn-lg btn-primary" asp-page="/RestaurateurPages/RestaurantDashboard">@localizer["Dashboard"]</a>
+                                    <a class="btn btn-lg btn-primary" asp-page="/RestaurateurPages/RestaurantDashboard">Dashboard</a>
                                 </p>
                             }
                             else
                             {
-                                <h1>@localizer["Become a restaurateur"]</h1>
-                                <p class="word">@localizer["Become a restaurateur, register your restaurant and start the business"]</p>
+                                <h1>@localizer["Become a food vendor"]</h1>
+                                <p class="word">@localizer["Become a food vendor, register your restaurant and start the business"]</p>
                                 <p>
                                     <a class="btn btn-lg btn-primary" asp-area="Identity" asp-page="/Account/Manage/Request">@localizer["Sign up"]</a>
                                 </p>
@@ -117,13 +117,13 @@
 
                 <img src="/icons/arrow-left.svg" alt="arrow_left" width="50" height="50" />
 
-                <span class="visually-hidden">Previous</span>
+                <span class="visually-hidden">@localizer["Previous"]</span>
             </button>
             <button class="carousel-control-next" type="button" data-bs-target="#myCarousel" data-bs-slide="next">
 
                 <img src="/icons/arrow-right.svg" alt="arrow_right" width="50" height="50" />
 
-                <span class="visually-hidden">Next</span>
+                <span class="visually-hidden">@localizer["Next"]</span>
             </button>
         </div>
     }

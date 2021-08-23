@@ -1,51 +1,522 @@
 ﻿@page
+@using DeliveryWebApp.Domain.Constants
+@using IdentityServer4.Extensions
+@using Microsoft.Extensions.Localization
 @model DeliveryWebApp.WebUI.Pages.RiderPages.OrdersModel
+@inject IStringLocalizer<OrdersModel> localizer
 @{
-    ViewData["Title"] = "Orders";
+    ViewData["Title"] = localizer["Orders"];
+    Layout = "../Views/_MapLayout";
 }
 
 @section Head
 {
-    <link href="~/lib/jsgrid-1.5.3/jsgrid.min.css" rel="stylesheet"/>
-    <link href="~/lib/jsgrid-1.5.3/jsgrid-theme.min.css" rel="stylesheet"/>
+    <link href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:400,700" rel="stylesheet"/>
+
+    <script src="https://api.mapbox.com/mapbox-gl-js/v2.4.0/mapbox-gl.js"></script>
+
+    @* Geocoder plugin *@
+    <script src="https://api.mapbox.com/mapbox-gl-js/plugins/mapbox-gl-geocoder/v4.7.2/mapbox-gl-geocoder.min.js"></script>
+
+    @* Turf.js plugin *@
+    <script src="https://npmcdn.com/@@turf/turf/turf.min.js"></script>
+
+    <link href="https://api.mapbox.com/mapbox-gl-js/v2.4.0/mapbox-gl.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://api.mapbox.com/mapbox-gl-js/plugins/mapbox-gl-geocoder/v4.7.2/mapbox-gl-geocoder.css" type="text/css">
+    <link rel="stylesheet" href="/css/restaurant-list.min.css"/>
+    <link rel="stylesheet" href="/css/images.min.css"/>
+    
+    <style type="text/css">
+        .alert-secondary {
+            font-family: Roboto;
+            margin-bottom: 4rem;
+        }
+    </style>
 }
 
-<div id="jsGrid"></div>
+@if (Model.Orders.IsNullOrEmpty())
+{
+    <div class="alert-secondary alert text-center" role="alert">
+        @localizer["There are no orders to deliver at the moment"]
+    </div>
+}
+else
+{
+    <div class="sidebar">
+        <div class="heading">
+            <h1>@localizer["Browse New Orders"]</h1>
+            <a class="nav-link link-light" asp-page="../Index">
+                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-house-door" viewBox="0 0 16 16">
+                    <path d="M8.354 1.146a.5.5 0 0 0-.708 0l-6 6A.5.5 0 0 0 1.5 7.5v7a.5.5 0 0 0 .5.5h4.5a.5.5 0 0 0 .5-.5v-4h2v4a.5.5 0 0 0 .5.5H14a.5.5 0 0 0 .5-.5v-7a.5.5 0 0 0-.146-.354L13 5.793V2.5a.5.5 0 0 0-.5-.5h-1a.5.5 0 0 0-.5.5v1.293L8.354 1.146zM2.5 14V7.707l5.5-5.5 5.5 5.5V14H10v-4a.5.5 0 0 0-.5-.5h-3a.5.5 0 0 0-.5.5v4H2.5z"/>
+                </svg>
+            </a>
+        </div>
+        <div id="listings" class="listings"></div>
+    </div>
+    <div id="map" class="map"></div>
+    <div id="instructions"></div>
+}
 
 @section Scripts
 {
-    <script src="~/lib/jsgrid-1.5.3/jsgrid.min.js"></script>
+    <script type="text/javascript" src="/js/classes/address.min.js"></script>
+    <script type="text/javascript" src="/js/classes/restaurant.min.js"></script>
+    <script type="text/javascript" src="/js/classes/order.min.js"></script>
 
-    <script>
+    <script type="text/javascript">
         $(function() {
-            $("#jsGrid").jsGrid({
-                height: "50%",
-                width: "100%",
+            if (!('remove' in Element.prototype)) {
+                Element.prototype.remove = function() {
+                    if (this.parentNode) {
+                        this.parentNode.removeChild(this);
+                    }
+                };
+            }
+            mapboxgl.accessToken = 'pk.eyJ1Ijoic3RlY3JvdHRpMSIsImEiOiJja3Bna2kzbHYyaThoMm9ueHl1dzlnaTc1In0.EpALSOaDOmuM8XGS_IQzvA';
 
-                filtering: true,
-                inserting: false,
-                editing: false,
-                sorting: true,
-                paging: true,
-                autoload: true,
+            mapboxgl.setRTLTextPlugin('https://api.mapbox.com/mapbox-gl-js/plugins/mapbox-gl-rtl-text/v0.2.3/mapbox-gl-rtl-text.js');
 
-                pageSize: 10,
-                pageButtonCount: 5,
+            let map;
 
-                controller: {
-                    loadData: function(filter) {
-                        return $.ajax({
-                            type: "GET",
-                            url: "api/orders",
-                            data: filter,
-                            dataType: "JSON"
+            let point;
+
+            const orders = {
+                "type": "FeatureCollection",
+                "features": []
+            };
+
+            // get orders
+            $.ajax({
+                type: "GET",
+                url: "/api/orders",
+                dataType: "JSON",
+                contentType: "application/json; charset=utf-8",
+                success: function(data, status, xhr) {
+
+                    for (let i = 0; i < data.length; i++) {
+
+                        // add only if order is new
+                        if (data[i].status === "@OrderStatus.New") {
+                            const order = new Order(
+                                data[i].id,
+                                data[i].date,
+                                data[i].restaurateurId,
+                                data[i].status,
+                                data[i].addressId
+                            );
+
+                            // get delivery address
+                            $.ajax({
+                                type: "GET",
+                                url: `/api/addresses/${order.addressId}`,
+                                dataType: "JSON",
+                                contentType: "application/json; charset=utf-8",
+                                success: function(addressData, status, xhr) {
+
+                                    const address = new Address(
+                                        addressData.placeName,
+                                        parseFloat(addressData.longitude),
+                                        parseFloat(addressData.latitude),
+                                        addressData.customerId,
+                                        addressData.restaurateurId);
+
+                                    // get restaurant
+                                    $.ajax({
+                                        type: "GET",
+                                        url: `/api/restaurateurs/${order.restaurateurId}`,
+                                        dataType: "JSON",
+                                        contentType: "application/json; charset=utf-8",
+                                        success: function(restaurateurData, status, xhr) {
+
+                                            const restaurateur = new Restaurateur(
+                                                restaurateurData.id,
+                                                restaurateurData.restaurantName,
+                                                restaurateurData.logo,
+                                                restaurateurData.restaurantAddressId,
+                                                restaurateurData.restaurantCategory,
+                                                restaurateurData.customerId
+                                            );
+
+                                            // get address of restaurant
+                                            $.ajax({
+                                                type: "GET",
+                                                url: `/api/addresses/${restaurateur.restaurantAddressId}`,
+                                                dataType: "JSON",
+                                                contentType: "application/json; charset=utf-8",
+                                                success: function(restaurantAddressData, status, xhr) {
+
+                                                    navigator.geolocation.getCurrentPosition(showMap);
+
+                                                    const restaurantAddress = new Address(
+                                                        restaurantAddressData.placeName,
+                                                        restaurantAddressData.longitude,
+                                                        restaurantAddressData.latitude,
+                                                        restaurantAddressData.customerId,
+                                                        restaurantAddressData.restaurateurId
+                                                    );
+
+
+                                                    orders.features.push({
+                                                        "type": "Feature",
+                                                        "geometry": {
+                                                            "type": "Point",
+                                                            "coordinates": [restaurantAddress.longitude, restaurantAddress.latitude]
+                                                        },
+                                                        "properties": {
+                                                            "orderId": order.id,
+                                                            "name": restaurateur.restaurantName,
+                                                            "category": restaurateur.restaurantCategory,
+                                                            "address": address.placeName, // delivery address
+                                                            "addressLngLat": {
+                                                                "type": "Point",
+                                                                "coordinates": [address.longitude, address.latitude]
+                                                            },
+                                                            "restaurantAddress": restaurantAddress.placeName,
+                                                            "date": order.date
+                                                        }
+                                                    });
+                                                }
+                                            });
+
+                                        },
+                                        error: function() {
+                                            console.log(xhr);
+                                            return null;
+                                        }
+                                    });
+                                },
+                                error:
+                                    function() {
+                                        console.log(xhr);
+                                        return null;
+                                    }
+                            });
+                        }
+                    }
+
+
+                    /**
+                     * Assign a unique id to each order. This `id` is used
+                     * later to associate each point on the map with a listing
+                     * in the sidebar.
+                     */
+                    orders.features.forEach(function(order, i) {
+                        value: order.properties.id = i;
+                    });
+
+                    function showMap(center) {
+                        map = new mapboxgl.Map({
+                            container: 'map',
+                            style: 'mapbox://styles/mapbox/streets-v11',
+                            center: [center.coords.longitude, center.coords.latitude],
+                            zoom: 12,
+                            scrollZoom: true
+                        });
+
+                        map.on('load',
+                            function(e) {
+
+                                map.addSource('places',
+                                    {
+                                        'type': 'geojson',
+                                        'data': orders
+                                    });
+
+                                point = {
+                                    "type": "FeatureCollection",
+                                    "features": [
+                                        {
+                                            "type": "Feature",
+                                            "geometry": {
+                                                "type": "Point",
+                                                "coordinates": [center.coords.longitude, center.coords.latitude]
+                                            }
+                                        }
+                                    ]
+                                }
+
+                                map.addControl(new mapboxgl.FullscreenControl());
+
+                                map.setLayoutProperty('country-label',
+                                    'text-field',
+                                    [
+                                        'format',
+                                        ['get', 'name_en'],
+                                        { 'font-scale': 1.2 },
+                                        '\n',
+                                        {},
+                                        ['get', 'name'],
+                                        {
+                                            'font-scale': 0.8,
+                                            'text-font': [
+                                                'literal',
+                                                ['DIN Offc Pro Italic', 'Arial Unicode MS Regular']
+                                            ]
+                                        }
+                                    ]);
+
+
+                                buildLocationList(orders);
+                                addMarkers();
+                            });
+
+                        const canvas = map.getCanvasContainer();
+
+                    }
+
+                    function addMarkers() {
+                        /* For each feature in the GeoJSON object above: */
+                        orders.features.forEach(function(marker) {
+
+                            /* Create a div element for the marker. */
+                            const el = document.createElement("div");
+
+                            /* Assign a unique `id` to the marker. */
+                            el.id = `marker-${marker.properties.id}`;
+
+                            /* Assign the `marker` class to each marker for styling. */
+                            el.className = "marker";
+
+                            /**
+                             * Create a marker using the div element
+                             * defined above and add it to the map.
+                             **/
+                            new mapboxgl.Marker(el, { offset: [0, -23] })
+                                .setLngLat(marker.geometry.coordinates)
+                                .addTo(map);
+
+                            /**
+                             * Listen to the element and when it is clicked, do three things:
+                             * 1. Fly to the point
+                             * 2. Close all other popups and display popup for clicked order
+                             * 3. Highlight listing in sidebar (and remove highlight for all other listings)
+                             **/
+                            el.addEventListener("click",
+                                function(e) {
+                                    /* Fly to the point */
+                                    flyToStore(marker);
+                                    /* Close all other popups and display popup for clicked order */
+                                    createPopUp(marker);
+                                    /* Highlight listing in sidebar */
+                                    const activeItem = document.getElementsByClassName("active");
+                                    e.stopPropagation();
+
+                                    if (activeItem[0]) {
+                                        activeItem[0].classList.remove("active");
+                                    }
+                                });
                         });
                     }
-                },
 
-                fields: [
-                    { name: "id", type: "number", width: 150 },
-                ]
+                    /**
+                     * Add a listing for each order to the sidebar.
+                    **/
+                    function buildLocationList(data) {
+                        data.features.forEach(function(order, i) {
+                            const prop = order.properties;
+
+                            /* Add a new listing section to the sidebar. */
+                            const listings = document.getElementById("listings");
+
+                            const listing = listings.appendChild(document.createElement("div"));
+                            /* Assign a unique `id` to the listing. */
+                            listing.id = `listing-${i}`;
+                            /* Assign the `item` class to each listing for styling. */
+                            listing.className = "item";
+
+                            /* Add the link to the individual listing created above. */
+                            const link = listing.appendChild(document.createElement("a"));
+                            link.href = "#";
+                            link.className = "title";
+                            link.id = `link-${i}`;
+                            link.innerHTML = `Order id: ${prop.orderId}`;
+
+                            /* Add details to the individual listing. */
+                            const details = listing.appendChild(document.createElement("div"));
+
+                            if (prop.name) { // restaurant name
+                                details.innerHTML += `Food Vendor: ${prop.name}<br />`;
+                            }
+
+                            if (prop.category) {
+                                details.innerHTML += `Category: ${prop.category}<br />`;
+                            }
+
+                            if (prop.address) { // delivery address
+                                details.innerHTML += `Delivery Address: ${prop.address}<br />`;
+                            }
+
+                            if (prop.restaurantAddress) {
+                                details.innerHTML += `Food Vendor Address: ${prop.restaurantAddress}`;
+                            }
+
+                            link.addEventListener("click",
+                                function(e) {
+                                    for (let i = 0; i < data.features.length; i++) {
+                                        if (this.id === `link-${i}`) {
+                                            const clickedListing = data.features[i];
+
+                                            // starting point of directions
+                                            const start = order.geometry.coordinates;
+
+                                            // destination
+                                            const end = prop.addressLngLat.coordinates;
+
+                                            getRoute(start, end);
+                                            getRoute(start, end);
+
+                                            flyToStore(clickedListing);
+                                            createPopUp(clickedListing);
+                                        }
+                                    }
+
+                                    const activeItem = document.getElementsByClassName("active");
+                                    if (activeItem[0]) {
+                                        activeItem[0].classList.remove('active');
+                                    }
+                                    this.parentNode.classList.add('active');
+
+                                });
+                        });
+                    }
+
+                    // make a directions request
+                    function getRoute(start, end) {
+                        const url = `https://api.mapbox.com/directions/v5/mapbox/driving/${start[0]},${start[1]};${end[0]},${end[1]}?steps=true&geometries=geojson&access_token=${mapboxgl.accessToken}`;
+
+                        // make an XHR request
+                        var req = new XMLHttpRequest();
+                        req.open('GET', url, true);
+                        req.onload = function() {
+                            const json = JSON.parse(req.response);
+                            const d = json.routes[0];
+
+                            const route = d.geometry.coordinates;
+                            const geojson = {
+                                type: 'Feature',
+                                properties: {},
+                                geometry: {
+                                    type: 'LineString',
+                                    coordinates: route
+                                }
+                            };
+
+                            // Add starting point to the map
+                            map.addLayer({
+                                id: 'startPoint',
+                                type: 'circle',
+                                source: {
+                                    type: 'geojson',
+                                    data: {
+                                        type: 'FeatureCollection',
+                                        features: [
+                                            {
+                                                type: 'Feature',
+                                                properties: {},
+                                                geometry: {
+                                                    type: 'Point',
+                                                    coordinates: start
+                                                }
+                                            }
+                                        ]
+                                    }
+                                },
+                                paint: {
+                                    'circle-radius': 10,
+                                    'circle-color': '#3887be'
+                                }
+                            });
+
+                            // Add destination to the map
+                            map.addLayer({
+                                id: 'destinationPoint',
+                                type: 'circle',
+                                source: {
+                                    type: 'geojson',
+                                    data: {
+                                        type: 'FeatureCollection',
+                                        features: [
+                                            {
+                                                type: 'Feature',
+                                                properties: {},
+                                                geometry: {
+                                                    type: 'Point',
+                                                    coordinates: end
+                                                }
+                                            }
+                                        ]
+                                    }
+                                },
+                                paint: {
+                                    'circle-radius': 10,
+                                    'circle-color': '#f30'
+                                }
+                            });
+
+                            // if the route already exists on the map, reset it using setData
+                            if (map.getSource('route')) {
+                                map.getSource('route').setData(geojson);
+                            } else { // otherwise, make a new request
+                                map.addLayer({
+                                    id: 'route',
+                                    type: 'line',
+                                    source: {
+                                        type: 'geojson',
+                                        data: {
+                                            type: 'Feature',
+                                            properties: {},
+                                            geometry: {
+                                                type: 'LineString',
+                                                coordinates: geojson
+                                            }
+                                        }
+                                    },
+                                    layout: {
+                                        'line-join': 'round',
+                                        'line-cap': 'round'
+                                    },
+                                    paint: {
+                                        'line-color': '#3887be',
+                                        'line-width': 5,
+                                        'line-opacity': 0.75
+                                    }
+                                });
+                            }
+                        };
+                        req.send();
+                    }
+
+
+                    /**
+                     * Use Mapbox GL JS's `flyTo` to move the camera smoothly
+                     * a given center point.
+                    **/
+                    function flyToStore(currentFeature) {
+                        map.flyTo({
+                            center: currentFeature.geometry.coordinates,
+                            zoom: 9
+                        });
+                    }
+
+                    /**
+                     * Create a Mapbox GL JS `Popup`.
+                    **/
+                    function createPopUp(currentFeature) {
+                        const popUps = document.getElementsByClassName('mapboxgl-popup');
+                        if (popUps[0]) popUps[0].remove();
+
+                        const popup = new mapboxgl.Popup({ closeOnClick: false })
+                            .setLngLat(currentFeature.geometry.coordinates)
+                            .setHTML(
+                                `<h3>${currentFeature.properties.name}</h3><h4>${currentFeature.properties.restaurantAddress}</h4><a href="/RiderPages/OrderDetail/${currentFeature.properties.orderId}">@localizer["See details"]</a>`
+                        )
+
+                            .addTo(map);
+                    }
+                },
+                error: function() {
+                    console.log("Error");
+                }
             });
         });
     </script>

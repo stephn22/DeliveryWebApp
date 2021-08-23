@@ -1,54 +1,102 @@
 ﻿@page
+@using DeliveryWebApp.Application.Orders.Extensions
+@using DeliveryWebApp.Infrastructure.Persistence
+@using IdentityServer4.Extensions
+@using Microsoft.AspNetCore.Localization
+@using Microsoft.Extensions.Localization
 @model DeliveryWebApp.WebUI.Pages.AdminPages.OrdersModel
+@inject ApplicationDbContext context
+@inject IStringLocalizer<OrdersModel> localizer
 @{
-    ViewData["Title"] = "Order History";
+    ViewData["Title"] = localizer["Orders"];
+    var requestCultureFeature = HttpContext.Features.Get<IRequestCultureFeature>();
+    var requestCulture = requestCultureFeature.RequestCulture;
 }
 
-<h1>Orders</h1>
+<h1>@ViewData["Title"]</h1>
 
-<table class="table">
-    <thead>
-        <tr class="table-primary">
-            <th>
-                @Html.DisplayNameFor(model => model.Orders[0].Id)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Orders[0].Date)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Orders[0].Restaurateur)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Orders[0].TotalPrice)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Orders[0].Status)
-            </th>
-            <th></th>
-        </tr>
-    </thead>
-    <tbody>
-    @foreach (var item in Model.Orders) {
-        <tr>
-            <td>
-                @Html.DisplayFor(modelItem => item.Id)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Date)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.TotalPrice)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Restaurateur.RestaurantName)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Status)
-            </td>
-            <td>
-                <a asp-page="/AdminPages/OrderDetail" asp-route-id="@item.Id">Details</a>
-            </td>
-        </tr>
-    }
-    </tbody>
-</table>
+@if (Model.Orders.IsNullOrEmpty())
+{
+    <div class="alert-secondary alert" role="alert">
+        <p class="text-center">
+            @localizer["There are no orders at the moment"]
+        </p>
+    </div>
+}
+else
+{
+    <div class="text-center">
+
+        <table class="table">
+            <thead>
+            <tr class="table-primary">
+                <th>
+                    @Html.DisplayNameFor(model => model.Orders[0].Id)
+                </th>
+                <th>
+                    @localizer["Customer Id"]
+                </th>
+                <th>
+                    @localizer["Food Vendor"]
+                </th>
+                <th>
+                    @localizer["Date"]
+                </th>
+                <th>
+                    @localizer["Delivery Date"]
+                </th>
+                <th>
+                    @localizer["Status"]
+                </th>
+                <th></th>
+            </tr>
+            </thead>
+            <tbody>
+                @foreach(var order in Model.Orders)
+                {
+                    <tr>
+                        <td>
+                            @Html.DisplayFor(model => order.Id)
+                        </td>
+                        <td>
+                            @* Customer *@
+                            <a asp-page="/AdminPages/CustomerDetail" asp-route-id="@order.CustomerId" class="link-primary">
+                                @{
+                                    var c = await order.GetCustomerAsync(context);
+                                    var usr = await context.Users.FindAsync(c.ApplicationUserFk);
+                                }
+                                @Html.DisplayFor(model => usr.UserName)
+                            </a>
+                        </td>
+                        <td>
+                            @* Restaurateur *@
+                            <a asp-page="/AdminPages/RestaurateurDetail" asp-route-id="@order.RestaurateurId" class="link-primary">
+                                @{
+                                    var r = await order.GetRestaurateurAsync(context);
+                                }
+                                @Html.DisplayFor(model => r.RestaurantName)
+                            </a>
+                        </td>
+                        <td>
+                            @order.Date.ToLocalTime().ToString("F")
+                        </td>
+                        <td>
+                            @if (order.DeliveryDate == null)
+                            {
+                                <p>N/A</p>
+                            }
+                            else
+                            {
+                                @order.DeliveryDate.Value.ToLocalTime().ToString("F")
+                            }
+                        </td>
+                        <td>
+                            @Html.DisplayFor(model => order.Status)
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+
+    </div>
+}

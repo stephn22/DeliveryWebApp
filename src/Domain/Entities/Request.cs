@@ -1,10 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace DeliveryWebApp.Domain.Entities
+﻿namespace DeliveryWebApp.Domain.Entities
 {
     /// <summary>
     /// This class represent a request that a customer sends in order to become a rider or a restaurateur (not both)

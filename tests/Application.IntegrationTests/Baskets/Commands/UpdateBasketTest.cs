@@ -1,5 +1,4 @@
-﻿using System;
-using System.Linq;
+﻿using DeliveryWebApp.Application.BasketItems.Queries;
 using DeliveryWebApp.Application.Baskets.Commands.CreateBasket;
 using DeliveryWebApp.Application.Baskets.Commands.UpdateBasket;
 using DeliveryWebApp.Application.Common.Exceptions;
@@ -10,6 +9,8 @@ using DeliveryWebApp.Domain.Constants;
 using DeliveryWebApp.Domain.Entities;
 using FluentAssertions;
 using NUnit.Framework;
+using System;
+using System.Linq;
 using System.Threading.Tasks;
 using DeliveryWebApp.Application.BasketItems.Queries;
 

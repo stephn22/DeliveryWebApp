@@ -14,6 +14,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
+using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
 using System.Security.Claims;
 using System.Threading.Tasks;
@@ -46,9 +47,10 @@ namespace DeliveryWebApp.WebUI.Pages.AdminPages
         public class InputModel
         {
             [Required]
-            [DataType(DataType.Currency)]
-            [Display(Name = "Delivery Credit")]
-            public decimal DeliveryCredit { get; set; } // TODO: Culture
+            [DataType(DataType.Currency, ErrorMessage = "Value isn't a price")]
+            [DisplayName("Delivery Credit")]
+            [DisplayFormat(DataFormatString = "{0:C}")]
+            public decimal DeliveryCredit { get; set; }
         }
 
         public async Task<IActionResult> OnGetAsync(int? id)
@@ -132,8 +134,6 @@ namespace DeliveryWebApp.WebUI.Pages.AdminPages
                 Status = RequestStatus.Accepted
             });
 
-            // TODO push notification to client
-
             return RedirectToPage("/AdminPages/Requests");
         }
 
@@ -148,7 +148,6 @@ namespace DeliveryWebApp.WebUI.Pages.AdminPages
                 Status = RequestStatus.Rejected
             });
 
-            // TODO push notification to client
             return RedirectToPage("/AdminPages/Requests");
         }
     }

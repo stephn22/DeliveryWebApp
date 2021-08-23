@@ -1,11 +1,10 @@
 ﻿using DeliveryWebApp.Application.Common.Exceptions;
+using DeliveryWebApp.Application.Customers.Commands.CreateCustomer;
 using DeliveryWebApp.Application.Restaurateurs.Commands.CreateRestaurateur;
-using DeliveryWebApp.Domain.Entities;
 using FluentAssertions;
 using NUnit.Framework;
 using NUnit.Framework.Internal;
 using System.Threading.Tasks;
-using DeliveryWebApp.Application.Customers.Commands.CreateCustomer;
 
 namespace DeliveryWebApp.Application.IntegrationTests.Restaurateurs.Commands
 {

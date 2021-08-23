@@ -1,6 +1,4 @@
-using DeliveryWebApp.Application.Addresses.Commands.CreateAddress;
 using DeliveryWebApp.Application.Addresses.Commands.DeleteAddress;
-using DeliveryWebApp.Application.Addresses.Commands.UpdateAddress;
 using DeliveryWebApp.Application.Addresses.Queries.GetAddresses;
 using DeliveryWebApp.Application.Common.Security;
 using DeliveryWebApp.Domain.Entities;
@@ -13,6 +11,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Localization;
 using Microsoft.Extensions.Logging;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
@@ -27,14 +26,16 @@ namespace DeliveryWebApp.WebUI.Areas.Identity.Pages.Account.Manage
         private readonly ILogger<AddressModel> _logger;
         private readonly ApplicationDbContext _context;
         private readonly IMediator _mediator;
+        private readonly IStringLocalizer<AddressModel> _localizer;
 
         public AddressModel(UserManager<ApplicationUser> userManager, ILogger<AddressModel> logger,
-            ApplicationDbContext context, IMediator mediator)
+            ApplicationDbContext context, IMediator mediator, IStringLocalizer<AddressModel> localizer)
         {
             _userManager = userManager;
             _logger = logger;
             _context = context;
             _mediator = mediator;
+            _localizer = localizer;
         }
 
         [TempData] public string StatusMessage { get; set; }
@@ -79,9 +80,6 @@ namespace DeliveryWebApp.WebUI.Areas.Identity.Pages.Account.Manage
             public string StateProvince { get; set; }
 
             [Required] [DataType(DataType.Text)] public string Country { get; set; }
-
-            public decimal Latitude { get; set; }
-            public decimal Longitude { get; set; }
         }
 
         public async Task<IActionResult> OnGetAsync()
@@ -116,73 +114,7 @@ namespace DeliveryWebApp.WebUI.Areas.Identity.Pages.Account.Manage
             });
 
             _logger.LogInformation($"Deleted address with id '{id}'.");
-            StatusMessage = "Your address has been deleted";
-
-            return RedirectToPage();
-        }
-
-        public async Task<IActionResult> OnPost()
-        {
-            var user = await _userManager.GetUserAsync(User);
-
-            if (user != null)
-            {
-                await LoadAddressesAsync(user);
-                return Page();
-            }
-
-            if (!ModelState.IsValid)
-            {
-                return BadRequest();
-            }
-
-            Customer = await _context.Customers.FirstAsync(c => c.ApplicationUserFk == user.Id);
-
-            await _mediator.Send(new CreateAddressCommand
-            {
-                CustomerId = Customer.Id,
-                AddressLine1 = Input.AddressLine1,
-                AddressLine2 = Input.AddressLine2,
-                City = Input.City,
-                Country = Input.Country,
-                Latitude = Input.Latitude,
-                Longitude = Input.Longitude,
-                Number = Input.Number,
-                PostalCode = Input.PostalCode,
-            });
-
-            return RedirectToPage();
-        }
-
-        public async Task<IActionResult> OnPostUpdateAddressAsync(int id)
-        {
-            var user = await _userManager.GetUserAsync(User);
-
-            if (user == null)
-            {
-                return NotFound();
-            }
-
-            if (!ModelState.IsValid)
-            {
-                return BadRequest();
-            }
-
-            Customer = await _context.Customers.FirstAsync(c => c.ApplicationUserFk == user.Id);
-
-            await _mediator.Send(new UpdateAddressCommand
-            {
-                Id = id,
-                AddressLine1 = Input.AddressLine1,
-                AddressLine2 = Input.AddressLine2,
-                City = Input.City,
-                Country = Input.Country,
-                Latitude = Input.Latitude,
-                Longitude = Input.Longitude,
-                Number = Input.Number,
-                PostalCode = Input.PostalCode,
-                StateProvince = Input.StateProvince
-            });
+            StatusMessage = _localizer["Your address has been deleted"];
 
             return RedirectToPage();
         }

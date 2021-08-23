@@ -1,10 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using DeliveryWebApp.Domain.Entities;
+﻿using DeliveryWebApp.Domain.Entities;
+using DeliveryWebApp.Infrastructure.Persistence.Configurations.Constants;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
@@ -17,23 +12,17 @@ namespace DeliveryWebApp.Infrastructure.Persistence.Configurations
             builder.Property(r => r.Title)
                 .IsRequired();
 
-            builder.Property(r => r.Grade)
+            builder.Property(r => r.Rating)
                 .IsRequired();
 
             builder.Property(r => r.Date)
-                .HasColumnType("datetime2")
+                .HasColumnType(ColumnType.DateTime)
                 .HasPrecision(0)
                 .IsRequired();
 
             builder.Property(r => r.Text)
                 .HasMaxLength(250)
                 .IsRequired();
-
-            builder.HasIndex(r => r.CustomerId)
-                .IsUnique();
-            
-            builder.HasIndex(r => r.RestaurateurId)
-                .IsUnique();
 
             builder.HasOne(r => r.Customer)
                 .WithMany(c => c.Reviews)

@@ -1,7 +1,9 @@
 ﻿@page
 @using Microsoft.Extensions.Configuration
-@inject IConfiguration configuration
+@using Microsoft.Extensions.Localization
 @model DeliveryWebApp.WebUI.Pages.RestaurateurPages.RestaurantDashboardModel
+@inject IConfiguration configuration
+@inject IStringLocalizer<RestaurantDashboardModel> localizer
 @section Head
 {
     <link rel="stylesheet" href="/css/images.css" type="text/css" />
@@ -14,8 +16,6 @@
 @{
     ViewData["Title"] = "Dashboard";
 }
-
-@* TODO: localize *@
 
 @if (!Model.HasRestaurant)
 {
@@ -37,14 +37,14 @@ else
             </button>
 
             <a asp-page="/RestaurateurPages/RestaurantProducts" asp-route-id="@Model.Restaurateur.Id" class="nav-link" id="v-pills-products-tab" role="tab" aria-selected="false">
-                Products
+                @localizer["Products"]
                 <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-box-seam" viewBox="0 0 16 16">
                     <path d="M8.186 1.113a.5.5 0 0 0-.372 0L1.846 3.5l2.404.961L10.404 2l-2.218-.887zm3.564 1.426L5.596 5 8 5.961 14.154 3.5l-2.404-.961zm3.25 1.7-6.5 2.6v7.922l6.5-2.6V4.24zM7.5 14.762V6.838L1 4.239v7.923l6.5 2.6zM7.443.184a1.5 1.5 0 0 1 1.114 0l7.129 2.852A.5.5 0 0 1 16 3.5v8.662a1 1 0 0 1-.629.928l-7.185 2.874a.5.5 0 0 1-.372 0L.63 13.09a1 1 0 0 1-.63-.928V3.5a.5.5 0 0 1 .314-.464L7.443.184z" />
                 </svg>
             </a>
 
-            <a asp-page="/RestaurateurPages/RestaurantOrders" asp-route-id="@Model.Restaurateur.Id" class="nav-link" id="v-pills-orders-tab" role="tab"  aria-selected="false">
-                Orders
+            <a asp-page="/RestaurateurPages/RestaurantOrders" asp-route-id="@Model.Restaurateur.Id" class="nav-link" id="v-pills-orders-tab" role="tab" aria-selected="false">
+                @localizer["Orders"]
                 <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-mailbox" viewBox="0 0 16 16">
                     <path d="M4 4a3 3 0 0 0-3 3v6h6V7a3 3 0 0 0-3-3zm0-1h8a4 4 0 0 1 4 4v6a1 1 0 0 1-1 1H1a1 1 0 0 1-1-1V7a4 4 0 0 1 4-4zm2.646 1A3.99 3.99 0 0 1 8 7v6h7V7a3 3 0 0 0-3-3H6.646z" />
                     <path d="M11.793 8.5H9v-1h5a.5.5 0 0 1 .5.5v1a.5.5 0 0 1-.5.5h-1a.5.5 0 0 1-.354-.146l-.853-.854zM5 7c0 .552-.448 0-1 0s-1 .552-1 0a1 1 0 0 1 2 0z" />
@@ -77,41 +77,18 @@ else
                     navigator.geolocation.getCurrentPosition(getCoords);
                 });
 
-            $("#save-btn").on("mousedown",
-                function() {
-                    const accessToken = 'pk.eyJ1Ijoic3RlY3JvdHRpMSIsImEiOiJja3Bna2kzbHYyaThoMm9ueHl1dzlnaTc1In0.EpALSOaDOmuM8XGS_IQzvA';
-                    const query = `${$("#update-addressline1").val()}, ${$("#update-addressline2").val()}, ${$("#update-number").val()}, ${$("#update-city").val()}, ${$("#update-postalcode").val()}, ${$("#update-stateprovince").val()}, ${$("#update-country option:selected").val()}`;
+            function changeImage(input) {
+                if (input.files && input.files[0]) {
+                    const reader = new FileReader();
 
-                    const url = `https://api.mapbox.com/geocoding/v5/mapbox.places/${query}.json?limit=1&access_token=${accessToken}`;
+                    reader.onload = function (i) {
+                        $("#dashboard-img")
+                            .attr("src", i.target.result);
+                    };
 
-                    $.ajax({
-                        type: "GET",
-                        url: url,
-                        dataType: "JSON",
-                        contentType: "application/json; charset=utf-8",
-                        success: function(data, status, xhr) {
-                            const [longitude, latitude] = data.features[0].center;
-                            console.log(latitude);
-                            $("#update-longitude").val(longitude);
-                            $("#update-latitude").val(latitude);
-
-                            const newAddress = {
-                                addressLine1: $("#update-addressline1").val(),
-                                addressLine2: $("#update-addressline2").val(),
-                                number: $("#update-number").val(),
-                                city: $("#update-city").val(),
-                                stateProvince: $("#update-postalcode").val(),
-                                postalCode: $("#update-stateprovince").val(),
-                                country: $("#update-country option:selected").val()
-                            };
-
-                            updateAddress(newAddress, @Model.RestaurantAddress?.Id);
-                        },
-                        error: function() {
-                            console.log("Error");
-                        }
-                    });
-                });
+                    reader.readAsDataURL(input.files[0]);
+                }
+            }
 
             function getCoords(position) {
                 const accessToken = 'pk.eyJ1Ijoic3RlY3JvdHRpMSIsImEiOiJja3Bna2kzbHYyaThoMm9ueHl1dzlnaTc1In0.EpALSOaDOmuM8XGS_IQzvA';
@@ -134,10 +111,92 @@ else
                             @Model.Restaurateur.Id
                         );
 
-                        $("ok-btn").on("click", createAddress(address));
+                        $("#new-restaurant-btn").on("click", createAddress(address));
+                        $("#clear").on("click",
+                            function() {
+                                $("#input-address").val("");
+                            });
                     },
                     error: function() {
                         console.log("Error");
+                    }
+                });
+            }
+
+            $("#save-btn").on("click",
+                function() {
+                    const accessToken = 'pk.eyJ1Ijoic3RlY3JvdHRpMSIsImEiOiJja3Bna2kzbHYyaThoMm9ueHl1dzlnaTc1In0.EpALSOaDOmuM8XGS_IQzvA';
+                    const query = `${$("#update-addressline1").val()}, ${$("#update-addressline2").val()}, ${$("#update-number").val()}, ${$("#update-city").val()}, ${$("#update-postalcode").val()}, ${$("#update-stateprovince").val()}, ${$("#update-country option:selected").val()}`;
+
+                    const url = `https://api.mapbox.com/geocoding/v5/mapbox.places/${query}.json?limit=1&access_token=${accessToken}`;
+
+                    $.ajax({
+                        type: "GET",
+                        url: url,
+                        dataType: "JSON",
+                        contentType: "application/json; charset=utf-8",
+                        success: function(data, status, xhr) {
+                            const [longitude, latitude] = data.features[0].center;
+                            console.log(data);
+                            const newAddress = new Address(
+                                data.features[0].place_name,
+                                longitude,
+                                latitude,
+                                null,
+                                @Model.Restaurateur.Id
+                            );
+
+                            updateAddress(newAddress, @Model.RestaurantAddress.Id);
+                        },
+                        error: function() {
+                            console.log("Error");
+                        }
+                    });
+                });
+
+            function updateAddress(newAddress, id) {
+
+                const a = {
+                    id: id,
+                    placeName: newAddress.placeName,
+                    longitude: newAddress.longitude,
+                    latitude: newAddress.latitude,
+                    customerId: newAddress.customerId,
+                    restaurateurId: newAddress.restaurateurId
+                };
+
+                console.log(JSON.stringify(a));
+
+                $.ajax({
+                    type: "PUT",
+                    url: `/api/addresses/${id}`,
+                    dataType: "JSON",
+                    data: JSON.stringify(a),
+                    contentType: "application/json; charset=utf-8",
+                    success: function(data, status, xhr) {
+                        console.log(status);
+                        window.location.reload(true);
+                    },
+                    error: function(jqXhr, textStatus, errorMessage) {
+                        console.log(errorMessage);
+                    }
+                });
+            }
+
+            function createAddress(address) {
+                $.ajax({
+                    type: "POST",
+                    async: true,
+                    url: "/api/addresses",
+                    dataType: "JSON",
+                    data: JSON.stringify(address),
+                    contentType: "application/json; charset=utf-8",
+                    success: function(data, status, xhr) {
+                        console.log("OK");
+                        $("#ok-btn").disable = true;
+                    },
+                    error: function(jqXhr, textStatus, errorMessage) {
+                        console.log(errorMessage);
                     }
                 });
             }

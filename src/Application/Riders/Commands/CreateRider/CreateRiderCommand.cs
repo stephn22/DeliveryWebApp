@@ -1,8 +1,8 @@
-﻿using System.Threading;
-using System.Threading.Tasks;
-using DeliveryWebApp.Application.Common.Interfaces;
+﻿using DeliveryWebApp.Application.Common.Interfaces;
 using DeliveryWebApp.Domain.Entities;
 using MediatR;
+using System.Threading;
+using System.Threading.Tasks;
 
 namespace DeliveryWebApp.Application.Riders.Commands.CreateRider
 {
@@ -25,7 +25,8 @@ namespace DeliveryWebApp.Application.Riders.Commands.CreateRider
                 var entity = new Rider
                 {
                     CustomerId = request.Customer.Id,
-                    DeliveryCredit = request.DeliveryCredit
+                    DeliveryCredit = request.DeliveryCredit,
+                    TotalCredit = 0
                 };
 
                 _context.Riders.Add(entity);

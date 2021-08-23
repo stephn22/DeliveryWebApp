@@ -1,16 +1,6 @@
-﻿@model DeliveryWebApp.WebUI.Pages.RestaurateurPages.RestaurantDashboardModel
-
-@section Head
-{
-    <link rel="stylesheet" href="/css/images.css" type="text/css" />
-
-    @* Google fonts *@
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@100;300;500&display=swap" rel="stylesheet">
-}
-
-<partial name="_StatusMessage" for="StatusMessage" />
+﻿@using Microsoft.Extensions.Localization
+@model DeliveryWebApp.WebUI.Pages.RestaurateurPages.RestaurantDashboardModel
+@inject IStringLocalizer<RestaurantDashboardModel> localizer
 
 <div class="row">
 
@@ -30,22 +20,6 @@
                     <input type="file" id="new-img-input" style="display: none;" asp-for="Input.Logo" onchange="changeImage(this);this.form.submit();" />
                 </div>
             </div>
-
-            <script type="text/javascript">
-                                function changeImage(input) {
-                                    if (input.files && input.files[0]) {
-                                        const reader = new FileReader();
-
-                                        reader.onload = function (i) {
-                                            $("#dashboard-img")
-                                                .attr("src", i.target.result);
-                                        };
-
-                                        reader.readAsDataURL(input.files[0]);
-                                    }
-                                }
-            </script>
-
         </form>
 
     </div>
@@ -60,7 +34,7 @@
             </div>
 
             <div class="input-group">
-                <input asp-for="Input.Name" class="form-control" placeholder="Restaurant new name" aria-label="Restaurant new name">
+                <input asp-for="Input.Name" class="form-control" placeholder="@localizer["New name"]" aria-label="Restaurant new name">
                 <div class="input-group-append">
                     <button class="btn btn-secondary" type="submit" value="NewName">
                         <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-pencil-square" viewBox="0 0 16 16">
@@ -82,7 +56,7 @@
     @* Category *@
     <form method="post" asp-page-handler="NewCategory" asp-route-id="@Model.Restaurateur.Id">
         <div class="form-group">
-            <label asp-for="Input.Category"></label>
+            <label asp-for="Input.Category">@localizer["Category"]</label>
             <input class="form-control" asp-for="Input.Category" value="@Model.Restaurateur.RestaurantCategory" disabled readonly>
         </div>
 
@@ -102,10 +76,10 @@
     </form>
 </div>
 
-<form method="post"> @*  asp-page-handler="UpdateAddress" *@
+<form>
     <div class="row">
         <div class="form-group">
-            <label>Address</label>
+            <label>@localizer["Address"]</label>
             <div class="input-group col-lg-10">
                 <input class="form-control" value="@Model.RestaurantAddress.ToString()" disabled readonly>
                 <div class="input-group-append">
@@ -124,12 +98,12 @@
         <div class="card card-body">
             <div class="form-row">
                 <div class="form-group col-md-6">
-                    <label asp-for="Input.AddressLine1"></label>
+                    <label asp-for="Input.AddressLine1">@localizer["Address Line 1"]</label>
                     <input class="form-control" asp-for="Input.AddressLine1" placeholder="Address Line 1" id="update-addressline1">
                     <span asp-validation-for="Input.AddressLine1" class="text-danger"></span>
                 </div>
                 <div class="form-group col-md-6">
-                    <label asp-for="Input.AddressLine2"></label>
+                    <label asp-for="Input.AddressLine2">@localizer["Address Line 2"]</label>
                     <input class="form-control" asp-for="Input.AddressLine2" placeholder="Address Line 2" id="update-addressline2">
                     <span asp-validation-for="Input.AddressLine2" class="text-danger"></span>
                 </div>
@@ -142,39 +116,33 @@
                     <span asp-validation-for="Input.Number" class="text-danger"></span>
                 </div>
                 <div class="form-group col-md-6">
-                    <label asp-for="Input.City"></label>
-                    <input class="form-control" asp-for="Input.City" placeholder="City" id="update-city">
+                    <label asp-for="Input.City">@localizer["City"]</label>
+                    <input class="form-control" asp-for="Input.City" placeholder="@localizer["City"]" id="update-city">
                     <span asp-validation-for="Input.City" class="text-danger"></span>
                 </div>
             </div>
 
             <div class="form-row">
                 <div class="form-group col-md-6">
-                    <label asp-for="Input.PostalCode"></label>
-                    <input class="form-control" asp-for="Input.PostalCode" placeholder="Postal Code: 20020..." id="update-postalcode">
+                    <label asp-for="Input.PostalCode">@localizer["Postal Code"]</label>
+                    <input class="form-control" asp-for="Input.PostalCode" placeholder="20020.." id="update-postalcode">
                     <span asp-validation-for="Input.PostalCode" class="text-danger"></span>
                 </div>
                 <div class="form-group col-md-6">
-                    <label asp-for="Input.StateProvince"></label>
-                    <input class="form-control" asp-for="Input.StateProvince" placeholder="CA, NY, ..." id="update-stateprovince">
+                    <label asp-for="Input.StateProvince">@localizer["State/Province"]</label>
+                    <input class="form-control" asp-for="Input.StateProvince" placeholder="MI, TO, NY, ..." id="update-stateprovince">
                     <span asp-validation-for="Input.StateProvince" class="text-danger"></span>
                 </div>
                 <div class="form-group col-md-7">
-                    <label asp-for="Input.Country"></label>
+                    <label asp-for="Input.Country">@localizer["Country"]</label>
                     <select class="form-select" aria-label="Select country" asp-for="Input.Country" asp-items="Model.Countries" id="update-country">
                     </select>
                     <span asp-validation-for="Input.Country" class="text-danger"></span>
                 </div>
             </div>
-            <div class="form-group col-md-6">
-                <input class="form-control" asp-for="Input.Latitude" id="update-latitude" hidden>
-            </div>
-            <div class="form-group col-md-6">
-                <input class="form-control" asp-for="Input.Longitude" id="update-longitude" hidden>
-            </div>
         </div>
 
-        <button type="submit" class="btn btn-primary" id="save-btn">Save</button>
+        <button type="button" class="btn btn-primary" id="save-btn">@localizer["Save"]</button>
     </div>
 
 </form>

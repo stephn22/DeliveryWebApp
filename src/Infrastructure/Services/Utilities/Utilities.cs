@@ -67,7 +67,6 @@ namespace DeliveryWebApp.Infrastructure.Services.Utilities
                     }
                 }
             }
-            // TODO: localize
             cultureList.Add("", "-- Select Country --");
 
             return cultureList.OrderBy(p => p.Value);

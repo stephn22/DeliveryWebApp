@@ -10,7 +10,7 @@ namespace DeliveryWebApp.Infrastructure.Persistence.Configurations
         public void Configure(EntityTypeBuilder<OrderItem> builder)
         {
             builder.Property(u => u.ProductPrice)
-                .HasPrecision(16, 4)
+                .HasColumnType(ColumnType.Money)
                 .IsRequired();
 
             builder.Property(u => u.Quantity)

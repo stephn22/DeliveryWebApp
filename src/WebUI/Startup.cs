@@ -2,7 +2,6 @@ using DeliveryWebApp.Application;
 using DeliveryWebApp.Application.Common.Interfaces;
 using DeliveryWebApp.Infrastructure;
 using DeliveryWebApp.Infrastructure.Persistence;
-using DeliveryWebApp.Infrastructure.Services;
 using DeliveryWebApp.WebUI.Services;
 using FluentValidation.AspNetCore;
 using Microsoft.AspNetCore.Builder;
@@ -12,8 +11,6 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
-using Newtonsoft.Json;
-using System.Collections.Generic;
 using System.Globalization;
 
 namespace DeliveryWebApp.WebUI
@@ -36,7 +33,6 @@ namespace DeliveryWebApp.WebUI
             services.AddDatabaseDeveloperPageExceptionFilter();
 
             services.AddSingleton<ICurrentUserService, CurrentUserService>();
-            services.AddSingleton<IdentityLocalizationService>();
 
             services.AddHealthChecks()
                 .AddDbContextCheck<ApplicationDbContext>();
@@ -91,7 +87,7 @@ namespace DeliveryWebApp.WebUI
                 SupportedUICultures = cultures,
                 FallBackToParentUICultures = true,
                 FallBackToParentCultures = true
-        };
+            };
 
             app.UseRequestLocalization(options);
 

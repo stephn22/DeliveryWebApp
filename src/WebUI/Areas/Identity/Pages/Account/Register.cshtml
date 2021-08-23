@@ -3,7 +3,7 @@
 @using Microsoft.AspNetCore.Mvc.Localization
 @using DeliveryWebApp.Infrastructure.Services
 @model RegisterModel
-@inject IdentityLocalizationService localizer
+@inject IStringLocalizer<RegisterModel> localizer
 @{
     ViewData["Title"] = localizer["Register"];
 }
@@ -17,12 +17,12 @@
             <hr />
             <div asp-validation-summary="All" class="text-danger"></div>
             <div class="form-group">
-                <label asp-for="Input.FName"></label>
+                <label asp-for="Input.FName">@localizer["First Name"]</label>
                 <input asp-for="Input.FName" class="form-control" />
                 <span asp-validation-for="Input.FName" class="text-danger"></span>
             </div>
             <div class="form-group">
-                <label asp-for="Input.LName"></label>
+                <label asp-for="Input.LName">@localizer["Last Name"]</label>
                 <input asp-for="Input.LName" class="form-control" />
                 <span asp-validation-for="Input.LName" class="text-danger"></span>
             </div>
@@ -42,16 +42,16 @@
                 <span asp-validation-for="Input.Password" class="text-danger"></span>
             </div>
             <div class="form-group">
-                <label asp-for="Input.ConfirmPassword"></label>
+                <label asp-for="Input.ConfirmPassword">@localizer["Confirm Password"]</label>
                 <input asp-for="Input.ConfirmPassword" class="form-control" />
                 <span asp-validation-for="Input.ConfirmPassword" class="text-danger"></span>
             </div>
-            <button type="submit" class="btn btn-primary">Register</button>
+            <button type="submit" class="btn btn-primary">@localizer["Register"]</button>
         </form>
     </div>
     <div class="col-md-6 col-md-offset-2">
         <section>
-            <h4>Use another service to register.</h4>
+            <h4>@localizer["Use another service to register."]</h4>
             <hr />
             @{
                 if ((Model.ExternalLogins?.Count ?? 0) == 0)

@@ -1,6 +1,3 @@
-using System;
-using DeliveryWebApp.Application.Addresses.Commands.CreateAddress;
-using DeliveryWebApp.Application.Addresses.Commands.UpdateAddress;
 using DeliveryWebApp.Application.Common.Exceptions;
 using DeliveryWebApp.Application.Common.Security;
 using DeliveryWebApp.Application.Restaurateurs.Commands.UpdateRestaurateur;
@@ -16,7 +13,10 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.AspNetCore.Mvc.Rendering;
+using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Localization;
 using Microsoft.Extensions.Logging;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.IO;
@@ -26,7 +26,6 @@ using Microsoft.EntityFrameworkCore;
 
 namespace DeliveryWebApp.WebUI.Pages.RestaurateurPages
 {
-    // TODO: localize
     [Authorize(Policy = PolicyName.IsRestaurateur)]
     public class RestaurantDashboardModel : PageModel
     {
@@ -34,13 +33,17 @@ namespace DeliveryWebApp.WebUI.Pages.RestaurateurPages
         private readonly ILogger<RestaurantDashboardModel> _logger;
         private readonly IMediator _mediator;
         private readonly UserManager<ApplicationUser> _userManager;
+        private readonly IStringLocalizer<RestaurantDashboardModel> _localizer;
 
-        public RestaurantDashboardModel(ApplicationDbContext context, ILogger<RestaurantDashboardModel> logger, IMediator mediator, UserManager<ApplicationUser> userManager)
+        public RestaurantDashboardModel(ApplicationDbContext context, ILogger<RestaurantDashboardModel> logger,
+            IMediator mediator, UserManager<ApplicationUser> userManager,
+            IStringLocalizer<RestaurantDashboardModel> localizer)
         {
             _context = context;
             _logger = logger;
             _mediator = mediator;
             _userManager = userManager;
+            _localizer = localizer;
         }
 
         public bool HasRestaurant { get; set; }
@@ -54,13 +57,13 @@ namespace DeliveryWebApp.WebUI.Pages.RestaurateurPages
         [BindProperty]
         public IEnumerable<SelectListItem> Categories => new[]
         {
-            new SelectListItem {Text = "Select a category", Value = "", Selected = true},
-            new SelectListItem {Text = RestaurantCategory.FastFood, Value = RestaurantCategory.FastFood},
-            new SelectListItem {Text = RestaurantCategory.Sushi, Value = RestaurantCategory.Sushi},
-            new SelectListItem {Text = RestaurantCategory.Indian, Value = RestaurantCategory.Indian},
-            new SelectListItem {Text = RestaurantCategory.Italian, Value = RestaurantCategory.Italian},
-            new SelectListItem {Text = RestaurantCategory.Chinese, Value = RestaurantCategory.Chinese},
-            new SelectListItem {Text = RestaurantCategory.Pizzeria, Value = RestaurantCategory.Pizzeria},
+            new SelectListItem { Text = _localizer["Select a category"], Value = "", Selected = true },
+            new SelectListItem { Text = RestaurantCategory.FastFood, Value = RestaurantCategory.FastFood },
+            new SelectListItem { Text = RestaurantCategory.Sushi, Value = RestaurantCategory.Sushi },
+            new SelectListItem { Text = RestaurantCategory.Indian, Value = RestaurantCategory.Indian },
+            new SelectListItem { Text = RestaurantCategory.Italian, Value = RestaurantCategory.Italian },
+            new SelectListItem { Text = RestaurantCategory.Chinese, Value = RestaurantCategory.Chinese },
+            new SelectListItem { Text = RestaurantCategory.Pizzeria, Value = RestaurantCategory.Pizzeria },
         };
 
         [BindProperty] public InputModel Input { get; set; }
@@ -89,7 +92,7 @@ namespace DeliveryWebApp.WebUI.Pages.RestaurateurPages
 
             [Required]
             [DataType(DataType.Text)]
-            [Display(Name = "Number")]
+            [Display(Name = "N°")]
             public string Number { get; set; }
 
             [Required]
@@ -144,7 +147,7 @@ namespace DeliveryWebApp.WebUI.Pages.RestaurateurPages
                     _logger.LogWarning($"{e.Message}");
                     RestaurantAddress = null;
                 }
-               
+
                 HasRestaurant = RestaurantAddress != null && Restaurateur.Logo != null &&
                                 Restaurateur.RestaurantName != null && Restaurateur.RestaurantCategory != null;
             }

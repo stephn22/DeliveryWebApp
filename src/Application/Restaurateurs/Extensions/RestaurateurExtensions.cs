@@ -1,11 +1,11 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using DeliveryWebApp.Application.Common.Interfaces;
+﻿using DeliveryWebApp.Application.Common.Interfaces;
+using DeliveryWebApp.Application.Reviews.Queries.GetReviews;
 using DeliveryWebApp.Domain.Entities;
+using MediatR;
 using Microsoft.EntityFrameworkCore;
+using System;
+using System.Linq;
+using System.Threading.Tasks;
 
 namespace DeliveryWebApp.Application.Restaurateurs.Extensions
 {
@@ -60,6 +60,35 @@ namespace DeliveryWebApp.Application.Restaurateurs.Extensions
             catch (InvalidOperationException)
             {
                 return null;
+            }
+        }
+
+        public static async Task<double> GetRestaurateurAverageRating(this Restaurateur restaurateur, IMediator mediator)
+        {
+            var avg = 0.0;
+            var sum = 0.0;
+
+            try
+            {
+                var reviews = await mediator.Send(new GetReviewsQuery
+                {
+                    RestaurateurId = restaurateur.Id
+                });
+
+                if (reviews is not { Count: > 0 })
+                {
+                    return avg;
+                }
+
+                sum = reviews.Aggregate(sum, (current, review) => current + review.Rating);
+
+                avg = sum / reviews.Count;
+
+                return avg;
+            }
+            catch (InvalidOperationException)
+            {
+                return avg;
             }
         }
     }

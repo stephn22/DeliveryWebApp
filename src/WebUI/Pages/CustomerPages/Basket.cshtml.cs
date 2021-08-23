@@ -1,4 +1,5 @@
 using DeliveryWebApp.Application.BasketItems.Commands.DeleteBasketItem;
+using DeliveryWebApp.Application.BasketItems.Commands.UpdateBasketItem;
 using DeliveryWebApp.Application.BasketItems.Queries;
 using DeliveryWebApp.Application.Baskets.Queries;
 using DeliveryWebApp.Application.Common.Exceptions;
@@ -12,12 +13,12 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Localization;
 using Microsoft.Extensions.Logging;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Threading.Tasks;
-using DeliveryWebApp.Application.BasketItems.Commands.UpdateBasketItem;
 
 namespace DeliveryWebApp.WebUI.Pages.CustomerPages
 {
@@ -28,13 +29,16 @@ namespace DeliveryWebApp.WebUI.Pages.CustomerPages
         private readonly IMediator _mediator;
         private readonly UserManager<ApplicationUser> _userManager;
         private readonly ILogger<BasketModel> _logger;
+        private readonly IStringLocalizer<BasketModel> _localizer;
 
-        public BasketModel(ApplicationDbContext context, IMediator mediator, UserManager<ApplicationUser> userManager, ILogger<BasketModel> logger)
+        public BasketModel(ApplicationDbContext context, IMediator mediator, UserManager<ApplicationUser> userManager,
+            ILogger<BasketModel> logger, IStringLocalizer<BasketModel> localizer)
         {
             _context = context;
             _mediator = mediator;
             _userManager = userManager;
             _logger = logger;
+            _localizer = localizer;
         }
 
         public Basket Basket { get; set; }
@@ -43,8 +47,7 @@ namespace DeliveryWebApp.WebUI.Pages.CustomerPages
         public Customer Customer { get; set; }
         public Restaurateur Restaurateur { get; set; }
 
-        [TempData]
-        public string StatusMessage { get; set; }
+        [TempData] public string StatusMessage { get; set; }
 
         [BindProperty] [Required] public int NewQuantity { get; set; }
 
@@ -143,7 +146,7 @@ namespace DeliveryWebApp.WebUI.Pages.CustomerPages
 
                 _logger.LogInformation($"Deleted basket item with id: '{id}'");
 
-                StatusMessage = "Successfully removed item from basket";
+                StatusMessage = _localizer["Successfully removed item from basket"];
             }
             catch (NotFoundException e)
             {
@@ -184,7 +187,7 @@ namespace DeliveryWebApp.WebUI.Pages.CustomerPages
 
                 _logger.LogInformation($"Deleted basket item with id: '{id}'");
 
-                StatusMessage = "Successfully update item";
+                StatusMessage = _localizer["Successfully updated basket"];
             }
             catch (NotFoundException e)
             {

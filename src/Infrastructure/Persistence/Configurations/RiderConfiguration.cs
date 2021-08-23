@@ -10,8 +10,11 @@ namespace DeliveryWebApp.Infrastructure.Persistence.Configurations
         public void Configure(EntityTypeBuilder<Rider> builder)
         {
             builder.Property(r => r.DeliveryCredit)
-                .HasPrecision(19, 4)
-                .HasColumnType(PropertyName.Money)
+                .HasColumnType(ColumnType.Money)
+                .IsRequired();
+
+            builder.Property(r => r.TotalCredit)
+                .HasColumnType(ColumnType.Money)
                 .IsRequired();
 
             builder.HasOne(r => r.Customer)

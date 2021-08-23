@@ -1,6 +1,6 @@
-﻿using System.Threading.Tasks;
-using DeliveryWebApp.Application.Common.Interfaces;
+﻿using DeliveryWebApp.Application.Common.Interfaces;
 using DeliveryWebApp.Domain.Entities;
+using System.Threading.Tasks;
 
 namespace DeliveryWebApp.Application.BasketItems.Extensions
 {

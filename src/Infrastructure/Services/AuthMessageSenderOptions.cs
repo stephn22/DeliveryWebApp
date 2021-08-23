@@ -1,11 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using DeliveryWebApp.Application.Common.Interfaces;
-
-namespace DeliveryWebApp.Infrastructure.Services
+﻿namespace DeliveryWebApp.Infrastructure.Services
 {
     public class AuthMessageSenderOptions
     {

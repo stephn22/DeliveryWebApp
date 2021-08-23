@@ -1,4 +1,5 @@
-﻿using DeliveryWebApp.Application.Common.Exceptions;
+﻿using DeliveryWebApp.Application.Baskets.Extensions;
+using DeliveryWebApp.Application.Common.Exceptions;
 using DeliveryWebApp.Application.Common.Interfaces;
 using DeliveryWebApp.Domain.Entities;
 using MediatR;
@@ -43,7 +44,7 @@ namespace DeliveryWebApp.Application.BasketItems.Commands.UpdateBasketItem
                 basket.TotalPrice = await basket.GetBasketTotalPrice(_mediator, _context);
                 _context.Baskets.Update(basket);
             }
-            
+
             await _context.SaveChangesAsync(cancellationToken);
 
             return entity;

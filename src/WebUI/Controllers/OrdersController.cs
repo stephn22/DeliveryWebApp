@@ -1,9 +1,9 @@
 ﻿using AutoMapper;
 using DeliveryWebApp.Application.Common.Security;
-using DeliveryWebApp.Application.Orders.Commands.CreateOrder;
 using DeliveryWebApp.Application.Orders.Commands.DeleteOrder;
 using DeliveryWebApp.Application.Orders.Commands.UpdateOrder;
 using DeliveryWebApp.Application.Orders.Queries.GetOrders;
+using DeliveryWebApp.Application.Orders.Queries.GetSingleOrder;
 using DeliveryWebApp.Domain.Entities;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
@@ -12,7 +12,7 @@ using System.Threading.Tasks;
 
 namespace DeliveryWebApp.WebUI.Controllers
 {
-    [Authorize]
+    [Authorize(Roles = RoleName.Rider)]
     [Route("api/[controller]")]
     [ApiController]
     public class OrdersController : ControllerBase
@@ -26,18 +26,18 @@ namespace DeliveryWebApp.WebUI.Controllers
             _mapper = mapper;
         }
 
-        [HttpPost("{id:int}")]
-        public async Task<ActionResult<Order>> Create(Order request, int id)
+        [HttpGet]
+        public async Task<List<Order>> Read()
         {
-            return await _mediator.Send(_mapper.Map<CreateOrderCommand>(request));
+            return await _mediator.Send(new GetOrdersQuery());
         }
 
         [HttpGet("{id:int}")]
-        public async Task<List<Order>> Read(int id)
+        public async Task<Order> ReadSingle(int id)
         {
-            return await _mediator.Send(new GetOrdersQuery
+            return await _mediator.Send(new GetSingleOrderQuery
             {
-                RestaurateurId = id
+                Id = id
             });
         }
 

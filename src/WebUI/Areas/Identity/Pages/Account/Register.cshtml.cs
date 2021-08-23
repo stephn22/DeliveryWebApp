@@ -57,12 +57,10 @@ namespace DeliveryWebApp.WebUI.Areas.Identity.Pages.Account
         public class InputModel
         {
             [Required]
-            [Display(Name = "First Name")]
             [DataType(DataType.Text)]
             public string FName { get; set; }
 
             [Required]
-            [Display(Name = "Last Name")]
             [DataType(DataType.Text)]
             public string LName { get; set; }
 
@@ -83,7 +81,6 @@ namespace DeliveryWebApp.WebUI.Areas.Identity.Pages.Account
             public string Password { get; set; }
 
             [DataType(DataType.Password)]
-            [Display(Name = "Confirm password")]
             [Compare("Password", ErrorMessage = "The password and confirmation password do not match.")]
             public string ConfirmPassword { get; set; }
         }
