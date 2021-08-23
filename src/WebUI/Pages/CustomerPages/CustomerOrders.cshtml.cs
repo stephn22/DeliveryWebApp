@@ -1,6 +1,4 @@
 using DeliveryWebApp.Application.Common.Security;
-using DeliveryWebApp.Application.OrderItems.Extensions;
-using DeliveryWebApp.Application.OrderItems.Queries;
 using DeliveryWebApp.Application.Orders.Extensions;
 using DeliveryWebApp.Application.Orders.Queries.GetOrders;
 using DeliveryWebApp.Domain.Entities;

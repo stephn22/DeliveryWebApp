@@ -1,14 +1,12 @@
-﻿using System;
-using System.Threading.Tasks;
-using DeliveryWebApp.Application.Addresses.Commands.CreateAddress;
+﻿using DeliveryWebApp.Application.Addresses.Commands.CreateAddress;
 using DeliveryWebApp.Application.Common.Exceptions;
 using DeliveryWebApp.Application.Customers.Commands.CreateCustomer;
 using DeliveryWebApp.Application.Restaurateurs.Commands.CreateRestaurateur;
-using DeliveryWebApp.Application.Restaurateurs.Extensions;
 using DeliveryWebApp.Application.Reviews.Commands.CreateReview;
 using FluentAssertions;
-using FluentAssertions.Common;
 using NUnit.Framework;
+using System;
+using System.Threading.Tasks;
 
 namespace DeliveryWebApp.Application.IntegrationTests.Reviews.Commands
 {
@@ -87,18 +85,6 @@ namespace DeliveryWebApp.Application.IntegrationTests.Reviews.Commands
             review.RestaurateurId.Should().Be(restaurateur.Id);
             review.Title.Should().Be(reviewCommand.Title);
             review.Text.Should().Be(reviewCommand.Text);
-
-            var reviewCommand2 = new CreateReviewCommand
-            {
-                Customer = customer,
-                Restaurateur = restaurateur,
-                Rating = 5,
-                Title = "Good",
-                Text = "Lorem ipsum dolor sit amet, consectetur adipiscing elit. " +
-                       "Praesent eleifend metus id justo dignissim imperdiet."
-            };
-
-            var review2 = await SendAsync(reviewCommand2);
         }
     }
 }
