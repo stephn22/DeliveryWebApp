@@ -61,6 +61,19 @@ namespace DeliveryWebApp.WebUI.Pages.CustomerPages
             [DataType(DataType.CreditCard)]
             [DisplayName("Credit Card")]
             public string CreditCard { get; set; }
+
+            [Required]
+            [DataType(DataType.Text)]
+            [DisplayName("CVV")]
+            public string Cvv { get; set; }
+
+            [Required]
+            [DataType(DataType.Date)]
+            public DateTime ExpirationDate { get; set; }
+
+            [Required]
+            [DataType(DataType.Text)]
+            public string Name { get; set; }
         }
 
         public async Task<IActionResult> OnGet()

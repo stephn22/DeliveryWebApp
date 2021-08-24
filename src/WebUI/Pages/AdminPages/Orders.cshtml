@@ -52,51 +52,67 @@ else
             </tr>
             </thead>
             <tbody>
-                @foreach(var order in Model.Orders)
-                {
-                    <tr>
-                        <td>
-                            @Html.DisplayFor(model => order.Id)
-                        </td>
-                        <td>
-                            @* Customer *@
-                            <a asp-page="/AdminPages/CustomerDetail" asp-route-id="@order.CustomerId" class="link-primary">
-                                @{
-                                    var c = await order.GetCustomerAsync(context);
-                                    var usr = await context.Users.FindAsync(c.ApplicationUserFk);
-                                }
-                                @Html.DisplayFor(model => usr.UserName)
-                            </a>
-                        </td>
-                        <td>
-                            @* Restaurateur *@
-                            <a asp-page="/AdminPages/RestaurateurDetail" asp-route-id="@order.RestaurateurId" class="link-primary">
-                                @{
-                                    var r = await order.GetRestaurateurAsync(context);
-                                }
-                                @Html.DisplayFor(model => r.RestaurantName)
-                            </a>
-                        </td>
-                        <td>
-                            @order.Date.ToLocalTime().ToString("F")
-                        </td>
-                        <td>
-                            @if (order.DeliveryDate == null)
-                            {
-                                <p>N/A</p>
+            @foreach(var order in Model.Orders)
+            {
+                <tr>
+                    <td>
+                        @Html.DisplayFor(model => order.Id)
+                    </td>
+                    <td>
+                        @* Customer *@
+                        <a asp-page="/AdminPages/CustomerDetail" asp-route-id="@order.CustomerId" class="link-primary">
+                            @{
+                                var c = await order.GetCustomerAsync(context);
+                                var usr = await context.Users.FindAsync(c.ApplicationUserFk);
                             }
-                            else
-                            {
-                                @order.DeliveryDate.Value.ToLocalTime().ToString("F")
+                            @Html.DisplayFor(model => usr.UserName)
+                        </a>
+                    </td>
+                    <td>
+                        @* Restaurateur *@
+                        <a asp-page="/AdminPages/RestaurateurDetail" asp-route-id="@order.RestaurateurId" class="link-primary">
+                            @{
+                                var r = await order.GetRestaurateurAsync(context);
                             }
-                        </td>
-                        <td>
-                            @Html.DisplayFor(model => order.Status)
-                        </td>
-                    </tr>
-                }
+                            @Html.DisplayFor(model => r.RestaurantName)
+                        </a>
+                    </td>
+                    <td>
+                        @order.Date.ToLocalTime().ToString("F")
+                    </td>
+                    <td>
+                        @if (order.DeliveryDate == null)
+                        {
+                            <p>N/A</p>
+                        }
+                        else
+                        {
+                            @order.DeliveryDate.Value.ToLocalTime().ToString("F")
+                        }
+                    </td>
+                    <td>
+                        @Html.DisplayFor(model => order.Status)
+                    </td>
+                </tr>
+            }
             </tbody>
         </table>
+    </div>
+    <div>
+        @{
+            var prevDisabled = !Model.Orders.HasPreviousPage ? "disabled" : "";
+            var nextDisabled = !Model.Orders.HasNextPage ? "disabled" : "";
+        }
 
+        <a asp-page="./Orders"
+           asp-route-pageIndex="@(Model.Orders.PageIndex - 1)"
+           class="btn btn-primary @prevDisabled">
+            @localizer["Previous"]
+        </a>
+        <a asp-page="./Orders"
+           asp-route-pageIndex="@(Model.Orders.PageIndex + 1)"
+           class="btn btn-primary @nextDisabled">
+            @localizer["Next"]
+        </a>
     </div>
 }

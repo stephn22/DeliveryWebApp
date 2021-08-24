@@ -1,19 +1,17 @@
 ﻿using DeliveryWebApp.Application.Common.Exceptions;
 using DeliveryWebApp.Application.Common.Interfaces;
+using DeliveryWebApp.Application.Common.Models;
 using DeliveryWebApp.Application.Common.Security;
 using DeliveryWebApp.Application.Products.Commands.DeleteProduct;
-using DeliveryWebApp.Application.Products.Queries.GetProducts;
-using DeliveryWebApp.Application.Restaurateurs.Extensions;
 using DeliveryWebApp.Domain.Entities;
 using DeliveryWebApp.Infrastructure.Identity;
-using DeliveryWebApp.Infrastructure.Services.Utilities;
 using MediatR;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
-using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
@@ -26,90 +24,67 @@ namespace DeliveryWebApp.WebUI.Pages.RestaurateurPages
         private readonly IApplicationDbContext _context;
         private readonly UserManager<ApplicationUser> _userManager;
         private readonly ILogger<RestaurantProductsModel> _logger;
+        private readonly IConfiguration _configuration;
 
-        public RestaurantProductsModel(IMediator mediator, IApplicationDbContext context, UserManager<ApplicationUser> userManager, ILogger<RestaurantProductsModel> logger)
+        public RestaurantProductsModel(IMediator mediator, IApplicationDbContext context, UserManager<ApplicationUser> userManager, ILogger<RestaurantProductsModel> logger, IConfiguration configuration)
         {
             _mediator = mediator;
             _context = context;
             _userManager = userManager;
             _logger = logger;
+            _configuration = configuration;
         }
 
         public Restaurateur Restaurateur { get; set; }
-        public IList<Product> Products { get; set; }
+        public PaginatedList<Product> Products { get; set; }
 
-        // sort orders (products table)
-        public string NameSort { get; set; }
-        public string QuantitySort { get; set; }
-        public string PriceSort { get; set; }
-        public string DiscountSort { get; set; }
-        public string CategorySort { get; set; }
+        // filtering (products table)
+        public string CurrentFilter { get; set; }
 
-        public async Task<IActionResult> OnGetAsync(int? id, string sortOrder)
+        private async Task LoadAsync(int id, string searchString, string currentFilter, int? pageIndex)
+        {
+            Restaurateur = await _context.Restaurateurs.FindAsync(id);
+
+            if (Restaurateur != null)
+            {
+                var products = _context.Products.Where(p => p.RestaurateurId == id);
+
+                if (!string.IsNullOrEmpty(searchString))
+                {
+                    products = products.Where(p => p.Name.ToLower().Contains(searchString.ToLower()));
+                }
+
+                var pageSize = _configuration.GetValue("PageSize", 5);
+                Products = await PaginatedList<Product>.CreateAsync(products.AsNoTracking(), pageIndex ?? 1, pageSize);
+            }
+        }
+
+        public async Task<IActionResult> OnGetAsync(int? id, string searchString, string currentFilter, int? pageIndex)
         {
             if (id == null)
             {
                 return NotFound("Unable to find a food vendor with that id");
             }
 
-            var user = await _userManager.GetUserAsync(User);
-
-            if (user == null)
+            if (searchString != null)
             {
-                return BadRequest();
+                pageIndex = 1;
+            }
+            else
+            {
+                searchString = currentFilter;
             }
 
-            await LoadAsync(user);
-            await ProductsSorting(sortOrder, Restaurateur.Id);
+            await LoadAsync((int)id, searchString, currentFilter, pageIndex);
 
             return Page();
         }
 
-        private async Task LoadAsync(ApplicationUser user)
+        public async Task<IActionResult> OnPostDeleteProductAsync(int id, int productId)
         {
-            Restaurateur = await _context.GetRestaurateurByApplicationUserFkAsync(user.Id);
+            var product = await _context.Products.FindAsync(productId);
 
-            if (Restaurateur != null)
-            {
-                Products = await _mediator.Send(new GetProductsQuery
-                {
-                    RestaurateurId = Restaurateur.Id
-                });
-            }
-        }
-
-        /// <summary>
-        /// Sort products in table
-        /// </summary>
-        /// <param name="sortOrder">order which table has to be sorted</param>
-        /// <param name="restaurateurId">id of food vendor</param>
-        /// <returns></returns>
-        private async Task ProductsSorting(string sortOrder, int restaurateurId)
-        {
-            NameSort = string.IsNullOrEmpty(sortOrder) ? ProductSortOrders.NameDesc : "";
-            QuantitySort = string.IsNullOrEmpty(sortOrder) ? ProductSortOrders.QuantityDesc : "";
-            PriceSort = string.IsNullOrEmpty(sortOrder) ? ProductSortOrders.PriceDesc : "";
-            DiscountSort = string.IsNullOrEmpty(sortOrder) ? ProductSortOrders.DiscountDesc : "";
-            CategorySort = string.IsNullOrEmpty(sortOrder) ? ProductSortOrders.CategoryDesc : "";
-
-            var products = _context.Products.Where(p => p.RestaurateurId == restaurateurId);
-
-            products = sortOrder switch
-            {
-                ProductSortOrders.NameDesc => products.OrderByDescending(p => p.Name),
-                ProductSortOrders.QuantityDesc => products.OrderByDescending(p => p.Quantity),
-                ProductSortOrders.PriceDesc => products.OrderByDescending(p => p.Price),
-                ProductSortOrders.DiscountDesc => products.OrderByDescending(p => p.Discount),
-                ProductSortOrders.CategoryDesc => products.OrderByDescending(p => p.Category),
-                _ => products.OrderByDescending(p => p.Id)
-            };
-
-            Products = await products.AsNoTracking().ToListAsync();
-        }
-
-        public async Task<IActionResult> OnPostDeleteProductAsync(int id)
-        {
-            var product = await _context.Products.FindAsync(id);
+            await LoadAsync(id, "", "", 1);
 
             try
             {

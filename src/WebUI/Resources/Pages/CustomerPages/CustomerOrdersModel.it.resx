@@ -132,8 +132,14 @@
   <data name="Food Vendor" xml:space="preserve">
     <value>Ristoratore</value>
   </data>
+  <data name="Next" xml:space="preserve">
+    <value>Successivo</value>
+  </data>
   <data name="Orders" xml:space="preserve">
     <value>Ordini</value>
+  </data>
+  <data name="Previous" xml:space="preserve">
+    <value>Precedente</value>
   </data>
   <data name="Price" xml:space="preserve">
     <value>Prezzo</value>
@@ -143,6 +149,9 @@
   </data>
   <data name="Quantity" xml:space="preserve">
     <value>Quantità</value>
+  </data>
+  <data name="Some products may not be displayed because they have been deleted" xml:space="preserve">
+    <value>Alcuni prodotti potrebbero non essere mostrati perchè sono stati cancellati dal ristoratore</value>
   </data>
   <data name="Status" xml:space="preserve">
     <value>Stato</value>

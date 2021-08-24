@@ -1,3 +1,4 @@
+using DeliveryWebApp.Application.Common.Models;
 using DeliveryWebApp.Application.Common.Security;
 using DeliveryWebApp.Application.Orders.Extensions;
 using DeliveryWebApp.Domain.Entities;
@@ -9,6 +10,7 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Configuration;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -22,20 +24,22 @@ namespace DeliveryWebApp.WebUI.Pages.RiderPages
         private readonly ApplicationDbContext _context;
         private readonly IMediator _mediator;
         private readonly UserManager<ApplicationUser> _userManager;
+        private readonly IConfiguration _configuration;
 
         public DeliveryHistoryModel(ApplicationDbContext context, IMediator mediator,
-            UserManager<ApplicationUser> userManager)
+            UserManager<ApplicationUser> userManager, IConfiguration configuration)
         {
             _context = context;
             _mediator = mediator;
             _userManager = userManager;
+            _configuration = configuration;
         }
 
         public Rider Rider { get; set; }
-        public List<Order> Orders { get; set; }
+        public PaginatedList<Order> Orders { get; set; }
         public List<Restaurateur> Restaurateurs { get; set; }
 
-        private async Task LoadAsync(ApplicationUser user)
+        private async Task LoadAsync(ApplicationUser user, int? pageIndex)
         {
             try
             {
@@ -43,7 +47,10 @@ namespace DeliveryWebApp.WebUI.Pages.RiderPages
 
                 Rider = await _context.Riders.FirstAsync(r => r.CustomerId == customer.Id);
 
-                Orders = await _context.Orders.Where(o => o.RiderId == Rider.Id).ToListAsync();
+                var orders = _context.Orders.Where(o => o.RiderId == Rider.Id);
+
+                var pageSize = _configuration.GetValue("PageSize", 5);
+                Orders = await PaginatedList<Order>.CreateAsync(orders.AsNoTracking(), pageIndex ?? 1, pageSize);
 
                 if (!Orders.IsNullOrEmpty())
                 {
@@ -62,7 +69,7 @@ namespace DeliveryWebApp.WebUI.Pages.RiderPages
             }
         }
 
-        public async Task<IActionResult> OnGetAsync()
+        public async Task<IActionResult> OnGetAsync(int? pageIndex)
         {
             var user = await _userManager.GetUserAsync(User);
 
@@ -71,7 +78,7 @@ namespace DeliveryWebApp.WebUI.Pages.RiderPages
                 return NotFound();
             }
 
-            await LoadAsync(user);
+            await LoadAsync(user, pageIndex);
 
             if (Rider == null)
             {

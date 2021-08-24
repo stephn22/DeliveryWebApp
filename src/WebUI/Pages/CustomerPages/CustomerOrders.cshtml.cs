@@ -1,6 +1,6 @@
+using DeliveryWebApp.Application.Common.Models;
 using DeliveryWebApp.Application.Common.Security;
 using DeliveryWebApp.Application.Orders.Extensions;
-using DeliveryWebApp.Application.Orders.Queries.GetOrders;
 using DeliveryWebApp.Domain.Entities;
 using DeliveryWebApp.Infrastructure.Identity;
 using DeliveryWebApp.Infrastructure.Persistence;
@@ -9,9 +9,11 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 
 namespace DeliveryWebApp.WebUI.Pages.CustomerPages
@@ -23,21 +25,23 @@ namespace DeliveryWebApp.WebUI.Pages.CustomerPages
         private readonly IMediator _mediator;
         private readonly UserManager<ApplicationUser> _userManager;
         private readonly ILogger<CustomerOrdersModel> _logger;
+        private readonly IConfiguration _configuration;
 
-        public CustomerOrdersModel(ApplicationDbContext context, UserManager<ApplicationUser> userManager, ILogger<CustomerOrdersModel> logger, IMediator mediator)
+        public CustomerOrdersModel(ApplicationDbContext context, UserManager<ApplicationUser> userManager, ILogger<CustomerOrdersModel> logger, IMediator mediator, IConfiguration configuration)
         {
             _context = context;
             _userManager = userManager;
             _logger = logger;
             _mediator = mediator;
+            _configuration = configuration;
         }
 
         public Customer Customer { get; set; }
-        public List<Order> Orders { get; set; }
+        public PaginatedList<Order> Orders { get; set; }
         public List<Product> Products { get; set; }
         public List<Restaurateur> Restaurateurs { get; set; }
 
-        public async Task<IActionResult> OnGetAsync()
+        public async Task<IActionResult> OnGetAsync(int? pageIndex)
         {
             var user = await _userManager.GetUserAsync(User);
 
@@ -46,7 +50,7 @@ namespace DeliveryWebApp.WebUI.Pages.CustomerPages
                 return NotFound($"Unable to load user with ID '{_userManager.GetUserId(User)}'.");
             }
 
-            await LoadAsync(user);
+            await LoadAsync(user, pageIndex);
 
             if (Customer == null || Orders == null)
             {
@@ -56,7 +60,7 @@ namespace DeliveryWebApp.WebUI.Pages.CustomerPages
             return Page();
         }
 
-        private async Task LoadAsync(ApplicationUser user)
+        private async Task LoadAsync(ApplicationUser user, int? pageIndex)
         {
             try
             {
@@ -71,10 +75,10 @@ namespace DeliveryWebApp.WebUI.Pages.CustomerPages
 
             Restaurateurs = new List<Restaurateur>();
 
-            Orders = await _mediator.Send(new GetOrdersQuery
-            {
-                CustomerId = Customer.Id
-            });
+            var orders = _context.Orders.Where(o => o.CustomerId == Customer.Id);
+
+            var pageSize = _configuration.GetValue("PageSize", 5);
+            Orders = await PaginatedList<Order>.CreateAsync(orders, pageIndex ?? 1, pageSize);
 
             if (Orders != null)
             {

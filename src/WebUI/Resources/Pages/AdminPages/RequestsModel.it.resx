@@ -120,6 +120,12 @@
   <data name="Details" xml:space="preserve">
     <value>Dettagli</value>
   </data>
+  <data name="Next" xml:space="preserve">
+    <value>Successiva</value>
+  </data>
+  <data name="Previous" xml:space="preserve">
+    <value>Precedente</value>
+  </data>
   <data name="Requests" xml:space="preserve">
     <value>Richieste</value>
   </data>

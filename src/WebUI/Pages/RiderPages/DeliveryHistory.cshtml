@@ -25,55 +25,72 @@ else
     <div class="text-center">
         <table class="table">
             <thead>
-                <tr class="table-primary">
-                    <th>
-                        @Html.DisplayNameFor(model => model.Orders[0].Id)
-                    </th>
-                    <th>
-                        @localizer["Order Date"]
-                    </th>
-                    <th>
-                        @localizer["Delivery Date"]
-                    </th>
-                    <th>
-                        @localizer["Food Vendor"]
-                    </th>
-                    <th>
-                        @localizer["Status"]
-                    </th>
-                </tr>
+            <tr class="table-primary">
+                <th>
+                    @Html.DisplayNameFor(model => model.Orders[0].Id)
+                </th>
+                <th>
+                    @localizer["Order Date"]
+                </th>
+                <th>
+                    @localizer["Delivery Date"]
+                </th>
+                <th>
+                    @localizer["Food Vendor"]
+                </th>
+                <th>
+                    @localizer["Status"]
+                </th>
+            </tr>
             </thead>
             <tbody>
-                @for (var i = 0; i < Model.Orders.Count; i++)
-                {
-                    <tr>
-                        <td>
-                            @Html.DisplayFor(model => model.Orders[i].Id)
-                        </td>
-                        <td>
-                            @Model.Orders[i].Date.ToLocalTime().ToString("F")
-                        </td>
-                        <td>
-                            @if (Model.Orders[i].DeliveryDate == null)
-                            {
-                                <p>N/A</p>
-                            }
-                            else
-                            {
-                                <p>@Model.Orders[i].DeliveryDate.Value.ToLocalTime().ToString("F")</p>
-                            }
-                        </td>
-                        <td>
-                            <a asp-page="/CustomerPages/RestaurantDetail" asp-route-id="@Model.Restaurateurs[i].Id" class="link-primary">
-                                @Model.Restaurateurs[i].RestaurantName
-                            </a>
-                        </td>
-                        <td>
-                            @Html.DisplayFor(model => model.Orders[i].Status)
-                        </td>
-                    </tr>
-                }
+            @for (var i = 0; i < Model.Orders.Count; i++)
+            {
+                <tr>
+                    <td>
+                        @Html.DisplayFor(model => model.Orders[i].Id)
+                    </td>
+                    <td>
+                        @Model.Orders[i].Date.ToLocalTime().ToString("F")
+                    </td>
+                    <td>
+                        @if (Model.Orders[i].DeliveryDate == null)
+                        {
+                            <p>N/A</p>
+                        }
+                        else
+                        {
+                            <p>@Model.Orders[i].DeliveryDate.Value.ToLocalTime().ToString("F")</p>
+                        }
+                    </td>
+                    <td>
+                        <a asp-page="/CustomerPages/RestaurantDetail" asp-route-id="@Model.Restaurateurs[i].Id" class="link-primary">
+                            @Model.Restaurateurs[i].RestaurantName
+                        </a>
+                    </td>
+                    <td>
+                        @Html.DisplayFor(model => model.Orders[i].Status)
+                    </td>
+                </tr>
+            }
             </tbody>
         </table>
+    </div>
+    <div>
+        @{
+            var prevDisabled = !Model.Orders.HasPreviousPage ? "disabled" : "";
+            var nextDisabled = !Model.Orders.HasNextPage ? "disabled" : "";
+        }
+
+        <a asp-page="./DeliveryHistory"
+           asp-route-pageIndex="@(Model.Orders.PageIndex - 1)"
+           class="btn btn-primary @prevDisabled">
+            @localizer["Previous"]
+        </a>
+        <a asp-page="./DeliveryHistory"
+           asp-route-pageIndex="@(Model.Orders.PageIndex + 1)"
+           class="btn btn-primary @nextDisabled">
+            @localizer["Next"]
+        </a>
     </div>
 }

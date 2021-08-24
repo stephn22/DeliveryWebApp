@@ -53,119 +53,128 @@ else
 
 <hr/>
 
-@if (!Model.Products.IsNullOrEmpty())
-{
-    <div class="row">
-        @foreach (var product in Model.Products)
-        {
-            <div class="card">
-                @if (!product.Image.IsNullOrEmpty())
-                {
-                    <img class="card-img-top square rounded img-fluid" style="margin-top: 10px" src="data:image/jpeg;base64,@Convert.ToBase64String(product.Image)" alt=""/>
-                }
-                else
-                {
-                    <div class="card-img-top">
-                        <svg xmlns="http://www.w3.org/2000/svg" width="100" height="100" fill="currentColor" class="bi bi-image" viewBox="0 0 16 16" title="Food vendor didn't upload any image'">
-                            <path d="M6.002 5.5a1.5 1.5 0 1 1-3 0 1.5 1.5 0 0 1 3 0z"/>
-                            <path d="M2.002 1a2 2 0 0 0-2 2v10a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V3a2 2 0 0 0-2-2h-12zm12 1a1 1 0 0 1 1 1v6.5l-3.777-1.947a.5.5 0 0 0-.577.093l-3.71 3.71-2.66-1.772a.5.5 0 0 0-.63.062L1.002 12V3a1 1 0 0 1 1-1h12z"/>
-                        </svg>
+<form asp-page="./RestaurantDetail" asp-route-id="@Model.Restaurateur.Id" method="get">
+    <div class="form-actions no-color">
+        <p>
+            @localizer["Find by name"]:
+            <input type="text" name="SearchString" value="@Model.CurrentFilter" />
+            <input type="submit" value="Search" class="btn btn-primary" /> |
+            <a asp-page="./RestaurantDetail" asp-route-id="@Model.Restaurateur.Id">@localizer["Back to full List"]</a>
+        </p>
+    </div>
+</form>
+
+<div class="row">
+    @foreach (var product in Model.Products)
+    {
+        <div class="card">
+            @if (!product.Image.IsNullOrEmpty())
+            {
+                <img class="card-img-top square rounded img-fluid" style="margin-top: 10px" src="data:image/jpeg;base64,@Convert.ToBase64String(product.Image)" alt=""/>
+            }
+            else
+            {
+                <div class="card-img-top">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="100" height="100" fill="currentColor" class="bi bi-image" viewBox="0 0 16 16" title="Food vendor didn't upload any image'">
+                        <path d="M6.002 5.5a1.5 1.5 0 1 1-3 0 1.5 1.5 0 0 1 3 0z"/>
+                        <path d="M2.002 1a2 2 0 0 0-2 2v10a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V3a2 2 0 0 0-2-2h-12zm12 1a1 1 0 0 1 1 1v6.5l-3.777-1.947a.5.5 0 0 0-.577.093l-3.71 3.71-2.66-1.772a.5.5 0 0 0-.63.062L1.002 12V3a1 1 0 0 1 1-1h12z"/>
+                    </svg>
+                </div>
+            }
+
+            <div class="card-body">
+                <h5 class="card-title">@product.Name</h5>
+                <h6 class="card-subtitle mb-2 text-muted">@product.Category</h6>
+                <p class="card-text">
+                    <div class="row">
+                        @if (product.Discount != 0)
+                        {
+                            <p>@localizer["Price"]: <del>@product.Price.ToString("C")</del> @product.DiscountedPrice().ToString("C")</p>
+                            <p>@localizer["Discount"]: @product.Discount %</p>
+                        }
+                        else
+                        {
+                            <p>@localizer["Price"]: @product.Price.ToString("C")</p>
+                            <p>@localizer["Discount"]: N/A</p>
+                        }
                     </div>
-                }
+                    <div class="row">
+                        <p>@localizer["In stock"]: @product.Quantity</p>
+                    </div>
+                </p>
 
-                <div class="card-body">
-                    <h5 class="card-title">@product.Name</h5>
-                    <h6 class="card-subtitle mb-2 text-muted">@product.Category</h6>
-                    <p class="card-text">
-                        <div class="row">
-                            @if (product.Discount != 0)
-                            {
-                                <p>@localizer["Price"]: <del>@product.Price.ToString("C")</del> @product.DiscountedPrice().ToString("C")</p>
-                                <p>@localizer["Discount"]: @product.Discount %</p>
-                            }
-                            else
-                            {
-                                <p>@localizer["Price"]: @product.Price.ToString("C")</p>
-                                <p>@localizer["Discount"]: N/A</p>
-                            }
-                        </div>
-                        <div class="row">
-                            <p>@localizer["In stock"]: @product.Quantity</p>
-                        </div>
-                    </p>
+                <button class="btn btn-outline-dark" type="button" data-bs-toggle="modal" data-bs-target="#addToBasketModal-@product.Id">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-cart-plus" viewBox="0 0 16 16">
+                        <path d="M9 5.5a.5.5 0 0 0-1 0V7H6.5a.5.5 0 0 0 0 1H8v1.5a.5.5 0 0 0 1 0V8h1.5a.5.5 0 0 0 0-1H9V5.5z"/>
+                        <path d="M.5 1a.5.5 0 0 0 0 1h1.11l.401 1.607 1.498 7.985A.5.5 0 0 0 4 12h1a2 2 0 1 0 0 4 2 2 0 0 0 0-4h7a2 2 0 1 0 0 4 2 2 0 0 0 0-4h1a.5.5 0 0 0 .491-.408l1.5-8A.5.5 0 0 0 14.5 3H2.89l-.405-1.621A.5.5 0 0 0 2 1H.5zm3.915 10L3.102 4h10.796l-1.313 7h-8.17zM6 14a1 1 0 1 1-2 0 1 1 0 0 1 2 0zm7 0a1 1 0 1 1-2 0 1 1 0 0 1 2 0z"/>
+                    </svg>
+                </button>
 
-                    <button class="btn btn-outline-dark" type="button" data-bs-toggle="modal" data-bs-target="#addToBasketModal-@product.Id">
-                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-cart-plus" viewBox="0 0 16 16">
-                            <path d="M9 5.5a.5.5 0 0 0-1 0V7H6.5a.5.5 0 0 0 0 1H8v1.5a.5.5 0 0 0 1 0V8h1.5a.5.5 0 0 0 0-1H9V5.5z"/>
-                            <path d="M.5 1a.5.5 0 0 0 0 1h1.11l.401 1.607 1.498 7.985A.5.5 0 0 0 4 12h1a2 2 0 1 0 0 4 2 2 0 0 0 0-4h7a2 2 0 1 0 0 4 2 2 0 0 0 0-4h1a.5.5 0 0 0 .491-.408l1.5-8A.5.5 0 0 0 14.5 3H2.89l-.405-1.621A.5.5 0 0 0 2 1H.5zm3.915 10L3.102 4h10.796l-1.313 7h-8.17zM6 14a1 1 0 1 1-2 0 1 1 0 0 1 2 0zm7 0a1 1 0 1 1-2 0 1 1 0 0 1 2 0z"/>
-                        </svg>
-                    </button>
-
-                    @* Add to basket modal *@
-                    <div class="modal fade show" id="addToBasketModal-@product.Id" aria-labelledby="addToBasketModalTitle-@product.Id" aria-modal="true" role="dialog">
-                        <div class="modal-dialog modal-dialog-centered">
-                            <div class="modal-content">
-                                <div class="modal-header">
-                                    <h5 class="modal-title" id="addToBasketModalTitle-@product.Id">@localizer["Add to basket"]: @product.Name </h5>
-                                    <button class="btn-close" data-bs-dismiss="modal" aria-label="close"></button>
+                @* Add to basket modal *@
+                <div class="modal fade show" id="addToBasketModal-@product.Id" aria-labelledby="addToBasketModalTitle-@product.Id" aria-modal="true" role="dialog">
+                    <div class="modal-dialog modal-dialog-centered">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <h5 class="modal-title" id="addToBasketModalTitle-@product.Id">@localizer["Add to basket"]: @product.Name </h5>
+                                <button class="btn-close" data-bs-dismiss="modal" aria-label="close"></button>
+                            </div>
+                            <div class="modal-body">
+                                <div class="row">
+                                    <p class="text-muted">@product.Category</p>
                                 </div>
-                                <div class="modal-body">
+                                <div class="row">
+                                    <p>@product.DiscountedPrice().ToString("C")</p>
+                                </div>
+                                @if (product.Quantity == 0)
+                                {
                                     <div class="row">
-                                        <p class="text-muted">@product.Category</p>
+                                        <div class="alert alert-danger" role="alert">@localizer["Out of stock"]</div>
                                     </div>
-                                    <div class="row">
-                                        <p>@product.DiscountedPrice().ToString("C")</p>
-                                    </div>
-                                    @if (product.Quantity == 0)
-                                    {
+                                }
+                                else
+                                {
+                                    <form asp-page-handler="AddToBasket" asp-route-id="@Model.Restaurateur.Id" asp-route-productId="@product.Id" method="post">
                                         <div class="row">
-                                            <div class="alert alert-danger" role="alert">@localizer["Out of stock"]</div>
+
+                                            <label asp-for="Input.Quantity"></label>
+
+                                            <select asp-for="Input.Quantity" class="form-select col-sm">
+                                                @for (var i = 1; i <= product.Quantity; i++)
+                                                {
+                                                    <option value="@i">@i</option>
+                                                }
+                                            </select>
+                                            <span asp-validation-for="Input.Quantity" class="text-danger"></span>
                                         </div>
-                                    }
-                                    else
-                                    {
-                                        <form asp-page-handler="AddToBasket" asp-route-id="@Model.Restaurateur.Id" asp-route-productId="@product.Id" method="post">
-                                            <div class="row">
 
-                                                <label asp-for="Input.Quantity"></label>
+                                        <div class="modal-footer">
+                                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">@localizer["Close"]</button>
 
-                                                <select asp-for="Input.Quantity" class="form-select col-sm">
-                                                    @for (var i = 1; i <= product.Quantity; i++)
-                                                    {
-                                                        <option value="@i">@i</option>
-                                                    }
-                                                </select>
-                                                <span asp-validation-for="Input.Quantity" class="text-danger"></span>
-                                            </div>
-
-                                            <div class="modal-footer">
-                                                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">@localizer["Close"]</button>
-
-                                                <button class="btn btn-primary" type="submit" id="add-to-cart-@product.Id">
-                                                    @localizer["Add"]
-                                                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-cart-plus" viewBox="0 0 16 16">
-                                                        <path d="M9 5.5a.5.5 0 0 0-1 0V7H6.5a.5.5 0 0 0 0 1H8v1.5a.5.5 0 0 0 1 0V8h1.5a.5.5 0 0 0 0-1H9V5.5z"/>
-                                                        <path d="M.5 1a.5.5 0 0 0 0 1h1.11l.401 1.607 1.498 7.985A.5.5 0 0 0 4 12h1a2 2 0 1 0 0 4 2 2 0 0 0 0-4h7a2 2 0 1 0 0 4 2 2 0 0 0 0-4h1a.5.5 0 0 0 .491-.408l1.5-8A.5.5 0 0 0 14.5 3H2.89l-.405-1.621A.5.5 0 0 0 2 1H.5zm3.915 10L3.102 4h10.796l-1.313 7h-8.17zM6 14a1 1 0 1 1-2 0 1 1 0 0 1 2 0zm7 0a1 1 0 1 1-2 0 1 1 0 0 1 2 0z"/>
-                                                    </svg>
-                                                </button>
-                                            </div>
-                                        </form>
-                                    }
-                                </div>
+                                            <button class="btn btn-primary" type="submit" id="add-to-cart-@product.Id">
+                                                @localizer["Add"]
+                                                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-cart-plus" viewBox="0 0 16 16">
+                                                    <path d="M9 5.5a.5.5 0 0 0-1 0V7H6.5a.5.5 0 0 0 0 1H8v1.5a.5.5 0 0 0 1 0V8h1.5a.5.5 0 0 0 0-1H9V5.5z"/>
+                                                    <path d="M.5 1a.5.5 0 0 0 0 1h1.11l.401 1.607 1.498 7.985A.5.5 0 0 0 4 12h1a2 2 0 1 0 0 4 2 2 0 0 0 0-4h7a2 2 0 1 0 0 4 2 2 0 0 0 0-4h1a.5.5 0 0 0 .491-.408l1.5-8A.5.5 0 0 0 14.5 3H2.89l-.405-1.621A.5.5 0 0 0 2 1H.5zm3.915 10L3.102 4h10.796l-1.313 7h-8.17zM6 14a1 1 0 1 1-2 0 1 1 0 0 1 2 0zm7 0a1 1 0 1 1-2 0 1 1 0 0 1 2 0z"/>
+                                                </svg>
+                                            </button>
+                                        </div>
+                                    </form>
+                                }
                             </div>
                         </div>
                     </div>
                 </div>
             </div>
-        }
-    </div>
-}
+        </div>
+    }
+</div>
+
 <hr/>
 @if (Model.AvailableReviews > 0)
 {
     <div class="text-end">
         <button class="btn btn-primary" type="button" data-bs-toggle="modal" data-bs-target="#newReviewModal">
-            
+
             <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-plus-square-fill" viewBox="0 0 16 16">
                 <path d="M2 0a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V2a2 2 0 0 0-2-2H2zm6.5 4.5v3h3a.5.5 0 0 1 0 1h-3v3a.5.5 0 0 1-1 0v-3h-3a.5.5 0 0 1 0-1h3v-3a.5.5 0 0 1 1 0z"/>
             </svg>
@@ -182,7 +191,7 @@ else
                         @localizer["Add a review"]
                     </h5>
                 </div>
-                
+
                 <div class="modal-body">
                     <form method="post" asp-page-handler="AddReview" asp-route-id="@Model.Restaurateur.Id">
                         <div class="mb-2">
@@ -196,16 +205,16 @@ else
                             <span asp-validation-for="Input.Text" class="text-danger"></span>
                         </div>
                         <div class="mb-3">
-                            
+
                             <label asp-for="Input.Rating">Rating: <span id="range-output"></span></label>
                             <input type="range" asp-for="Input.Rating" class="form-range" min="1" max="5" step="1" id="rating-range"/>
                             <span asp-validation-for="Input.Rating" class="text-danger"></span>
                         </div>
                         <div class="modal-footer">
                             <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">@localizer["Close"]</button>
-                            
+
                             <button type="submit" class="btn btn-primary">
-                                
+
                                 <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-check2" viewBox="0 0 16 16">
                                     <path d="M13.854 3.646a.5.5 0 0 1 0 .708l-7 7a.5.5 0 0 1-.708 0l-3.5-3.5a.5.5 0 1 1 .708-.708L6.5 10.293l6.646-6.647a.5.5 0 0 1 .708 0z"/>
                                 </svg>
@@ -221,39 +230,60 @@ else
 
 @if (!Model.Reviews.IsNullOrEmpty())
 {
-    <h5>@localizer["Reviews"] &ndash; @Model.AverageRating.ToString("F1") / 5</h5>
+    <div>
+        <h5>@localizer["Reviews"] &ndash; @Model.AverageRating.ToString("F1") / 5</h5>
 
-    @foreach (var review in Model.Reviews)
-    {
-        <div class="text-start">
-            <ul class="list-group">
-                <li class="list-group-item d-flex justify-content-between align-items-start">
-                    <div class="ms-2 me-auto">
-                        <div class="fw-bold">
-                            @Html.DisplayFor(model => review.Title)
+        @foreach (var review in Model.Reviews)
+        {
+            <div class="text-start">
+                <ul class="list-group">
+                    <li class="list-group-item d-flex justify-content-between align-items-start">
+                        <div class="ms-2 me-auto">
+                            <div class="fw-bold">
+                                @Html.DisplayFor(model => review.Title)
+                            </div>
+                            @Html.DisplayFor(model => review.Text)
+                            <hr/>
+                            @{
+                                var customer = await review.GetCustomerAsync(context);
+                                var user = await userManager.FindByIdAsync(customer.ApplicationUserFk);
+                            }
+
+                            <small class="text-muted text-info">@Html.DisplayFor(model => user.UserName) &middot; @review.Date.ToLocalTime().ToString("d")</small>
+
                         </div>
-                        @Html.DisplayFor(model => review.Text)
-                        <hr/>
-                        @{
-                            var customer = await review.GetCustomerAsync(context);
-                            var user = await userManager.FindByIdAsync(customer.ApplicationUserFk);
-                        }
+                        <span class="badge bg-primary rounded-pill">@Html.DisplayFor(model => review.Rating) / 5</span>
+                    </li>
+                </ul>
+            </div>
+        }
+        <br/>
+        @{
+            var prevDisabled = !Model.Reviews.HasPreviousPage ? "disabled" : "";
+            var nextDisabled = !Model.Reviews.HasNextPage ? "disabled" : "";
+        }
 
-                    <small class="text-muted text-info">@Html.DisplayFor(model => user.UserName) &middot; @review.Date.ToLocalTime().ToString("d")</small>
-
-                    </div>
-                    <span class="badge bg-primary rounded-pill">@Html.DisplayFor(model => review.Rating) / 5</span>
-                </li>
-            </ul>
-        </div>
-    }
+        <a asp-page="./RestaurantDetail"
+           asp-route-id="@Model.Restaurateur.Id"
+           asp-route-pageIndex="@(Model.Reviews.PageIndex - 1)"
+           asp-route-currentFilter="@Model.CurrentFilter"
+           class="btn btn-primary @prevDisabled">
+            @localizer["Previous"]
+        </a>
+        <a asp-page="./RestaurantDetail"
+           asp-route-id="@Model.Restaurateur.Id"
+           asp-route-pageIndex="@(Model.Reviews.PageIndex + 1)"
+           asp-route-currentFilter="@Model.CurrentFilter"
+           class="btn btn-primary @nextDisabled">
+            @localizer["Next"]
+        </a>
+    </div>
 }
-
 
 @section Scripts
 {
     <partial name="_ValidationScriptsPartial"/>
-    
+
     <script type="text/javascript">
         $(function() {
             "use strict";

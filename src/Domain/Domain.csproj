@@ -8,12 +8,11 @@
 
   <ItemGroup>
     <Compile Remove="Events\**" />
+    <Compile Remove="Objects\**" />
     <EmbeddedResource Remove="Events\**" />
+    <EmbeddedResource Remove="Objects\**" />
     <None Remove="Events\**" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <Folder Include="Objects\" />
+    <None Remove="Objects\**" />
   </ItemGroup>
 
 </Project>

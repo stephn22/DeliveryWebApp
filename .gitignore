@@ -237,3 +237,4 @@ _Pvt_Extensions
 /src/WebUI/Log
 .vscode
 /src/WebUI/Resources/Uploads
+/src/WebUI/ApplicationDbContext.dgml

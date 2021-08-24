@@ -10,91 +10,142 @@
     var requestCulture = requestCultureFeature.RequestCulture;
 }
 
+@section Head
+{
+    <style>
+        .bd-placeholder-img {
+            font-size: 1.125rem;
+            text-anchor: middle;
+            -webkit-user-select: none;
+            -moz-user-select: none;
+            user-select: none;
+        }
+
+        @@media (min-width: 768px) {
+            .bd-placeholder-img-lg { font-size: 3.5rem; }
+        }
+
+        .container { max-width: 960px; }
+    </style>
+}
+
 <h2>@ViewData["Title"]</h2>
 
-<hr />
+<hr/>
 
-<h4>@localizer["Total"]: @Model.Basket.TotalPrice.ToString("C")</h4>
-<br />
-<table class="table">
-    <thead>
-        <tr class="table-primary">
-            <th>
-                @localizer["Image"]
-            </th>
-            <th>
-                @localizer["Name"]
-            </th>
-            <th>
-                @localizer["Price"]
-            </th>
-            <th>
-                @localizer["Quantity"]
-            </th>
-        </tr>
-    </thead>
-    <tbody>
-        @for (var i = 0; i < Model.Products.Count; i++)
-        {
-            <tr>
-                <td>
-                    <img src="data:image/jpeg;base64,@Convert.ToBase64String(Model.Products[i].Image)" style="height: 60px; width: 60px" alt="product_image" />
-                </td>
-                <td>
-                    @Html.DisplayFor(model => model.Products[i].Name)
-                </td>
-                <td>
-                    @Model.Products[i].DiscountedPrice().ToString("C")
-                </td>
-                <td>
-                    @Html.DisplayFor(model => model.BasketItems[i].Quantity)
-                </td>
+<div class="container">
+    <main>
+        <h4>@localizer["Total"]: @Model.Basket.TotalPrice.ToString("C")</h4>
+        <br />
+        <table class="table">
+            <thead>
+            <tr class="table-primary">
+                <th>
+                    @localizer["Image"]
+                </th>
+                <th>
+                    @localizer["Name"]
+                </th>
+                <th>
+                    @localizer["Price"]
+                </th>
+                <th>
+                    @localizer["Quantity"]
+                </th>
             </tr>
-        }
-    </tbody>
-</table>
+            </thead>
+            <tbody>
+            @for (var i = 0; i < Model.BasketItems.Count; i++)
+            {
+                <tr>
+                    <td>
+                        <img src="data:image/jpeg;base64,@Convert.ToBase64String(Model.Products[i].Image)" style="height: 60px; width: 60px" alt="product_image"/>
+                    </td>
+                    <td>
+                        @Html.DisplayFor(model => model.Products[i].Name)
+                    </td>
+                    <td>
+                        @Model.Products[i].DiscountedPrice().ToString("C")
+                    </td>
+                    <td>
+                        @Html.DisplayFor(model => model.BasketItems[i].Quantity)
+                    </td>
+                </tr>
+            }
+            </tbody>
+        </table>
 
-<hr />
-
-<h5>@localizer["Deliver to address"]</h5>
-<form method="post">
-    <div class="form-group col-md-5">
-        <label asp-for="Input.AddressId">@localizer["Address"]</label>
-        <select class="form-select" asp-for="Input.AddressId" asp-items="Model.CustomerAddresses"></select>
-        <span asp-validation-for="Input.AddressId" class="text-danger"></span>
-    </div>
+        <h5>@localizer["Deliver to address"]</h5>
+        <form method="post" class="">
+            <div class="form-group col-md-6">
+                <label asp-for="Input.AddressId">@localizer["Address"]</label>
+                <select class="form-select" asp-for="Input.AddressId" asp-items="Model.CustomerAddresses"></select>
+                <span asp-validation-for="Input.AddressId" class="text-danger"></span>
+            </div>
 
 
-    <hr />
+            <hr/>
 
-    <h5>@localizer["Payment method"]</h5>
+            <h5>@localizer["Payment method"]</h5>
 
-    @*<button type="button" class="btn btn-warning">
-        <img src="/icons/PayPal.svg" alt="paypal_logo" />
-    </button>
-    <br />
-    <p>@localizer["or"]</p>*@
+            <div class="my-3">
+                <div class="form-check">
+                    <input id="credit" name="paymentMethod" type="radio" class="form-check-input" checked required>
+                    <label class="form-check-label" for="credit">@localizer["Credit card"]</label>
+                </div>
+                <div class="form-check">
+                    <input id="debit" name="paymentMethod" type="radio" class="form-check-input" required>
+                    <label class="form-check-label" for="debit">@localizer["Debit card"]</label>
+                </div>
+                @*<div class="form-check">
+                    <input id="paypal" name="paymentMethod" type="radio" class="form-check-input" required>
+                    <label class="form-check-label" for="paypal">PayPal</label>
+                </div>*@
+            </div>
 
-    <div class="form-group col-sm-4">
-        <label asp-for="Input.CreditCard">@localizer["Credit Card"]</label>
-        <div class="input-group">
-            <span class="input-group-text">
-                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-credit-card" viewBox="0 0 16 16">
-                    <path d="M0 4a2 2 0 0 1 2-2h12a2 2 0 0 1 2 2v8a2 2 0 0 1-2 2H2a2 2 0 0 1-2-2V4zm2-1a1 1 0 0 0-1 1v1h14V4a1 1 0 0 0-1-1H2zm13 4H1v5a1 1 0 0 0 1 1h12a1 1 0 0 0 1-1V7z" />
-                    <path d="M2 10a1 1 0 0 1 1-1h1a1 1 0 0 1 1 1v1a1 1 0 0 1-1 1H3a1 1 0 0 1-1-1v-1z" />
-                </svg>
-            </span>
-            <input asp-for="Input.CreditCard" class="form-control" />
-            <small class="form-text text-muted">@localizer["We'll never save your payment method or share it with anyone else"]</small>
-        </div>
-        <span asp-validation-for="Input.CreditCard" class="text-danger"></span>
-    </div>
-    
-    <button type="submit" class="btn btn-outline-success">@localizer["Pay"]</button>
-    <input type="reset" class="btn btn-outline-danger" src="icons/x.svg"/>
-</form>
+            <div class="row gy-3">
+                <div class="col-md-6">
+                    <label asp-for="Input.Name" class="form-label">@localizer["Name on card"]</label>
+                    <input asp-for="Input.Name" class="form-control">
+                    <small class="text-muted">@localizer["Full name as displayed on card"]</small>
+                    <span asp-validation-for="Input.Name" class="text-danger"></span>
+                </div>
+
+                <div class="form-group col-md-6">
+                    <label asp-for="Input.CreditCard">@localizer["Card Number"]</label>
+                    <div class="input-group">
+                        <span class="input-group-text">
+                            <img src="/icons/credit-card.svg" alt="credit_card" height="16" width="16"/>
+                        </span>
+                        <input asp-for="Input.CreditCard" class="form-control"/>
+                        <small class="form-text text-muted">@localizer["We'll never save your payment method or share it with anyone else"]</small>
+                    </div>
+                    <span asp-validation-for="Input.CreditCard" class="text-danger"></span>
+                </div>
+
+                <div class="col-md-3">
+                    <label asp-for="Input.ExpirationDate" class="form-label">@localizer["Expiration"]</label>
+                    <input asp-for="Input.ExpirationDate" class="form-control">
+                    <span class="text-danger" asp-validation-for="Input.ExpirationDate"></span>
+                </div>
+
+                <div class="col-md-3">
+                    <label asp-for="Input.Cvv" class="form-label"></label>
+                    <input asp-for="Input.Cvv" class="form-control">
+                    <span asp-validation-for="Input.Cvv" class="text-danger"></span>
+                </div>
+            </div>
+
+            <hr class="my-4">
+
+            <button type="submit" class="btn btn-outline-success">@localizer["Pay"]</button>
+            <input type="reset" class="btn btn-outline-danger" src="icons/x.svg"/>
+        </form>
+
+    </main>
+</div>
 
 @section Scripts
 {
-    <partial name="_ValidationScriptsPartial" />
+    <partial name="_ValidationScriptsPartial"/>
 }

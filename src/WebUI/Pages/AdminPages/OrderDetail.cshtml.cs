@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace DeliveryWebApp.WebUI.Pages.AdminPages
 {
-    [Microsoft.AspNetCore.Authorization.Authorize(Roles = RoleName.Admin)]
+    [Authorize(Roles = RoleName.Admin)]
     public class OrderDetailsModel : PageModel
     {
         private readonly ApplicationDbContext _context;

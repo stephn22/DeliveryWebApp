@@ -6,9 +6,8 @@ using System.Threading.Tasks;
 
 namespace DeliveryWebApp.Application.Common.Models
 {
-    public class PaginatedList<T>
+    public class PaginatedList<T> : List<T>
     {
-        public List<T> Items { get; }
         public int PageIndex { get; }
         public int TotalPages { get; }
         public int TotalCount { get; }
@@ -18,7 +17,7 @@ namespace DeliveryWebApp.Application.Common.Models
             PageIndex = pageIndex;
             TotalPages = (int)Math.Ceiling(count / (double)pageSize);
             TotalCount = count;
-            Items = items;
+            AddRange(items);
         }
 
         public bool HasPreviousPage => PageIndex > 1;

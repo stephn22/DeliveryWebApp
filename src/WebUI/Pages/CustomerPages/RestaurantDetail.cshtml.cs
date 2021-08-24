@@ -1,12 +1,11 @@
 using DeliveryWebApp.Application.Baskets.Commands.CreateBasket;
 using DeliveryWebApp.Application.Baskets.Commands.UpdateBasket;
 using DeliveryWebApp.Application.Baskets.Queries;
+using DeliveryWebApp.Application.Common.Models;
 using DeliveryWebApp.Application.Common.Security;
 using DeliveryWebApp.Application.Customers.Extensions;
-using DeliveryWebApp.Application.Products.Queries.GetProducts;
 using DeliveryWebApp.Application.Restaurateurs.Extensions;
 using DeliveryWebApp.Application.Reviews.Commands.CreateReview;
-using DeliveryWebApp.Application.Reviews.Queries.GetReviews;
 using DeliveryWebApp.Domain.Entities;
 using DeliveryWebApp.Infrastructure.Identity;
 using DeliveryWebApp.Infrastructure.Persistence;
@@ -15,6 +14,7 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Localization;
 using Microsoft.Extensions.Logging;
 using System;
@@ -34,15 +34,18 @@ namespace DeliveryWebApp.WebUI.Pages.CustomerPages
         private readonly UserManager<ApplicationUser> _userManager;
         private readonly ILogger<RestaurantDetailModel> _logger;
         private readonly IStringLocalizer<RestaurantDetailModel> _localizer;
+        private readonly IConfiguration _configuration;
 
         public RestaurantDetailModel(ApplicationDbContext context, IMediator mediator,
-            UserManager<ApplicationUser> userManager, ILogger<RestaurantDetailModel> logger, IStringLocalizer<RestaurantDetailModel> localizer)
+            UserManager<ApplicationUser> userManager, ILogger<RestaurantDetailModel> logger, IStringLocalizer<RestaurantDetailModel> localizer,
+            IConfiguration configuration)
         {
             _context = context;
             _mediator = mediator;
             _userManager = userManager;
             _logger = logger;
             _localizer = localizer;
+            _configuration = configuration;
         }
 
         public Customer Customer { get; set; }
@@ -59,7 +62,10 @@ namespace DeliveryWebApp.WebUI.Pages.CustomerPages
         public int AvailableReviews { get; set; }
 
         // all reviews of this restaurateur
-        public List<Review> Reviews { get; set; }
+        public PaginatedList<Review> Reviews { get; set; }
+
+        // for products
+        public string CurrentFilter { get; set; }
 
         [BindProperty] public InputModel Input { get; set; }
 
@@ -85,20 +91,29 @@ namespace DeliveryWebApp.WebUI.Pages.CustomerPages
             public int Rating { get; set; }
         }
 
-
-
         [TempData]
         public string StatusMessage { get; set; }
 
-        public async Task<IActionResult> OnGetAsync(int? id)
+        public async Task<IActionResult> OnGetAsync(int? id, string searchString, string currentFilter, int? pageIndex)
         {
             if (id == null)
             {
                 return NotFound("Unable to find food vendor with that id");
             }
 
+            if (searchString != null)
+            {
+                pageIndex = 1;
+            }
+            else
+            {
+                searchString = currentFilter;
+            }
+
+            CurrentFilter = searchString;
+
             var user = await _userManager.GetUserAsync(User);
-            await LoadAsync(user, id);
+            await LoadAsync(user, id, searchString, pageIndex);
 
             if (Restaurateur == null)
             {
@@ -108,55 +123,52 @@ namespace DeliveryWebApp.WebUI.Pages.CustomerPages
             return Page();
         }
 
-        private async Task LoadAsync(ApplicationUser user, int? id)
+        private async Task LoadAsync(ApplicationUser user, int? id, string searchString, int? pageIndex)
         {
             Restaurateur = await _context.Restaurateurs.FindAsync(id);
 
-            AverageRating = await Restaurateur.GetRestaurateurAverageRating(_mediator);
-
-            try
+            if (Restaurateur != null)
             {
-                Products = await _mediator.Send(new GetProductsQuery
+                AverageRating = await Restaurateur.GetRestaurateurAverageRating(_mediator);
+
+                try
                 {
-                    RestaurateurId = Restaurateur.Id
-                });
+                    Customer = await _context.Customers.FirstAsync(c => c.ApplicationUserFk == user.Id);
+
+                    // check if customer can review the restaurateur
+                    AvailableReviews = await Customer.GetAvailableReviews(_mediator);
+                }
+                catch (InvalidOperationException e)
+                {
+                    _logger.LogInformation($"Unable to find customer: {e.Message}");
+                    Customer = null;
+                    return;
+                }
+
+                Basket = await _mediator.Send(new GetBasketQuery
+                {
+                    Customer = Customer
+                }) // If basket does not exist (null), create a new one
+                         ?? await _mediator.Send(new CreateBasketCommand
+                         {
+                             Customer = Customer
+                         });
+
+                var products = _context.Products.Where(p => p.RestaurateurId == Restaurateur.Id);
+
+                if (!string.IsNullOrEmpty(searchString))
+                {
+                    products = products.Where(p => p.Name.ToLower().Contains(searchString.ToLower()));
+                }
+
+                Products = await products.AsNoTracking().ToListAsync();
+
+                var pageSize = _configuration.GetValue("PageSize", 5);
+                var reviews = _context.Reviews.Where(r => r.RestaurateurId == Restaurateur.Id);
+                Reviews = await PaginatedList<Review>.CreateAsync(reviews.AsNoTracking(), pageIndex ?? 1, pageSize);
+
+                _logger.LogInformation($"Created new basket with id: {Basket.Id}");
             }
-            catch (InvalidOperationException e)
-            {
-                _logger.LogInformation($"Unable to find food vendor with id '{id}': {e.Message}");
-                Restaurateur = null;
-                return;
-            }
-
-            try
-            {
-                Customer = await _context.Customers.FirstAsync(c => c.ApplicationUserFk == user.Id);
-            }
-            catch (InvalidOperationException e)
-            {
-                _logger.LogInformation($"Unable to find customer: {e.Message}");
-                Customer = null;
-                return;
-            }
-
-            Basket = await _mediator.Send(new GetBasketQuery
-            {
-                Customer = Customer
-            }) // If basket does not exist (null), create a new one
-                     ?? await _mediator.Send(new CreateBasketCommand
-                     {
-                         Customer = Customer
-                     });
-
-            _logger.LogInformation($"Created new basket with id: {Basket.Id}");
-
-            Reviews = await _mediator.Send(new GetReviewsQuery
-            {
-                RestaurateurId = Restaurateur.Id
-            });
-
-            // check if customer can review the restaurateur
-            AvailableReviews = await Customer.GetAvailableReviews(_mediator);
         }
 
         public async Task<IActionResult> OnPostAddToBasketAsync(int? id, int productId)
@@ -168,7 +180,7 @@ namespace DeliveryWebApp.WebUI.Pages.CustomerPages
 
             var user = await _userManager.GetUserAsync(User);
 
-            await LoadAsync(user, id);
+            await LoadAsync(user, id, "", 1);
 
             if (Restaurateur == null || Customer == null)
             {
@@ -201,7 +213,7 @@ namespace DeliveryWebApp.WebUI.Pages.CustomerPages
 
             var user = await _userManager.GetUserAsync(User);
 
-            await LoadAsync(user, id);
+            await LoadAsync(user, id, "", 1);
 
             if (Restaurateur == null || Customer == null)
             {

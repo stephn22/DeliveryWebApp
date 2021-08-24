@@ -120,14 +120,32 @@
   <data name="Address" xml:space="preserve">
     <value>Indirizzo</value>
   </data>
+  <data name="Card Number" xml:space="preserve">
+    <value>Numero Carta</value>
+  </data>
+  <data name="Credit card" xml:space="preserve">
+    <value>Carta di credito</value>
+  </data>
+  <data name="Debit card" xml:space="preserve">
+    <value>Carta di debito</value>
+  </data>
   <data name="Deliver to address" xml:space="preserve">
     <value>Consegna all'indirizzo</value>
+  </data>
+  <data name="Expiration" xml:space="preserve">
+    <value>Data di scadenza</value>
+  </data>
+  <data name="Full name as displayed on card" xml:space="preserve">
+    <value>Nome completo mostrato sulla carta</value>
   </data>
   <data name="Image" xml:space="preserve">
     <value>Immagine</value>
   </data>
   <data name="Name" xml:space="preserve">
     <value>Nome</value>
+  </data>
+  <data name="Name on card" xml:space="preserve">
+    <value>Intestatario</value>
   </data>
   <data name="or" xml:space="preserve">
     <value>oppure</value>
