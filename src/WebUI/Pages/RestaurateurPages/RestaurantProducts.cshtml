@@ -12,26 +12,26 @@
 
 <a asp-page="/RestaurateurPages/RestaurantDashboard" title="Back to dashboard" id="back">
     <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" fill="black" class="bi bi-arrow-left" viewBox="0 0 16 16">
-        <path fill-rule="evenodd" d="M15 8a.5.5 0 0 0-.5-.5H2.707l3.147-3.146a.5.5 0 1 0-.708-.708l-4 4a.5.5 0 0 0 0 .708l4 4a.5.5 0 0 0 .708-.708L2.707 8.5H14.5A.5.5 0 0 0 15 8z"/>
+        <path fill-rule="evenodd" d="M15 8a.5.5 0 0 0-.5-.5H2.707l3.147-3.146a.5.5 0 1 0-.708-.708l-4 4a.5.5 0 0 0 0 .708l4 4a.5.5 0 0 0 .708-.708L2.707 8.5H14.5A.5.5 0 0 0 15 8z" />
     </svg>
 </a>
 
 <div class="text-end">
     <a id="add-product-btn" class="btn rounded-pill btn-primary" type="button" asp-page="/RestaurateurPages/AddProduct">
         <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-plus-square-fill" viewBox="0 0 16 16">
-            <path d="M2 0a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V2a2 2 0 0 0-2-2H2zm6.5 4.5v3h3a.5.5 0 0 1 0 1h-3v3a.5.5 0 0 1-1 0v-3h-3a.5.5 0 0 1 0-1h3v-3a.5.5 0 0 1 1 0z"/>
+            <path d="M2 0a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V2a2 2 0 0 0-2-2H2zm6.5 4.5v3h3a.5.5 0 0 1 0 1h-3v3a.5.5 0 0 1-1 0v-3h-3a.5.5 0 0 1 0-1h3v-3a.5.5 0 0 1 1 0z" />
         </svg>
         @localizer["Product"]
     </a>
 </div>
-<br/>
+<br />
 
 <form asp-page="./RestaurantProducts" asp-route-id="@Model.Restaurateur.Id" method="get">
     <div class="form-actions no-color">
         <p>
             @localizer["Find by name"]:
-            <input type="text" name="SearchString" value="@Model.CurrentFilter"/>
-            <input type="submit" value="Search" class="btn btn-primary"/> |
+            <input type="text" name="SearchString" value="@Model.CurrentFilter" />
+            <input type="submit" value="Search" class="btn btn-primary" /> |
             <a asp-page="./RestaurantProducts" asp-route-id="@Model.Restaurateur.Id">@localizer["Back to full List"]</a>
         </p>
     </div>
@@ -39,87 +39,106 @@
 
 <table class="table">
     <thead>
-    <tr class="table-primary">
-        <th>
-            @localizer["Image"]
-        </th>
-        <th>
-            @localizer["Name"]
-        </th>
-        <th>
-            @localizer["Quantity"]
-        </th>
-        <th>
-            @localizer["Price"]
-        </th>
-        <th>
-            @localizer["Discount"]
-        </th>
-        <th>
-            @localizer["Category"]
-        </th>
-        <th></th>
-        <th></th>
-    </tr>
+        <tr class="table-primary">
+            <th>
+                @localizer["Image"]
+            </th>
+            <th>
+                @localizer["Name"]
+            </th>
+            <th>
+                @localizer["Quantity"]
+            </th>
+            <th>
+                @localizer["Price"]
+            </th>
+            <th>
+                @localizer["Discount"]
+            </th>
+            <th>
+                @localizer["Category"]
+            </th>
+            <th></th>
+            <th></th>
+        </tr>
     </thead>
     <tbody>
-    @foreach (var product in Model.Products)
-    {
-        <tr>
-            <td>
-                @if (!product.Image.IsNullOrEmpty())
-                {
-                    <img class="img-dashboard square rounded img-fluid" style="height: 60px; width: 60px" src="data:image/jpeg;base64,@Convert.ToBase64String(product.Image)" alt=""/>
-                }
-            </td>
-            <td>
-                @Html.DisplayFor(model => product.Name)
-            </td>
-            <td>
-                @Html.DisplayFor(model => product.Quantity)
-            </td>
-            <td>
-                @product.Price.ToString("C")
-            </td>
-            <td>
-                @Html.DisplayFor(model => product.Discount) %
-            </td>
-            <td>
-                @Html.DisplayFor(model => product.Category)
-            </td>
-            <td>
-                <a asp-page="/RestaurateurPages/ProductDetail" asp-route-id="@product.Id">@localizer["Details"]</a>
-            </td>
-            <td>
-                <button class="btn" title="Delete product" data-bs-toggle="modal" data-bs-target="#product-@product.Id-delete-modal">
-                    <img src="/icons/trash.svg" alt="delete" height="16" width="16"/>
-                </button>
+        @foreach (var product in Model.Products)
+        {
+            <tr>
+                <td>
+                    @if (!product.Image.IsNullOrEmpty())
+                    {
+                        <img class="img-dashboard square rounded img-fluid" style="height: 60px; width: 60px" src="data:image/jpeg;base64,@Convert.ToBase64String(product.Image)" alt="" />
+                    }
+                </td>
+                <td>
+                    @Html.DisplayFor(model => product.Name)
+                </td>
+                <td>
+                    @Html.DisplayFor(model => product.Quantity)
+                </td>
+                <td>
+                    @product.Price.ToString("C")
+                </td>
+                <td>
+                    @Html.DisplayFor(model => product.Discount) %
+                </td>
+                <td>
+                    @Html.DisplayFor(model => product.Category)
+                </td>
+                <td>
+                    <a asp-page="/RestaurateurPages/ProductDetail" asp-route-id="@product.Id">@localizer["Details"]</a>
+                </td>
+                <td>
+                    <button class="btn" title="Delete product" data-bs-toggle="modal" data-bs-target="#product-@product.Id-delete-modal">
+                        <img src="/icons/trash.svg" alt="delete" height="16" width="16" />
+                    </button>
 
-                @* Vertically centered modal to confirm action *@
+                    @* Vertically centered modal to confirm action *@
 
-                <div class="modal fade show" id="product-@product.Id-delete-modal" aria-labelledby="product-@product.Id-delete-modal-title" aria-modal="true" role="dialog">
-                    <div id="" class="modal-dialog modal-dialog-centered">
-                        <div class="modal-content">
-                            <div class="modal-header">
-                                <h5 class="modal-title" id="product-@product.Id-delete-modal-title">@localizer["Delete product"]: @product.Name</h5>
-                                <button class="btn-close" data-bs-dismiss="modal" aria-label="close"></button>
-                            </div>
-                            <div class="modal-body">
-                                <p>@localizer["Are you sure you want to"] <strong>@localizer["permanently delete"]</strong> "@product.Name"?</p>
-                            </div>
-                            <div class="modal-footer">
-                                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">@localizer["Close"]</button>
+                    <div class="modal fade show" id="product-@product.Id-delete-modal" aria-labelledby="product-@product.Id-delete-modal-title" aria-modal="true" role="dialog">
+                        <div id="" class="modal-dialog modal-dialog-centered">
+                            <div class="modal-content">
+                                <div class="modal-header">
+                                    <h5 class="modal-title" id="product-@product.Id-delete-modal-title">@localizer["Delete product"]: @product.Name</h5>
+                                    <button class="btn-close" data-bs-dismiss="modal" aria-label="close"></button>
+                                </div>
+                                <div class="modal-body">
+                                    <p>@localizer["Are you sure you want to"] <strong>@localizer["permanently delete"]</strong> "@product.Name"?</p>
+                                </div>
+                                <div class="modal-footer">
+                                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">@localizer["Close"]</button>
 
-                                <form method="post" asp-page-handler="DeleteProduct" asp-route-id="@product.Id">
-                                    <button type="submit" class="btn btn-primary" value="DeleteProduct">@localizer["Confirm"]</button>
-                                </form>
+                                    <form method="post" asp-page-handler="DeleteProduct" asp-route-id="@product.Id">
+                                        <button type="submit" class="btn btn-primary" value="DeleteProduct">@localizer["Confirm"]</button>
+                                    </form>
 
+                                </div>
                             </div>
                         </div>
                     </div>
-                </div>
-            </td>
-        </tr>
-    }
+                </td>
+            </tr>
+        }
     </tbody>
 </table>
+@{
+    var prevDisabled = !Model.Products.HasPreviousPage ? "disabled" : "";
+    var nextDisabled = !Model.Products.HasNextPage ? "disabled" : "";
+}
+
+<a asp-page="./RestaurantProducts"
+   asp-route-id="@Model.Restaurateur.Id"
+   asp-route-pageIndex="@(Model.Products.PageIndex - 1)"
+   asp-route-currentFilter="@Model.CurrentFilter"
+   class="btn btn-primary @prevDisabled">
+    Previous
+</a>
+<a asp-page="./RestaurantProducts"
+   asp-route-id="@Model.Restaurateur.Id"
+   asp-route-pageIndex="@(Model.Products.PageIndex + 1)"
+   asp-route-currentFilter="@Model.CurrentFilter"
+   class="btn btn-primary @nextDisabled">
+    Next
+</a>

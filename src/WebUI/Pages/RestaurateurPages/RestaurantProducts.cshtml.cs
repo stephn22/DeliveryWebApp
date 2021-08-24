@@ -1,13 +1,9 @@
-﻿using System;
-using DeliveryWebApp.Application.Common.Exceptions;
+﻿using DeliveryWebApp.Application.Common.Exceptions;
 using DeliveryWebApp.Application.Common.Interfaces;
 using DeliveryWebApp.Application.Common.Security;
 using DeliveryWebApp.Application.Products.Commands.DeleteProduct;
-using DeliveryWebApp.Application.Products.Queries.GetProducts;
-using DeliveryWebApp.Application.Restaurateurs.Extensions;
 using DeliveryWebApp.Domain.Entities;
 using DeliveryWebApp.Infrastructure.Identity;
-using DeliveryWebApp.Infrastructure.Services.Utilities;
 using MediatR;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
@@ -17,6 +13,8 @@ using Microsoft.Extensions.Logging;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using DeliveryWebApp.Application.Common.Models;
+using Microsoft.Extensions.Configuration;
 
 namespace DeliveryWebApp.WebUI.Pages.RestaurateurPages
 {
@@ -27,26 +25,37 @@ namespace DeliveryWebApp.WebUI.Pages.RestaurateurPages
         private readonly IApplicationDbContext _context;
         private readonly UserManager<ApplicationUser> _userManager;
         private readonly ILogger<RestaurantProductsModel> _logger;
+        private readonly IConfiguration _configuration;
 
-        public RestaurantProductsModel(IMediator mediator, IApplicationDbContext context, UserManager<ApplicationUser> userManager, ILogger<RestaurantProductsModel> logger)
+        public RestaurantProductsModel(IMediator mediator, IApplicationDbContext context, UserManager<ApplicationUser> userManager, ILogger<RestaurantProductsModel> logger, IConfiguration configuration)
         {
             _mediator = mediator;
             _context = context;
             _userManager = userManager;
             _logger = logger;
+            _configuration = configuration;
         }
 
         public Restaurateur Restaurateur { get; set; }
-        public IList<Product> Products { get; set; }
+        public PaginatedList<Product> Products { get; set; }
 
         // filtering (products table)
         public string CurrentFilter { get; set; }
-
-        public async Task<IActionResult> OnGetAsync(int? id, string searchString)
+        
+        public async Task<IActionResult> OnGetAsync(int? id, string searchString, string currentFilter, int? pageIndex)
         {
             if (id == null)
             {
                 return NotFound("Unable to find a food vendor with that id");
+            }
+
+            if (searchString != null)
+            {
+                pageIndex = 1;
+            }
+            else
+            {
+                searchString = currentFilter;
             }
 
             Restaurateur = await _context.Restaurateurs.FindAsync(id);
@@ -58,7 +67,8 @@ namespace DeliveryWebApp.WebUI.Pages.RestaurateurPages
                 products = products.Where(p => p.Name.Contains(searchString));
             }
 
-            Products = await products.AsNoTracking().ToListAsync();
+            var pageSize = _configuration.GetValue("PageSize", 5);
+            Products = await PaginatedList<Product>.CreateAsync(products.AsNoTracking(), pageIndex ?? 1, pageSize);
 
             return Page();
         }
