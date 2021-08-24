@@ -1,5 +1,6 @@
 using AutoMapper;
 using DeliveryWebApp.Application.Common.Exceptions;
+using DeliveryWebApp.Application.Common.Security;
 using DeliveryWebApp.Application.Products.Commands.UpdateProducts;
 using DeliveryWebApp.Domain.Constants;
 using DeliveryWebApp.Domain.Entities;
@@ -19,6 +20,7 @@ using System.Threading.Tasks;
 
 namespace DeliveryWebApp.WebUI.Pages.RestaurateurPages
 {
+    [Authorize(Policy = PolicyName.IsRestaurateur)]
     public class EditProductModel : PageModel
     {
         private readonly ApplicationDbContext _context;

@@ -18,6 +18,7 @@ using System.Threading.Tasks;
 
 namespace DeliveryWebApp.WebUI.Pages.AdminPages
 {
+    [Authorize(Roles = RoleName.Admin)]
     public class RiderDetailModel : PageModel
     {
         private readonly ApplicationDbContext _context;
