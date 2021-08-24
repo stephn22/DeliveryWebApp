@@ -1,15 +1,15 @@
-﻿using DeliveryWebApp.Application.Common.Exceptions;
+﻿using System;
+using System.Collections.Generic;
+using DeliveryWebApp.Application.Common.Exceptions;
 using FluentAssertions;
 using FluentValidation.Results;
-using System;
-using System.Collections.Generic;
-using Xunit;
+using NUnit.Framework;
 
 namespace DeliveryWebApp.Application.UnitTests.Common.Exceptions
 {
     public class ValidationExceptionTests
     {
-        [Fact]
+        [Test]
         public void DefaultConstructorCreatesAnEmptyErrorDictionary()
         {
             var actual = new ValidationException().Errors;
@@ -17,7 +17,7 @@ namespace DeliveryWebApp.Application.UnitTests.Common.Exceptions
             actual.Keys.Should().BeEquivalentTo(Array.Empty<string>());
         }
 
-        [Fact]
+        [Test]
         public void SingleValidationFailureCreatesASingleElementErrorDictionary()
         {
             var failures = new List<ValidationFailure>
@@ -31,7 +31,7 @@ namespace DeliveryWebApp.Application.UnitTests.Common.Exceptions
             actual["Age"].Should().BeEquivalentTo(new string[] { "must be over 18" });
         }
 
-        [Fact]
+        [Test]
         public void MulitpleValidationFailureForMultiplePropertiesCreatesAMultipleElementErrorDictionaryEachWithMultipleValues()
         {
             var failures = new List<ValidationFailure>
