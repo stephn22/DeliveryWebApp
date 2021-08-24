@@ -130,7 +130,7 @@
                                                     OrderId = Model.Orders[i].Id
                                                 });
 
-                                                Model.Products = new List<Product>();
+                                                Model.Products = new List<Product>(orderItems.Capacity);
 
                                                 foreach (var item in orderItems)
                                                 {
