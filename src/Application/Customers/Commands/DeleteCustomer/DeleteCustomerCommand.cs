@@ -11,6 +11,8 @@ using Microsoft.EntityFrameworkCore;
 using System;
 using System.Threading;
 using System.Threading.Tasks;
+using DeliveryWebApp.Application.Reviews.Commands.DeleteReview;
+using DeliveryWebApp.Application.Reviews.Queries.GetReviews;
 
 namespace DeliveryWebApp.Application.Customers.Commands.DeleteCustomer
 {
@@ -95,7 +97,28 @@ namespace DeliveryWebApp.Application.Customers.Commands.DeleteCustomer
                 _context.Addresses.RemoveRange(addresses);
             }
 
-            // TODO: search if customer has reviews and delete them
+            // search if customer has reviews and delete them
+            var reviews = await _mediator.Send(new GetReviewsQuery
+            {
+                CustomerId = entity.Id
+            }, cancellationToken);
+
+            if (reviews is { Count: > 0 })
+            {
+                foreach (var review in reviews)
+                {
+                    try
+                    {
+                        await _mediator.Send(new DeleteReviewCommand
+                        {
+                            Id = review.Id
+                        }, cancellationToken);
+                    }
+                    catch (NotFoundException)
+                    {
+                    }
+                }
+            }
 
             _context.Customers.Remove(entity);
             await _context.SaveChangesAsync(cancellationToken);
