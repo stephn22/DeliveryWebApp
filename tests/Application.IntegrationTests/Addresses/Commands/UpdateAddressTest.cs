@@ -69,7 +69,7 @@ namespace DeliveryWebApp.Application.IntegrationTests.Addresses.Commands
 
             update.Should().NotBeNull();
             update.Id.Should().BeGreaterThan(0);
-            address.PlaceName.Should().Be(updateCommand.PlaceName);
+            update.PlaceName.Should().Be(updateCommand.PlaceName);
             update.Latitude.Should().Be(updateCommand.Latitude);
             update.Longitude.Should().Be(updateCommand.Longitude);
         }
