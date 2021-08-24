@@ -67,4 +67,21 @@ else
         }
         </tbody>
     </table>
+    <div>
+        @{
+            var prevDisabled = !Model.Requests.HasPreviousPage ? "disabled" : "";
+            var nextDisabled = !Model.Requests.HasNextPage ? "disabled" : "";
+        }
+
+        <a asp-page="./Requests"
+           asp-route-pageIndex="@(Model.Requests.PageIndex - 1)"
+           class="btn btn-primary @prevDisabled">
+            @localizer["Previous"]
+        </a>
+        <a asp-page="./Requests"
+           asp-route-pageIndex="@(Model.Requests.PageIndex + 1)"
+           class="btn btn-primary @nextDisabled">
+            @localizer["Next"]
+        </a>
+    </div>
 }

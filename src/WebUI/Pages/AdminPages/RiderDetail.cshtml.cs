@@ -160,13 +160,8 @@ namespace DeliveryWebApp.WebUI.Pages.AdminPages
             return RedirectToPage("/AdminPages/UserList");
         }
 
-        public async Task<IActionResult> OnPostToRiderAsync(int? id)
+        public async Task<IActionResult> OnPostToCustomerAsync(int? id)
         {
-            if (!ModelState.IsValid)
-            {
-                return Page();
-            }
-
             if (id == null)
             {
                 return NotFound("Could not find rider with that id");

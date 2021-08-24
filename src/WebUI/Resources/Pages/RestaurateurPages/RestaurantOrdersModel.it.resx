@@ -135,6 +135,12 @@
   <data name="Discount and price based on time of purchase" xml:space="preserve">
     <value>Sconto e prezzo in base al momento dell'acquisto</value>
   </data>
+  <data name="Next" xml:space="preserve">
+    <value>Successiva</value>
+  </data>
+  <data name="Previous" xml:space="preserve">
+    <value>Precedente</value>
+  </data>
   <data name="Price" xml:space="preserve">
     <value>Prezzo</value>
   </data>
@@ -146,6 +152,9 @@
   </data>
   <data name="Quantity" xml:space="preserve">
     <value>Quantità</value>
+  </data>
+  <data name="Some products may not be displayed because they have been deleted" xml:space="preserve">
+    <value>Alcuni prodotti potrebbero non essere mostrati perchè sono stati cancellati dal ristoratore</value>
   </data>
   <data name="Status" xml:space="preserve">
     <value>Stato</value>

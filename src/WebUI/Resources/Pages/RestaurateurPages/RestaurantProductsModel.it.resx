@@ -120,6 +120,9 @@
   <data name="Are you sure you want to" xml:space="preserve">
     <value>Sei sicuro/a di voler</value>
   </data>
+  <data name="Back to full List" xml:space="preserve">
+    <value>Torna alla lista completa</value>
+  </data>
   <data name="Category" xml:space="preserve">
     <value>Categoria</value>
   </data>
@@ -138,14 +141,23 @@
   <data name="Discount" xml:space="preserve">
     <value>Sconto</value>
   </data>
+  <data name="Find by name" xml:space="preserve">
+    <value>Cerca per nome</value>
+  </data>
   <data name="Image" xml:space="preserve">
     <value>Immagine</value>
   </data>
   <data name="Name" xml:space="preserve">
     <value>Nome</value>
   </data>
+  <data name="Next" xml:space="preserve">
+    <value>Successivo</value>
+  </data>
   <data name="permanently delete" xml:space="preserve">
     <value>cancellare permanentemente</value>
+  </data>
+  <data name="Previous" xml:space="preserve">
+    <value>Precedente</value>
   </data>
   <data name="Price" xml:space="preserve">
     <value>Price</value>

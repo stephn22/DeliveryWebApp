@@ -64,7 +64,7 @@ namespace DeliveryWebApp.WebUI.Pages.RestaurateurPages
 
             if (!string.IsNullOrEmpty(searchString))
             {
-                products = products.Where(p => p.Name.Contains(searchString));
+                products = products.Where(p => p.Name.ToLower().Contains(searchString.ToLower()));
             }
 
             var pageSize = _configuration.GetValue("PageSize", 5);

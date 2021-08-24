@@ -126,8 +126,14 @@
   <data name="Food Vendor" xml:space="preserve">
     <value>Ristoratore</value>
   </data>
+  <data name="Next" xml:space="preserve">
+    <value>Successiva</value>
+  </data>
   <data name="Order Date" xml:space="preserve">
     <value>Data Ordine</value>
+  </data>
+  <data name="Previous" xml:space="preserve">
+    <value>Precedente</value>
   </data>
   <data name="Status" xml:space="preserve">
     <value>Stato</value>

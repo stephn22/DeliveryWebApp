@@ -7,6 +7,8 @@ using Microsoft.EntityFrameworkCore;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using DeliveryWebApp.Application.Common.Models;
+using Microsoft.Extensions.Configuration;
 
 namespace DeliveryWebApp.WebUI.Pages.AdminPages
 {
@@ -14,21 +16,22 @@ namespace DeliveryWebApp.WebUI.Pages.AdminPages
     public class RequestsModel : PageModel
     {
         private readonly ApplicationDbContext _context;
+        private readonly IConfiguration _configuration;
 
-        public RequestsModel(ApplicationDbContext context)
+        public RequestsModel(ApplicationDbContext context, IConfiguration configuration)
         {
             _context = context;
+            _configuration = configuration;
         }
 
-        public IList<Request> Requests { get; set; }
+        public PaginatedList<Request> Requests { get; set; }
 
-        public async Task OnGetAsync()
+        public async Task OnGetAsync(int? pageIndex)
         {
-            var requests = from r in _context.Requests
-                           where r.Status == RequestStatus.Idle
-                           select r;
+            var requests = _context.Requests.Where(r => r.Status == RequestStatus.Idle);
 
-            Requests = await requests.ToListAsync();
+            var pageSize = _configuration.GetValue("PageSize", 5);
+            Requests = await PaginatedList<Request>.CreateAsync(requests.AsNoTracking(), pageIndex ?? 1, pageSize);
         }
     }
 }
