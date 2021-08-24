@@ -1,6 +1,6 @@
+using DeliveryWebApp.Application.Common.Models;
 using DeliveryWebApp.Application.Common.Security;
 using DeliveryWebApp.Application.Orders.Extensions;
-using DeliveryWebApp.Application.Orders.Queries.GetOrders;
 using DeliveryWebApp.Domain.Entities;
 using DeliveryWebApp.Infrastructure.Identity;
 using DeliveryWebApp.Infrastructure.Persistence;
@@ -9,13 +9,12 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using DeliveryWebApp.Application.Common.Models;
-using Microsoft.Extensions.Configuration;
 
 namespace DeliveryWebApp.WebUI.Pages.CustomerPages
 {

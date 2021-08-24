@@ -1,11 +1,11 @@
 using DeliveryWebApp.Application.Baskets.Commands.CreateBasket;
 using DeliveryWebApp.Application.Baskets.Commands.UpdateBasket;
 using DeliveryWebApp.Application.Baskets.Queries;
+using DeliveryWebApp.Application.Common.Models;
 using DeliveryWebApp.Application.Common.Security;
 using DeliveryWebApp.Application.Customers.Extensions;
 using DeliveryWebApp.Application.Restaurateurs.Extensions;
 using DeliveryWebApp.Application.Reviews.Commands.CreateReview;
-using DeliveryWebApp.Application.Reviews.Queries.GetReviews;
 using DeliveryWebApp.Domain.Entities;
 using DeliveryWebApp.Infrastructure.Identity;
 using DeliveryWebApp.Infrastructure.Persistence;
@@ -14,6 +14,7 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Localization;
 using Microsoft.Extensions.Logging;
 using System;
@@ -22,8 +23,6 @@ using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Threading.Tasks;
-using DeliveryWebApp.Application.Common.Models;
-using Microsoft.Extensions.Configuration;
 
 namespace DeliveryWebApp.WebUI.Pages.CustomerPages
 {
@@ -114,30 +113,17 @@ namespace DeliveryWebApp.WebUI.Pages.CustomerPages
             CurrentFilter = searchString;
 
             var user = await _userManager.GetUserAsync(User);
-            await LoadAsync(user, id);
+            await LoadAsync(user, id, searchString, pageIndex);
 
             if (Restaurateur == null)
             {
                 return NotFound("Unable to find food vendor with that id");
             }
 
-            var products = _context.Products.Where(p => p.RestaurateurId == Restaurateur.Id);
-
-            if (!string.IsNullOrEmpty(searchString))
-            {
-                products = products.Where(p => p.Name.ToLower().Contains(searchString.ToLower()));
-            }
-
-            Products = await products.AsNoTracking().ToListAsync();
-
-            var pageSize = _configuration.GetValue("PageSize", 5);
-            var reviews = _context.Reviews.Where(r => r.RestaurateurId == Restaurateur.Id);
-            Reviews = await PaginatedList<Review>.CreateAsync(reviews.AsNoTracking(), pageIndex ?? 1, pageSize);
-
             return Page();
         }
 
-        private async Task LoadAsync(ApplicationUser user, int? id)
+        private async Task LoadAsync(ApplicationUser user, int? id, string searchString, int? pageIndex)
         {
             Restaurateur = await _context.Restaurateurs.FindAsync(id);
 
@@ -148,8 +134,6 @@ namespace DeliveryWebApp.WebUI.Pages.CustomerPages
                 try
                 {
                     Customer = await _context.Customers.FirstAsync(c => c.ApplicationUserFk == user.Id);
-
-                    
 
                     // check if customer can review the restaurateur
                     AvailableReviews = await Customer.GetAvailableReviews(_mediator);
@@ -170,6 +154,19 @@ namespace DeliveryWebApp.WebUI.Pages.CustomerPages
                              Customer = Customer
                          });
 
+                var products = _context.Products.Where(p => p.RestaurateurId == Restaurateur.Id);
+
+                if (!string.IsNullOrEmpty(searchString))
+                {
+                    products = products.Where(p => p.Name.ToLower().Contains(searchString.ToLower()));
+                }
+
+                Products = await products.AsNoTracking().ToListAsync();
+
+                var pageSize = _configuration.GetValue("PageSize", 5);
+                var reviews = _context.Reviews.Where(r => r.RestaurateurId == Restaurateur.Id);
+                Reviews = await PaginatedList<Review>.CreateAsync(reviews.AsNoTracking(), pageIndex ?? 1, pageSize);
+
                 _logger.LogInformation($"Created new basket with id: {Basket.Id}");
             }
         }
@@ -183,7 +180,7 @@ namespace DeliveryWebApp.WebUI.Pages.CustomerPages
 
             var user = await _userManager.GetUserAsync(User);
 
-            await LoadAsync(user, id);
+            await LoadAsync(user, id, "", 1);
 
             if (Restaurateur == null || Customer == null)
             {
@@ -216,7 +213,7 @@ namespace DeliveryWebApp.WebUI.Pages.CustomerPages
 
             var user = await _userManager.GetUserAsync(User);
 
-            await LoadAsync(user, id);
+            await LoadAsync(user, id, "", 1);
 
             if (Restaurateur == null || Customer == null)
             {

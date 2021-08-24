@@ -177,4 +177,22 @@ else
     </table>
 
     <p class="small text-muted">@localizer["Some products may not display due to stock limitations"]</p>
+    <br />
+    <div>
+        @{
+            var prevDisabled = !Model.BasketItems.HasPreviousPage ? "disabled" : "";
+            var nextDisabled = !Model.BasketItems.HasNextPage ? "disabled" : "";
+        }
+
+        <a asp-page="./Basket"
+           asp-route-pageIndex="@(Model.BasketItems.PageIndex - 1)"
+           class="btn btn-primary @prevDisabled">
+            @localizer["Previous"]
+        </a>
+        <a asp-page="./Basket"
+           asp-route-pageIndex="@(Model.BasketItems.PageIndex + 1)"
+           class="btn btn-primary @nextDisabled">
+            @localizer["Next"]
+        </a>
+    </div>
 }

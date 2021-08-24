@@ -110,7 +110,7 @@
                                 <div class="modal-footer">
                                     <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">@localizer["Close"]</button>
 
-                                    <form method="post" asp-page-handler="DeleteProduct" asp-route-id="@product.Id">
+                                    <form method="post" asp-page-handler="DeleteProduct" asp-route-id="@Model.Restaurateur.Id" asp-route-productId="@product.Id">
                                         <button type="submit" class="btn btn-primary" value="DeleteProduct">@localizer["Confirm"]</button>
                                     </form>
 

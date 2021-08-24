@@ -1,5 +1,6 @@
 ﻿using DeliveryWebApp.Application.Common.Exceptions;
 using DeliveryWebApp.Application.Common.Interfaces;
+using DeliveryWebApp.Application.Common.Models;
 using DeliveryWebApp.Application.Common.Security;
 using DeliveryWebApp.Application.Products.Commands.DeleteProduct;
 using DeliveryWebApp.Domain.Entities;
@@ -9,12 +10,10 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
-using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using DeliveryWebApp.Application.Common.Models;
-using Microsoft.Extensions.Configuration;
 
 namespace DeliveryWebApp.WebUI.Pages.RestaurateurPages
 {
@@ -41,7 +40,25 @@ namespace DeliveryWebApp.WebUI.Pages.RestaurateurPages
 
         // filtering (products table)
         public string CurrentFilter { get; set; }
-        
+
+        private async Task LoadAsync(int id, string searchString, string currentFilter, int? pageIndex)
+        {
+            Restaurateur = await _context.Restaurateurs.FindAsync(id);
+
+            if (Restaurateur != null)
+            {
+                var products = _context.Products.Where(p => p.RestaurateurId == id);
+
+                if (!string.IsNullOrEmpty(searchString))
+                {
+                    products = products.Where(p => p.Name.ToLower().Contains(searchString.ToLower()));
+                }
+
+                var pageSize = _configuration.GetValue("PageSize", 5);
+                Products = await PaginatedList<Product>.CreateAsync(products.AsNoTracking(), pageIndex ?? 1, pageSize);
+            }
+        }
+
         public async Task<IActionResult> OnGetAsync(int? id, string searchString, string currentFilter, int? pageIndex)
         {
             if (id == null)
@@ -58,24 +75,16 @@ namespace DeliveryWebApp.WebUI.Pages.RestaurateurPages
                 searchString = currentFilter;
             }
 
-            Restaurateur = await _context.Restaurateurs.FindAsync(id);
-            var products = _context.Products.Where(p => p.RestaurateurId == id);
-
-
-            if (!string.IsNullOrEmpty(searchString))
-            {
-                products = products.Where(p => p.Name.ToLower().Contains(searchString.ToLower()));
-            }
-
-            var pageSize = _configuration.GetValue("PageSize", 5);
-            Products = await PaginatedList<Product>.CreateAsync(products.AsNoTracking(), pageIndex ?? 1, pageSize);
+            await LoadAsync((int)id, searchString, currentFilter, pageIndex);
 
             return Page();
         }
 
-        public async Task<IActionResult> OnPostDeleteProductAsync(int id)
+        public async Task<IActionResult> OnPostDeleteProductAsync(int id, int productId)
         {
-            var product = await _context.Products.FindAsync(id);
+            var product = await _context.Products.FindAsync(productId);
+
+            await LoadAsync(id, "", "", 1);
 
             try
             {

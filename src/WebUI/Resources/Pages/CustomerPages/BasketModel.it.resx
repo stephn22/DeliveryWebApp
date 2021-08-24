@@ -141,6 +141,12 @@
   <data name="Name" xml:space="preserve">
     <value>Nome</value>
   </data>
+  <data name="Next" xml:space="preserve">
+    <value>Successivo</value>
+  </data>
+  <data name="Previous" xml:space="preserve">
+    <value>Precedente</value>
+  </data>
   <data name="Price" xml:space="preserve">
     <value>Prezzo</value>
   </data>

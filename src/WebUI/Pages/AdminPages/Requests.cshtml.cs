@@ -1,14 +1,13 @@
+using DeliveryWebApp.Application.Common.Models;
 using DeliveryWebApp.Application.Common.Security;
 using DeliveryWebApp.Domain.Constants;
 using DeliveryWebApp.Domain.Entities;
 using DeliveryWebApp.Infrastructure.Persistence;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.EntityFrameworkCore;
-using System.Collections.Generic;
+using Microsoft.Extensions.Configuration;
 using System.Linq;
 using System.Threading.Tasks;
-using DeliveryWebApp.Application.Common.Models;
-using Microsoft.Extensions.Configuration;
 
 namespace DeliveryWebApp.WebUI.Pages.AdminPages
 {

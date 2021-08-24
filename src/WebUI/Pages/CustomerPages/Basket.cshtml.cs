@@ -1,8 +1,8 @@
 using DeliveryWebApp.Application.BasketItems.Commands.DeleteBasketItem;
 using DeliveryWebApp.Application.BasketItems.Commands.UpdateBasketItem;
-using DeliveryWebApp.Application.BasketItems.Queries;
 using DeliveryWebApp.Application.Baskets.Queries;
 using DeliveryWebApp.Application.Common.Exceptions;
+using DeliveryWebApp.Application.Common.Models;
 using DeliveryWebApp.Application.Common.Security;
 using DeliveryWebApp.Domain.Entities;
 using DeliveryWebApp.Infrastructure.Identity;
@@ -13,11 +13,13 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Localization;
 using Microsoft.Extensions.Logging;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
+using System.Linq;
 using System.Threading.Tasks;
 
 namespace DeliveryWebApp.WebUI.Pages.CustomerPages
@@ -30,19 +32,21 @@ namespace DeliveryWebApp.WebUI.Pages.CustomerPages
         private readonly UserManager<ApplicationUser> _userManager;
         private readonly ILogger<BasketModel> _logger;
         private readonly IStringLocalizer<BasketModel> _localizer;
+        private readonly IConfiguration _configuration;
 
         public BasketModel(ApplicationDbContext context, IMediator mediator, UserManager<ApplicationUser> userManager,
-            ILogger<BasketModel> logger, IStringLocalizer<BasketModel> localizer)
+            ILogger<BasketModel> logger, IStringLocalizer<BasketModel> localizer, IConfiguration configuration)
         {
             _context = context;
             _mediator = mediator;
             _userManager = userManager;
             _logger = logger;
             _localizer = localizer;
+            _configuration = configuration;
         }
 
         public Basket Basket { get; set; }
-        public List<BasketItem> BasketItems { get; set; }
+        public PaginatedList<BasketItem> BasketItems { get; set; }
         public List<Product> Products { get; set; }
         public Customer Customer { get; set; }
         public Restaurateur Restaurateur { get; set; }
@@ -51,7 +55,7 @@ namespace DeliveryWebApp.WebUI.Pages.CustomerPages
 
         [BindProperty] [Required] public int NewQuantity { get; set; }
 
-        public async Task<IActionResult> OnGetAsync()
+        public async Task<IActionResult> OnGetAsync(int? pageIndex)
         {
             var user = await _userManager.GetUserAsync(User);
 
@@ -60,7 +64,7 @@ namespace DeliveryWebApp.WebUI.Pages.CustomerPages
                 return NotFound("User not found");
             }
 
-            await LoadAsync(user);
+            await LoadAsync(user, pageIndex);
 
             if (Customer == null)
             {
@@ -70,7 +74,7 @@ namespace DeliveryWebApp.WebUI.Pages.CustomerPages
             return Page();
         }
 
-        private async Task LoadAsync(ApplicationUser user)
+        private async Task LoadAsync(ApplicationUser user, int? pageIndex)
         {
             try
             {
@@ -90,10 +94,11 @@ namespace DeliveryWebApp.WebUI.Pages.CustomerPages
 
             if (Basket != null)
             {
-                BasketItems = await _mediator.Send(new GetBasketItemsQuery
-                {
-                    Basket = Basket
-                });
+                var basketItems = _context.BasketItems.Where(b => b.BasketId == Basket.Id);
+
+                var pageSize = _configuration.GetValue("PageSize", 5);
+                BasketItems =
+                    await PaginatedList<BasketItem>.CreateAsync(basketItems.AsNoTracking(), pageIndex ?? 1, pageSize);
 
                 if (BasketItems != null)
                 {
@@ -130,7 +135,7 @@ namespace DeliveryWebApp.WebUI.Pages.CustomerPages
                 return NotFound("User not found");
             }
 
-            await LoadAsync(user);
+            await LoadAsync(user, 1);
 
             if (Customer == null || Basket == null || Products.IsNullOrEmpty() || BasketItems.IsNullOrEmpty())
             {
@@ -170,7 +175,7 @@ namespace DeliveryWebApp.WebUI.Pages.CustomerPages
                 return NotFound("User not found");
             }
 
-            await LoadAsync(user);
+            await LoadAsync(user, 1);
 
             if (Customer == null || Basket == null || Products.IsNullOrEmpty() || BasketItems.IsNullOrEmpty())
             {
