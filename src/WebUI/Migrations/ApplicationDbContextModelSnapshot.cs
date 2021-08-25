@@ -95,8 +95,6 @@ namespace DeliveryWebApp.WebUI.Migrations
 
                     b.HasIndex("BasketId");
 
-                    b.HasIndex("ProductId");
-
                     b.ToTable("BasketItems");
                 });
 
@@ -692,15 +690,7 @@ namespace DeliveryWebApp.WebUI.Migrations
                         .OnDelete(DeleteBehavior.ClientCascade)
                         .IsRequired();
 
-                    b.HasOne("DeliveryWebApp.Domain.Entities.Product", "Product")
-                        .WithMany()
-                        .HasForeignKey("ProductId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
                     b.Navigation("Basket");
-
-                    b.Navigation("Product");
                 });
 
             modelBuilder.Entity("DeliveryWebApp.Domain.Entities.Order", b =>

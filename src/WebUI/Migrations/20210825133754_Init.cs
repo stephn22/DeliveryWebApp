@@ -293,6 +293,27 @@ namespace DeliveryWebApp.WebUI.Migrations
                 });
 
             migrationBuilder.CreateTable(
+                name: "BasketItems",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    ProductId = table.Column<int>(type: "int", nullable: false),
+                    BasketId = table.Column<int>(type: "int", nullable: false),
+                    Quantity = table.Column<int>(type: "int", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_BasketItems", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_BasketItems_Baskets_BasketId",
+                        column: x => x.BasketId,
+                        principalTable: "Baskets",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Restrict);
+                });
+
+            migrationBuilder.CreateTable(
                 name: "Addresses",
                 columns: table => new
                 {
@@ -421,33 +442,6 @@ namespace DeliveryWebApp.WebUI.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "BasketItems",
-                columns: table => new
-                {
-                    Id = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
-                    ProductId = table.Column<int>(type: "int", nullable: false),
-                    BasketId = table.Column<int>(type: "int", nullable: false),
-                    Quantity = table.Column<int>(type: "int", nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_BasketItems", x => x.Id);
-                    table.ForeignKey(
-                        name: "FK_BasketItems_Baskets_BasketId",
-                        column: x => x.BasketId,
-                        principalTable: "Baskets",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Restrict);
-                    table.ForeignKey(
-                        name: "FK_BasketItems_Products_ProductId",
-                        column: x => x.ProductId,
-                        principalTable: "Products",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
-                });
-
-            migrationBuilder.CreateTable(
                 name: "OrderItems",
                 columns: table => new
                 {
@@ -525,11 +519,6 @@ namespace DeliveryWebApp.WebUI.Migrations
                 name: "IX_BasketItems_BasketId",
                 table: "BasketItems",
                 column: "BasketId");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_BasketItems_ProductId",
-                table: "BasketItems",
-                column: "ProductId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_Baskets_CustomerId",
@@ -650,6 +639,9 @@ namespace DeliveryWebApp.WebUI.Migrations
                 name: "PersistedGrants");
 
             migrationBuilder.DropTable(
+                name: "Products");
+
+            migrationBuilder.DropTable(
                 name: "Requests");
 
             migrationBuilder.DropTable(
@@ -663,9 +655,6 @@ namespace DeliveryWebApp.WebUI.Migrations
 
             migrationBuilder.DropTable(
                 name: "Baskets");
-
-            migrationBuilder.DropTable(
-                name: "Products");
 
             migrationBuilder.DropTable(
                 name: "Orders");
