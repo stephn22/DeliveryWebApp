@@ -1,5 +1,5 @@
-﻿using System;
-using Microsoft.EntityFrameworkCore.Migrations;
+﻿using Microsoft.EntityFrameworkCore.Migrations;
+using System;
 
 namespace DeliveryWebApp.WebUI.Migrations
 {
@@ -433,12 +433,6 @@ namespace DeliveryWebApp.WebUI.Migrations
                         principalTable: "Restaurateurs",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Restrict);
-                    table.ForeignKey(
-                        name: "FK_Orders_Riders_RiderId",
-                        column: x => x.RiderId,
-                        principalTable: "Riders",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Restrict);
                 });
 
             migrationBuilder.CreateTable(
@@ -557,11 +551,6 @@ namespace DeliveryWebApp.WebUI.Migrations
                 column: "RestaurateurId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_Orders_RiderId",
-                table: "Orders",
-                column: "RiderId");
-
-            migrationBuilder.CreateIndex(
                 name: "IX_PersistedGrants_Expiration",
                 table: "PersistedGrants",
                 column: "Expiration");
@@ -648,6 +637,9 @@ namespace DeliveryWebApp.WebUI.Migrations
                 name: "Reviews");
 
             migrationBuilder.DropTable(
+                name: "Riders");
+
+            migrationBuilder.DropTable(
                 name: "AspNetRoles");
 
             migrationBuilder.DropTable(
@@ -661,9 +653,6 @@ namespace DeliveryWebApp.WebUI.Migrations
 
             migrationBuilder.DropTable(
                 name: "Addresses");
-
-            migrationBuilder.DropTable(
-                name: "Riders");
 
             migrationBuilder.DropTable(
                 name: "Restaurateurs");

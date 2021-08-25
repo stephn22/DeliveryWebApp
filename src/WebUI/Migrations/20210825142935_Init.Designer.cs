@@ -10,7 +10,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace DeliveryWebApp.WebUI.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20210825133754_Init")]
+    [Migration("20210825142935_Init")]
     partial class Init
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -166,8 +166,6 @@ namespace DeliveryWebApp.WebUI.Migrations
                     b.HasIndex("DeliveryAddressId");
 
                     b.HasIndex("RestaurateurId");
-
-                    b.HasIndex("RiderId");
 
                     b.ToTable("Orders");
                 });
@@ -715,10 +713,6 @@ namespace DeliveryWebApp.WebUI.Migrations
                         .OnDelete(DeleteBehavior.ClientCascade)
                         .IsRequired();
 
-                    b.HasOne("DeliveryWebApp.Domain.Entities.Rider", null)
-                        .WithMany("OpenOrders")
-                        .HasForeignKey("RiderId");
-
                     b.Navigation("Customer");
 
                     b.Navigation("DeliveryAddress");
@@ -879,11 +873,6 @@ namespace DeliveryWebApp.WebUI.Migrations
                     b.Navigation("RestaurantOrders");
 
                     b.Navigation("RestaurateurReviews");
-                });
-
-            modelBuilder.Entity("DeliveryWebApp.Domain.Entities.Rider", b =>
-                {
-                    b.Navigation("OpenOrders");
                 });
 #pragma warning restore 612, 618
         }
