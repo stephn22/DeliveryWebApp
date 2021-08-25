@@ -30,12 +30,15 @@ namespace DeliveryWebApp.Infrastructure
 
             services.AddScoped<IDomainEventService, DomainEventService>();
 
+            services.AddResponseCaching();
+
             services.AddSession(options =>
             {
-                options.IdleTimeout = TimeSpan.FromMinutes(15);
+                options.IdleTimeout = TimeSpan.FromMinutes(10);
+                options.Cookie.HttpOnly = true;
+                options.Cookie.IsEssential = true;
+                options.Cookie.MaxAge = TimeSpan.FromDays(30);
             });
-
-            services.AddMemoryCache();
 
             services
                 .AddDefaultIdentity<ApplicationUser>(options =>

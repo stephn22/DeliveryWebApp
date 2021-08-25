@@ -1,9 +1,9 @@
-﻿using System;
-using System.Collections.Generic;
-using DeliveryWebApp.Application.Common.Exceptions;
+﻿using DeliveryWebApp.Application.Common.Exceptions;
 using FluentAssertions;
 using FluentValidation.Results;
 using NUnit.Framework;
+using System;
+using System.Collections.Generic;
 
 namespace DeliveryWebApp.Application.UnitTests.Common.Exceptions
 {

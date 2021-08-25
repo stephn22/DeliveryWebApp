@@ -99,6 +99,9 @@ namespace DeliveryWebApp.WebUI
             app.UseAuthentication();
             app.UseAuthorization();
 
+            app.UseSession();
+            app.UseResponseCaching();
+
             app.UseEndpoints(endpoints =>
             {
                 endpoints.MapRazorPages();

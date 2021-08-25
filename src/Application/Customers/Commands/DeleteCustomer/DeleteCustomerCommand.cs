@@ -4,6 +4,8 @@ using DeliveryWebApp.Application.Baskets.Commands.DeleteBasket;
 using DeliveryWebApp.Application.Common.Exceptions;
 using DeliveryWebApp.Application.Common.Interfaces;
 using DeliveryWebApp.Application.Restaurateurs.Commands.DeleteRestaurateur;
+using DeliveryWebApp.Application.Reviews.Commands.DeleteReview;
+using DeliveryWebApp.Application.Reviews.Queries.GetReviews;
 using DeliveryWebApp.Application.Riders.Commands.DeleteRider;
 using DeliveryWebApp.Domain.Entities;
 using MediatR;
@@ -11,8 +13,6 @@ using Microsoft.EntityFrameworkCore;
 using System;
 using System.Threading;
 using System.Threading.Tasks;
-using DeliveryWebApp.Application.Reviews.Commands.DeleteReview;
-using DeliveryWebApp.Application.Reviews.Queries.GetReviews;
 
 namespace DeliveryWebApp.Application.Customers.Commands.DeleteCustomer
 {
