@@ -9,7 +9,6 @@ namespace DeliveryWebApp.Infrastructure.Services
 {
     public class EmailSender : IEmailSender
     {
-
         private readonly IConfiguration _configuration;
         public AuthMessageSenderOptions Options { get; }
 
