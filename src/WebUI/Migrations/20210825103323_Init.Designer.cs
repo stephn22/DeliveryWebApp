@@ -10,8 +10,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace DeliveryWebApp.WebUI.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20210820164313_Rider_Total_Credit")]
-    partial class Rider_Total_Credit
+    [Migration("20210825103323_Init")]
+    partial class Init
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -68,8 +68,7 @@ namespace DeliveryWebApp.WebUI.Migrations
                         .HasColumnType("int");
 
                     b.Property<decimal>("TotalPrice")
-                        .HasPrecision(16, 4)
-                        .HasColumnType("decimal(16,4)");
+                        .HasColumnType("money");
 
                     b.HasKey("Id");
 
@@ -133,15 +132,15 @@ namespace DeliveryWebApp.WebUI.Migrations
                         .HasColumnType("int")
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
-                    b.Property<int>("AddressId")
-                        .HasColumnType("int");
-
                     b.Property<int>("CustomerId")
                         .HasColumnType("int");
 
                     b.Property<DateTime>("Date")
                         .HasPrecision(0)
                         .HasColumnType("datetime2(0)");
+
+                    b.Property<int>("DeliveryAddressId")
+                        .HasColumnType("int");
 
                     b.Property<DateTime?>("DeliveryDate")
                         .HasPrecision(0)
@@ -158,12 +157,13 @@ namespace DeliveryWebApp.WebUI.Migrations
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<decimal>("TotalPrice")
-                        .HasPrecision(16, 4)
-                        .HasColumnType("decimal(16,4)");
+                        .HasColumnType("money");
 
                     b.HasKey("Id");
 
                     b.HasIndex("CustomerId");
+
+                    b.HasIndex("DeliveryAddressId");
 
                     b.HasIndex("RestaurateurId");
 
@@ -189,8 +189,7 @@ namespace DeliveryWebApp.WebUI.Migrations
                         .HasColumnType("int");
 
                     b.Property<decimal>("ProductPrice")
-                        .HasPrecision(16, 4)
-                        .HasColumnType("decimal(16,4)");
+                        .HasColumnType("money");
 
                     b.Property<int>("Quantity")
                         .HasColumnType("int");
@@ -223,8 +222,7 @@ namespace DeliveryWebApp.WebUI.Migrations
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<decimal>("Price")
-                        .HasPrecision(16, 4)
-                        .HasColumnType("decimal(16,4)");
+                        .HasColumnType("money");
 
                     b.Property<int>("Quantity")
                         .HasColumnType("int");
@@ -307,7 +305,7 @@ namespace DeliveryWebApp.WebUI.Migrations
                         .HasPrecision(0)
                         .HasColumnType("datetime2(0)");
 
-                    b.Property<int>("Grade")
+                    b.Property<int>("Rating")
                         .HasColumnType("int");
 
                     b.Property<int>("RestaurateurId")
@@ -324,11 +322,9 @@ namespace DeliveryWebApp.WebUI.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("CustomerId")
-                        .IsUnique();
+                    b.HasIndex("CustomerId");
 
-                    b.HasIndex("RestaurateurId")
-                        .IsUnique();
+                    b.HasIndex("RestaurateurId");
 
                     b.ToTable("Reviews");
                 });
@@ -344,12 +340,10 @@ namespace DeliveryWebApp.WebUI.Migrations
                         .HasColumnType("int");
 
                     b.Property<decimal>("DeliveryCredit")
-                        .HasPrecision(19, 4)
-                        .HasColumnType("Money");
+                        .HasColumnType("money");
 
                     b.Property<decimal>("TotalCredit")
-                        .HasPrecision(19, 4)
-                        .HasColumnType("Money");
+                        .HasColumnType("money");
 
                     b.HasKey("Id");
 
@@ -709,6 +703,12 @@ namespace DeliveryWebApp.WebUI.Migrations
                         .OnDelete(DeleteBehavior.ClientCascade)
                         .IsRequired();
 
+                    b.HasOne("DeliveryWebApp.Domain.Entities.Address", "DeliveryAddress")
+                        .WithMany()
+                        .HasForeignKey("DeliveryAddressId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
                     b.HasOne("DeliveryWebApp.Domain.Entities.Restaurateur", "Restaurateur")
                         .WithMany("RestaurantOrders")
                         .HasForeignKey("RestaurateurId")
@@ -720,6 +720,8 @@ namespace DeliveryWebApp.WebUI.Migrations
                         .HasForeignKey("RiderId");
 
                     b.Navigation("Customer");
+
+                    b.Navigation("DeliveryAddress");
 
                     b.Navigation("Restaurateur");
                 });

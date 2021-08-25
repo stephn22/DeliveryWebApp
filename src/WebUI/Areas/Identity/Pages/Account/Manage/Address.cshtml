@@ -69,7 +69,7 @@ else
             <label class="form-label">@localizer["Primary Address"]</label>
             <div class="input-group col-7">
                 <input hidden id="address0-id" value="@Model.Addresses[0].Id" />
-                <input class="form-control" id="input-address-0" value="@Model.Addresses[0].ToString()" disabled />
+                <input class="form-control" id="input-address-0" value="@Model.Addresses[0].PlaceName" disabled />
                 <div class="input-group-append">
                     <button class="btn btn-outline-secondary" type="button" id="location-btn-addr-0">
                         <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-geo-alt" viewBox="0 0 16 16">
@@ -158,7 +158,7 @@ else
             <label class="form-label">@localizer["Secondary Address"]</label>
             <div class="input-group col-7">
                 <input hidden id="address1-id" value="@Model.Addresses[1].Id"/>
-                <input class="form-control" id="input-address-1" value="@Model.Addresses[1].ToString()" disabled/>
+                <input class="form-control" id="input-address-1" value="@Model.Addresses[1].PlaceName" disabled/>
                 <div class="input-group-append">
                     <button class="btn btn-outline-secondary" type="button" id="location-btn-addr-1">
                         <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-geo-alt" viewBox="0 0 16 16">

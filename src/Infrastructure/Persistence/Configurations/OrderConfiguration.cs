@@ -25,7 +25,7 @@ namespace DeliveryWebApp.Infrastructure.Persistence.Configurations
             builder.Property(u => u.Status)
                 .IsRequired();
 
-            builder.Property(o => o.AddressId)
+            builder.Property(o => o.DeliveryAddressId)
                 .IsRequired();
 
             builder.HasOne(o => o.Customer)

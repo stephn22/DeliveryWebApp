@@ -8,7 +8,7 @@ namespace DeliveryWebApp.Domain.Entities
         public string RestaurantName { get; set; }
         public string RestaurantCategory { get; set; }
         public int RestaurantAddressId { get; set; }
-        public Address RestaurantAddress { get; set; }
+        public virtual Address RestaurantAddress { get; set; }
         public ICollection<Product> Products { get; set; }
         public ICollection<Order> RestaurantOrders { get; set; }
         public int CustomerId { get; set; }

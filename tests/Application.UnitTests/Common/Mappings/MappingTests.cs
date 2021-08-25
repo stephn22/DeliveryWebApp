@@ -1,12 +1,12 @@
-﻿using System;
-using System.Runtime.Serialization;
-using AutoMapper;
+﻿using AutoMapper;
 using DeliveryWebApp.Application.Addresses.Commands.CreateAddress;
 using DeliveryWebApp.Application.Addresses.Commands.DeleteAddress;
 using DeliveryWebApp.Application.Addresses.Commands.UpdateAddress;
 using DeliveryWebApp.Application.Common.Mappings;
 using DeliveryWebApp.Domain.Entities;
 using NUnit.Framework;
+using System;
+using System.Runtime.Serialization;
 
 namespace DeliveryWebApp.Application.UnitTests.Common.Mappings
 {

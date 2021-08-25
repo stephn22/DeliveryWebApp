@@ -130,15 +130,15 @@ namespace DeliveryWebApp.WebUI.Migrations
                         .HasColumnType("int")
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
-                    b.Property<int>("AddressId")
-                        .HasColumnType("int");
-
                     b.Property<int>("CustomerId")
                         .HasColumnType("int");
 
                     b.Property<DateTime>("Date")
                         .HasPrecision(0)
                         .HasColumnType("datetime2(0)");
+
+                    b.Property<int>("DeliveryAddressId")
+                        .HasColumnType("int");
 
                     b.Property<DateTime?>("DeliveryDate")
                         .HasPrecision(0)
@@ -160,6 +160,8 @@ namespace DeliveryWebApp.WebUI.Migrations
                     b.HasKey("Id");
 
                     b.HasIndex("CustomerId");
+
+                    b.HasIndex("DeliveryAddressId");
 
                     b.HasIndex("RestaurateurId");
 
@@ -699,6 +701,12 @@ namespace DeliveryWebApp.WebUI.Migrations
                         .OnDelete(DeleteBehavior.ClientCascade)
                         .IsRequired();
 
+                    b.HasOne("DeliveryWebApp.Domain.Entities.Address", "DeliveryAddress")
+                        .WithMany()
+                        .HasForeignKey("DeliveryAddressId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
                     b.HasOne("DeliveryWebApp.Domain.Entities.Restaurateur", "Restaurateur")
                         .WithMany("RestaurantOrders")
                         .HasForeignKey("RestaurateurId")
@@ -710,6 +718,8 @@ namespace DeliveryWebApp.WebUI.Migrations
                         .HasForeignKey("RiderId");
 
                     b.Navigation("Customer");
+
+                    b.Navigation("DeliveryAddress");
 
                     b.Navigation("Restaurateur");
                 });

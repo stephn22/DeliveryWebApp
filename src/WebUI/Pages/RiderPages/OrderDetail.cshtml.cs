@@ -57,7 +57,7 @@ namespace DeliveryWebApp.WebUI.Pages.RiderPages
                 HasBeenTaken = (Order.Status == OrderStatus.Taken);
 
                 Restaurateur = await _context.Restaurateurs.FindAsync(Order.RestaurateurId);
-                DeliveryAddress = await _context.Addresses.FindAsync(Order.AddressId);
+                DeliveryAddress = await _context.Addresses.FindAsync(Order.DeliveryAddressId);
 
                 OrderItems = await _mediator.Send(new GetOrderItemsQuery
                 {

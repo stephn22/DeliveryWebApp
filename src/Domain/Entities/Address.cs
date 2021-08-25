@@ -6,13 +6,8 @@
         public decimal Longitude { get; set; }
         public decimal Latitude { get; set; }
         public int? CustomerId { get; set; }
-        public Customer Customer { get; set; }
+        public virtual Customer Customer { get; set; }
         public int? RestaurateurId { get; set; }
-        public Restaurateur Restaurateur { get; set; }
-
-        public override string ToString()
-        {
-            return PlaceName;
-        }
+        public virtual Restaurateur Restaurateur { get; set; }
     }
 }

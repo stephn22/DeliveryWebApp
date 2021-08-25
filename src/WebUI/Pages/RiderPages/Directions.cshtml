@@ -109,7 +109,7 @@
 
                 // get delivery address
                 const dAddressReq = new XMLHttpRequest();
-                dAddressReq.open("GET", `/api/addresses/${@Model.Order.AddressId}`);
+                dAddressReq.open("GET", `/api/addresses/${@Model.Order.DeliveryAddressId}`);
                 dAddressReq.onload = function() {
                     const i = JSON.parse(dAddressReq.response);
                     const deliveryAddress = new Address(
