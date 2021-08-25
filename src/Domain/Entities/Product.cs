@@ -9,6 +9,6 @@
         public string Category { get; set; }
         public int Quantity { get; set; }
         public int RestaurateurId { get; set; }
-        public Restaurateur Restaurateur { get; set; }
+        public virtual Restaurateur Restaurateur { get; set; }
     }
 }

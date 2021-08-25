@@ -45,7 +45,7 @@ namespace DeliveryWebApp.WebUI.Pages.AdminPages
 
             Rider = await _context.Riders.FindAsync(Order.RiderId);
 
-            Address = await _context.Addresses.FindAsync(Order.AddressId);
+            Address = await _context.Addresses.FindAsync(Order.DeliveryAddressId);
 
             return Page();
         }

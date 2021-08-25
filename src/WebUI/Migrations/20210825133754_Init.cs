@@ -1,5 +1,5 @@
-﻿using Microsoft.EntityFrameworkCore.Migrations;
-using System;
+﻿using System;
+using Microsoft.EntityFrameworkCore.Migrations;
 
 namespace DeliveryWebApp.WebUI.Migrations
 {
@@ -213,7 +213,7 @@ namespace DeliveryWebApp.WebUI.Migrations
                 {
                     Id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
-                    TotalPrice = table.Column<decimal>(type: "Money", precision: 16, scale: 3, nullable: false),
+                    TotalPrice = table.Column<decimal>(type: "money", nullable: false),
                     CustomerId = table.Column<int>(type: "int", nullable: false)
                 },
                 constraints: table =>
@@ -278,7 +278,8 @@ namespace DeliveryWebApp.WebUI.Migrations
                     Id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
                     CustomerId = table.Column<int>(type: "int", nullable: false),
-                    DeliveryCredit = table.Column<decimal>(type: "Money", precision: 19, scale: 4, nullable: false)
+                    DeliveryCredit = table.Column<decimal>(type: "money", nullable: false),
+                    TotalCredit = table.Column<decimal>(type: "money", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -349,7 +350,7 @@ namespace DeliveryWebApp.WebUI.Migrations
                         .Annotation("SqlServer:Identity", "1, 1"),
                     Name = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     Image = table.Column<byte[]>(type: "varbinary(max)", nullable: true),
-                    Price = table.Column<decimal>(type: "Money", precision: 16, scale: 3, nullable: false),
+                    Price = table.Column<decimal>(type: "money", nullable: false),
                     Discount = table.Column<int>(type: "int", nullable: false),
                     Category = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     Quantity = table.Column<int>(type: "int", nullable: false),
@@ -376,7 +377,7 @@ namespace DeliveryWebApp.WebUI.Migrations
                     Title = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     Date = table.Column<DateTime>(type: "datetime2(0)", precision: 0, nullable: false),
                     Text = table.Column<string>(type: "nvarchar(250)", maxLength: 250, nullable: false),
-                    Grade = table.Column<int>(type: "int", nullable: false),
+                    Rating = table.Column<int>(type: "int", nullable: false),
                     RestaurateurId = table.Column<int>(type: "int", nullable: false)
                 },
                 constraints: table =>
@@ -405,14 +406,21 @@ namespace DeliveryWebApp.WebUI.Migrations
                     CustomerId = table.Column<int>(type: "int", nullable: false),
                     Date = table.Column<DateTime>(type: "datetime2(0)", precision: 0, nullable: false),
                     RestaurateurId = table.Column<int>(type: "int", nullable: false),
-                    TotalPrice = table.Column<decimal>(type: "Money", precision: 16, scale: 3, nullable: false),
+                    RiderId = table.Column<int>(type: "int", nullable: true),
+                    TotalPrice = table.Column<decimal>(type: "money", nullable: false),
                     Status = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    DeliveryDate = table.Column<DateTime>(type: "datetime2", nullable: true),
-                    RiderId = table.Column<int>(type: "int", nullable: true)
+                    DeliveryDate = table.Column<DateTime>(type: "datetime2(0)", precision: 0, nullable: true),
+                    DeliveryAddressId = table.Column<int>(type: "int", nullable: false)
                 },
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_Orders", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_Orders_Addresses_DeliveryAddressId",
+                        column: x => x.DeliveryAddressId,
+                        principalTable: "Addresses",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
                         name: "FK_Orders_Customers_CustomerId",
                         column: x => x.CustomerId,
@@ -441,7 +449,7 @@ namespace DeliveryWebApp.WebUI.Migrations
                         .Annotation("SqlServer:Identity", "1, 1"),
                     OrderId = table.Column<int>(type: "int", nullable: false),
                     ProductId = table.Column<int>(type: "int", nullable: false),
-                    ProductPrice = table.Column<decimal>(type: "Money", precision: 16, scale: 3, nullable: false),
+                    ProductPrice = table.Column<decimal>(type: "money", nullable: false),
                     Discount = table.Column<int>(type: "int", nullable: false),
                     Quantity = table.Column<int>(type: "int", nullable: false)
                 },
@@ -539,6 +547,11 @@ namespace DeliveryWebApp.WebUI.Migrations
                 column: "CustomerId");
 
             migrationBuilder.CreateIndex(
+                name: "IX_Orders_DeliveryAddressId",
+                table: "Orders",
+                column: "DeliveryAddressId");
+
+            migrationBuilder.CreateIndex(
                 name: "IX_Orders_RestaurateurId",
                 table: "Orders",
                 column: "RestaurateurId");
@@ -582,14 +595,12 @@ namespace DeliveryWebApp.WebUI.Migrations
             migrationBuilder.CreateIndex(
                 name: "IX_Reviews_CustomerId",
                 table: "Reviews",
-                column: "CustomerId",
-                unique: true);
+                column: "CustomerId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_Reviews_RestaurateurId",
                 table: "Reviews",
-                column: "RestaurateurId",
-                unique: true);
+                column: "RestaurateurId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_Riders_CustomerId",
@@ -600,9 +611,6 @@ namespace DeliveryWebApp.WebUI.Migrations
 
         protected override void Down(MigrationBuilder migrationBuilder)
         {
-            migrationBuilder.DropTable(
-                name: "Addresses");
-
             migrationBuilder.DropTable(
                 name: "AspNetRoleClaims");
 
@@ -652,10 +660,13 @@ namespace DeliveryWebApp.WebUI.Migrations
                 name: "Orders");
 
             migrationBuilder.DropTable(
-                name: "Restaurateurs");
+                name: "Addresses");
 
             migrationBuilder.DropTable(
                 name: "Riders");
+
+            migrationBuilder.DropTable(
+                name: "Restaurateurs");
 
             migrationBuilder.DropTable(
                 name: "Customers");

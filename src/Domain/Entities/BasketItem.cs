@@ -4,10 +4,10 @@
     {
         public int ProductId { get; set; }
         public int BasketId { get; set; }
-        public Basket Basket { get; set; }
+        public virtual Basket Basket { get; set; }
 
         /// <summary>
-        /// The quantity of the product selected by the customer
+        /// The quantity selected by the customer
         /// </summary>
         public int Quantity { get; set; }
     }

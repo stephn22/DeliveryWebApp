@@ -15,6 +15,7 @@ namespace DeliveryWebApp.Domain.Entities
         public decimal TotalPrice { get; set; }
         public string Status { get; set; }
         public DateTime? DeliveryDate { get; set; }
-        public int AddressId { get; set; }
+        public int DeliveryAddressId { get; set; }
+        public virtual Address DeliveryAddress { get; set; }
     }
 }

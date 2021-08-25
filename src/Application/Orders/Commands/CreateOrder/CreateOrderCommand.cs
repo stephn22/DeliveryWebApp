@@ -40,7 +40,7 @@ namespace DeliveryWebApp.Application.Orders.Commands.CreateOrder
                 CustomerId = request.Customer.Id,
                 Status = OrderStatus.New,
                 Date = DateTime.UtcNow,
-                AddressId = request.AddressId
+                DeliveryAddressId = request.AddressId
             };
 
             _context.Orders.Add(entity);

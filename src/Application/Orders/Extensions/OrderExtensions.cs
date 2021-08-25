@@ -51,7 +51,7 @@ namespace DeliveryWebApp.Application.Orders.Extensions
 
         public static async Task<Address> GetAddressAsync(this Order order, IApplicationDbContext context)
         {
-            var address = await context.Addresses.FindAsync(order.AddressId);
+            var address = await context.Addresses.FindAsync(order.DeliveryAddressId);
             return address;
         }
     }
