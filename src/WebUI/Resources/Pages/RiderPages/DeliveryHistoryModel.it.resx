@@ -117,14 +117,23 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
+  <data name="Delivered" xml:space="preserve">
+    <value>Consegnato</value>
+  </data>
   <data name="Delivery Date" xml:space="preserve">
     <value>Data Consegna</value>
   </data>
   <data name="Delivery History" xml:space="preserve">
     <value>Cronologia Consegne</value>
   </data>
+  <data name="Failed" xml:space="preserve">
+    <value>Consegna fallita</value>
+  </data>
   <data name="Food Vendor" xml:space="preserve">
     <value>Ristoratore</value>
+  </data>
+  <data name="New" xml:space="preserve">
+    <value>Nuovo</value>
   </data>
   <data name="Next" xml:space="preserve">
     <value>Successiva</value>
@@ -137,6 +146,9 @@
   </data>
   <data name="Status" xml:space="preserve">
     <value>Stato</value>
+  </data>
+  <data name="Taken" xml:space="preserve">
+    <value>Preso in carico</value>
   </data>
   <data name="Total Delivery Credit" xml:space="preserve">
     <value>Credito consegne totale</value>

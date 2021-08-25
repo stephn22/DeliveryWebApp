@@ -123,14 +123,23 @@
   <data name="Date" xml:space="preserve">
     <value>Data</value>
   </data>
+  <data name="Delivered" xml:space="preserve">
+    <value>Consegnato</value>
+  </data>
   <data name="Delivery Address" xml:space="preserve">
     <value>Indirizzo di Consegna</value>
   </data>
   <data name="Details of order" xml:space="preserve">
     <value>Dettagli dell'ordine</value>
   </data>
+  <data name="Failed" xml:space="preserve">
+    <value>Consegna fallita</value>
+  </data>
   <data name="Food Vendor" xml:space="preserve">
     <value>Ristoratore</value>
+  </data>
+  <data name="New" xml:space="preserve">
+    <value>Nuovo</value>
   </data>
   <data name="Order" xml:space="preserve">
     <value>Ordine</value>
@@ -140,5 +149,8 @@
   </data>
   <data name="Status" xml:space="preserve">
     <value>Stato</value>
+  </data>
+  <data name="Taken" xml:space="preserve">
+    <value>Preso in carico</value>
   </data>
 </root>

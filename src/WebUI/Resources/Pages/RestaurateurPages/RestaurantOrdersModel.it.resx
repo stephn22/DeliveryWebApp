@@ -126,6 +126,9 @@
   <data name="Date" xml:space="preserve">
     <value>Data</value>
   </data>
+  <data name="Delivered" xml:space="preserve">
+    <value>Consegnato</value>
+  </data>
   <data name="Delivery Date" xml:space="preserve">
     <value>Data Consegna</value>
   </data>
@@ -134,6 +137,12 @@
   </data>
   <data name="Discount and price based on time of purchase" xml:space="preserve">
     <value>Sconto e prezzo in base al momento dell'acquisto</value>
+  </data>
+  <data name="Failed" xml:space="preserve">
+    <value>Consegna fallita</value>
+  </data>
+  <data name="New" xml:space="preserve">
+    <value>Nuovo</value>
   </data>
   <data name="Next" xml:space="preserve">
     <value>Successiva</value>
@@ -158,6 +167,9 @@
   </data>
   <data name="Status" xml:space="preserve">
     <value>Stato</value>
+  </data>
+  <data name="Taken" xml:space="preserve">
+    <value>Preso in carico</value>
   </data>
   <data name="Total" xml:space="preserve">
     <value>Totale</value>
