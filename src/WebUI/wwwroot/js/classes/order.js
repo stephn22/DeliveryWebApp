@@ -1,9 +1,9 @@
 ﻿class Order {
-    constructor(id, date, restaurateurId, status, addressId) {
+    constructor(id, date, restaurateurId, status, deliveryAddressId) {
         this.id = id;
         this.date = date;
         this.restaurateurId = restaurateurId;
         this.status = status;
-        this.addressId = addressId;
+        this.deliveryAddressId = deliveryAddressId;
     }
 }

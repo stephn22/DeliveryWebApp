@@ -23,6 +23,7 @@ using System.Threading.Tasks;
 namespace DeliveryWebApp.WebUI.Pages.CustomerPages
 {
     [Authorize(Policy = PolicyName.IsCustomer)]
+    [ResponseCache(VaryByHeader = "User-Agent", Duration = 30)]
     public class CheckoutModel : PageModel
     {
         private readonly ApplicationDbContext _context;

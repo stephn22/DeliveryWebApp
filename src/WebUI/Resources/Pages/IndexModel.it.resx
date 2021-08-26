@@ -138,6 +138,12 @@
   <data name="Browse food vendors list, select one and start ordering food" xml:space="preserve">
     <value>Sfoglia la lista dei ristoratori, scegli quello che preferisci e inizia a ordinare</value>
   </data>
+  <data name="Cart" xml:space="preserve">
+    <value>Carrello</value>
+  </data>
+  <data name="Delivery History" xml:space="preserve">
+    <value>Cronologia Consegne</value>
+  </data>
   <data name="Home page" xml:space="preserve">
     <value>Home</value>
   </data>
@@ -150,8 +156,17 @@
   <data name="Manage your restaurant through the dashboard" xml:space="preserve">
     <value>Gestisci la tua attività con la dashboard</value>
   </data>
+  <data name="New Orders" xml:space="preserve">
+    <value>Nuovi Ordini</value>
+  </data>
   <data name="Next" xml:space="preserve">
     <value>Successivo</value>
+  </data>
+  <data name="Order History" xml:space="preserve">
+    <value>Cronologia Ordini</value>
+  </data>
+  <data name="Orders" xml:space="preserve">
+    <value>Ordini</value>
   </data>
   <data name="Previous" xml:space="preserve">
     <value>Precedente</value>
@@ -165,16 +180,31 @@
   <data name="Register or log in to start accessing features" xml:space="preserve">
     <value>Registrati o accedi per iniziare ad usufruire dei servizi</value>
   </data>
+  <data name="Requests" xml:space="preserve">
+    <value>Richieste</value>
+  </data>
+  <data name="Restaurant Orders" xml:space="preserve">
+    <value>Ordini Ristorante</value>
+  </data>
   <data name="Sign up" xml:space="preserve">
     <value>Registrati</value>
   </data>
   <data name="Sign up today" xml:space="preserve">
     <value>Registrati oggi</value>
   </data>
+  <data name="User List" xml:space="preserve">
+    <value>Lista Utenti</value>
+  </data>
   <data name="Welcome" xml:space="preserve">
     <value>Benvenuto</value>
   </data>
   <data name="Welcome Administrator" xml:space="preserve">
     <value>Benvenuto Amministratore</value>
+  </data>
+  <data name="Your products" xml:space="preserve">
+    <value>I tuoi prodotti</value>
+  </data>
+  <data name="Your Profile" xml:space="preserve">
+    <value>Il tuo profilo</value>
   </data>
 </root>

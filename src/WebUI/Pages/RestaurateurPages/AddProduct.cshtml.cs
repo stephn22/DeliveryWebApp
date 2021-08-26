@@ -21,6 +21,7 @@ using System.Threading.Tasks;
 namespace DeliveryWebApp.WebUI.Pages.RestaurateurPages
 {
     [Authorize(Policy = PolicyName.IsRestaurateur)]
+    [ResponseCache(VaryByHeader = "User-Agent", Duration = 30)]
     public class AddProductModel : PageModel
     {
         private readonly IMediator _mediator;
@@ -119,7 +120,7 @@ namespace DeliveryWebApp.WebUI.Pages.RestaurateurPages
                 RestaurateurId = restaurateur.Id
             });
 
-            return Redirect($"/RestaurateurPages/RestaurantProducts/{restaurateur.Id}");
+            return RedirectToPage("./RestaurantProducts");
         }
     }
 }

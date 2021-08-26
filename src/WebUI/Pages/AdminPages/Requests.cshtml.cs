@@ -3,6 +3,7 @@ using DeliveryWebApp.Application.Common.Security;
 using DeliveryWebApp.Domain.Constants;
 using DeliveryWebApp.Domain.Entities;
 using DeliveryWebApp.Infrastructure.Persistence;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
@@ -12,6 +13,7 @@ using System.Threading.Tasks;
 namespace DeliveryWebApp.WebUI.Pages.AdminPages
 {
     [Authorize(Roles = RoleName.Admin)]
+    [ResponseCache(VaryByHeader = "User-Agent", Duration = 30)]
     public class RequestsModel : PageModel
     {
         private readonly ApplicationDbContext _context;

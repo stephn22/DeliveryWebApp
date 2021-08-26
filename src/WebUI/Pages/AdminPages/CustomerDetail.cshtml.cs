@@ -27,6 +27,7 @@ using System.Threading.Tasks;
 namespace DeliveryWebApp.WebUI.Pages.AdminPages
 {
     [Authorize(Roles = RoleName.Admin)]
+    [ResponseCache(VaryByHeader = "User-Agent", Duration = 30)]
     public class CustomerDetailModel : PageModel
     {
         private readonly ApplicationDbContext _context;

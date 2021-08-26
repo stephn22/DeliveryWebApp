@@ -9,6 +9,7 @@ using System.Threading.Tasks;
 
 namespace DeliveryWebApp.WebUI.Areas.Identity.Pages.Account.Manage
 {
+    [ResponseCache(VaryByHeader = "User-Agent", Duration = 30)]
     public class ChangePasswordModel : PageModel
     {
         private readonly UserManager<ApplicationUser> _userManager;

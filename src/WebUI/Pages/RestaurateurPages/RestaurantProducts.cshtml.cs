@@ -12,12 +12,14 @@ using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
+using System;
 using System.Linq;
 using System.Threading.Tasks;
 
 namespace DeliveryWebApp.WebUI.Pages.RestaurateurPages
 {
     [Authorize(Roles = RoleName.Restaurateur)]
+    [ResponseCache(VaryByHeader = "User-Agent", Duration = 30)]
     public class RestaurantProductsModel : PageModel
     {
         private readonly IMediator _mediator;
@@ -41,13 +43,22 @@ namespace DeliveryWebApp.WebUI.Pages.RestaurateurPages
         // filtering (products table)
         public string CurrentFilter { get; set; }
 
-        private async Task LoadAsync(int id, string searchString, string currentFilter, int? pageIndex)
+        private async Task LoadAsync(ApplicationUser user, string searchString, string currentFilter, int? pageIndex)
         {
-            Restaurateur = await _context.Restaurateurs.FindAsync(id);
+            try
+            {
+                var customer = await _context.Customers.FirstAsync(c => c.ApplicationUserFk == user.Id);
+                Restaurateur = await _context.Restaurateurs.FirstAsync(r => r.CustomerId == customer.Id);
+            }
+            catch (InvalidOperationException e)
+            {
+                _logger.LogError(e.Message);
+                Restaurateur = null;
+            }
 
             if (Restaurateur != null)
             {
-                var products = _context.Products.Where(p => p.RestaurateurId == id);
+                var products = _context.Products.Where(p => p.RestaurateurId == Restaurateur.Id);
 
                 if (!string.IsNullOrEmpty(searchString))
                 {
@@ -59,11 +70,13 @@ namespace DeliveryWebApp.WebUI.Pages.RestaurateurPages
             }
         }
 
-        public async Task<IActionResult> OnGetAsync(int? id, string searchString, string currentFilter, int? pageIndex)
+        public async Task<IActionResult> OnGetAsync(string searchString, string currentFilter, int? pageIndex)
         {
-            if (id == null)
+            var user = await _userManager.GetUserAsync(User);
+
+            if (user == null)
             {
-                return NotFound("Unable to find a food vendor with that id");
+                return NotFound();
             }
 
             if (searchString != null)
@@ -75,16 +88,23 @@ namespace DeliveryWebApp.WebUI.Pages.RestaurateurPages
                 searchString = currentFilter;
             }
 
-            await LoadAsync((int)id, searchString, currentFilter, pageIndex);
+            await LoadAsync(user, searchString, currentFilter, pageIndex);
 
             return Page();
         }
 
-        public async Task<IActionResult> OnPostDeleteProductAsync(int id, int productId)
+        public async Task<IActionResult> OnPostDeleteProductAsync(int productId)
         {
+            var user = await _userManager.GetUserAsync(User);
+
+            if (user == null)
+            {
+                return NotFound();
+            }
+
             var product = await _context.Products.FindAsync(productId);
 
-            await LoadAsync(id, "", "", 1);
+            await LoadAsync(user, "", "", 1);
 
             try
             {

@@ -27,6 +27,8 @@ using DeliveryWebApp.Application.Requests.Commands.UpdateRequest;
 using DeliveryWebApp.Application.Restaurateurs.Commands.CreateRestaurateur;
 using DeliveryWebApp.Application.Restaurateurs.Commands.DeleteRestaurateur;
 using DeliveryWebApp.Application.Restaurateurs.Commands.UpdateRestaurateur;
+using DeliveryWebApp.Application.Reviews.Commands.CreateReview;
+using DeliveryWebApp.Application.Reviews.Commands.DeleteReview;
 using DeliveryWebApp.Application.Riders.Commands.CreateRider;
 using DeliveryWebApp.Application.Riders.Commands.DeleteRider;
 using DeliveryWebApp.Application.Riders.Commands.UpdateRider;
@@ -34,8 +36,6 @@ using DeliveryWebApp.Domain.Entities;
 using System;
 using System.Linq;
 using System.Reflection;
-using DeliveryWebApp.Application.Reviews.Commands.CreateReview;
-using DeliveryWebApp.Application.Reviews.Commands.DeleteReview;
 
 namespace DeliveryWebApp.Application.Common.Mappings
 {

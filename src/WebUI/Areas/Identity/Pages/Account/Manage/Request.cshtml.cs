@@ -19,6 +19,7 @@ using System.Threading.Tasks;
 namespace DeliveryWebApp.WebUI.Areas.Identity.Pages.Account.Manage
 {
     [Authorize(Policy = PolicyName.IsCustomer)]
+    [ResponseCache(VaryByHeader = "User-Agent", Duration = 30)]
     public class RequestModel : PageModel
     {
         private readonly UserManager<ApplicationUser> _userManager;

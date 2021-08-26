@@ -102,13 +102,15 @@ else
                                 data[i].date,
                                 data[i].restaurateurId,
                                 data[i].status,
-                                data[i].addressId
+                                data[i].deliveryAddressId
                             );
+
+                            const id = data[i].deliveryAddressId;
 
                             // get delivery address
                             $.ajax({
                                 type: "GET",
-                                url: `/api/addresses/${order.addressId}`,
+                                url: `/api/addresses/${id}`,
                                 dataType: "JSON",
                                 contentType: "application/json; charset=utf-8",
                                 success: function(addressData, status, xhr) {

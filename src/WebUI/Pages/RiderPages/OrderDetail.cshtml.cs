@@ -20,6 +20,7 @@ using System.Threading.Tasks;
 namespace DeliveryWebApp.WebUI.Pages.RiderPages
 {
     [Authorize(Policy = PolicyName.IsRider)]
+    [ResponseCache(VaryByHeader = "User-Agent", Duration = 30)]
     public class OrderDetailModel : PageModel
     {
         private readonly ApplicationDbContext _context;

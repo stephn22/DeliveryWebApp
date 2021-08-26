@@ -16,6 +16,7 @@ using System.Threading.Tasks;
 namespace DeliveryWebApp.WebUI.Pages.CustomerPages
 {
     [Authorize(Policy = PolicyName.IsCustomer)]
+    [ResponseCache(VaryByHeader = "User-Agent", Duration = 30)]
     public class RestaurantListModel : PageModel
     {
         private readonly ApplicationDbContext _context;

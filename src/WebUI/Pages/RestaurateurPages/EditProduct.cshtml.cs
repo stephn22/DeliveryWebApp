@@ -21,6 +21,7 @@ using System.Threading.Tasks;
 namespace DeliveryWebApp.WebUI.Pages.RestaurateurPages
 {
     [Authorize(Policy = PolicyName.IsRestaurateur)]
+    [ResponseCache(VaryByHeader = "User-Agent", Duration = 30)]
     public class EditProductModel : PageModel
     {
         private readonly ApplicationDbContext _context;

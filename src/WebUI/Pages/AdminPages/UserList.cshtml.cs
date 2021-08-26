@@ -9,6 +9,7 @@ using DeliveryWebApp.Domain.Entities;
 using DeliveryWebApp.Infrastructure.Identity;
 using DeliveryWebApp.Infrastructure.Persistence;
 using DeliveryWebApp.Infrastructure.Services.Utilities;
+using IdentityServer4.Extensions;
 using MediatR;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
@@ -23,6 +24,7 @@ using System.Threading.Tasks;
 namespace DeliveryWebApp.WebUI.Pages.AdminPages
 {
     [Authorize(Roles = RoleName.Admin)]
+    [ResponseCache(VaryByHeader = "User-Agent", Duration = 30)]
     public class UserListModel : PageModel
     {
         private readonly ApplicationDbContext _context;
@@ -51,6 +53,11 @@ namespace DeliveryWebApp.WebUI.Pages.AdminPages
         {
             await LoadAsync();
 
+            if (Customers.IsNullOrEmpty())
+            {
+                return NotFound("Unable to load entities");
+            }
+
             return Page();
         }
 
@@ -63,6 +70,14 @@ namespace DeliveryWebApp.WebUI.Pages.AdminPages
 
         public async Task<IActionResult> OnPostBlockCustomerAsync(int id)
         {
+            await LoadAsync();
+
+            if (Customers.IsNullOrEmpty())
+            {
+                return NotFound("Unable to load entities");
+            }
+
+
             try
             {
                 var customer = Customers.First(c => c.Id == id);
@@ -85,6 +100,13 @@ namespace DeliveryWebApp.WebUI.Pages.AdminPages
 
         public async Task<IActionResult> OnPostUnblockCustomerAsync(int id)
         {
+            await LoadAsync();
+
+            if (Customers.IsNullOrEmpty())
+            {
+                return NotFound("Unable to load entities");
+            }
+
             try
             {
                 var customer = Customers.First(c => c.Id == id);
@@ -108,6 +130,13 @@ namespace DeliveryWebApp.WebUI.Pages.AdminPages
 
         public async Task<IActionResult> OnPostDeleteCustomerAsync(int id)
         {
+            await LoadAsync();
+
+            if (Customers.IsNullOrEmpty())
+            {
+                return NotFound("Unable to load entities");
+            }
+
             try
             {
                 var customer = Customers.First(c => c.Id == id);
@@ -134,6 +163,13 @@ namespace DeliveryWebApp.WebUI.Pages.AdminPages
 
         public async Task<IActionResult> OnPostBlockRiderAsync(int id)
         {
+            await LoadAsync();
+
+            if (Customers.IsNullOrEmpty())
+            {
+                return NotFound("Unable to load entities");
+            }
+
             try
             {
                 var rider = Riders.First(r => r.Id == id);
@@ -155,6 +191,13 @@ namespace DeliveryWebApp.WebUI.Pages.AdminPages
 
         public async Task<IActionResult> OnPostUnblockRiderAsync(int id)
         {
+            await LoadAsync();
+
+            if (Customers.IsNullOrEmpty())
+            {
+                return NotFound("Unable to load entities");
+            }
+
             try
             {
                 var rider = Riders.First(c => c.Id == id);
@@ -177,6 +220,13 @@ namespace DeliveryWebApp.WebUI.Pages.AdminPages
 
         public async Task<IActionResult> OnPostDeleteRiderAsync(int id)
         {
+            await LoadAsync();
+
+            if (Customers.IsNullOrEmpty())
+            {
+                return NotFound("Unable to load entities");
+            }
+
             try
             {
                 var rider = Riders.First(r => r.Id == id);
@@ -204,6 +254,13 @@ namespace DeliveryWebApp.WebUI.Pages.AdminPages
 
         public async Task<IActionResult> OnPostBlockRestaurateurAsync(int id)
         {
+            await LoadAsync();
+
+            if (Customers.IsNullOrEmpty())
+            {
+                return NotFound("Unable to load entities");
+            }
+
             try
             {
                 var restaurateur = Restaurateurs.First(r => r.Id == id);
@@ -225,6 +282,13 @@ namespace DeliveryWebApp.WebUI.Pages.AdminPages
 
         public async Task<IActionResult> OnPostUnblockRestaurateurAsync(int id)
         {
+            await LoadAsync();
+
+            if (Customers.IsNullOrEmpty())
+            {
+                return NotFound("Unable to load entities");
+            }
+
             try
             {
                 var restaurateur = Restaurateurs.First(c => c.Id == id);
@@ -247,6 +311,13 @@ namespace DeliveryWebApp.WebUI.Pages.AdminPages
 
         public async Task<IActionResult> OnPostDeleteRestaurateurAsync(int id)
         {
+            await LoadAsync();
+
+            if (Customers.IsNullOrEmpty())
+            {
+                return NotFound("Unable to load entities");
+            }
+
             try
             {
                 var restaurateur = Restaurateurs.First(r => r.Id == id);
