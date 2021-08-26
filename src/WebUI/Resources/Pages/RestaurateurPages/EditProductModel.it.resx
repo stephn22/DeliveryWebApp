@@ -132,6 +132,9 @@
   <data name="Detail of Product" xml:space="preserve">
     <value>Dettaglio prodotto</value>
   </data>
+  <data name="Drink" xml:space="preserve">
+    <value>Bevanda</value>
+  </data>
   <data name="Edit" xml:space="preserve">
     <value>Modifica</value>
   </data>

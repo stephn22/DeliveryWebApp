@@ -132,6 +132,9 @@
   <data name="Choose an image for the new product" xml:space="preserve">
     <value>Scegli un'immagine per il nuovo prodotto</value>
   </data>
+  <data name="Drink" xml:space="preserve">
+    <value>Bevanda</value>
+  </data>
   <data name="Fish" xml:space="preserve">
     <value>Pesce</value>
   </data>

@@ -68,6 +68,7 @@ namespace DeliveryWebApp.WebUI.Pages.RestaurateurPages
             new SelectListItem { Text = ProductCategory.Hamburger, Value = ProductCategory.Hamburger },
             new SelectListItem { Text = ProductCategory.Pizza, Value = ProductCategory.Pizza },
             new SelectListItem { Text = ProductCategory.Sushi, Value = ProductCategory.Sushi },
+            new SelectListItem { Text = _localizer[ProductCategory.Drink], Value = ProductCategory.Drink },
             new SelectListItem { Text = ProductCategory.Dessert, Value = ProductCategory.Dessert },
             new SelectListItem { Text = ProductCategory.Vegan, Value = ProductCategory.Vegan },
             new SelectListItem { Text = _localizer[ProductCategory.Chicken], Value =  ProductCategory.Chicken},

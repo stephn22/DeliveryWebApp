@@ -34,6 +34,8 @@ using DeliveryWebApp.Domain.Entities;
 using System;
 using System.Linq;
 using System.Reflection;
+using DeliveryWebApp.Application.Reviews.Commands.CreateReview;
+using DeliveryWebApp.Application.Reviews.Commands.DeleteReview;
 
 namespace DeliveryWebApp.Application.Common.Mappings
 {
@@ -83,6 +85,9 @@ namespace DeliveryWebApp.Application.Common.Mappings
             CreateMap<Rider, CreateRiderCommand>().ReverseMap();
             CreateMap<Rider, DeleteRiderCommand>().ReverseMap();
             CreateMap<Rider, UpdateRiderCommand>().ReverseMap();
+
+            CreateMap<Review, CreateReviewCommand>().ReverseMap();
+            CreateMap<Review, DeleteReviewCommand>().ReverseMap();
         }
 
         private void ApplyMappingsFromAssembly(Assembly assembly)

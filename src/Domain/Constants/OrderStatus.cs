@@ -18,7 +18,7 @@
         /// </summary>
         public const string Taken = "Taken";
         public const string Failed = "Failed";
-        public const string Returned = "Returned";
         public const string Delivered = "Delivered";
+        public const string Returned = "Returned";
     }
 }
