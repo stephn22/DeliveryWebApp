@@ -14,8 +14,7 @@ This web application was developed following the principles of [Clean Architectu
 * ASP.NET Core 5
 * [Bootstrap 5](https://getbootstrap.com/)
 * [qrcodejs](https://github.com/davidshimjs/qrcodejs) (2FA QR Code generation)
-* Entity Framework Core (Microsoft SQL Server)
-* ASP.NET Core Identity (Microsoft SQL Server)
+* [Entity Framework Core](https://docs.microsoft.com/en-us/ef/core/) (Microsoft SQL Server)
 * [AutoMapper](https://automapper.org/)
 * [MediatR](https://github.com/jbogard/MediatR)
 * [FluentValidation](https://fluentvalidation.net/)
