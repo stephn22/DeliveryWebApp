@@ -70,6 +70,7 @@ namespace DeliveryWebApp.WebUI.Pages.CustomerPages
 
             [Required]
             [DataType(DataType.Date)]
+            [DisplayFormat(DataFormatString ="{0:MM/yyyy}",ApplyFormatInEditMode =true)]
             public DateTime ExpirationDate { get; set; }
 
             [Required]
