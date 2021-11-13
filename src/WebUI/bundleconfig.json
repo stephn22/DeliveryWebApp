@@ -46,5 +46,11 @@
     "inputFiles": [
       "wwwroot/css/directions.css"
     ]
+  },
+  {
+    "outputFileName": "wwwroot/css/site.min.css",
+    "inputFiles": [
+      "wwwroot/css/site.css"
+    ]
   }
 ]

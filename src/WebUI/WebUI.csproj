@@ -53,6 +53,7 @@
 
   <ItemGroup>
     <Folder Include="Log\" />
+    <Folder Include="Properties\" />
   </ItemGroup>
 
   <ItemGroup>

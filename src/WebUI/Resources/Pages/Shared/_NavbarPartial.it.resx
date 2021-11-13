@@ -171,6 +171,9 @@
   <data name="Previous" xml:space="preserve">
     <value>Precedente</value>
   </data>
+  <data name="Products" xml:space="preserve">
+    <value>Prodotti</value>
+  </data>
   <data name="Register" xml:space="preserve">
     <value>Registrati</value>
   </data>
