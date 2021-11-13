@@ -40,13 +40,6 @@ namespace DeliveryWebApp.Application.IntegrationTests.Addresses.Commands
 
             var addressCommand = new CreateAddressCommand
             {
-                AddressLine1 = "Via Verdi",
-                AddressLine2 = "",
-                City = "Milan",
-                Country = "Italy",
-                PostalCode = "28100",
-                StateProvince = "MI",
-                Number = "2",
                 Latitude = 48.5472M,
                 Longitude = 72.1804M,
                 CustomerId = customer.Id
@@ -56,12 +49,7 @@ namespace DeliveryWebApp.Application.IntegrationTests.Addresses.Commands
 
             address.Should().NotBeNull();
             address.Id.Should().BeGreaterThan(0);
-            address.PlaceName.Should()
-                .Be(
-                    $"{addressCommand.AddressLine1}, {addressCommand.AddressLine2}, " +
-                    $"{addressCommand.Number}, {addressCommand.City}, " +
-                    $"{addressCommand.StateProvince}, {addressCommand.PostalCode}, " +
-                    $"{addressCommand.Country}");
+            // TODO: placename
             address.Longitude.Should().Be(addressCommand.Longitude);
             address.CustomerId.Should().Be(customer.Id);
         }
@@ -90,13 +78,6 @@ namespace DeliveryWebApp.Application.IntegrationTests.Addresses.Commands
 
             var addressCommand = new CreateAddressCommand
             {
-                AddressLine1 = "Via Verdi",
-                AddressLine2 = "",
-                City = "Milan",
-                Country = "Italy",
-                PostalCode = "28100",
-                StateProvince = "MI",
-                Number = "2",
                 Latitude = 48.5472M,
                 Longitude = 72.1804M,
                 RestaurateurId = restaurateur.Id
@@ -119,12 +100,6 @@ namespace DeliveryWebApp.Application.IntegrationTests.Addresses.Commands
             address.Id.Should().NotBe(0);
             address.Id.Should().Be(restaurateurUpdate.RestaurantAddressId);
             address.RestaurateurId.Should().Be(restaurateur.Id);
-            address.PlaceName.Should()
-                .Be(
-                    $"{addressCommand.AddressLine1}, {addressCommand.AddressLine2}, " +
-                    $"{addressCommand.Number}, {addressCommand.City}, " +
-                    $"{addressCommand.StateProvince}, {addressCommand.PostalCode}, " +
-                    $"{addressCommand.Country}");
             address.Latitude.Should().Be(addressCommand.Latitude);
             address.Longitude.Should().Be(addressCommand.Longitude);
         }

@@ -59,13 +59,6 @@ namespace DeliveryWebApp.Application.IntegrationTests.OrderItems.Commands
 
             var addressCommand = new CreateAddressCommand
             {
-                AddressLine1 = "Via Verdi",
-                AddressLine2 = "",
-                City = "Milan",
-                Country = "Italy",
-                PostalCode = "28100",
-                StateProvince = "MI",
-                Number = "2",
                 Latitude = 48.5472M,
                 Longitude = 72.1804M,
                 CustomerId = customer1.Id
