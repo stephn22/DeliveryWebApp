@@ -13,7 +13,8 @@ using System.Threading.Tasks;
 
 namespace DeliveryWebApp.WebUI.Controllers
 {
-    [Authorize]
+    [Authorize(Policy = PolicyName.IsAuthenticated)]
+    [Authorize(Policy = PolicyName.IsCustomer)]
     [Route("api/[controller]")]
     [ApiController]
     public class AddressesController : ControllerBase

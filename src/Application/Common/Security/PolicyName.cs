@@ -3,6 +3,11 @@
     public class PolicyName
     {
         /// <summary>
+        /// user is authenticated
+        /// </summary>
+        public const string IsAuthenticated = "IsAuthenticated";
+
+        /// <summary>
         /// user that manages restaurant and product catalog
         /// </summary>
         public const string IsRestaurateur = "IsRestaurateur";

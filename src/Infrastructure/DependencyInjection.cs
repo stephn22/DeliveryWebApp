@@ -30,7 +30,7 @@ namespace DeliveryWebApp.Infrastructure
 
             services.AddScoped<IDomainEventService, DomainEventService>();
 
-            services.AddResponseCaching();
+            //services.AddResponseCaching();
 
             services.AddSession(options =>
             {
@@ -78,12 +78,14 @@ namespace DeliveryWebApp.Infrastructure
 
             services.AddAuthorization(options =>
             {
+                options.AddPolicy(PolicyName.IsAuthenticated, policy => policy.AddRequirements(new IsAuthenticated()));
                 options.AddPolicy(PolicyName.IsRestaurateur, policy => policy.AddRequirements(new IsRestaurateur()));
                 options.AddPolicy(PolicyName.IsRider, policy => policy.AddRequirements(new IsRider()));
                 options.AddPolicy(PolicyName.IsDefault, policy => policy.AddRequirements(new IsDefault()));
-                options.AddPolicy(PolicyName.IsCustomer, policy => policy.AddRequirements(new IsCustomer())); // user that is a Restaurateur or Rider or Default user but not Admin
+                options.AddPolicy(PolicyName.IsCustomer, policy => policy.AddRequirements(new IsCustomer()));
             });
 
+            services.AddSingleton<IAuthorizationHandler, IsAuthenticatedAuthorizationHandler>();
             services.AddSingleton<IAuthorizationHandler, IsRestaurateurAuthorizationHandler>();
             services.AddSingleton<IAuthorizationHandler, IsRiderAuthorizationHandler>();
             services.AddSingleton<IAuthorizationHandler, IsDefaultAuthorizationHandler>();
