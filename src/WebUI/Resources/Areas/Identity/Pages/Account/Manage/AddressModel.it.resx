@@ -117,38 +117,17 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
-  <data name="Add your main delivery address" xml:space="preserve">
-    <value>Aggiungi il tuo indirizzo di consegna principale</value>
+  <data name="Add your delivery address" xml:space="preserve">
+    <value>Aggiungi un indirizzo di consegna</value>
   </data>
-  <data name="Add your secondary address" xml:space="preserve">
-    <value>Aggiungi l'indirizzo secondario</value>
+  <data name="Delete address" xml:space="preserve">
+    <value>Elimina indirizzo</value>
   </data>
-  <data name="Address Line 1" xml:space="preserve">
-    <value>Linea Indirizzo 1</value>
-  </data>
-  <data name="Address Line 2" xml:space="preserve">
-    <value>Linea Indirizzo 2</value>
-  </data>
-  <data name="Building n°... (optional)" xml:space="preserve">
-    <value>N° edificio (opzionale)</value>
-  </data>
-  <data name="City" xml:space="preserve">
-    <value>Città</value>
-  </data>
-  <data name="Country" xml:space="preserve">
-    <value>Nazione</value>
-  </data>
-  <data name="Edit" xml:space="preserve">
-    <value>Modifica</value>
-  </data>
-  <data name="Insert Manually" xml:space="preserve">
-    <value>Inserisci Manualmente</value>
+  <data name="First Address" xml:space="preserve">
+    <value>Indirizzo 1</value>
   </data>
   <data name="Main Address" xml:space="preserve">
     <value>Indirizzo Principale</value>
-  </data>
-  <data name="Postal Code" xml:space="preserve">
-    <value>CAP</value>
   </data>
   <data name="Primary Address" xml:space="preserve">
     <value>Indirizzo Principale</value>
@@ -156,14 +135,11 @@
   <data name="Save" xml:space="preserve">
     <value>Salva</value>
   </data>
+  <data name="Second Address" xml:space="preserve">
+    <value>Indirizzo 2</value>
+  </data>
   <data name="Secondary Address" xml:space="preserve">
     <value>Indirizzo Secondario</value>
-  </data>
-  <data name="State/Province" xml:space="preserve">
-    <value>Stato/Provincia</value>
-  </data>
-  <data name="Street..." xml:space="preserve">
-    <value>Via...</value>
   </data>
   <data name="Your address has been deleted" xml:space="preserve">
     <value>Il tuo indirizzo è stato eliminato</value>

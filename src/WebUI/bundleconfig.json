@@ -52,5 +52,11 @@
     "inputFiles": [
       "wwwroot/css/site.css"
     ]
+  },
+  {
+    "outputFileName": "wwwroot/js/address.min.js",
+    "inputFiles": [
+      "wwwroot/js/address.js"
+    ]
   }
 ]

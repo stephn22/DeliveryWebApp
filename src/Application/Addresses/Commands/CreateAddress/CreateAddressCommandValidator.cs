@@ -6,7 +6,7 @@ namespace DeliveryWebApp.Application.Addresses.Commands.CreateAddress
     {
         public CreateAddressCommandValidator()
         {
-            RuleFor(a => a.PlaceName).NotEmpty().MaximumLength(120);
+            RuleFor(a => a.PlaceName).NotEmpty();
 
             RuleFor(a => a.Latitude).NotEmpty();
 

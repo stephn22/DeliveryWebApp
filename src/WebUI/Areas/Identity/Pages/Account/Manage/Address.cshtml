@@ -38,15 +38,15 @@
 
     @if (Model.Addresses.IsNullOrEmpty())
     {
-        <p>@localizer["Add your main delivery address"]</p>
+        <p>@localizer["Add your delivery address"]</p>
 
-        <div class="form-group col-md-7">
-            <label class="form-label">@localizer["Main Address"]</label>
+        <div class="form-group col-md-7" id="first-address-form">
+            <label class="form-label">@localizer["First Address"]</label>
             <form autocomplete="off">
                 <div class="input-group col-7">
-                    <input class="form-control" id="input-first-address" placeholder="Your Primary Address" value="" data-lng="" data-lat="" />
+                    <input class="form-control shadow" id="input-first-address" placeholder="Your Address" value="" data-lng="" data-lat="" />
                     <div class="input-group-append">
-                        <button type="button" class="btn btn-outline-secondary" data-bs-toggle="tooltip" data-bs-placement="right" title="Automatically detect your position" id="location-first-address-btn">
+                        <button type="button" class="btn btn-outline-secondary shadow" data-bs-toggle="tooltip" data-bs-placement="right" title="Automatically detect your position" id="location-first-address-btn">
                             <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-geo-alt" viewBox="0 0 16 16">
                                 <path d="M12.166 8.94c-.524 1.062-1.234 2.12-1.96 3.07A31.493 31.493 0 0 1 8 14.58a31.481 31.481 0 0 1-2.206-2.57c-.726-.95-1.436-2.008-1.96-3.07C3.304 7.867 3 6.862 3 6a5 5 0 0 1 10 0c0 .862-.305 1.867-.834 2.94zM8 16s6-5.686 6-10A6 6 0 0 0 2 6c0 4.314 6 10 6 10z" />
                                 <path d="M8 8a2 2 0 1 1 0-4 2 2 0 0 1 0 4zm0 1a3 3 0 1 0 0-6 3 3 0 0 0 0 6z" />
@@ -57,50 +57,48 @@
             </form>
         </div>
 
-        <button id="save-first-address-btn" class="btn btn-primary" type="button">@localizer["Save"]</button>
+        <button id="save-first-address-btn" class="btn btn-primary shadow" type="button">@localizer["Save"]</button>
     }
     else
     {
-        <form method="post" asp-page-handler="DeleteAddress" asp-route-id="@Model.Addresses[0].Id">
-            <div class="form-group col-md-7">
-                <label class="form-label">@localizer["Primary Address"]</label>
-                <div class="input-group col-7">
-                    <input hidden id="address0-id" value="@Model.Addresses[0].Id" />
-                    <input class="form-control" id="input-address-0" value="@Model.Addresses[0].PlaceName" disabled />
-                    <div class="input-group-append">
-                        <button class="btn btn-outline-secondary" type="button" id="location-btn-addr-0">
-                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-geo-alt" viewBox="0 0 16 16">
-                                <path d="M12.166 8.94c-.524 1.062-1.234 2.12-1.96 3.07A31.493 31.493 0 0 1 8 14.58a31.481 31.481 0 0 1-2.206-2.57c-.726-.95-1.436-2.008-1.96-3.07C3.304 7.867 3 6.862 3 6a5 5 0 0 1 10 0c0 .862-.305 1.867-.834 2.94zM8 16s6-5.686 6-10A6 6 0 0 0 2 6c0 4.314 6 10 6 10z" />
-                                <path d="M8 8a2 2 0 1 1 0-4 2 2 0 0 1 0 4zm0 1a3 3 0 1 0 0-6 3 3 0 0 0 0 6z" />
-                            </svg>
-                        </button>
-                    </div>
-                    <div class="input-group-append">
-                        <button class="btn btn-outline-secondary" type="submit" id="delete-btn-addr-0" value="DeleteAddress">
-                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-trash" viewBox="0 0 16 16">
-                                <path d="M5.5 5.5A.5.5 0 0 1 6 6v6a.5.5 0 0 1-1 0V6a.5.5 0 0 1 .5-.5zm2.5 0a.5.5 0 0 1 .5.5v6a.5.5 0 0 1-1 0V6a.5.5 0 0 1 .5-.5zm3 .5a.5.5 0 0 0-1 0v6a.5.5 0 0 0 1 0V6z" />
-                                <path fill-rule="evenodd" d="M14.5 3a1 1 0 0 1-1 1H13v9a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V4h-.5a1 1 0 0 1-1-1V2a1 1 0 0 1 1-1H6a1 1 0 0 1 1-1h2a1 1 0 0 1 1 1h3.5a1 1 0 0 1 1 1v1zM4.118 4 4 4.059V13a1 1 0 0 0 1 1h6a1 1 0 0 0 1-1V4.059L11.882 4H4.118zM2.5 3V2h11v1h-11z" />
-                            </svg>
-                        </button>
-                    </div>
+        <div class="form-group col-md-9">
+            <label class="form-label">@localizer["First Address"]</label>
+            <div class="input-group col-9">
+                <input hidden id="address0-id" value="@Model.Addresses[0].Id" />
+                <input class="form-control shadow" id="input-first-address" value="@Model.Addresses[0].PlaceName" disabled data-id="@Model.Addresses[0].Id"/>
+                <div class="input-group-append">
+                    <button type="button" class="btn btn-outline-secondary shadow" data-bs-toggle="tooltip" data-bs-placement="right" title="Automatically detect your position" id="location-first-address-btn" hidden>
+                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-geo-alt" viewBox="0 0 16 16">
+                            <path d="M12.166 8.94c-.524 1.062-1.234 2.12-1.96 3.07A31.493 31.493 0 0 1 8 14.58a31.481 31.481 0 0 1-2.206-2.57c-.726-.95-1.436-2.008-1.96-3.07C3.304 7.867 3 6.862 3 6a5 5 0 0 1 10 0c0 .862-.305 1.867-.834 2.94zM8 16s6-5.686 6-10A6 6 0 0 0 2 6c0 4.314 6 10 6 10z" />
+                            <path d="M8 8a2 2 0 1 1 0-4 2 2 0 0 1 0 4zm0 1a3 3 0 1 0 0-6 3 3 0 0 0 0 6z" />
+                        </svg>
+                    </button>
+                    <button class="btn btn-outline-danger shadow" type="submit" id="delete-first-address-btn" title="@localizer["Delete address"]">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-trash" viewBox="0 0 16 16">
+                            <path d="M5.5 5.5A.5.5 0 0 1 6 6v6a.5.5 0 0 1-1 0V6a.5.5 0 0 1 .5-.5zm2.5 0a.5.5 0 0 1 .5.5v6a.5.5 0 0 1-1 0V6a.5.5 0 0 1 .5-.5zm3 .5a.5.5 0 0 0-1 0v6a.5.5 0 0 0 1 0V6z"/>
+                            <path fill-rule="evenodd" d="M14.5 3a1 1 0 0 1-1 1H13v9a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V4h-.5a1 1 0 0 1-1-1V2a1 1 0 0 1 1-1H6a1 1 0 0 1 1-1h2a1 1 0 0 1 1 1h3.5a1 1 0 0 1 1 1v1zM4.118 4 4 4.059V13a1 1 0 0 0 1 1h6a1 1 0 0 0 1-1V4.059L11.882 4H4.118zM2.5 3V2h11v1h-11z"/>
+                        </svg>
+                    </button>
                 </div>
             </div>
-        </form>
+        </div>
+
+        <button id="save-first-address-btn" class="btn btn-primary shadow" type="button" hidden>@localizer["Save"]</button>
     }
 
     <hr />
 
     @if (Model.Addresses.IsNullOrEmpty() || Model.Addresses.Count == 1)
     {
-        <p>@localizer["Add your secondary address"]</p>
+        <p>@localizer["Add your delivery address"]</p>
 
-        <div class="form-group col-md-7">
-            <label class="form-label">@localizer["Secondary Address"]</label>
+        <div class="form-group col-md-9" id="second-address-form">
+            <label class="form-label">@localizer["Second Address"]</label>
             <form autocomplete="off">
-                <div class="input-group col-7">
-                    <input class="form-control" id="input-second-address" placeholder="Your Secondary Address" value="" data-lng="" data-lat="" />
+                <div class="input-group col-9">
+                    <input class="form-control shadow" id="input-second-address" placeholder="Your Address" value="" data-lng="" data-lat="" />
                     <div class="input-group-append">
-                        <button class="btn btn-outline-secondary" type="button" data-bs-toggle="tooltip" data-bs-placement="right" title="Automatically detect your position" id="location-second-address-btn">
+                        <button class="btn btn-outline-secondary shadow" type="button" data-bs-toggle="tooltip" data-bs-placement="right" title="Automatically detect your position" id="location-second-address-btn">
                             <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-geo-alt" viewBox="0 0 16 16">
                                 <path d="M12.166 8.94c-.524 1.062-1.234 2.12-1.96 3.07A31.493 31.493 0 0 1 8 14.58a31.481 31.481 0 0 1-2.206-2.57c-.726-.95-1.436-2.008-1.96-3.07C3.304 7.867 3 6.862 3 6a5 5 0 0 1 10 0c0 .862-.305 1.867-.834 2.94zM8 16s6-5.686 6-10A6 6 0 0 0 2 6c0 4.314 6 10 6 10z" />
                                 <path d="M8 8a2 2 0 1 1 0-4 2 2 0 0 1 0 4zm0 1a3 3 0 1 0 0-6 3 3 0 0 0 0 6z" />
@@ -111,35 +109,33 @@
             </form>
         </div>
 
-        <button id="save-second-address-btn" class="btn btn-primary" type="button">@localizer["Save"]</button>
+        <button id="save-second-address-btn" class="btn btn-primary shadow" type="button">@localizer["Save"]</button>
     }
     else
     {
-        <form method="post" asp-page-handler="DeleteAddress" asp-route-id="@Model.Addresses[1].Id">
-            <div class="form-group col-md-7">
-                <label class="form-label">@localizer["Secondary Address"]</label>
-                <div class="input-group col-7">
-                    <input hidden id="address1-id" value="@Model.Addresses[1].Id" />
-                    <input class="form-control" id="input-address-1" value="@Model.Addresses[1].PlaceName" disabled />
-                    <div class="input-group-append">
-                        <button class="btn btn-outline-secondary" type="button" id="location-btn-addr-1">
-                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-geo-alt" viewBox="0 0 16 16">
-                                <path d="M12.166 8.94c-.524 1.062-1.234 2.12-1.96 3.07A31.493 31.493 0 0 1 8 14.58a31.481 31.481 0 0 1-2.206-2.57c-.726-.95-1.436-2.008-1.96-3.07C3.304 7.867 3 6.862 3 6a5 5 0 0 1 10 0c0 .862-.305 1.867-.834 2.94zM8 16s6-5.686 6-10A6 6 0 0 0 2 6c0 4.314 6 10 6 10z" />
-                                <path d="M8 8a2 2 0 1 1 0-4 2 2 0 0 1 0 4zm0 1a3 3 0 1 0 0-6 3 3 0 0 0 0 6z" />
-                            </svg>
-                        </button>
-                    </div>
-                    <div class="input-group-append">
-                        <button class="btn btn-outline-secondary" type="submit" id="delete-btn-addr-1">
-                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-trash" viewBox="0 0 16 16">
-                                <path d="M5.5 5.5A.5.5 0 0 1 6 6v6a.5.5 0 0 1-1 0V6a.5.5 0 0 1 .5-.5zm2.5 0a.5.5 0 0 1 .5.5v6a.5.5 0 0 1-1 0V6a.5.5 0 0 1 .5-.5zm3 .5a.5.5 0 0 0-1 0v6a.5.5 0 0 0 1 0V6z" />
-                                <path fill-rule="evenodd" d="M14.5 3a1 1 0 0 1-1 1H13v9a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V4h-.5a1 1 0 0 1-1-1V2a1 1 0 0 1 1-1H6a1 1 0 0 1 1-1h2a1 1 0 0 1 1 1h3.5a1 1 0 0 1 1 1v1zM4.118 4 4 4.059V13a1 1 0 0 0 1 1h6a1 1 0 0 0 1-1V4.059L11.882 4H4.118zM2.5 3V2h11v1h-11z" />
-                            </svg>
-                        </button>
-                    </div>
+        <div class="form-group col-md-9">
+            <label class="form-label">@localizer["Second Address"]</label>
+            <div class="input-group col-9">
+                <input hidden id="address1-id" value="@Model.Addresses[1].Id" />
+                <input class="form-control shadow" id="input-second-address" value="@Model.Addresses[1].PlaceName" disabled data-id="@Model.Addresses[1].Id" />
+                <div class="input-group-append">
+                    <button class="btn btn-outline-secondary shadow" type="button" data-bs-toggle="tooltip" data-bs-placement="right" title="Automatically detect your position" id="location-second-address-btn" hidden>
+                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-geo-alt" viewBox="0 0 16 16">
+                            <path d="M12.166 8.94c-.524 1.062-1.234 2.12-1.96 3.07A31.493 31.493 0 0 1 8 14.58a31.481 31.481 0 0 1-2.206-2.57c-.726-.95-1.436-2.008-1.96-3.07C3.304 7.867 3 6.862 3 6a5 5 0 0 1 10 0c0 .862-.305 1.867-.834 2.94zM8 16s6-5.686 6-10A6 6 0 0 0 2 6c0 4.314 6 10 6 10z" />
+                            <path d="M8 8a2 2 0 1 1 0-4 2 2 0 0 1 0 4zm0 1a3 3 0 1 0 0-6 3 3 0 0 0 0 6z" />
+                        </svg>
+                    </button>
+                    <button class="btn btn-outline-danger shadow" type="submit" id="delete-second-address-btn" title="@localizer["Delete address"]">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-trash" viewBox="0 0 16 16">
+                            <path d="M5.5 5.5A.5.5 0 0 1 6 6v6a.5.5 0 0 1-1 0V6a.5.5 0 0 1 .5-.5zm2.5 0a.5.5 0 0 1 .5.5v6a.5.5 0 0 1-1 0V6a.5.5 0 0 1 .5-.5zm3 .5a.5.5 0 0 0-1 0v6a.5.5 0 0 0 1 0V6z"/>
+                            <path fill-rule="evenodd" d="M14.5 3a1 1 0 0 1-1 1H13v9a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V4h-.5a1 1 0 0 1-1-1V2a1 1 0 0 1 1-1H6a1 1 0 0 1 1-1h2a1 1 0 0 1 1 1h3.5a1 1 0 0 1 1 1v1zM4.118 4 4 4.059V13a1 1 0 0 0 1 1h6a1 1 0 0 0 1-1V4.059L11.882 4H4.118zM2.5 3V2h11v1h-11z"/>
+                        </svg>
+                    </button>
                 </div>
             </div>
-        </form>
+        </div>
+
+        <button id="save-second-address-btn" class="btn btn-primary shadow" type="button" hidden>@localizer["Save"]</button>
     }
 </div>
 
