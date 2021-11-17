@@ -77,26 +77,6 @@ const deleteFirstAddressBtn = document.getElementById("delete-first-address-btn"
  */
 const deleteSecondAddressBtn = document.getElementById("delete-second-address-btn");
 
-// /**
-//  * @type {HTMLHeadingElement}
-//  */
-// const firstAddressModalTitle = document.getElementById("first-address-modal-title");
-
-// /**
-//  * @type {HTMLHeadingElement}
-//  */
-// const secondAddressModalTitle = document.getElementById("second-address-modal-title");
-
-// /**
-//  * @type {HTMLParagraphElement}
-//  */
-// const firstAddress = document.getElementById("first-address");
-
-// /**
-//  * @type {HTMLParagraphElement}
-//  */
-// const secondAddress = document.getElementById("second-address");
-
 /********************** EVENT LISTENERS **********************/
 
 locationFirstBtn.addEventListener("click", () => {

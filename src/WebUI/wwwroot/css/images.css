@@ -1,16 +1,4 @@
-﻿#img-uploaded {
-    height: 100%;
-    width: 100%;
-    object-fit: cover;
-}
-
-.img-dashboard {
-    height: 100%;
-    width: 100%;
-    object-fit: cover;
-}
-
-.edit-img-btn {
+﻿.edit-img-btn {
     display: none;
 }
 
@@ -23,10 +11,12 @@
 }
 
 .square {
-    position: relative;
-    height: 200px;
-    width: 200px;
+    margin: 1rem;
+    position: center;
+    height: 190px;
+    width: 190px;
     object-fit: cover;
+    border-radius: 20px;
 }
 
 .square .edit-img-btn {

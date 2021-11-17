@@ -1,4 +1,4 @@
-using DeliveryWebApp.Application.Common.Exceptions;
+using DeliveryWebApp.Application.Addresses.Commands.CreateAddress;
 using DeliveryWebApp.Application.Common.Security;
 using DeliveryWebApp.Application.Restaurateurs.Commands.UpdateRestaurateur;
 using DeliveryWebApp.Application.Restaurateurs.Extensions;
@@ -6,7 +6,6 @@ using DeliveryWebApp.Domain.Constants;
 using DeliveryWebApp.Domain.Entities;
 using DeliveryWebApp.Infrastructure.Identity;
 using DeliveryWebApp.Infrastructure.Persistence;
-using DeliveryWebApp.Infrastructure.Services.Utilities;
 using MediatR;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
@@ -51,12 +50,10 @@ namespace DeliveryWebApp.WebUI.Pages.RestaurateurPages
 
         [TempData] public string StatusMessage { get; set; }
 
-        public SelectList Countries => new(Utilities.CountryList(), "Key", "Value");
-
         [BindProperty]
         public IEnumerable<SelectListItem> Categories => new[]
         {
-            new SelectListItem { Text = _localizer["Select a category"], Value = "", Selected = true },
+            new SelectListItem { Text = _localizer["Select a category"], Value = "---", Selected = true },
             new SelectListItem { Text = RestaurantCategory.FastFood, Value = RestaurantCategory.FastFood },
             new SelectListItem { Text = RestaurantCategory.Sushi, Value = RestaurantCategory.Sushi },
             new SelectListItem { Text = RestaurantCategory.Indian, Value = RestaurantCategory.Indian },
@@ -76,40 +73,12 @@ namespace DeliveryWebApp.WebUI.Pages.RestaurateurPages
             [StringLength(120, MinimumLength = 3)]
             public string Name { get; set; }
 
+            [Required]
             [DataType(DataType.Text)] public string Category { get; set; }
 
-            /******************* ADDRESS *****************/
-
             [Required]
             [DataType(DataType.Text)]
-            [Display(Name = "Address Line 1")]
-            public string AddressLine1 { get; set; }
-
-            [DataType(DataType.Text)]
-            [Display(Name = "Address Line 2")]
-            public string AddressLine2 { get; set; }
-
-            [Required]
-            [DataType(DataType.Text)]
-            [Display(Name = "N°")]
-            public string Number { get; set; }
-
-            [Required]
-            [DataType(DataType.Text)]
-            [Display(Name = "City")]
-            public string City { get; set; }
-
-            [Required]
-            [DataType(DataType.PostalCode)]
-            [Display(Name = "Postal Code")]
-            public string PostalCode { get; set; }
-
-            [Required]
-            [DataType((DataType.Text))]
-            [Display(Name = "State/Province")]
-            public string StateProvince { get; set; }
-
-            [Required] [DataType(DataType.Text)] public string Country { get; set; }
+            public string PlaceName { get; set; }
 
             public decimal Longitude { get; set; }
             public decimal Latitude { get; set; }
@@ -152,78 +121,9 @@ namespace DeliveryWebApp.WebUI.Pages.RestaurateurPages
             }
         }
 
-        /// <summary>
-        /// Restaurant has changed name
-        /// </summary>
-        /// <param name="id">restaurant id</param>
-        /// <returns></returns>
-        public async Task<IActionResult> OnPostNewNameAsync(int id)
+        // FIXME: not triggered
+        private async Task<IActionResult> OnPostAsync()
         {
-            var user = await _userManager.GetUserAsync(User);
-
-            if (user == null)
-            {
-                return NotFound($"Unable to load user with ID '{_userManager.GetUserId(User)}'.");
-            }
-
-            await LoadAsync(user);
-
-            try
-            {
-                await _mediator.Send(new UpdateRestaurateurCommand
-                {
-                    Id = id,
-                    RestaurantName = Input.Name
-                });
-            }
-            catch (NotFoundException e)
-            {
-                _logger.LogError(e.Message);
-            }
-
-            StatusMessage =
-                "Your restaurant name has been updated. It may take a few moments to update across the site.";
-
-            return Page();
-        }
-
-        public async Task<IActionResult> OnPostNewCategoryAsync(int id)
-        {
-            var user = await _userManager.GetUserAsync(User);
-
-            if (user == null)
-            {
-                return NotFound();
-            }
-
-            await LoadAsync(user);
-
-            try
-            {
-                await _mediator.Send(new UpdateRestaurateurCommand
-                {
-                    Id = id,
-                    RestaurantCategory = Input.Category
-                });
-            }
-            catch (NotFoundException e)
-            {
-                _logger.LogError(e.Message);
-            }
-
-            StatusMessage =
-                "Your restaurant category has been updated. It may take a few moments to update across the site.";
-
-            return Page();
-        }
-
-        public async Task<IActionResult> OnPostUploadNewImageAsync()
-        {
-            if (Input?.Logo == null)
-            {
-                return Page();
-            }
-
             var user = await _userManager.GetUserAsync(User);
 
             if (user == null)
@@ -242,61 +142,29 @@ namespace DeliveryWebApp.WebUI.Pages.RestaurateurPages
                 bytes = memoryStream.ToArray();
             }
 
-            await _mediator.Send(new UpdateRestaurateurCommand
+            var address = await _mediator.Send(new CreateAddressCommand
             {
-                Id = Restaurateur.Id,
-                Logo = bytes
+                RestaurateurId = Restaurateur.Id,
+                Latitude = Input.Latitude,
+                Longitude = Input.Longitude,
+                PlaceName = Input.PlaceName
             });
 
-            StatusMessage =
-                "Your restaurant picture has been updated. It may take a few moments to update across the site.";
-            return Page();
-        }
+            _logger.LogInformation($"Created address with id: {address.Id}");
 
-        public async Task<IActionResult> OnPostAsync()
-        {
-            var user = await _userManager.GetUserAsync(User);
-
-            if (user == null)
+            var id = await _mediator.Send(new UpdateRestaurateurCommand
             {
-                return NotFound();
-            }
+                Id = Restaurateur.Id,
+                RestaurantAddress = address,
+                Logo = bytes,
+                RestaurantCategory = Input.Category,
+                RestaurantName = Input.Name
+            });
 
-            await LoadAsync(user);
+            _logger.LogInformation($"Updated restaurateur with id: {id}");
+            StatusMessage = _localizer["Your restaurant has been created successfully"];
 
-            byte[] bytes;
-
-            await using var fileStream = Input.Logo.OpenReadStream();
-            await using (var memoryStream = new MemoryStream())
-            {
-                await fileStream.CopyToAsync(memoryStream);
-                bytes = memoryStream.ToArray();
-            }
-
-            try
-            {
-                await LoadAsync(user);
-                var id = await _mediator.Send(new UpdateRestaurateurCommand
-                {
-                    Id = Restaurateur.Id,
-                    RestaurantAddress = RestaurantAddress,
-                    RestaurantCategory = Input.Category,
-                    Logo = bytes,
-                    RestaurantName = Input.Name
-                });
-
-                _logger.LogInformation($"Created new restaurant with id: {id}");
-
-                StatusMessage =
-                    "Your restaurant has been created successfully";
-            }
-            catch (NotFoundException e)
-            {
-                _logger.LogError($"Could not find restaurateur that id: ${e.Message}");
-                return NotFound("Could not find restaurateur that id.");
-            }
-
-            return RedirectToPage();
+            return RedirectToPage("RestaurantDashboard");
         }
     }
 }

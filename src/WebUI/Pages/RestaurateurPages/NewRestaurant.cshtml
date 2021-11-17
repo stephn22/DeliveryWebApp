@@ -1,83 +1,63 @@
 ﻿@using Microsoft.Extensions.Localization
 @model DeliveryWebApp.WebUI.Pages.RestaurateurPages.RestaurantDashboardModel
 @inject IStringLocalizer<RestaurantDashboardModel> localizer
-@section Head
-{
-    <link rel="stylesheet" href="/css/images.css" type="text/css" />
 
-    @* Google fonts *@
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@100;300;500&display=swap" rel="stylesheet">
-}
-
-<partial name="_StatusMessage" for="StatusMessage" />
 
 <div class="text-start">
-    <hr />
-    <h6>
-        <img src="/icons/shop.svg" alt="shop" height="32" width="32" />
 
-    </h6>
-    <br />
-    <button id="begin" class="btn btn-primary" type="button" data-bs-toggle="collapse" data-bs-target="#collapseForm" aria-expanded="false" aria-controls="collapseForm">@localizer["Begin"]</button>
+    <div class="card card-body shadow">
+        <form method="post" enctype="multipart/form-data">
 
-    <div class="collapse" id="collapseForm">
-        <div class="card card-body">
-            <form method="post" enctype="multipart/form-data">
-
-                <div class="form-row">
-                    <div class="mb-3">
-                        <label asp-for="Input.Logo" class="form-label">@localizer["Choose a logo"]</label>
-                        <input class="form-control" type="file" asp-for="Input.Logo" onchange="readUrl(this);">
-                        <span asp-validation-for="Input.Logo" class="text-danger"></span>
-                    </div>
-                    <div id="spinner" class="form-row square" style="margin-left: 1rem;">
-                        <img id="img-uploaded" src="" class="rounded img-fluid float-start" alt="" hidden>
-                    </div>
-                </div>
-                <div class="form-row">
-                    <div class="form-group col-md-6">
-                        <label asp-for="Input.Name">@localizer["Name"]</label>
-                        <input class="form-control" asp-for="Input.Name">
-                        <span asp-validation-for="Input.Name" class="text-danger"></span>
-                    </div>
-                    <div class="form-group col-md-7">
-                        <div class="form-group col-md-3">
-                            <label asp-for="Input.Category">@localizer["Category"]</label>
-                            <select class="form-select" aria-label="Select category" asp-for="Input.Category" asp-items="Model.Categories">
-                            </select>
-                            <span asp-validation-for="Input.Category" class="text-danger"></span>
-                        </div>
-                    </div>
+            <div class="form-row">
+                <div class="mb-3">
+                    <label asp-for="Input.Logo" class="form-label">@localizer["Choose a logo"]</label>
+                    <input class="form-control shadow" type="file" asp-for="Input.Logo" id="new-logo">
+                    <span asp-validation-for="Input.Logo" class="text-danger"></span>
                 </div>
 
-                @* Address *@
+                <img id="img-uploaded" src="" class="rounded img-fluid square float-start shadow" alt="" hidden>
 
+            </div>
+            <div class="form-row">
+                <div class="form-group col-md-6">
+                    <label asp-for="Input.Name">@localizer["Name"]</label>
+                    <input class="form-control shadow" asp-for="Input.Name" id="name">
+                    <span asp-validation-for="Input.Name" class="text-danger"></span>
+                </div>
                 <div class="form-group col-md-7">
-                    <label class="form-label">@localizer["Address"]</label>
-                    <div class="input-group col-7">
-                        <input class="form-control" id="input-address" value="" disabled />
-                        <div class="input-group-append">
-                            <button class="btn btn-outline-secondary" type="button" id="location-btn">
-                                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-geo-alt" viewBox="0 0 16 16">
-                                    <path d="M12.166 8.94c-.524 1.062-1.234 2.12-1.96 3.07A31.493 31.493 0 0 1 8 14.58a31.481 31.481 0 0 1-2.206-2.57c-.726-.95-1.436-2.008-1.96-3.07C3.304 7.867 3 6.862 3 6a5 5 0 0 1 10 0c0 .862-.305 1.867-.834 2.94zM8 16s6-5.686 6-10A6 6 0 0 0 2 6c0 4.314 6 10 6 10z" />
-                                    <path d="M8 8a2 2 0 1 1 0-4 2 2 0 0 1 0 4zm0 1a3 3 0 1 0 0-6 3 3 0 0 0 0 6z" />
-                                </svg>
-                            </button>
-                            <button id="clear" type="button" class="btn btn-outline-danger">
-                                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-x" viewBox="0 0 16 16">
-                                    <path d="M4.646 4.646a.5.5 0 0 1 .708 0L8 7.293l2.646-2.647a.5.5 0 0 1 .708.708L8.707 8l2.647 2.646a.5.5 0 0 1-.708.708L8 8.707l-2.646 2.647a.5.5 0 0 1-.708-.708L7.293 8 4.646 5.354a.5.5 0 0 1 0-.708z" />
-                                </svg>
-                            </button>
-                        </div>
+                    <div class="form-group col-md-7">
+                        <label asp-for="Input.Category">@localizer["Category"]</label>
+                        <select class="form-select shadow" id="category"  aria-label="Select category" asp-for="Input.Category" asp-items="Model.Categories" required>
+                        </select>
+                        <span asp-validation-for="Input.Category" class="text-danger"></span>
                     </div>
                 </div>
+            </div>
 
-                <button type="submit" id="new-restaurant-btn" class="btn btn-primary" value="NewRestaurant">@localizer["Submit"]</button>
-            </form>
+            @* Address *@
 
-        </div>
+            <div class="form-group col-md-7">
+                <label class="form-label">@localizer["Address"]</label>
+                <div class="input-group col-7">
+                    <input class="form-control" asp-for="Input.PlaceName" id="restaurant-address" value="" />
+                    <div class="input-group-append">
+                        <button class="btn btn-outline-secondary shadow" type="button" id="location-btn" data-bs-toggle="tooltip" data-bs-placement="right" title="@localizer["Automatically detect your position"]">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-geo-alt" viewBox="0 0 16 16">
+                                <path d="M12.166 8.94c-.524 1.062-1.234 2.12-1.96 3.07A31.493 31.493 0 0 1 8 14.58a31.481 31.481 0 0 1-2.206-2.57c-.726-.95-1.436-2.008-1.96-3.07C3.304 7.867 3 6.862 3 6a5 5 0 0 1 10 0c0 .862-.305 1.867-.834 2.94zM8 16s6-5.686 6-10A6 6 0 0 0 2 6c0 4.314 6 10 6 10z" />
+                                <path d="M8 8a2 2 0 1 1 0-4 2 2 0 0 1 0 4zm0 1a3 3 0 1 0 0-6 3 3 0 0 0 0 6z" />
+                            </svg>
+                        </button>
+                    </div>
+                </div>
+                <span asp-validation-for="Input.PlaceName" class="text-danger"></span>
+            </div>
+
+            <input id="latitude" type="number" asp-for="Input.Latitude" hidden />
+            <input id="longitude" type="number" asp-for="Input.Longitude" hidden />
+
+            <button type="submit" id="submit-btn" class="btn btn-primary" value="NewRestaurant">@localizer["Submit"]</button>
+        </form>
+
     </div>
 </div>
 

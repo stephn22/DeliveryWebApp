@@ -39,6 +39,7 @@ namespace DeliveryWebApp.WebUI.Pages.RestaurateurPages
         }
 
         public Restaurateur Restaurateur { get; set; }
+        public bool HasRestaurant { get; set; }
         public PaginatedList<Order> Orders { get; set; }
         public List<Product> Products { get; set; }
         public List<Address> Addresses { get; set; }
@@ -57,6 +58,14 @@ namespace DeliveryWebApp.WebUI.Pages.RestaurateurPages
             if (Restaurateur == null)
             {
                 return NotFound("Could not load entities");
+            }
+
+            HasRestaurant = Restaurateur.Logo != null &&
+                            Restaurateur.RestaurantName != null && Restaurateur.RestaurantCategory != null;
+
+            if (!HasRestaurant)
+            {
+                return RedirectToPage("RestaurantDashboard");
             }
 
             return Page();

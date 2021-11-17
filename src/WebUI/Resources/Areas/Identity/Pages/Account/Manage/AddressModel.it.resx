@@ -120,6 +120,9 @@
   <data name="Add your delivery address" xml:space="preserve">
     <value>Aggiungi un indirizzo di consegna</value>
   </data>
+  <data name="Automatically detect your position" xml:space="preserve">
+    <value>Rileva la posizione automaticamente</value>
+  </data>
   <data name="Delete address" xml:space="preserve">
     <value>Elimina indirizzo</value>
   </data>
