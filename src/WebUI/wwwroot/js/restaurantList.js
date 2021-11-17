@@ -81,22 +81,14 @@ fetch("/api/restaurateurs", {
 
             data.forEach((item) => {
 
-                const restaurateur = new Restaurateur(item.id, item.restaurantName, item.logo, item - restaurantAddressId, null, item.category, item.customerId);
-
-                // /**
-                //  * @type {{id: number, name: string, logo: Blob, addressId: number, 
-                //  * address: {id: number, placeName: string, longitude: number, latitude: number, customerId: number, restaurateurId: number},
-                //  * category: string, customerId: number}}
-                //  */
-                // const restaurateur = {
-                //     id: item.id,
-                //     name: item.restaurantName,
-                //     logo: item.logo,
-                //     addressId: item.restaurantAddressId,
-                //     address: null,
-                //     category: item.restaurantCategory,
-                //     customerId: item.customerId,
-                // };
+                const restaurateur = new Restaurateur(
+                    item.id,
+                    item.restaurantName,
+                    item.logo,
+                    item.restaurantAddressId,
+                    null,
+                    item.category,
+                    item.customerId);
 
                 fetch(`/api/addresses/${restaurateur.addressId}`, {
                     method: "GET",
@@ -107,19 +99,13 @@ fetch("/api/restaurateurs", {
                     if (res.status == 200) {
                         res.json().then((addressData) => {
 
-                            const address = new Address(addressData.id, addressData.placeName, addressData.longitude, addressData.latitude, addressData.customerId, addressData.restaurateurId);
-
-                            // /**
-                            //  * @type {{id: number, placeName: string, longitude: number, latitude: number, customerId: number, restaurateurId: number}}
-                            //  */
-                            // const address = {
-                            //     id: addressData.id,
-                            //     placeName: addressData.placeName,
-                            //     longitude: parseFloat(addressData.longitude),
-                            //     latitude: parseFloat(addressData.latitude),
-                            //     customerId: addressData.customerId,
-                            //     restaurateurId: addressData.restaurateurId,
-                            // };
+                            const address = new Address(
+                                addressData.id,
+                                addressData.placeName,
+                                addressData.longitude,
+                                addressData.latitude,
+                                addressData.customerId,
+                                addressData.restaurateurId);
 
                             restaurateur.address = address;
 
@@ -150,10 +136,10 @@ restaurateurs.forEach((restaurateur) => {
 });
 
 /**
-         * Assign a unique id to each store. This `id` is used
-         * later to associate each point on the map with a listing
-         * in the sidebar.
-         */
+ * Assign a unique id to each store. This `id` is used
+ * later to associate each point on the map with a listing
+ * in the sidebar.
+*/
 stores.features.forEach(function (store, i) {
     value: store.properties.id = i;
 });

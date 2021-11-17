@@ -145,18 +145,18 @@ if (saveFirstAddressBtn) {
     disableBtn(saveFirstAddressBtn);
 
     saveFirstAddressBtn.addEventListener("click", () => {
-        const address = {
-            id: null,
-            customer: null,
-            customerId: customerIdEl.getAttribute("data-id"),
-            restaurateurId: null,
-            restaurateur: null,
-            placeName: inputFirstAddress.value,
-            latitude: inputFirstAddress.getAttribute("data-lat"),
-            longitude: inputFirstAddress.getAttribute("data-lng")
-        };
-        uploadAddress(address);
+        const address = new Address(
+            null,
+            null,
+            customerIdEl.getAttribute("data-id"),
+            null,
+            null,
+            inputFirstAddress.value,
+            inputFirstAddress.getAttribute("data-lat"),
+            inputFirstAddress.getAttribute("data-lng")
+        );
 
+        uploadAddress(address);
     });
 }
 
@@ -164,16 +164,16 @@ if (saveSecondAddressBtn) {
     disableBtn(saveSecondAddressBtn);
 
     saveSecondAddressBtn.addEventListener("click", () => {
-        const address = {
-            id: null,
-            customerId: customerIdEl.getAttribute("data-id"),
-            customer: null,
-            restaurateurId: null,
-            restaurateur: null,
-            placeName: inputSecondAddress.value,
-            latitude: inputSecondAddress.getAttribute("data-lat"),
-            longitude: inputSecondAddress.getAttribute("data-lng")
-        };
+        const address = new Address(
+            null,
+            null,
+            customerIdEl.getAttribute("data-id"),
+            null,
+            null,
+            inputSecondAddress.value,
+            inputSecondAddress.getAttribute("data-lat"),
+            inputSecondAddress.getAttribute("data-lng")
+        );
         uploadAddress(address);
     });
 }
@@ -222,7 +222,7 @@ function getCoordinates(position, addressInputElement) {
 
 /**
  * Upload the address to the database
- * @param {*} address address object
+ * @param {Address} address address object
  */
 function uploadAddress(address) {
     fetch("/api/addresses",
@@ -342,6 +342,28 @@ function enableBtn(btn) {
  */
 function disableBtn(btn) {
     btn.setAttribute("disabled", "disabled");
+}
+
+/**
+ * 
+ * @param {number} id 
+ * @param {*} customer 
+ * @param {number} customerId 
+ * @param {*} restaurateur 
+ * @param {number} restaurateurId 
+ * @param {string} placeName 
+ * @param {number} latitude 
+ * @param {number} longitude 
+ */
+function Address(id, customer, customerId, restaurateur, restaurateurId, placeName, latitude, longitude) {
+    this.id = id;
+    this.customer = customer;
+    this.customerId = customerId;
+    this.restaurateur = restaurateur;
+    this.restaurateurId = restaurateurId;
+    this.placeName = placeName;
+    this.latitude = latitude;
+    this.longitude = longitude;
 }
 
 // Enable tooltips
