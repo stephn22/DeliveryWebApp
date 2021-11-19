@@ -28,10 +28,10 @@ namespace DeliveryWebApp.Infrastructure.Persistence.Configurations
             builder.Property(o => o.DeliveryAddressId)
                 .IsRequired();
 
-            builder.HasOne(o => o.Customer)
-                .WithMany(c => c.Orders)
-                .HasForeignKey(o => o.CustomerId)
-                .OnDelete(DeleteBehavior.ClientCascade);
+            //builder.HasOne(o => o.Customer)
+            //    .WithMany(c => c.Orders)
+            //    .HasForeignKey(o => o.CustomerId)
+            //    .OnDelete(DeleteBehavior.ClientCascade);
         }
     }
 }

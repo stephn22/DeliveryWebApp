@@ -11,10 +11,10 @@ namespace DeliveryWebApp.Infrastructure.Persistence.Configurations
             builder.Property(b => b.Quantity)
                 .IsRequired();
 
-            builder.HasOne(b => b.Basket)
-                .WithMany(b => b.BasketItems)
-                .HasForeignKey(b => b.BasketId)
-                .OnDelete(DeleteBehavior.ClientCascade);
+            //builder.HasOne(b => b.Basket)
+            //    .WithMany(b => b.BasketItems)
+            //    .HasForeignKey(b => b.BasketId)
+            //    .OnDelete(DeleteBehavior.ClientCascade);
         }
     }
 }

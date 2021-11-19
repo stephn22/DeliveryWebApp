@@ -19,10 +19,10 @@ namespace DeliveryWebApp.Infrastructure.Persistence.Configurations
             builder.Property(u => u.Discount)
                 .IsRequired();
 
-            builder.HasOne(o => o.Order)
-                .WithMany(o => o.OrderItems)
-                .HasForeignKey(o => o.OrderId)
-                .OnDelete(DeleteBehavior.ClientCascade);
+            //builder.HasOne(o => o.Order)
+            //    .WithMany(o => o.OrderItems)
+            //    .HasForeignKey(o => o.OrderId)
+            //    .OnDelete(DeleteBehavior.ClientCascade);
         }
     }
 }

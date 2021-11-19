@@ -29,20 +29,11 @@ namespace DeliveryWebApp.Application.Addresses.Commands.CreateAddress
             var entity = new Address
             {
                 Longitude = request.Longitude,
-                Latitude = request.Latitude
+                Latitude = request.Latitude,
+                PlaceName = request.PlaceName,
+                CustomerId = request.CustomerId,
+                RestaurateurId = request.RestaurateurId
             };
-
-            if (request.CustomerId != null)
-            {
-                entity.CustomerId = request.CustomerId;
-            }
-
-            if (request.RestaurateurId != null)
-            {
-                entity.RestaurateurId = request.RestaurateurId;
-            }
-
-            entity.PlaceName = request.PlaceName;
 
             _context.Addresses.Add(entity);
             await _context.SaveChangesAsync(cancellationToken);
