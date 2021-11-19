@@ -42,16 +42,18 @@ namespace DeliveryWebApp.Application.IntegrationTests.Addresses.Commands
             {
                 Latitude = 48.5472M,
                 Longitude = 72.1804M,
-                CustomerId = customer.Id
+                CustomerId = customer.Id,
+                PlaceName = "221B Baker Street, London, UK"
             };
 
             var address = await SendAsync(addressCommand);
 
             address.Should().NotBeNull();
             address.Id.Should().BeGreaterThan(0);
-            // TODO: placename
+            address.PlaceName.Should().Be(addressCommand.PlaceName);
             address.Longitude.Should().Be(addressCommand.Longitude);
-            address.CustomerId.Should().Be(customer.Id);
+            address.Latitude.Should().Be(addressCommand.Latitude);
+            address.Customer.Should().NotBeNull();
         }
 
         [Test]
