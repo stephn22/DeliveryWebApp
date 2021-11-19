@@ -28,14 +28,14 @@ namespace DeliveryWebApp.WebUI.Controllers
 
         // GET: CustomersController/Details/5
         [HttpGet]
-        public ActionResult Details(int id)
+        public Microsoft.AspNetCore.Mvc.ActionResult Details(int id)
         {
             return RedirectToPage("/AdminPages/CustomerDetail", routeValues: id);
         }
 
         // GET: CustomersController/Edit/5
         [HttpGet]
-        public ActionResult Edit(int id)
+        public Microsoft.AspNetCore.Mvc.ActionResult Edit(int id)
         {
             return RedirectToPage("/AdminPages/CustomerDetail", routeValues: id);
         }

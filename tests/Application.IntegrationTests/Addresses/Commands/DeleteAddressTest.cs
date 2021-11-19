@@ -14,12 +14,12 @@ namespace DeliveryWebApp.Application.IntegrationTests.Addresses.Commands
     public class DeleteAddressTest : TestBase
     {
         [Test]
-        public void ShouldRequireMinimumFields()
+        public async Task ShouldRequireMinimumFields()
         {
             var command = new DeleteAddressCommand();
 
-            FluentActions.Invoking(() =>
-                SendAsync(command)).Should().Throw<ValidationException>();
+            await FluentActions.Invoking(() =>
+                SendAsync(command)).Should().ThrowAsync<ValidationException>();
         }
 
         [Test]

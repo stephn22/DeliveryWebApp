@@ -13,12 +13,12 @@ namespace DeliveryWebApp.Application.IntegrationTests.Riders.Commands
     public class UpdateRiderTest : TestBase
     {
         [Test]
-        public void ShouldRequireMinimumFields()
+        public async Task ShouldRequireMinimumFields()
         {
             var command = new UpdateRiderCommand();
 
-            FluentActions.Invoking(() =>
-                SendAsync(command)).Should().Throw<ValidationException>();
+            await FluentActions.Invoking(() =>
+                SendAsync(command)).Should().ThrowAsync<ValidationException>();
         }
 
         [Test]

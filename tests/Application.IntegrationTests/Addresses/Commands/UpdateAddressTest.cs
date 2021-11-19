@@ -14,12 +14,12 @@ namespace DeliveryWebApp.Application.IntegrationTests.Addresses.Commands
     public class UpdateAddressTest : TestBase
     {
         [Test]
-        public void ShouldRequireMinimumFields()
+        public async Task ShouldRequireMinimumFields()
         {
             var command = new UpdateAddressCommand();
 
-            FluentActions.Invoking(() =>
-                SendAsync(command)).Should().Throw<ValidationException>();
+            await FluentActions.Invoking(() =>
+                SendAsync(command)).Should().ThrowAsync<ValidationException>();
         }
 
         [Test]

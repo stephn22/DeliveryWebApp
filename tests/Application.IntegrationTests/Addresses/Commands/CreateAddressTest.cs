@@ -7,7 +7,6 @@ using DeliveryWebApp.Domain.Constants;
 using FluentAssertions;
 using NUnit.Framework;
 using System.Threading.Tasks;
-using DeliveryWebApp.Application.Customers.Queries.GetCustomers;
 
 namespace DeliveryWebApp.Application.IntegrationTests.Addresses.Commands
 {
@@ -16,12 +15,12 @@ namespace DeliveryWebApp.Application.IntegrationTests.Addresses.Commands
     public class CreateAddressTest : TestBase
     {
         [Test]
-        public void ShouldRequireMinimumFields()
+        public async Task ShouldRequireMinimumFields()
         {
             var command = new CreateAddressCommand();
 
-            FluentActions.Invoking(() =>
-                SendAsync(command)).Should().Throw<ValidationException>();
+            await FluentActions.Invoking(() =>
+                SendAsync(command)).Should().ThrowAsync<ValidationException>();
         }
 
         [Test]

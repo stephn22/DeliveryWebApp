@@ -19,12 +19,12 @@ namespace DeliveryWebApp.Application.IntegrationTests.Baskets.Commands
     public class PurgeBasketTest : TestBase
     {
         [Test]
-        public void ShouldRequireMinimumFields()
+        public async Task ShouldRequireMinimumFields()
         {
             var command = new PurgeBasketCommand();
 
-            FluentActions.Invoking(() =>
-                SendAsync(command)).Should().Throw<ValidationException>();
+            await FluentActions.Invoking(() =>
+                SendAsync(command)).Should().ThrowAsync<ValidationException>();
         }
 
         [Test]

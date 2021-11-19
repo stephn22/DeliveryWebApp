@@ -60,15 +60,13 @@ const submitBtn = document.getElementById('submit-btn');
 
 /********************** EVENT LISTENERS **********************/
 
-disableBtn(submitBtn);
-
 newLogo.addEventListener('change', (input) => {
     if (input.target.files && input.target.files[0]) {
         const reader = new FileReader();
 
         reader.onload = (e) => {
             imgUploaded.setAttribute("src", e.target.result);
-            imgUploaded.removeAttribute("hidden");
+            showItem(imgUploaded);
         };
 
         reader.readAsDataURL(input.target.files[0]);
@@ -91,12 +89,6 @@ restaurantAddress.addEventListener('input', () => {
     });
 });
 
-category.addEventListener('change', () => {
-    if (category.selectedIndex > 0) {
-        enableBtn(submitBtn);
-    }
-});
-
 locationBtn.addEventListener('click', () => {
     if (navigator.geolocation) {
         navigator.geolocation.getCurrentPosition((position) => {
@@ -104,6 +96,8 @@ locationBtn.addEventListener('click', () => {
         });
     }
 });
+
+// TODO: submit button enable
 
 /********************** FUNCTIONS **********************/
 

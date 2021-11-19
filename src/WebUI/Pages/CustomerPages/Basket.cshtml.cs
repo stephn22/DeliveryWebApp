@@ -7,7 +7,7 @@ using DeliveryWebApp.Application.Common.Security;
 using DeliveryWebApp.Domain.Entities;
 using DeliveryWebApp.Infrastructure.Identity;
 using DeliveryWebApp.Infrastructure.Persistence;
-using IdentityServer4.Extensions;
+using Duende.IdentityServer.Extensions;
 using MediatR;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;

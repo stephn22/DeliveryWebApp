@@ -164,7 +164,7 @@ namespace DeliveryWebApp.WebUI.Pages.RestaurateurPages
             _logger.LogInformation($"Updated restaurateur with id: {id}");
             StatusMessage = _localizer["Your restaurant has been created successfully"];
 
-            return RedirectToPage("RestaurantDashboard");
+            return Page();
         }
     }
 }

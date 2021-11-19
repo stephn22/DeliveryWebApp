@@ -1,5 +1,7 @@
-﻿using DeliveryWebApp.Application.Common.Exceptions;
+﻿using AutoMapper;
+using DeliveryWebApp.Application.Common.Exceptions;
 using DeliveryWebApp.Application.Common.Security;
+using DeliveryWebApp.Application.Restaurateurs.Commands.UpdateRestaurateur;
 using DeliveryWebApp.Application.Restaurateurs.Queries.GetRestaurateurs;
 using DeliveryWebApp.Application.Restaurateurs.Queries.GetSingleRestaurateur;
 using DeliveryWebApp.Domain.Entities;
@@ -17,12 +19,20 @@ namespace DeliveryWebApp.WebUI.Controllers
     public class RestaurateursController : ControllerBase
     {
         private readonly IMediator _mediator;
+        private readonly IMapper _mapper;
         private readonly ILogger<RestaurateursController> _logger;
 
-        public RestaurateursController(IMediator mediator, ILogger<RestaurateursController> logger)
+        public RestaurateursController(IMediator mediator, IMapper mapper, ILogger<RestaurateursController> logger)
         {
             _mediator = mediator;
+            _mapper = mapper;
             _logger = logger;
+        }
+
+        [HttpPost]
+        public async Task<ActionResult<Restaurateur>> Create([FromBody] Restaurateur request)
+        {
+            return await _mediator.Send(_mapper.Map<UpdateRestaurateurCommand>(request));
         }
 
         [HttpGet]

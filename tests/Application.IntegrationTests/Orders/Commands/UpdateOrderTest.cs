@@ -12,7 +12,6 @@ using DeliveryWebApp.Application.Restaurateurs.Commands.CreateRestaurateur;
 using DeliveryWebApp.Domain.Constants;
 using DeliveryWebApp.Domain.Entities;
 using FluentAssertions;
-using FluentAssertions.Common;
 using NUnit.Framework;
 using System;
 using System.Threading.Tasks;
@@ -158,7 +157,7 @@ namespace DeliveryWebApp.Application.IntegrationTests.Orders.Commands
             order.Id.Should().BeGreaterThan(0);
             order.CustomerId.Should().Be(customer1.Id);
             order.RestaurateurId.Should().Be(restaurateur.Id);
-            order.Date.Should().IsSameOrEqualTo(DateTime.UtcNow);
+            order.Date.Should().BeSameDateAs(DateTime.UtcNow);
             order.OrderItems = await SendAsync(new GetOrderItemsQuery
             {
                 OrderId = order.Id
@@ -167,7 +166,7 @@ namespace DeliveryWebApp.Application.IntegrationTests.Orders.Commands
             order.OrderItems.ForAll(o => o.OrderId.Should().Be(order.Id));
             order.OrderItems.ForAll(o => o.Id.Should().BeGreaterThan(0));
             order.Status.Should().Be(OrderStatus.Delivered);
-            order.DeliveryDate.Should().IsSameOrEqualTo(updateOrder.DeliveryDate);
+            order.DeliveryDate.Should().BeSameDateAs((DateTime)updateOrder.DeliveryDate);
             order.TotalPrice.Should().Be(63.37M);
         }
     }

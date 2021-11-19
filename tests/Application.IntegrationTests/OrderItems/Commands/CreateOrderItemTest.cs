@@ -22,11 +22,11 @@ namespace DeliveryWebApp.Application.IntegrationTests.OrderItems.Commands
     public class CreateOrderItemTest
     {
         [Test]
-        public void ShouldRequireMinimumFields()
+        public async Task ShouldRequireMinimumFields()
         {
             var command = new CreateOrderItemCommand();
 
-            FluentActions.Invoking(() => SendAsync(command)).Should().Throw<ValidationException>();
+            await FluentActions.Invoking(() => SendAsync(command)).Should().ThrowAsync<ValidationException>();
         }
 
         [Test]

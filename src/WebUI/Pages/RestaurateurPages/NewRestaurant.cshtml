@@ -2,7 +2,6 @@
 @model DeliveryWebApp.WebUI.Pages.RestaurateurPages.RestaurantDashboardModel
 @inject IStringLocalizer<RestaurantDashboardModel> localizer
 
-
 <div class="text-start">
 
     <div class="card card-body shadow">
@@ -55,7 +54,7 @@
             <input id="latitude" type="number" asp-for="Input.Latitude" hidden />
             <input id="longitude" type="number" asp-for="Input.Longitude" hidden />
 
-            <button type="submit" id="submit-btn" class="btn btn-primary" value="NewRestaurant">@localizer["Submit"]</button>
+            <button type="submit" id="submit-btn" class="btn btn-primary">@localizer["Submit"]</button>
         </form>
 
     </div>

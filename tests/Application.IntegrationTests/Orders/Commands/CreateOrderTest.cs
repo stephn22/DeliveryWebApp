@@ -20,12 +20,12 @@ namespace DeliveryWebApp.Application.IntegrationTests.Orders.Commands
     public class CreateOrderTest : TestBase
     {
         [Test]
-        public void ShouldRequireMinimumFields()
+        public async Task ShouldRequireMinimumFields()
         {
             var command = new CreateOrderCommand();
 
-            FluentActions.Invoking(() =>
-                SendAsync(command)).Should().Throw<NullReferenceException>();
+            await FluentActions.Invoking(() =>
+                SendAsync(command)).Should().ThrowAsync<NullReferenceException>();
         }
 
         [Test]
