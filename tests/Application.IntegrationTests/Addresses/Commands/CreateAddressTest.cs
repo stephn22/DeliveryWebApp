@@ -7,6 +7,7 @@ using DeliveryWebApp.Domain.Constants;
 using FluentAssertions;
 using NUnit.Framework;
 using System.Threading.Tasks;
+using DeliveryWebApp.Application.Customers.Queries.GetCustomers;
 
 namespace DeliveryWebApp.Application.IntegrationTests.Addresses.Commands
 {
@@ -53,7 +54,6 @@ namespace DeliveryWebApp.Application.IntegrationTests.Addresses.Commands
             address.PlaceName.Should().Be(addressCommand.PlaceName);
             address.Longitude.Should().Be(addressCommand.Longitude);
             address.Latitude.Should().Be(addressCommand.Latitude);
-            address.Customer.Should().NotBeNull();
         }
 
         [Test]

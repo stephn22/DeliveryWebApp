@@ -21,7 +21,8 @@ namespace DeliveryWebApp.Infrastructure
 
             services.AddDbContext<ApplicationDbContext>(options =>
             {
-                options.UseSqlServer(
+                options.UseLazyLoadingProxies()
+                    .UseSqlServer(
                     configuration.GetConnectionString("DefaultConnection"),
                     b => b.MigrationsAssembly("DeliveryWebApp.WebUI"));
             });
