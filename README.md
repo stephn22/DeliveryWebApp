@@ -11,7 +11,7 @@ This web application was developed following the principles of [Clean Architectu
 ---
 
 ## Technologies:
-* ASP.NET Core 5
+* ASP.NET Core 6
 * [Bootstrap 5](https://getbootstrap.com/)
 * [qrcodejs](https://github.com/davidshimjs/qrcodejs) (2FA QR Code generation)
 * [Entity Framework Core](https://docs.microsoft.com/en-us/ef/core/) (Microsoft SQL Server)
