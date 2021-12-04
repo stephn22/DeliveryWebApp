@@ -31,7 +31,7 @@ namespace DeliveryWebApp.Infrastructure
 
             services.AddScoped<IDomainEventService, DomainEventService>();
 
-            //services.AddResponseCaching();
+            services.AddResponseCaching();
 
             services.AddSession(options =>
             {

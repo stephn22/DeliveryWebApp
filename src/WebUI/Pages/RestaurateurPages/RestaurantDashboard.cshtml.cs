@@ -18,6 +18,7 @@ using Microsoft.Extensions.Logging;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
+using System.Globalization;
 using System.IO;
 using System.Threading.Tasks;
 
@@ -80,8 +81,11 @@ namespace DeliveryWebApp.WebUI.Pages.RestaurateurPages
             [DataType(DataType.Text)]
             public string PlaceName { get; set; }
 
-            public decimal Longitude { get; set; }
-            public decimal Latitude { get; set; }
+            [DisplayFormat(ApplyFormatInEditMode = true, DataFormatString = "{0:c}")]
+            public string Longitude { get; set; }
+
+            [DisplayFormat(ApplyFormatInEditMode = true, DataFormatString = "{0:c}")]
+            public string Latitude { get; set; }
 
             /*********************************************/
         }
@@ -121,9 +125,13 @@ namespace DeliveryWebApp.WebUI.Pages.RestaurateurPages
             }
         }
 
-        // FIXME: not triggered
-        private async Task<IActionResult> OnPostAsync()
+        public async Task<IActionResult> OnPostAsync()
         {
+            if (!ModelState.IsValid)
+            {
+                return new BadRequestObjectResult(ModelState);
+            }
+
             var user = await _userManager.GetUserAsync(User);
 
             if (user == null)
@@ -145,8 +153,8 @@ namespace DeliveryWebApp.WebUI.Pages.RestaurateurPages
             var address = await _mediator.Send(new CreateAddressCommand
             {
                 RestaurateurId = Restaurateur.Id,
-                Latitude = Input.Latitude,
-                Longitude = Input.Longitude,
+                Latitude = Convert.ToDecimal(Input.Latitude, CultureInfo.InvariantCulture),
+                Longitude = Convert.ToDecimal(Input.Longitude, CultureInfo.InvariantCulture),
                 PlaceName = Input.PlaceName
             });
 
@@ -164,7 +172,7 @@ namespace DeliveryWebApp.WebUI.Pages.RestaurateurPages
             _logger.LogInformation($"Updated restaurateur with id: {id}");
             StatusMessage = _localizer["Your restaurant has been created successfully"];
 
-            return Page();
+            return RedirectToPage("./RestaurantDashboard");
         }
     }
 }

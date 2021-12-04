@@ -37,7 +37,7 @@ namespace DeliveryWebApp.WebUI.Pages.RestaurateurPages
             _configuration = configuration;
         }
 
-        public bool HasRestaurant { get; set; }
+        private bool HasRestaurant { get; set; }
         public Restaurateur Restaurateur { get; set; }
         public PaginatedList<Product> Products { get; set; }
 
@@ -91,8 +91,17 @@ namespace DeliveryWebApp.WebUI.Pages.RestaurateurPages
 
             await LoadAsync(user, searchString, currentFilter, pageIndex);
 
-            HasRestaurant = Restaurateur.Logo != null &&
-                            Restaurateur.RestaurantName != null && Restaurateur.RestaurantCategory != null;
+            HasRestaurant = false;
+
+            try
+            {
+                HasRestaurant = Restaurateur.Logo != null &&
+                                Restaurateur.RestaurantName != null && Restaurateur.RestaurantCategory != null;
+            }
+            catch (NullReferenceException e)
+            {
+                _logger.LogWarning(e.ToString());
+            }
 
             if (!HasRestaurant)
             {

@@ -66,7 +66,7 @@ newLogo.addEventListener('change', (input) => {
 
         reader.onload = (e) => {
             imgUploaded.setAttribute("src", e.target.result);
-            showItem(imgUploaded);
+            fadeIn(imgUploaded);
         };
 
         reader.readAsDataURL(input.target.files[0]);
@@ -93,13 +93,15 @@ locationBtn.addEventListener('click', () => {
     if (navigator.geolocation) {
         navigator.geolocation.getCurrentPosition((position) => {
             getCoordinates(position, restaurantAddress);
+
+            window.alert(`latitude: ${latitude.value}, longitude: ${longitude.value}`);
         });
     }
 });
 
-// TODO: submit button enable
-
 /********************** FUNCTIONS **********************/
+
+
 
 /**
  * Retrieves suggestions for a searchstring from Mapbox API
@@ -190,6 +192,29 @@ function enableBtn(btn) {
  */
 function disableBtn(btn) {
     btn.setAttribute("disabled", "disabled");
+}
+
+/**
+ * Animates an element with fade in transition (0.3s)
+ * @param {Element} element element to be animated
+ */
+ function fadeIn(element) {
+    element.removeAttribute("hidden");
+
+    setTimeout(() => {
+        element.classList.remove("fade-effect");
+    }, 280);
+}
+
+/**
+ * Animates an element with fade out transition (0.3s)
+ * @param {Element} element element to be animated
+ */
+function fadeOut(element) {
+    element.classList.add("fade-effect");
+    setTimeout(() => {
+        element.setAttribute("hidden", "");
+    }, 350);
 }
 
 // Enable tooltips

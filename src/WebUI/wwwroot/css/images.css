@@ -2,6 +2,10 @@
     display: none;
 }
 
+.fade-effect {
+    opacity: 0;
+}
+
 .img-dashboard:hover + .edit-img-btn, .edit-img-btn:hover {
     display: inline-block;
 }
@@ -17,6 +21,7 @@
     width: 190px;
     object-fit: cover;
     border-radius: 20px;
+    transition: 0.3s ease-in-out;
 }
 
 .square .edit-img-btn {
