@@ -5,6 +5,14 @@
 
 version: 2
 updates:
+
+  # mantain dependencies for npm
+  -package-ecosystem: "npm"
+    directory: "./src/WebUI/ClientApp/deliverywebapp.webui"
+    schedule:
+      interval: "daily"
+
+  # mantain dependencies for nuget
   - package-ecosystem: "nuget"
     directory: "/"
     schedule:
