@@ -1,7 +1,6 @@
 ﻿using DeliveryWebApp.Application.Common.Interfaces;
 using DeliveryWebApp.Infrastructure.Identity;
 using DeliveryWebApp.Infrastructure.Persistence;
-using DeliveryWebApp.WebUI;
 using MediatR;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Identity;
@@ -36,8 +35,6 @@ namespace DeliveryWebApp.Application.IntegrationTests
 
             _configuration = builder.Build();
 
-            var startup = new Startup(_configuration);
-
             var services = new ServiceCollection();
 
             services.AddSingleton(Mock.Of<IWebHostEnvironment>(w =>
@@ -45,8 +42,6 @@ namespace DeliveryWebApp.Application.IntegrationTests
                 w.ApplicationName == "DeliveryWebApp.WebUI"));
 
             services.AddLogging();
-
-            startup.ConfigureServices(services);
 
             // Replace service registration for ICurrentUserService
             // Remove existing registration
