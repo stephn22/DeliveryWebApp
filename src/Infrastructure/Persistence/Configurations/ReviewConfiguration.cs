@@ -24,10 +24,10 @@ namespace DeliveryWebApp.Infrastructure.Persistence.Configurations
                 .HasMaxLength(250)
                 .IsRequired();
 
-            builder.HasOne(r => r.Customer)
-                .WithMany(c => c.Reviews)
-                .HasForeignKey(r => r.CustomerId)
-                .OnDelete(DeleteBehavior.ClientCascade);
+            //builder.HasOne(r => r.Customer)
+            //    .WithMany(c => c.Reviews)
+            //    .HasForeignKey(r => r.CustomerId)
+            //    .OnDelete(DeleteBehavior.ClientCascade);
         }
     }
 }

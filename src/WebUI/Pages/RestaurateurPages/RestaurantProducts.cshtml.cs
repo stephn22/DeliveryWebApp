@@ -37,6 +37,7 @@ namespace DeliveryWebApp.WebUI.Pages.RestaurateurPages
             _configuration = configuration;
         }
 
+        public bool HasRestaurant { get; set; }
         public Restaurateur Restaurateur { get; set; }
         public PaginatedList<Product> Products { get; set; }
 
@@ -89,6 +90,14 @@ namespace DeliveryWebApp.WebUI.Pages.RestaurateurPages
             }
 
             await LoadAsync(user, searchString, currentFilter, pageIndex);
+
+            HasRestaurant = Restaurateur.Logo != null &&
+                            Restaurateur.RestaurantName != null && Restaurateur.RestaurantCategory != null;
+
+            if (!HasRestaurant)
+            {
+                return RedirectToPage("RestaurantDashboard");
+            }
 
             return Page();
         }

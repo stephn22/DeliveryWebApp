@@ -9,10 +9,10 @@ namespace DeliveryWebApp.Domain.Entities
         public string RestaurantCategory { get; set; }
         public int RestaurantAddressId { get; set; }
         public virtual Address RestaurantAddress { get; set; }
-        public ICollection<Product> Products { get; set; }
-        public ICollection<Order> RestaurantOrders { get; set; }
+        public virtual ICollection<Product> Products { get; set; }
+        public virtual ICollection<Order> RestaurantOrders { get; set; }
         public int CustomerId { get; set; }
         public virtual Customer Customer { get; set; } // a restaurateur is also a customer
-        public ICollection<Review> RestaurateurReviews { get; set; }
+        public virtual ICollection<Review> RestaurateurReviews { get; set; }
     }
 }

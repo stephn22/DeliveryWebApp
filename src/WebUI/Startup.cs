@@ -38,6 +38,7 @@ namespace DeliveryWebApp.WebUI
                 .AddDbContextCheck<ApplicationDbContext>();
 
             services.AddRazorPages()
+                .AddRazorRuntimeCompilation()
                 .AddViewLocalization()
                 .AddDataAnnotationsLocalization()
                 .AddFluentValidation();

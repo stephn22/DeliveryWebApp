@@ -13,7 +13,8 @@ using System.Threading.Tasks;
 
 namespace DeliveryWebApp.WebUI.Controllers
 {
-    [Authorize]
+    [Authorize(Policy = PolicyName.IsAuthenticated)]
+    [Authorize(Policy = PolicyName.IsCustomer)]
     [Route("api/[controller]")]
     [ApiController]
     public class AddressesController : ControllerBase
@@ -30,7 +31,7 @@ namespace DeliveryWebApp.WebUI.Controllers
         }
 
         [HttpPost]
-        public async Task<ActionResult<Address>> Create(Address request)
+        public async Task<ActionResult<Address>> Create([FromBody] Address request)
         {
             return await _mediator.Send(_mapper.Map<CreateAddressCommand>(request));
         }
@@ -54,7 +55,7 @@ namespace DeliveryWebApp.WebUI.Controllers
         }
 
         [HttpPut("{id:int}")]
-        public async Task<ActionResult<Address>> Update(Address request, int id)
+        public async Task<ActionResult<Address>> Update([FromBody] Address request, int id)
         {
             return await _mediator.Send(new UpdateAddressCommand
             {
@@ -65,10 +66,13 @@ namespace DeliveryWebApp.WebUI.Controllers
             });
         }
 
-        [HttpDelete]
-        public async Task<ActionResult<Address>> Delete(Address request)
+        [HttpDelete("{id:int}")]
+        public async Task<ActionResult<Address>> Delete(int id)
         {
-            return await _mediator.Send(_mapper.Map<DeleteAddressCommand>(request));
+            return await _mediator.Send(new DeleteAddressCommand
+            {
+                Id = id
+            });
         }
     }
 }

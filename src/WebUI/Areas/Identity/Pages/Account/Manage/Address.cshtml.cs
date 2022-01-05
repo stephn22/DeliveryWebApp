@@ -1,20 +1,16 @@
-using DeliveryWebApp.Application.Addresses.Commands.DeleteAddress;
 using DeliveryWebApp.Application.Addresses.Queries.GetAddresses;
 using DeliveryWebApp.Application.Common.Security;
 using DeliveryWebApp.Domain.Entities;
 using DeliveryWebApp.Infrastructure.Identity;
 using DeliveryWebApp.Infrastructure.Persistence;
-using DeliveryWebApp.Infrastructure.Services.Utilities;
 using MediatR;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
-using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Localization;
 using Microsoft.Extensions.Logging;
 using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations;
 using System.Threading.Tasks;
 
 namespace DeliveryWebApp.WebUI.Areas.Identity.Pages.Account.Manage
@@ -41,47 +37,9 @@ namespace DeliveryWebApp.WebUI.Areas.Identity.Pages.Account.Manage
 
         [TempData] public string StatusMessage { get; set; }
 
-        [BindProperty] public InputModel Input { get; set; }
-
         public List<Address> Addresses { get; set; }
 
         public Customer Customer { get; set; }
-
-        public SelectList Countries => new(Utilities.CountryList(), "Key", "Value");
-
-        public class InputModel
-        {
-            [Required]
-            [DataType(DataType.Text)]
-            [Display(Name = "Address Line 1")]
-            public string AddressLine1 { get; set; }
-
-            [DataType(DataType.Text)]
-            [Display(Name = "Address Line 2")]
-            public string AddressLine2 { get; set; }
-
-            [Required]
-            [DataType(DataType.Text)]
-            [Display(Name = "Number")]
-            public string Number { get; set; }
-
-            [Required]
-            [DataType(DataType.Text)]
-            [Display(Name = "City")]
-            public string City { get; set; }
-
-            [Required]
-            [DataType(DataType.PostalCode)]
-            [Display(Name = "Postal Code")]
-            public string PostalCode { get; set; }
-
-            [Required]
-            [DataType(DataType.Text)]
-            [Display(Name = "State/Province")]
-            public string StateProvince { get; set; }
-
-            [Required] [DataType(DataType.Text)] public string Country { get; set; }
-        }
 
         public async Task<IActionResult> OnGetAsync()
         {
@@ -97,27 +55,6 @@ namespace DeliveryWebApp.WebUI.Areas.Identity.Pages.Account.Manage
 
             await LoadAddressesAsync(user);
             return Page();
-        }
-        public async Task<IActionResult> OnPostDeleteAddressAsync(int id)
-        {
-            var user = await _userManager.GetUserAsync(User);
-            if (user == null)
-            {
-                _logger.LogError($"Unable to load user with ID '{_userManager.GetUserId(User)}'.");
-                return NotFound();
-            }
-
-            Customer = await _context.Customers.FirstAsync(c => c.ApplicationUserFk == user.Id);
-
-            await _mediator.Send(new DeleteAddressCommand
-            {
-                Id = id
-            });
-
-            _logger.LogInformation($"Deleted address with id '{id}'.");
-            StatusMessage = _localizer["Your address has been deleted"];
-
-            return RedirectToPage();
         }
 
         private async Task LoadAddressesAsync(ApplicationUser user)

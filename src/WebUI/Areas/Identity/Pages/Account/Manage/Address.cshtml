@@ -1,11 +1,23 @@
 ﻿@page
-@using IdentityServer4.Extensions
+@using Duende.IdentityServer.Extensions
 @using Microsoft.Extensions.Localization
+@using Microsoft.AspNetCore.Localization
+@using System.Globalization
 @model DeliveryWebApp.WebUI.Areas.Identity.Pages.Account.Manage.AddressModel
 @inject IStringLocalizer<AddressModel> localizer
 @{
     ViewData["Title"] = localizer["Your addresses"];
+    var requestCultureFeature = HttpContext.Features.Get<IRequestCultureFeature>();
+    var requestCulture = requestCultureFeature.RequestCulture;
+    var regionInfo = new RegionInfo("en-US");
+
+    if (!requestCulture.Culture.IsNeutralCulture)
+    {
+        regionInfo = new RegionInfo(requestCulture.Culture.LCID);
+    }
 }
+
+<link rel="stylesheet" href="//code.jquery.com/ui/1.13.0/themes/base/jquery-ui.css">
 
 <style type="text/css">
     p {
@@ -20,145 +32,48 @@
 
 <div class="container">
 
+    <p id="customer-id" data-id="@Model.Customer.Id" hidden></p>
+    <p id="country-code" data-country="@regionInfo.TwoLetterISORegionName" hidden></p>
+    <p id="lang-code" data-lang="@requestCulture.Culture.TwoLetterISOLanguageName" hidden></p>
+
     @if (Model.Addresses.IsNullOrEmpty())
     {
-        <p>@localizer["Add your main delivery address"]</p>
+        <p>@localizer["Add your delivery address"]</p>
 
-        <div class="form-group col-md-7">
-            <label class="form-label">@localizer["Main Address"]</label>
-            <div class="input-group col-7">
-                <input class="form-control" id="input-address-0" value="" disabled />
-                <div class="input-group-append">
-                    <button class="btn btn-outline-secondary" type="button" id="location-btn-addr-0">
-                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-geo-alt" viewBox="0 0 16 16">
-                            <path d="M12.166 8.94c-.524 1.062-1.234 2.12-1.96 3.07A31.493 31.493 0 0 1 8 14.58a31.481 31.481 0 0 1-2.206-2.57c-.726-.95-1.436-2.008-1.96-3.07C3.304 7.867 3 6.862 3 6a5 5 0 0 1 10 0c0 .862-.305 1.867-.834 2.94zM8 16s6-5.686 6-10A6 6 0 0 0 2 6c0 4.314 6 10 6 10z" />
-                            <path d="M8 8a2 2 0 1 1 0-4 2 2 0 0 1 0 4zm0 1a3 3 0 1 0 0-6 3 3 0 0 0 0 6z" />
-                        </svg>
-                    </button>
+        <div class="form-group col-md-7" id="first-address-form">
+            <label class="form-label">@localizer["First Address"]</label>
+            <form autocomplete="off">
+                <div class="input-group col-7">
+                    <input class="form-control shadow" id="input-first-address" placeholder="Your Address" value="" data-lng="" data-lat="" />
+                    <div class="input-group-append">
+                        <button type="button" class="btn btn-outline-secondary shadow" data-bs-toggle="tooltip" data-bs-placement="right" title="Automatically detect your position" id="location-first-address-btn">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-geo-alt" viewBox="0 0 16 16">
+                                <path d="M12.166 8.94c-.524 1.062-1.234 2.12-1.96 3.07A31.493 31.493 0 0 1 8 14.58a31.481 31.481 0 0 1-2.206-2.57c-.726-.95-1.436-2.008-1.96-3.07C3.304 7.867 3 6.862 3 6a5 5 0 0 1 10 0c0 .862-.305 1.867-.834 2.94zM8 16s6-5.686 6-10A6 6 0 0 0 2 6c0 4.314 6 10 6 10z" />
+                                <path d="M8 8a2 2 0 1 1 0-4 2 2 0 0 1 0 4zm0 1a3 3 0 1 0 0-6 3 3 0 0 0 0 6z" />
+                            </svg>
+                        </button>
+                    </div>
                 </div>
-            </div>
+            </form>
         </div>
 
-        <button id="save-btn-0" class="btn btn-primary" type="button">@localizer["Save"]</button>
-
-        <button class="btn btn-outline-secondary edit-btn" data-bs-toggle="collapse" data-bs-target="#address-0-collapse" aria-expanded="false" aria-controls="address-0-collapse">
-            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-pencil-square" viewBox="0 0 16 16">
-                <path d="M15.502 1.94a.5.5 0 0 1 0 .706L14.459 3.69l-2-2L13.502.646a.5.5 0 0 1 .707 0l1.293 1.293zm-1.75 2.456-2-2L4.939 9.21a.5.5 0 0 0-.121.196l-.805 2.414a.25.25 0 0 0 .316.316l2.414-.805a.5.5 0 0 0 .196-.12l6.813-6.814z" />
-                <path fill-rule="evenodd" d="M1 13.5A1.5 1.5 0 0 0 2.5 15h11a1.5 1.5 0 0 0 1.5-1.5v-6a.5.5 0 0 0-1 0v6a.5.5 0 0 1-.5.5h-11a.5.5 0 0 1-.5-.5v-11a.5.5 0 0 1 .5-.5H9a.5.5 0 0 0 0-1H2.5A1.5 1.5 0 0 0 1 2.5v11z" />
-            </svg>
-            @localizer["Insert Manually"]
-        </button>
-
-        <div class="collapse" id="address-0-collapse">
-            <div class="card card-body">
-
-                @await Html.PartialAsync("AddressForm", Model)
-
-        </div>
-    </div>
-}
-else
-{
-    <form method="post" asp-page-handler="DeleteAddress" asp-route-id="@Model.Addresses[0].Id">
-        <div class="form-group col-md-7">
-            <label class="form-label">@localizer["Primary Address"]</label>
-            <div class="input-group col-7">
-                <input hidden id="address0-id" value="@Model.Addresses[0].Id" />
-                <input class="form-control" id="input-address-0" value="@Model.Addresses[0].PlaceName" disabled />
-                <div class="input-group-append">
-                    <button class="btn btn-outline-secondary" type="button" id="location-btn-addr-0">
-                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-geo-alt" viewBox="0 0 16 16">
-                            <path d="M12.166 8.94c-.524 1.062-1.234 2.12-1.96 3.07A31.493 31.493 0 0 1 8 14.58a31.481 31.481 0 0 1-2.206-2.57c-.726-.95-1.436-2.008-1.96-3.07C3.304 7.867 3 6.862 3 6a5 5 0 0 1 10 0c0 .862-.305 1.867-.834 2.94zM8 16s6-5.686 6-10A6 6 0 0 0 2 6c0 4.314 6 10 6 10z" />
-                            <path d="M8 8a2 2 0 1 1 0-4 2 2 0 0 1 0 4zm0 1a3 3 0 1 0 0-6 3 3 0 0 0 0 6z" />
-                        </svg>
-                    </button>
-                </div>
-                <div class="input-group-append">
-                    <button class="btn btn-outline-secondary" type="submit" id="delete-btn-addr-0" value="DeleteAddress">
-                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-trash" viewBox="0 0 16 16">
-                            <path d="M5.5 5.5A.5.5 0 0 1 6 6v6a.5.5 0 0 1-1 0V6a.5.5 0 0 1 .5-.5zm2.5 0a.5.5 0 0 1 .5.5v6a.5.5 0 0 1-1 0V6a.5.5 0 0 1 .5-.5zm3 .5a.5.5 0 0 0-1 0v6a.5.5 0 0 0 1 0V6z" />
-                            <path fill-rule="evenodd" d="M14.5 3a1 1 0 0 1-1 1H13v9a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V4h-.5a1 1 0 0 1-1-1V2a1 1 0 0 1 1-1H6a1 1 0 0 1 1-1h2a1 1 0 0 1 1 1h3.5a1 1 0 0 1 1 1v1zM4.118 4 4 4.059V13a1 1 0 0 0 1 1h6a1 1 0 0 0 1-1V4.059L11.882 4H4.118zM2.5 3V2h11v1h-11z" />
-                        </svg>
-                    </button>
-                </div>
-            </div>
-        </div>
-    </form>
-
-        <button class="btn btn-outline-secondary edit-btn" data-bs-toggle="collapse" data-bs-target="#address-0-collapse" aria-expanded="false" aria-controls="address-0-collapse">
-            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-pencil-square" viewBox="0 0 16 16">
-                <path d="M15.502 1.94a.5.5 0 0 1 0 .706L14.459 3.69l-2-2L13.502.646a.5.5 0 0 1 .707 0l1.293 1.293zm-1.75 2.456-2-2L4.939 9.21a.5.5 0 0 0-.121.196l-.805 2.414a.25.25 0 0 0 .316.316l2.414-.805a.5.5 0 0 0 .196-.12l6.813-6.814z" />
-                <path fill-rule="evenodd" d="M1 13.5A1.5 1.5 0 0 0 2.5 15h11a1.5 1.5 0 0 0 1.5-1.5v-6a.5.5 0 0 0-1 0v6a.5.5 0 0 1-.5.5h-11a.5.5 0 0 1-.5-.5v-11a.5.5 0 0 1 .5-.5H9a.5.5 0 0 0 0-1H2.5A1.5 1.5 0 0 0 1 2.5v11z" />
-            </svg>
-            @localizer["Edit"]
-        </button>
-
-        <div class="collapse" id="address-0-collapse">
-            <div class="card card-body">
-
-                @await Html.PartialAsync("EditMainAddress", Model)
-
-            </div>
-        </div>
+        <button id="save-first-address-btn" class="btn btn-primary shadow" type="button">@localizer["Save"]</button>
     }
-
-    <hr />
-
-    @if (Model.Addresses.IsNullOrEmpty() || Model.Addresses.Count == 1)
+    else
     {
-        <p>@localizer["Add your secondary address"]</p>
-
-        <div class="form-group col-md-7">
-            <label class="form-label">@localizer["Secondary Address"]</label>
-            <div class="input-group col-7">
-                <input class="form-control" id="input-address-1" value="" disabled />
+        <div class="form-group col-md-9">
+            <label class="form-label">@localizer["First Address"]</label>
+            <div class="input-group col-9">
+                <input hidden id="address0-id" value="@Model.Addresses[0].Id" />
+                <input class="form-control shadow" id="input-first-address" value="@Model.Addresses[0].PlaceName" disabled data-id="@Model.Addresses[0].Id"/>
                 <div class="input-group-append">
-                    <button class="btn btn-outline-secondary" type="button" id="location-btn-addr-1">
+                    <button type="button" class="btn btn-outline-secondary shadow" data-bs-toggle="tooltip" data-bs-placement="right" title="@localizer["Automatically detect your position"]" id="location-first-address-btn" hidden>
                         <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-geo-alt" viewBox="0 0 16 16">
                             <path d="M12.166 8.94c-.524 1.062-1.234 2.12-1.96 3.07A31.493 31.493 0 0 1 8 14.58a31.481 31.481 0 0 1-2.206-2.57c-.726-.95-1.436-2.008-1.96-3.07C3.304 7.867 3 6.862 3 6a5 5 0 0 1 10 0c0 .862-.305 1.867-.834 2.94zM8 16s6-5.686 6-10A6 6 0 0 0 2 6c0 4.314 6 10 6 10z" />
                             <path d="M8 8a2 2 0 1 1 0-4 2 2 0 0 1 0 4zm0 1a3 3 0 1 0 0-6 3 3 0 0 0 0 6z" />
                         </svg>
                     </button>
-                </div>
-            </div>
-        </div>
-
-        <button id="save-btn-1" class="btn btn-primary" type="button">@localizer["Save"]</button>
-
-        <button class="btn btn-outline-secondary edit-btn" data-bs-toggle="collapse" data-bs-target="#address-1-collapse" aria-expanded="false" aria-controls="address-1-collapse">
-            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-pencil-square" viewBox="0 0 16 16">
-                <path d="M15.502 1.94a.5.5 0 0 1 0 .706L14.459 3.69l-2-2L13.502.646a.5.5 0 0 1 .707 0l1.293 1.293zm-1.75 2.456-2-2L4.939 9.21a.5.5 0 0 0-.121.196l-.805 2.414a.25.25 0 0 0 .316.316l2.414-.805a.5.5 0 0 0 .196-.12l6.813-6.814z" />
-                <path fill-rule="evenodd" d="M1 13.5A1.5 1.5 0 0 0 2.5 15h11a1.5 1.5 0 0 0 1.5-1.5v-6a.5.5 0 0 0-1 0v6a.5.5 0 0 1-.5.5h-11a.5.5 0 0 1-.5-.5v-11a.5.5 0 0 1 .5-.5H9a.5.5 0 0 0 0-1H2.5A1.5 1.5 0 0 0 1 2.5v11z" />
-            </svg>
-            @localizer["Insert Manually"]
-        </button>
-
-        <div class="collapse" id="address-1-collapse">
-            <div class="card card-body">
-
-                @await Html.PartialAsync("AddressFormSecondary", Model)
-
-        </div>
-    </div>
-}
-else
-{
-    <form method="post" asp-page-handler="DeleteAddress" asp-route-id="@Model.Addresses[1].Id">
-        <div class="form-group col-md-7">
-            <label class="form-label">@localizer["Secondary Address"]</label>
-            <div class="input-group col-7">
-                <input hidden id="address1-id" value="@Model.Addresses[1].Id"/>
-                <input class="form-control" id="input-address-1" value="@Model.Addresses[1].PlaceName" disabled/>
-                <div class="input-group-append">
-                    <button class="btn btn-outline-secondary" type="button" id="location-btn-addr-1">
-                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-geo-alt" viewBox="0 0 16 16">
-                            <path d="M12.166 8.94c-.524 1.062-1.234 2.12-1.96 3.07A31.493 31.493 0 0 1 8 14.58a31.481 31.481 0 0 1-2.206-2.57c-.726-.95-1.436-2.008-1.96-3.07C3.304 7.867 3 6.862 3 6a5 5 0 0 1 10 0c0 .862-.305 1.867-.834 2.94zM8 16s6-5.686 6-10A6 6 0 0 0 2 6c0 4.314 6 10 6 10z"/>
-                            <path d="M8 8a2 2 0 1 1 0-4 2 2 0 0 1 0 4zm0 1a3 3 0 1 0 0-6 3 3 0 0 0 0 6z"/>
-                        </svg>
-                    </button>
-                </div>
-                <div class="input-group-append">
-                    <button class="btn btn-outline-secondary" type="submit" id="delete-btn-addr-1">
+                    <button class="btn btn-outline-danger shadow" type="submit" id="delete-first-address-btn" title="@localizer["Delete address"]">
                         <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-trash" viewBox="0 0 16 16">
                             <path d="M5.5 5.5A.5.5 0 0 1 6 6v6a.5.5 0 0 1-1 0V6a.5.5 0 0 1 .5-.5zm2.5 0a.5.5 0 0 1 .5.5v6a.5.5 0 0 1-1 0V6a.5.5 0 0 1 .5-.5zm3 .5a.5.5 0 0 0-1 0v6a.5.5 0 0 0 1 0V6z"/>
                             <path fill-rule="evenodd" d="M14.5 3a1 1 0 0 1-1 1H13v9a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V4h-.5a1 1 0 0 1-1-1V2a1 1 0 0 1 1-1H6a1 1 0 0 1 1-1h2a1 1 0 0 1 1 1h3.5a1 1 0 0 1 1 1v1zM4.118 4 4 4.059V13a1 1 0 0 0 1 1h6a1 1 0 0 0 1-1V4.059L11.882 4H4.118zM2.5 3V2h11v1h-11z"/>
@@ -167,270 +82,67 @@ else
                 </div>
             </div>
         </div>
-    </form>
 
-        <button class="btn btn-outline-secondary edit-btn" data-bs-toggle="collapse" data-bs-target="#address-1-collapse" aria-expanded="false" aria-controls="address-1-collapse">
-            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-pencil-square" viewBox="0 0 16 16">
-                <path d="M15.502 1.94a.5.5 0 0 1 0 .706L14.459 3.69l-2-2L13.502.646a.5.5 0 0 1 .707 0l1.293 1.293zm-1.75 2.456-2-2L4.939 9.21a.5.5 0 0 0-.121.196l-.805 2.414a.25.25 0 0 0 .316.316l2.414-.805a.5.5 0 0 0 .196-.12l6.813-6.814z" />
-                <path fill-rule="evenodd" d="M1 13.5A1.5 1.5 0 0 0 2.5 15h11a1.5 1.5 0 0 0 1.5-1.5v-6a.5.5 0 0 0-1 0v6a.5.5 0 0 1-.5.5h-11a.5.5 0 0 1-.5-.5v-11a.5.5 0 0 1 .5-.5H9a.5.5 0 0 0 0-1H2.5A1.5 1.5 0 0 0 1 2.5v11z" />
-            </svg>
-            Edit
-        </button>
-
-        <div class="collapse" id="address-1-collapse">
-            <div class="card card-body">
-
-                @await Html.PartialAsync("EditSecondaryAddress", Model)
-
-            </div>
-        </div>
+        <button id="save-first-address-btn" class="btn btn-primary shadow" type="button" hidden>@localizer["Save"]</button>
     }
 
+    <hr />
+
+    @if (Model.Addresses.IsNullOrEmpty() || Model.Addresses.Count == 1)
+    {
+        <p>@localizer["Add your delivery address"]</p>
+
+        <div class="form-group col-md-9" id="second-address-form">
+            <label class="form-label">@localizer["Second Address"]</label>
+            <form autocomplete="off">
+                <div class="input-group col-9">
+                    <input class="form-control shadow" id="input-second-address" placeholder="Your Address" value="" data-lng="" data-lat="" />
+                    <div class="input-group-append">
+                        <button class="btn btn-outline-secondary shadow" type="button" data-bs-toggle="tooltip" data-bs-placement="right" title="Automatically detect your position" id="location-second-address-btn">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-geo-alt" viewBox="0 0 16 16">
+                                <path d="M12.166 8.94c-.524 1.062-1.234 2.12-1.96 3.07A31.493 31.493 0 0 1 8 14.58a31.481 31.481 0 0 1-2.206-2.57c-.726-.95-1.436-2.008-1.96-3.07C3.304 7.867 3 6.862 3 6a5 5 0 0 1 10 0c0 .862-.305 1.867-.834 2.94zM8 16s6-5.686 6-10A6 6 0 0 0 2 6c0 4.314 6 10 6 10z" />
+                                <path d="M8 8a2 2 0 1 1 0-4 2 2 0 0 1 0 4zm0 1a3 3 0 1 0 0-6 3 3 0 0 0 0 6z" />
+                            </svg>
+                        </button>
+                    </div>
+                </div>
+            </form>
+        </div>
+
+        <button id="save-second-address-btn" class="btn btn-primary shadow" type="button">@localizer["Save"]</button>
+    }
+    else
+    {
+        <div class="form-group col-md-9">
+            <label class="form-label">@localizer["Second Address"]</label>
+            <div class="input-group col-9">
+                <input hidden id="address1-id" value="@Model.Addresses[1].Id" />
+                <input class="form-control shadow" id="input-second-address" value="@Model.Addresses[1].PlaceName" disabled data-id="@Model.Addresses[1].Id" />
+                <div class="input-group-append">
+                    <button class="btn btn-outline-secondary shadow" type="button" data-bs-toggle="tooltip" data-bs-placement="right" title="Automatically detect your position" id="location-second-address-btn" hidden>
+                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-geo-alt" viewBox="0 0 16 16">
+                            <path d="M12.166 8.94c-.524 1.062-1.234 2.12-1.96 3.07A31.493 31.493 0 0 1 8 14.58a31.481 31.481 0 0 1-2.206-2.57c-.726-.95-1.436-2.008-1.96-3.07C3.304 7.867 3 6.862 3 6a5 5 0 0 1 10 0c0 .862-.305 1.867-.834 2.94zM8 16s6-5.686 6-10A6 6 0 0 0 2 6c0 4.314 6 10 6 10z" />
+                            <path d="M8 8a2 2 0 1 1 0-4 2 2 0 0 1 0 4zm0 1a3 3 0 1 0 0-6 3 3 0 0 0 0 6z" />
+                        </svg>
+                    </button>
+                    <button class="btn btn-outline-danger shadow" type="submit" id="delete-second-address-btn" title="@localizer["Delete address"]">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-trash" viewBox="0 0 16 16">
+                            <path d="M5.5 5.5A.5.5 0 0 1 6 6v6a.5.5 0 0 1-1 0V6a.5.5 0 0 1 .5-.5zm2.5 0a.5.5 0 0 1 .5.5v6a.5.5 0 0 1-1 0V6a.5.5 0 0 1 .5-.5zm3 .5a.5.5 0 0 0-1 0v6a.5.5 0 0 0 1 0V6z"/>
+                            <path fill-rule="evenodd" d="M14.5 3a1 1 0 0 1-1 1H13v9a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V4h-.5a1 1 0 0 1-1-1V2a1 1 0 0 1 1-1H6a1 1 0 0 1 1-1h2a1 1 0 0 1 1 1h3.5a1 1 0 0 1 1 1v1zM4.118 4 4 4.059V13a1 1 0 0 0 1 1h6a1 1 0 0 0 1-1V4.059L11.882 4H4.118zM2.5 3V2h11v1h-11z"/>
+                        </svg>
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <button id="save-second-address-btn" class="btn btn-primary shadow" type="button" hidden>@localizer["Save"]</button>
+    }
 </div>
 
 @section Scripts
 {
-    <partial name="_ValidationScriptsPartial" />
+<partial name="_ValidationScriptsPartial" />
 
-    <script src="https://api.mapbox.com/mapbox-gl-js/v2.3.1/mapbox-gl.js"></script>
-    <script src="https://unpkg.com/@@mapbox/mapbox-sdk/umd/mapbox-sdk.min.js"></script>
-    <script src="/js/classes/address.min.js"></script>
-
-    <script type="text/javascript">
-        $(function() {
-            $("#location-btn-addr-0").on("mousedown",
-                function() {
-                    navigator.geolocation.getCurrentPosition(getCoords0);
-                });
-
-            /**
-             * forward geocode
-             * @@param position latlng
-             */
-            function getCoords0(position) {
-                const accessToken = 'pk.eyJ1Ijoic3RlY3JvdHRpMSIsImEiOiJja3Bna2kzbHYyaThoMm9ueHl1dzlnaTc1In0.EpALSOaDOmuM8XGS_IQzvA';
-                const url = `https://api.mapbox.com/geocoding/v5/mapbox.places/${position.coords.longitude},${position.coords.latitude}.json?limit=1&access_token=${accessToken}`;
-                $.ajax({
-                    type: "GET", // get reverse geocoding from mapbox api
-                    url: url,
-                    dataType: "JSON",
-                    contentType: "application/json; charset=utf-8",
-                    success: function(data, status, xhr) {
-                        $("#input-address-0").val(data.features[0].place_name);
-                        $("#save-btn-0").on("click",
-                            function() {
-                                const address0 = new Address(
-                                    data.features[0].place_name,    // placeName
-                                    position.coords.longitude,      // longitude
-                                    position.coords.latitude,       // latitude
-                                    @Model.Customer.Id,             // customerId
-                                    null);                          // restaurateurId
-                                // save into database
-                                createAddress(address0);
-                            });
-                    },
-                    error: function(jqXhr, textStatus, errorMessage) {
-                        console.log(errorMessage);
-                    }
-                });
-            }
-            /**
-             * Save the manually inserted address
-             */
-            $("#edit-address-save-0").on("mousedown",
-                function() {
-                    const accessToken = 'pk.eyJ1Ijoic3RlY3JvdHRpMSIsImEiOiJja3Bna2kzbHYyaThoMm9ueHl1dzlnaTc1In0.EpALSOaDOmuM8XGS_IQzvA';
-                    const query = `${$("#address0-line1").val()}, ${$("#address0-line2").val()}, ${$("#address0-number").val()}, ${$("#address0-city").val()}, ${$("#address0-postal-code").val()}, ${$("#address0-state-province").val()}, ${$("#address0-country option:selected").val()}`;
-                    const url = `https://api.mapbox.com/geocoding/v5/mapbox.places/${query}.json?limit=1&access_token=${accessToken}`;
-                    $.ajax({ //forward geocode
-                        type: "GET",
-                        url: url,
-                        dataType: "JSON",
-                        contentType: "application/json; charset=utf-8",
-                        success: function(data, status, xhr) {
-                            const [longitude, latitude] = data.features[0].center;
-                            const editAddress0 = new Address(
-                                query,
-                                longitude,
-                                latitude,
-                                @Model.Customer.Id,
-                                null
-                            );
-                            createAddress(editAddress0);
-                        },
-                        error: function() {
-                            console.log("Error");
-                        }
-                    });
-                });
-        /**
-         * Save the manually inserted address
-         */
-            $("#edit-address-save-1").on("click",
-                function() {
-                    const accessToken = 'pk.eyJ1Ijoic3RlY3JvdHRpMSIsImEiOiJja3Bna2kzbHYyaThoMm9ueHl1dzlnaTc1In0.EpALSOaDOmuM8XGS_IQzvA';
-                    const query = `${$("#address1-line1").val()}, ${$("#address1-line2").val()}, ${$("#address1-number").val()}, ${$("#address1-city").val()}, ${$("#address1-postal-code").val()}, ${$("#address1-state-province").val()}, ${$("#address1-country option:selected").val()}`;
-                    const url = `https://api.mapbox.com/geocoding/v5/mapbox.places/${query}.json?limit=1&access_token=${accessToken}`;
-                    $.ajax({ //forward geocode
-                        type: "GET",
-                        url: url,
-                        dataType: "JSON",
-                        contentType: "application/json; charset=utf-8",
-                        success: function(data, status, xhr) {
-                            const [longitude, latitude] = data.features[0].center;
-                            const editAddress1 = new Address(
-                                query,
-                                longitude,
-                                latitude,
-                                @Model.Customer.Id,
-                                null
-                                );
-                            createAddress(editAddress1);
-                        },
-                        error: function() {
-                            console.log("Error");
-                        }
-                    });
-                });
-            /**
-             * Update the primary address
-             */
-            $("#update-address-0").on("mousedown",
-                function() {
-                    const accessToken = 'pk.eyJ1Ijoic3RlY3JvdHRpMSIsImEiOiJja3Bna2kzbHYyaThoMm9ueHl1dzlnaTc1In0.EpALSOaDOmuM8XGS_IQzvA';
-                    const query = `${$("#update-address0-line1").val()}, ${$("#update-address0-line2").val()}, ${$("#update-address0-number").val()}, ${$("#update-address0-city").val()}, ${$("#update-address0-postal-code").val()}, ${$("#update-address0-state-province").val()}, ${$("#update-address0-country option:selected").val()}`;
-                    const url = `https://api.mapbox.com/geocoding/v5/mapbox.places/${query}.json?limit=1&access_token=${accessToken}`;
-                    $.ajax({ //forward geocode
-                        type: "GET",
-                        url: url,
-                        dataType: "JSON",
-                        contentType: "application/json; charset=utf-8",
-                        success: function(data, status, xhr) {
-                            const [longitude, latitude] = data.features[0].center;
-                            const newAddress0 = new Address(
-                                query,
-                                longitude,
-                                latitude,
-                                @Model.Customer.Id,
-                                null
-                            );
-                            const id = $("#address0-id").value;
-                            updateAddress(newAddress0, id);
-                        },
-                        error: function() {
-                            console.log("Error");
-                        }
-                    });
-                });
-            /**
-             *
-             * Update secondary address
-             */
-            $("#update-address-1").on("mousedown",
-                function() {
-                    const accessToken = 'pk.eyJ1Ijoic3RlY3JvdHRpMSIsImEiOiJja3Bna2kzbHYyaThoMm9ueHl1dzlnaTc1In0.EpALSOaDOmuM8XGS_IQzvA';
-                    const query = `${$("#update-address1-line1").val()}, ${$("#update-address1-line2").val()}, ${$("#update-address1-number").val()}, ${$("#update-address1-city").val()}, ${$("#update-address1-postal-code").val()}, ${$("#update-address1-state-province").val()}, ${$("#update-address1-country option:selected").val()}`;
-                    const url = `https://api.mapbox.com/geocoding/v5/mapbox.places/${query}.json?limit=1&access_token=${accessToken}`;
-                    $.ajax({ //forward geocode
-                        type: "GET",
-                        url: url,
-                        dataType: "JSON",
-                        contentType: "application/json; charset=utf-8",
-                        success: function(data, status, xhr) {
-                            const [longitude, latitude] = data.features[0].center;
-                            const newAddress1 = new Address(
-                                query,
-                                longitude,
-                                latitude,
-                                @Model.Customer.Id,
-                                null
-                            );
-                            const id = $("#address1-id").value;
-                            updateAddress(newAddress1, id);
-                        },
-                        error: function() {
-                            console.log("Error");
-                        }
-                    });
-                });
-            $("#location-btn-addr-1").on("mousedown",
-                function() {
-                    navigator.geolocation.getCurrentPosition(getCoords1);
-                });
-            function getCoords1(position) {
-                const accessToken = 'pk.eyJ1Ijoic3RlY3JvdHRpMSIsImEiOiJja3Bna2kzbHYyaThoMm9ueHl1dzlnaTc1In0.EpALSOaDOmuM8XGS_IQzvA';
-                const url = `https://api.mapbox.com/geocoding/v5/mapbox.places/${position.coords.longitude},${position.coords.latitude}.json?limit=1&access_token=${accessToken}`;
-                $.ajax({
-                    type: "GET", // get reverse geocoding from mapbox api
-                    async: true,
-                    url: url,
-                    dataType: "JSON",
-                    contentType: "application/json; charset=utf-8",
-                    success: function(data, status, xhr) {
-                        $("#input-address-1").val(data.features[0].place_name);
-                        $("#save-btn-1").on("click",
-                            function() {
-                                const address1 = new Address(
-                                    data.features[0].place_name,    // placeName
-                                    position.coords.longitude,      // longitude
-                                    position.coords.latitude,       // latitude
-                                    @Model.Customer.Id,             // customerId
-                                    null);                          // restaurateurId
-                                $.ajax({
-                                    type: "POST", // save into database
-                                    async: true,
-                                    url: "/api/addresses",
-                                    dataType: "JSON",
-                                    data: JSON.stringify(address1),
-                                    contentType: "application/json; charset=utf-8",
-                                    success: function(data, status, xhr) {
-                                        console.log(status);
-                                        window.location.reload(true);
-                                    },
-                                    error: function(jqXhr, textStatus, errorMessage) {
-                                        console.log(errorMessage);
-                                    }
-                                });
-                            });
-                    },
-                    error: function(jqXhr, textStatus, errorMessage) {
-                        console.log(errorMessage);
-                    }
-                });
-            }
-            function updateAddress(newAddress, id) {
-                $.ajax({
-                    type: "PUT",
-                    url: `/api/addresses/${id}`,
-                    dataType: "JSON",
-                    data: JSON.stringify(newAddress),
-                    contentType: "application/json; charset=utf-8",
-                    success: function(data, status, xhr) {
-                        console.log(status);
-                        window.location.reload(true);
-                    },
-                    error: function(jqXhr, textStatus, errorMessage) {
-                        console.log(errorMessage);
-                    }
-                });
-            }
-            function createAddress(address) {
-                $.ajax({
-                    type: "POST",
-                    async: true,
-                    url: "/api/addresses",
-                    dataType: "JSON",
-                    data: JSON.stringify(address),
-                    contentType: "application/json; charset=utf-8",
-                    success: function (data, status, xhr) {
-                        window.location.reload(true);
-                        console.log(status);
-                    },
-                    error: function(jqXhr, textStatus, errorMessage) {
-                        console.log(errorMessage);
-                    }
-                });
-            }
-        });
-    </script>
+<script src="https://code.jquery.com/ui/1.13.0/jquery-ui.js"></script>
+<script src="/js/address.js" type="text/javascript"></script>
 }

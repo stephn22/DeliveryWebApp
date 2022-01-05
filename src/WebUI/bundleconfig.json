@@ -46,5 +46,17 @@
     "inputFiles": [
       "wwwroot/css/directions.css"
     ]
+  },
+  {
+    "outputFileName": "wwwroot/css/site.min.css",
+    "inputFiles": [
+      "wwwroot/css/site.css"
+    ]
+  },
+  {
+    "outputFileName": "wwwroot/js/address.min.js",
+    "inputFiles": [
+      "wwwroot/js/address.js"
+    ]
   }
 ]

@@ -5,6 +5,7 @@
         public int OrderId { get; set; }
         public virtual Order Order { get; set; }
         public int ProductId { get; set; }
+        public virtual Product Product { get; set; }
 
         /// <summary>
         /// The price of the product while purchasing it

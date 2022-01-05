@@ -4,7 +4,7 @@ using DeliveryWebApp.Application.Common.Security;
 using DeliveryWebApp.Application.Orders.Extensions;
 using DeliveryWebApp.Domain.Entities;
 using DeliveryWebApp.Infrastructure.Identity;
-using IdentityServer4.Extensions;
+using Duende.IdentityServer.Extensions;
 using MediatR;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
@@ -39,6 +39,7 @@ namespace DeliveryWebApp.WebUI.Pages.RestaurateurPages
         }
 
         public Restaurateur Restaurateur { get; set; }
+        public bool HasRestaurant { get; set; }
         public PaginatedList<Order> Orders { get; set; }
         public List<Product> Products { get; set; }
         public List<Address> Addresses { get; set; }
@@ -57,6 +58,14 @@ namespace DeliveryWebApp.WebUI.Pages.RestaurateurPages
             if (Restaurateur == null)
             {
                 return NotFound("Could not load entities");
+            }
+
+            HasRestaurant = Restaurateur.Logo != null &&
+                            Restaurateur.RestaurantName != null && Restaurateur.RestaurantCategory != null;
+
+            if (!HasRestaurant)
+            {
+                return RedirectToPage("RestaurantDashboard");
             }
 
             return Page();

@@ -1,4 +1,4 @@
-[![.NET](https://github.com/stecrotti1/DeliveryWebApp/actions/workflows/dotnet.yml/badge.svg?branch=master)](https://github.com/stecrotti1/DeliveryWebApp/actions/workflows/dotnet.yml)
+[![.NET](https://github.com/stecrotti1/DeliveryWebApp/actions/workflows/dotnet.yml/badge.svg?branch=dev)](https://github.com/stecrotti1/DeliveryWebApp/actions/workflows/dotnet.yml)
 
 # Delivery Web Application
 
@@ -11,10 +11,10 @@ This web application was developed following the principles of [Clean Architectu
 ---
 
 ## Technologies:
-* ASP.NET Core 5
+* [ASP.NET Core 6](https://docs.microsoft.com/en-us/aspnet/core/introduction-to-aspnet-core?view=aspnetcore-6.0)
 * [Bootstrap 5](https://getbootstrap.com/)
 * [qrcodejs](https://github.com/davidshimjs/qrcodejs) (2FA QR Code generation)
-* [Entity Framework Core](https://docs.microsoft.com/en-us/ef/core/) (Microsoft SQL Server)
+* [Entity Framework Core 6](https://docs.microsoft.com/en-us/ef/core/) (Microsoft SQL Server)
 * [AutoMapper](https://automapper.org/)
 * [MediatR](https://github.com/jbogard/MediatR)
 * [FluentValidation](https://fluentvalidation.net/)

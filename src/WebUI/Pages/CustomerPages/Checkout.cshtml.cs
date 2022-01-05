@@ -6,7 +6,7 @@ using DeliveryWebApp.Application.Orders.Commands.CreateOrder;
 using DeliveryWebApp.Domain.Entities;
 using DeliveryWebApp.Infrastructure.Identity;
 using DeliveryWebApp.Infrastructure.Persistence;
-using IdentityServer4.Extensions;
+using Duende.IdentityServer.Extensions;
 using MediatR;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
@@ -70,6 +70,7 @@ namespace DeliveryWebApp.WebUI.Pages.CustomerPages
 
             [Required]
             [DataType(DataType.Date)]
+            [DisplayFormat(DataFormatString = "{0:MM/yyyy}", ApplyFormatInEditMode = true)]
             public DateTime ExpirationDate { get; set; }
 
             [Required]

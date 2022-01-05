@@ -120,29 +120,17 @@
   <data name="Address" xml:space="preserve">
     <value>Indirizzo</value>
   </data>
-  <data name="Address Line 1" xml:space="preserve">
-    <value>Linea Indirizzo 1</value>
-  </data>
-  <data name="Address Line 2" xml:space="preserve">
-    <value>Linea Indirizzo 2</value>
+  <data name="Automatically detect your position" xml:space="preserve">
+    <value>Rileva la posizione automaticamente</value>
   </data>
   <data name="Begin" xml:space="preserve">
     <value>Inizia</value>
-  </data>
-  <data name="Building n°... (optional)" xml:space="preserve">
-    <value>N° edificio (opzionale)</value>
   </data>
   <data name="Category" xml:space="preserve">
     <value>Categoria</value>
   </data>
   <data name="Choose a logo" xml:space="preserve">
     <value>Scegli un logo</value>
-  </data>
-  <data name="City" xml:space="preserve">
-    <value>Città</value>
-  </data>
-  <data name="Country" xml:space="preserve">
-    <value>Nazione</value>
   </data>
   <data name="Insert manually" xml:space="preserve">
     <value>Inserisci manualmente</value>
@@ -156,9 +144,6 @@
   <data name="Orders" xml:space="preserve">
     <value>Ordini</value>
   </data>
-  <data name="Postal Code" xml:space="preserve">
-    <value>CAP</value>
-  </data>
   <data name="Products" xml:space="preserve">
     <value>Prodotti</value>
   </data>
@@ -168,16 +153,10 @@
   <data name="Select a category" xml:space="preserve">
     <value>Seleziona una categoria</value>
   </data>
-  <data name="State/Province" xml:space="preserve">
-    <value>Stato/Provincia</value>
-  </data>
-  <data name="Street, N°, City, Postal Code, State/Province, Country" xml:space="preserve">
-    <value>Via, N°, Città, CAP, Provincia, Nazione</value>
-  </data>
-  <data name="Street..." xml:space="preserve">
-    <value>Via...</value>
-  </data>
   <data name="Submit" xml:space="preserve">
     <value>Invia</value>
+  </data>
+  <data name="Your restaurant has been created successfully" xml:space="preserve">
+    <value>Il tuo ristorante è stato creato con successo</value>
   </data>
 </root>

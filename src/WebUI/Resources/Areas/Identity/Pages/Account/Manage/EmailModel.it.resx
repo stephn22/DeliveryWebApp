@@ -117,6 +117,9 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
+  <data name="Change Email" xml:space="preserve">
+    <value>Cambia Email</value>
+  </data>
   <data name="Confirmation link to change email sent. Please check your email." xml:space="preserve">
     <value>Il link di conferma cambio email è stato inviato. Per favore controlla la tua email.</value>
   </data>

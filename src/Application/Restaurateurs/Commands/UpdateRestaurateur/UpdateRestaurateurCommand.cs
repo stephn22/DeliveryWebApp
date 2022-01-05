@@ -13,6 +13,7 @@ namespace DeliveryWebApp.Application.Restaurateurs.Commands.UpdateRestaurateur
         public byte[] Logo { get; set; }
         public string RestaurantName { get; set; }
         public string RestaurantCategory { get; set; }
+        public int? RestaurantAddressId { get; set; }
         public Address RestaurantAddress { get; set; }
     }
 
@@ -47,6 +48,11 @@ namespace DeliveryWebApp.Application.Restaurateurs.Commands.UpdateRestaurateur
             if (!string.IsNullOrEmpty(request.RestaurantCategory))
             {
                 entity.RestaurantCategory = request.RestaurantCategory;
+            }
+
+            if (request.RestaurantAddressId != null)
+            {
+                entity.RestaurantAddressId = (int)request.RestaurantAddressId;
             }
 
             if (request.RestaurantAddress != null)
