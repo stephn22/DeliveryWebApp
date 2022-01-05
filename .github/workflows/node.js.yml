@@ -26,7 +26,9 @@ jobs:
       with:
         node-version: ${{ matrix.node-version }}
         cache: 'npm'
-        cache-dependency-path: 'src/WebUI/ClientApp/deliverywebapp.webui'
+        cache-dependency-path: 'src/WebUI/ClientApp/deliverywebapp.webui/package-lock.json'
     - run: npm ci
+      working-directory: ".src/WebUI/ClientApp/deliverywebapp.webui"
     - run: npm run build -if-present
+      working-directory: ".src/WebUI/ClientApp/deliverywebapp.webui"
    # - run: npm test
