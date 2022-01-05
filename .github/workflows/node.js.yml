@@ -27,7 +27,7 @@ jobs:
         node-version: ${{ matrix.node-version }}
         cache: 'npm'
     - run: npm ci
-      working-directory: ./home/runner/work/DeliveryWebApp/DeliveryWebApp/WebUI/ClientApp/deliverywebapp.webui
+      working-directory: ./src/WebUI/ClientApp/deliverywebapp.webui
     - run: npm run build --if-present
-      working-directory: ./home/runner/work/DeliveryWebApp/DeliveryWebApp/WebUI/ClientApp/deliverywebapp.webui
+      working-directory: ./src/WebUI/ClientApp/deliverywebapp.webui
    # - run: npm test
