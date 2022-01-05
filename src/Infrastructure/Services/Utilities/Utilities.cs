@@ -55,7 +55,7 @@ namespace DeliveryWebApp.Infrastructure.Services.Utilities
                 {
                     regionInfo = new RegionInfo(c.LCID);
                 }
-                catch (CultureNotFoundException e)
+                catch (CultureNotFoundException)
                 {
                     regionInfo = new RegionInfo(0x0409); // English europe
                 }

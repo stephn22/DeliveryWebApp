@@ -33,7 +33,7 @@ namespace DeliveryWebApp.Application.OrderItems.Queries
 
                 return list;
             }
-            catch (InvalidOperationException e)
+            catch (InvalidOperationException)
             {
                 return null;
             }

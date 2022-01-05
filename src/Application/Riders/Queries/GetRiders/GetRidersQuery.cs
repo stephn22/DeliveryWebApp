@@ -2,7 +2,6 @@
 using DeliveryWebApp.Domain.Entities;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Logging;
 using System;
 using System.Collections.Generic;
 using System.Threading;
@@ -17,7 +16,6 @@ namespace DeliveryWebApp.Application.Riders.Queries.GetRiders
     public class GetRidersQueryHandler : IRequestHandler<GetRidersQuery, List<Rider>>
     {
         private readonly IApplicationDbContext _context;
-        private readonly ILogger<GetRidersQuery> _logger;
 
         public GetRidersQueryHandler(IApplicationDbContext context)
         {
@@ -30,9 +28,8 @@ namespace DeliveryWebApp.Application.Riders.Queries.GetRiders
             {
                 return await _context.Riders.ToListAsync(cancellationToken);
             }
-            catch (InvalidOperationException e)
+            catch (InvalidOperationException)
             {
-                _logger.LogWarning($"{nameof(Rider)}, {e.Message}");
                 return null;
             }
         }

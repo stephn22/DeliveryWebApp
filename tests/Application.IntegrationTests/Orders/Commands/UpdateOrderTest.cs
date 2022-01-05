@@ -14,6 +14,7 @@ using DeliveryWebApp.Domain.Entities;
 using FluentAssertions;
 using NUnit.Framework;
 using System;
+using System.Linq;
 using System.Threading.Tasks;
 
 namespace DeliveryWebApp.Application.IntegrationTests.Orders.Commands
@@ -163,8 +164,7 @@ namespace DeliveryWebApp.Application.IntegrationTests.Orders.Commands
                 OrderId = order.Id
             });
             order.OrderItems.Should().NotBeNullOrEmpty();
-            order.OrderItems.ForAll(o => o.OrderId.Should().Be(order.Id));
-            order.OrderItems.ForAll(o => o.Id.Should().BeGreaterThan(0));
+            order.OrderItems.Select(o => o.OrderId).Should().Equal(order.Id);
             order.Status.Should().Be(OrderStatus.Delivered);
             order.DeliveryDate.Should().BeSameDateAs((DateTime)updateOrder.DeliveryDate);
             order.TotalPrice.Should().Be(63.37M);

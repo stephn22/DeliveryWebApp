@@ -43,7 +43,7 @@ namespace DeliveryWebApp.Application.Orders.Queries.GetOrders
                 // for customer
                 return await (_context.Orders.Where(o => o.CustomerId == request.CustomerId)).ToListAsync(cancellationToken);
             }
-            catch (InvalidOperationException e)
+            catch (InvalidOperationException)
             {
                 return null;
             }

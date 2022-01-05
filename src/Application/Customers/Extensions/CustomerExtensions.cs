@@ -32,7 +32,7 @@ namespace DeliveryWebApp.Application.Customers.Extensions
                               where request.Id == requestId
                               select request.Customer).FirstAsync();
             }
-            catch (NullReferenceException e)
+            catch (NullReferenceException)
             {
                 return null;
             }

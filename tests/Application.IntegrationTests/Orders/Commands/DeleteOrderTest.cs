@@ -18,11 +18,5 @@ namespace DeliveryWebApp.Application.IntegrationTests.Orders.Commands
             await FluentActions.Invoking(() =>
                 SendAsync(command)).Should().ThrowAsync<ValidationException>();
         }
-
-        [Test]
-        public async Task ShouldDeleteOrderAsync()
-        {
-
-        }
     }
 }
