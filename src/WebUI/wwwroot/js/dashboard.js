@@ -38,6 +38,11 @@ const category = document.getElementById('category');
 const restaurantName = document.getElementById('name');
 
 /**
+ * @type {HTMLButtonElement}
+ */
+const editNameBtn = document.getElementById('edit-restaurant-name');
+
+/**
  * @type {HTMLInputElement}
  */
 const longitude = document.getElementById('longitude');
@@ -55,53 +60,75 @@ const locationBtn = document.getElementById('location-btn');
 /**
  * @type {HTMLButtonElement}
  */
+const editLocationBtn = document.getElementById('edit-location-btn');
+
+/**
+ * @type {HTMLButtonElement}
+ */
 const submitBtn = document.getElementById('submit-btn');
 
 
 /********************** EVENT LISTENERS **********************/
 
-newLogo.addEventListener('change', (input) => {
-    if (input.target.files && input.target.files[0]) {
-        const reader = new FileReader();
+if (newLogo) {
+    newLogo.addEventListener('change', (input) => {
+        if (input.target.files && input.target.files[0]) {
+            const reader = new FileReader();
 
-        reader.onload = (e) => {
-            imgUploaded.setAttribute("src", e.target.result);
-            fadeIn(imgUploaded);
-        };
+            reader.onload = (e) => {
+                imgUploaded.setAttribute("src", e.target.result);
+                fadeIn(imgUploaded);
+            };
 
-        reader.readAsDataURL(input.target.files[0]);
-    }
-});
-
-restaurantAddress.addEventListener('input', () => {
-    const suggestions = getSuggestions(restaurantAddress.value);
-
-    $("#restaurant-address").autocomplete({
-        source: suggestions,
-        focus: function (_event, ui) {
-            restaurantAddress.value = ui.item.value;
-            return false;
-        },
-        select: function (_event, ui) {
-            longitude.value = ui.item.lng;
-            latitude.value = ui.item.lat;
+            reader.readAsDataURL(input.target.files[0]);
         }
     });
-});
+}
 
-locationBtn.addEventListener('click', () => {
-    if (navigator.geolocation) {
-        navigator.geolocation.getCurrentPosition((position) => {
-            getCoordinates(position, restaurantAddress);
+if (restaurantAddress) {
+    restaurantAddress.addEventListener('input', () => {
+        const suggestions = getSuggestions(restaurantAddress.value);
 
-            window.alert(`latitude: ${latitude.value}, longitude: ${longitude.value}`);
+        $("#restaurant-address").autocomplete({
+            source: suggestions,
+            focus: function (_event, ui) {
+                restaurantAddress.value = ui.item.value;
+                return false;
+            },
+            select: function (_event, ui) {
+                longitude.value = ui.item.lng;
+                latitude.value = ui.item.lat;
+            }
         });
-    }
-});
+    });
+}
+
+if (locationBtn) {
+    locationBtn.addEventListener('click', () => {
+        if (navigator.geolocation) {
+            navigator.geolocation.getCurrentPosition((position) => {
+                getCoordinates(position, restaurantAddress);
+
+                window.alert(`latitude: ${latitude.value}, longitude: ${longitude.value}`);
+            });
+        }
+    });
+}
+
+if (editLocationBtn) {
+    editLocationBtn.addEventListener('click', () => {
+        locationBtn.removeAttribute('disabled');
+    });
+}
+
+if (editNameBtn) {
+    editNameBtn.addEventListener('click', () => {
+        restaurantName.removeAttribute('disabled');
+    });
+}
+
 
 /********************** FUNCTIONS **********************/
-
-
 
 /**
  * Retrieves suggestions for a searchstring from Mapbox API
@@ -198,7 +225,7 @@ function disableBtn(btn) {
  * Animates an element with fade in transition (0.3s)
  * @param {Element} element element to be animated
  */
- function fadeIn(element) {
+function fadeIn(element) {
     element.removeAttribute("hidden");
 
     setTimeout(() => {

@@ -1,10 +1,14 @@
 ﻿@page
 @using System.Globalization
+@using Castle.Core.Internal
+@using DeliveryWebApp.Infrastructure.Identity
+@using Microsoft.AspNetCore.Identity
 @using Microsoft.AspNetCore.Localization
 @using Microsoft.Extensions.Configuration
 @using Microsoft.Extensions.Localization
 @model RestaurantDashboardModel
 @inject IConfiguration configuration
+@inject UserManager<ApplicationUser> userManager
 @inject IStringLocalizer<RestaurantDashboardModel> localizer
 @{
     ViewData["Title"] = "Dashboard";
@@ -24,6 +28,7 @@
 {
 <link rel="stylesheet" href="//code.jquery.com/ui/1.13.0/themes/base/jquery-ui.css">
 <link rel="stylesheet" href="/css/images.css" type="text/css" />
+<link rel="stylesheet" href="/css/dashboard.css" />
 
 @* Google fonts *@
 <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -101,38 +106,124 @@
 }
 else
 {
-    <p style="font-family: 'Roboto', sans-serif; font-size: medium; font-size: 2rem">@Html.DisplayFor(modal => modal.Restaurateur.RestaurantName)</p>
+    <img id="dashboard-img" src="data:image/jpeg;base64,@Convert.ToBase64String(Model.Restaurateur.Logo)" class="rounded img-fluid square shadow-lg" alt="@Model.Restaurateur.RestaurantName" />
+    <button class="btn btn-secondary edit-img-btn" type="button" value="NewImage" onclick="openFiles();" id="upload-new-img">
+        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-pencil-square" viewBox="0 0 16 16">
+            <path d="M15.502 1.94a.5.5 0 0 1 0 .706L14.459 3.69l-2-2L13.502.646a.5.5 0 0 1 .707 0l1.293 1.293zm-1.75 2.456-2-2L4.939 9.21a.5.5 0 0 0-.121.196l-.805 2.414a.25.25 0 0 0 .316.316l2.414-.805a.5.5 0 0 0 .196-.12l6.813-6.814z" />
+            <path fill-rule="evenodd" d="M1 13.5A1.5 1.5 0 0 0 2.5 15h11a1.5 1.5 0 0 0 1.5-1.5v-6a.5.5 0 0 0-1 0v6a.5.5 0 0 1-.5.5h-11a.5.5 0 0 1-.5-.5v-11a.5.5 0 0 1 .5-.5H9a.5.5 0 0 0 0-1H2.5A1.5 1.5 0 0 0 1 2.5v11z" />
+        </svg>
+    </button>
+    <input type="file" id="new-img-input" style="display: none;" />
+
+    <p id="restaurant-name" class="title text-start shadow p-2 mb-4 bg-body rounded">@Html.DisplayFor(model => model.Restaurateur.RestaurantName)</p>
     <hr />
-    <div class="d-flex align-items-start">
-        <div class="nav flex-column nav-pills me-3" id="v-pills-tab" role="tablist" aria-orientation="vertical">
+    <div class="container" id="dashboard-items">
 
-            <button class="nav-link active" id="v-pills-home-tab" data-bs-toggle="pill" data-bs-target="#v-pills-home" type="button" role="tab" aria-controls="v-pills-home" aria-selected="true">
-                Dashboard
-                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-shop" viewBox="0 0 16 16">
-                    <path d="M2.97 1.35A1 1 0 0 1 3.73 1h8.54a1 1 0 0 1 .76.35l2.609 3.044A1.5 1.5 0 0 1 16 5.37v.255a2.375 2.375 0 0 1-4.25 1.458A2.371 2.371 0 0 1 9.875 8 2.37 2.37 0 0 1 8 7.083 2.37 2.37 0 0 1 6.125 8a2.37 2.37 0 0 1-1.875-.917A2.375 2.375 0 0 1 0 5.625V5.37a1.5 1.5 0 0 1 .361-.976l2.61-3.045zm1.78 4.275a1.375 1.375 0 0 0 2.75 0 .5.5 0 0 1 1 0 1.375 1.375 0 0 0 2.75 0 .5.5 0 0 1 1 0 1.375 1.375 0 1 0 2.75 0V5.37a.5.5 0 0 0-.12-.325L12.27 2H3.73L1.12 5.045A.5.5 0 0 0 1 5.37v.255a1.375 1.375 0 0 0 2.75 0 .5.5 0 0 1 1 0zM1.5 8.5A.5.5 0 0 1 2 9v6h1v-5a1 1 0 0 1 1-1h3a1 1 0 0 1 1 1v5h6V9a.5.5 0 0 1 1 0v6h.5a.5.5 0 0 1 0 1H.5a.5.5 0 0 1 0-1H1V9a.5.5 0 0 1 .5-.5zM4 15h3v-5H4v5zm5-5a1 1 0 0 1 1-1h2a1 1 0 0 1 1 1v3a1 1 0 0 1-1 1h-2a1 1 0 0 1-1-1v-3zm3 0h-2v3h2v-3z" />
-                </svg>
-            </button>
+        <div class="row">
 
-            <a asp-page="/RestaurateurPages/RestaurantProducts" class="nav-link" id="v-pills-products-tab" role="tab" aria-selected="false">
-                @localizer["Products"]
-                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-box-seam" viewBox="0 0 16 16">
-                    <path d="M8.186 1.113a.5.5 0 0 0-.372 0L1.846 3.5l2.404.961L10.404 2l-2.218-.887zm3.564 1.426L5.596 5 8 5.961 14.154 3.5l-2.404-.961zm3.25 1.7-6.5 2.6v7.922l6.5-2.6V4.24zM7.5 14.762V6.838L1 4.239v7.923l6.5 2.6zM7.443.184a1.5 1.5 0 0 1 1.114 0l7.129 2.852A.5.5 0 0 1 16 3.5v8.662a1 1 0 0 1-.629.928l-7.185 2.874a.5.5 0 0 1-.372 0L.63 13.09a1 1 0 0 1-.63-.928V3.5a.5.5 0 0 1 .314-.464L7.443.184z" />
-                </svg>
-            </a>
+            <div class="col">
 
-            <a asp-page="/RestaurateurPages/RestaurantOrders" class="nav-link" id="v-pills-orders-tab" role="tab" aria-selected="false">
-                @localizer["Orders"]
-                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-mailbox" viewBox="0 0 16 16">
-                    <path d="M4 4a3 3 0 0 0-3 3v6h6V7a3 3 0 0 0-3-3zm0-1h8a4 4 0 0 1 4 4v6a1 1 0 0 1-1 1H1a1 1 0 0 1-1-1V7a4 4 0 0 1 4-4zm2.646 1A3.99 3.99 0 0 1 8 7v6h7V7a3 3 0 0 0-3-3H6.646z" />
-                    <path d="M11.793 8.5H9v-1h5a.5.5 0 0 1 .5.5v1a.5.5 0 0 1-.5.5h-1a.5.5 0 0 1-.354-.146l-.853-.854zM5 7c0 .552-.448 0-1 0s-1 .552-1 0a1 1 0 0 1 2 0z" />
-                </svg>
-            </a>
-        </div>
-        <div class="tab-content" id="v-pills-tabContent">
-            <div class="tab-pane fade show active" id="v-pills-home" role="tabpanel" aria-labelledby="v-pills-home-tab">
+                @* Name *@
+                <div class="form-group col-md-7">
+                    <label class="form-label">@localizer["Name"]</label>
+                    <div class="input-group">
+                        <input class="form-control shadow" value="@Model.Restaurateur.RestaurantName" id="name" disabled />
+                        <div class="input-group-append">
+                            <button id="edit-restaurant-name" type="button" class="btn btn-outline-secondary shadow">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-pencil" viewBox="0 0 16 16">
+                                    <path d="M12.146.146a.5.5 0 0 1 .708 0l3 3a.5.5 0 0 1 0 .708l-10 10a.5.5 0 0 1-.168.11l-5 2a.5.5 0 0 1-.65-.65l2-5a.5.5 0 0 1 .11-.168l10-10zM11.207 2.5 13.5 4.793 14.793 3.5 12.5 1.207 11.207 2.5zm1.586 3L10.5 3.207 4 9.707V10h.5a.5.5 0 0 1 .5.5v.5h.5a.5.5 0 0 1 .5.5v.5h.293l6.5-6.5zm-9.761 5.175-.106.106-1.528 3.821 3.821-1.528.106-.106A.5.5 0 0 1 5 12.5V12h-.5a.5.5 0 0 1-.5-.5V11h-.5a.5.5 0 0 1-.468-.325z" />
+                                </svg>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                @* Category *@
+                <div class="form-group col-md-7">
+                    <label asp-for="Input.Category">@localizer["Category"]</label>
+                    <div class="input-group">
+                        <select class="form-select shadow" id="category" aria-label="Select category" asp-for="Input.Category" asp-items="Model.Categories" required disabled></select>
+                        <div class="input-group-append">
+                            <button id="edit-restaurant-category" type="button" class="btn btn-outline-secondary shadow">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-pencil" viewBox="0 0 16 16">
+                                    <path d="M12.146.146a.5.5 0 0 1 .708 0l3 3a.5.5 0 0 1 0 .708l-10 10a.5.5 0 0 1-.168.11l-5 2a.5.5 0 0 1-.65-.65l2-5a.5.5 0 0 1 .11-.168l10-10zM11.207 2.5 13.5 4.793 14.793 3.5 12.5 1.207 11.207 2.5zm1.586 3L10.5 3.207 4 9.707V10h.5a.5.5 0 0 1 .5.5v.5h.5a.5.5 0 0 1 .5.5v.5h.293l6.5-6.5zm-9.761 5.175-.106.106-1.528 3.821 3.821-1.528.106-.106A.5.5 0 0 1 5 12.5V12h-.5a.5.5 0 0 1-.5-.5V11h-.5a.5.5 0 0 1-.468-.325z" />
+                                </svg>
+                            </button>
+                        </div>
+                        <span asp-validation-for="Input.Category" class="text-danger"></span>
+                    </div>
+                </div>
+
+            </div>
+            <div class="col">
+
+                @* Address *@
+                <div class="form-group col-lg-12">
+                    <label class="form-label">@localizer["Address"]</label>
+                    <div class="input-group col-7">
+                        <div class="input-group-prepend">
+                            <button class="btn btn-outline-secondary shadow" type="button" id="location-btn" data-bs-toggle="tooltip" data-bs-placement="right" title="@localizer["Automatically detect your position"]" disabled>
+                                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-geo-alt" viewBox="0 0 16 16">
+                                    <path d="M12.166 8.94c-.524 1.062-1.234 2.12-1.96 3.07A31.493 31.493 0 0 1 8 14.58a31.481 31.481 0 0 1-2.206-2.57c-.726-.95-1.436-2.008-1.96-3.07C3.304 7.867 3 6.862 3 6a5 5 0 0 1 10 0c0 .862-.305 1.867-.834 2.94zM8 16s6-5.686 6-10A6 6 0 0 0 2 6c0 4.314 6 10 6 10z" />
+                                    <path d="M8 8a2 2 0 1 1 0-4 2 2 0 0 1 0 4zm0 1a3 3 0 1 0 0-6 3 3 0 0 0 0 6z" />
+                                </svg>
+                            </button>
+                        </div>
+                        <input class="form-control" asp-for="Input.PlaceName" id="edit-restaurant-address" value="@Model.Restaurateur.RestaurantAddress.PlaceName" disabled />
+                        <div class="input-group-append">
+                            <button class="btn btn-outline-secondary shadow" type="button" id="edit-location-btn">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-pencil" viewBox="0 0 16 16">
+                                    <path d="M12.146.146a.5.5 0 0 1 .708 0l3 3a.5.5 0 0 1 0 .708l-10 10a.5.5 0 0 1-.168.11l-5 2a.5.5 0 0 1-.65-.65l2-5a.5.5 0 0 1 .11-.168l10-10zM11.207 2.5 13.5 4.793 14.793 3.5 12.5 1.207 11.207 2.5zm1.586 3L10.5 3.207 4 9.707V10h.5a.5.5 0 0 1 .5.5v.5h.5a.5.5 0 0 1 .5.5v.5h.293l6.5-6.5zm-9.761 5.175-.106.106-1.528 3.821 3.821-1.528.106-.106A.5.5 0 0 1 5 12.5V12h-.5a.5.5 0 0 1-.5-.5V11h-.5a.5.5 0 0 1-.468-.325z" />
+                                </svg>
+                            </button>
+                        </div>
+                    </div>
+                    <span asp-validation-for="Input.PlaceName" class="text-danger"></span>
+                </div>
+
+                <input id="latitude" type="text" asp-for="Input.Latitude" hidden />
+                <input id="longitude" type="text" asp-for="Input.Longitude" hidden />
             </div>
 
         </div>
+
+    </div>
+
+    <hr />
+
+    <h4 class="title">@localizer["Reviews"]</h4>
+
+    <div class="container">
+        @if (Model.Restaurateur.RestaurateurReviews.IsNullOrEmpty())
+        {
+            <div class="alert alert-secondary" role="alert">
+                @localizer["There are no reviews at the moment"]
+            </div>
+        }
+        else
+        {
+            @foreach (var review in Model.Restaurateur.RestaurateurReviews)
+            {
+                <div class="text-start">
+                    <ul class="list-group">
+                        <li class="list-group-item d-flex justify-content-between align-items-start">
+                            <div class="ms-2 me-auto">
+                                <div class="fw-bold">
+                                    @Html.DisplayFor(model => review.Title)
+                                </div>
+                                @Html.DisplayFor(model => review.Text)
+                                <hr />
+                                @{
+                                    var user = await userManager.FindByIdAsync(review.Customer.ApplicationUserFk);
+                                }
+                                <small class="text-muted text-info">@Html.DisplayFor(model => user.UserName) &middot; @review.Date.ToLocalTime().ToString("d")</small>
+                            </div>
+                            <span class="badge bg-primary rounded-pill">@Html.DisplayFor(model => review.Rating) / 5</span>
+                        </li>
+                    </ul>
+                </div>
+            }
+        }
     </div>
 }
 

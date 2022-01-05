@@ -147,6 +147,9 @@
   <data name="Products" xml:space="preserve">
     <value>Prodotti</value>
   </data>
+  <data name="Reviews" xml:space="preserve">
+    <value>Recensioni</value>
+  </data>
   <data name="Save" xml:space="preserve">
     <value>Salva</value>
   </data>
@@ -155,6 +158,9 @@
   </data>
   <data name="Submit" xml:space="preserve">
     <value>Invia</value>
+  </data>
+  <data name="There are no reviews at the moment" xml:space="preserve">
+    <value>Non ci sono recensioni al momento</value>
   </data>
   <data name="Your restaurant has been created successfully" xml:space="preserve">
     <value>Il tuo ristorante è stato creato con successo</value>
