@@ -11,8 +11,8 @@
   </ItemGroup>
 
   <ItemGroup>
+    <Folder Include="ClientApp\deliverywebapp.webui\src\components\signforms\" />
     <Folder Include="Controllers\" />
-    <Folder Include="ClientApp\" />
   </ItemGroup>
 
 </Project>
