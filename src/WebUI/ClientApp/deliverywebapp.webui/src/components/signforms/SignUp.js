@@ -12,10 +12,6 @@ import Container from '@mui/material/Container';
 import { createTheme, ThemeProvider } from '@mui/material/styles';
 import ReactDOM from 'react-dom';
 
-// TODO: Handle errors
-const [textValue, setTextValue] = React.useState('');
-const [errorMessage, setErrorMessage] = React.useState('');
-
 function Copyright(props) {
     return (
         <Typography
@@ -46,6 +42,68 @@ function SignUp() {
     };
 
     const [text, setText] = React.useState("");
+    const [errorMessage, setErrorMessage] = React.useState('');
+
+    /**
+     * 
+     * @param {React.ChangeEvent<HTMLTextAreaElement | HTMLInputElement>} e event
+     */
+    const validatePersonName = (e) => {
+        const text = e.target.value;
+
+        if (/^[a-zA-Z ]{1,50}$/.test(text)) {
+            setErrorMessage('Please enter a valid person name');
+        }
+    };
+
+    /**
+     * 
+     * @param {React.ChangeEvent<HTMLTextAreaElement | HTMLInputElement>} e event
+     */
+    const validateEmail = (e) => {
+        const text = e.target.value;
+
+        if (/^[a-zA-Z0-9.!#$%&'*+\/=?^_`{|}~-]+@[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?(?:\.[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?)*$/.test(text)) {
+            setErrorMessage('Please enter a valid email');
+        }
+    };
+
+    /**
+     * 
+     * @param {React.ChangeEvent<HTMLTextAreaElement | HTMLInputElement>} e event
+     */
+    const validateUsername = (e) => {
+        const text = e.target.value;
+
+        if (/^(?=.{8,20}$)(?![_.])(?!.*[_.]{2})[a-zA-Z0-9._]+(?<![_.])$/.test(text)) {
+            setErrorMessage('Please enter a valid username');
+        }
+    };
+
+    /**
+     * 
+     * @param {React.ChangeEvent<HTMLTextAreaElement | HTMLInputElement>} e event
+     */
+    const validatePassword = (e) => {
+        const text = e.target.value;
+
+        if (/^.*(?=.{8,})(?=.*[\d])(?=.*[\W]).*$/.test(text)) {
+            setErrorMessage('Please enter a valid password');
+        }
+    };
+
+    /**
+     * 
+     * @param {React.ChangeEvent<HTMLTextAreaElement | HTMLInputElement>} e event
+     */
+    const validateConfirmPassword = (e) => {
+        const text = e.target.value;
+        const password = ReactDOM.findDOMNode(document.getElementById('password'));
+
+        if (text !== password.nodeValue) {
+            setErrorMessage('Passwords do not match');
+        }
+    };
 
     return (
         <ThemeProvider theme={theme}>
@@ -78,7 +136,7 @@ function SignUp() {
                                     type='text'
                                     variant='outlined'
                                     autoFocus
-                                    onChange={_validatePersonName}
+                                    onChange={validatePersonName}
                                     error={/^[a-zA-Z ]{1,50}$/.test(text)}
                                     helperText={errorMessage}
                                 />
@@ -94,7 +152,7 @@ function SignUp() {
                                     type='text'
                                     variant='outlined'
                                     autoFocus
-                                    onChange={_validatePersonName}
+                                    onChange={validatePersonName}
                                     error={/^[a-zA-Z ]{1,50}$/.test(text)}
                                     helperText={errorMessage}
                                 />
@@ -110,7 +168,7 @@ function SignUp() {
                                     type='text'
                                     variant='outlined'
                                     autoFocus
-                                    onChange={_validateUsername}
+                                    onChange={validateUsername}
                                     error={/^(?=.{8,20}$)(?![_.])(?!.*[_.]{2})[a-zA-Z0-9._]+(?<![_.])$/.test(text)}
                                     helperText={errorMessage}
                                 />
@@ -127,7 +185,7 @@ function SignUp() {
                                     autoComplete='email'
                                     variant='outlined'
                                     autoFocus
-                                    onChange={_validateEmail}
+                                    onChange={validateEmail}
                                     error={/^[a-zA-Z0-9.!#$%&'*+\/=?^_`{|}~-]+@[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?(?:\.[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?)*$/.test(text)}
                                     helperText={errorMessage}
                                 />
@@ -142,7 +200,7 @@ function SignUp() {
                                     label='Password'
                                     type='password'
                                     variant='outlined'
-                                    onChange={_validatePassword}
+                                    onChange={validatePassword}
                                     error={/^.*(?=.{8,})(?=.*[\d])(?=.*[\W]).*$/.test(text)}
                                     helperText={errorMessage}
                                 />
@@ -157,8 +215,8 @@ function SignUp() {
                                     label='Confirm Password'
                                     type='password'
                                     variant='outlined'
-                                    onChange={_validateConfirmPassword}
-                                    error={textValue !== ''} // TODO: check
+                                    onChange={validateConfirmPassword}
+                                    error={text !== ''} // TODO: check
                                     helperText={errorMessage}
                                 />
                             </Grid>
@@ -184,67 +242,6 @@ function SignUp() {
             </Container>
         </ThemeProvider>
     );
-}
-
-/**
- * 
- * @param {React.ChangeEvent<HTMLTextAreaElement | HTMLInputElement>} e event
- */
-function _validatePersonName(e) {
-    const text = e.target.value;
-
-    if (/^[a-zA-Z ]{1,50}$/.test(text)) {
-        setErrorMessage('Please enter a valid person name');
-    }
-}
-
-/**
- * 
- * @param {React.ChangeEvent<HTMLTextAreaElement | HTMLInputElement>} e event
- */
-function _validateUsername(e) {
-    const text = e.target.value;
-
-    if (/^(?=.{8,20}$)(?![_.])(?!.*[_.]{2})[a-zA-Z0-9._]+(?<![_.])$/.test(text)) {
-        setErrorMessage('Please enter a valid username');
-    }
-}
-
-/**
- * 
- * @param {React.ChangeEvent<HTMLTextAreaElement | HTMLInputElement>} e event
- */
-function _validateEmail(e) {
-    const text = e.target.value;
-
-    if (/^[a-zA-Z0-9.!#$%&'*+\/=?^_`{|}~-]+@[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?(?:\.[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?)*$/.test(text)) {
-        setErrorMessage('Please enter a valid email');
-    }
-}
-
-/**
- * 
- * @param {React.ChangeEvent<HTMLTextAreaElement | HTMLInputElement>} e event
- */
-function _validatePassword(e) {
-    const text = e.target.value;
-
-    if (/^.*(?=.{8,})(?=.*[\d])(?=.*[\W]).*$/.test(text)) {
-        setErrorMessage('Please enter a valid password');
-    }
-}
-
-/**
- * 
- * @param {React.ChangeEvent<HTMLTextAreaElement | HTMLInputElement>} e event
- */
-function _validateConfirmPassword(e) {
-    const text = e.target.value;
-    const password = ReactDOM.findDOMNode(document.getElementById('password'));
-
-    if (text !== password.nodeValue) {
-        setErrorMessage('Passwords do not match');
-    }
 }
 
 export default SignUp;
