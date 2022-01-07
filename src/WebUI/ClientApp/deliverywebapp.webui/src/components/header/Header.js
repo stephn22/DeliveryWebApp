@@ -1,11 +1,12 @@
 import * as React from 'react';
+import { Link } from 'react-router-dom';
 import PropTypes from 'prop-types';
 import Toolbar from '@mui/material/Toolbar';
 import Button from '@mui/material/Button';
 import IconButton from '@mui/material/IconButton';
 import SearchIcon from '@mui/icons-material/Search';
 import Typography from '@mui/material/Typography';
-import Link from '@mui/material/Link';
+import MuiLink from '@mui/material/Link';
 
 function Header(props) {
     /**
@@ -21,6 +22,8 @@ function Header(props) {
                     variant='h5'
                     color='inherit'
                     align='center'
+                    fontFamily={['Roboto', 'sans-serif']}
+                    fontWeight='medium'
                     noWrap
                     sx={{ flex: 1 }}
                 >
@@ -29,7 +32,7 @@ function Header(props) {
                 <IconButton>
                     <SearchIcon />
                 </IconButton>
-                <Button variant='outlined' size='small' >
+                <Button component={Link} to='/signup' variant='outlined' size='small'>
                     Sign up
                 </Button>
             </Toolbar>
@@ -39,7 +42,7 @@ function Header(props) {
                 sx={{ justifyContent: 'space-between', overflowX: 'auto' }}
             >
                 {sections.map(section => (
-                    <Link
+                    <MuiLink
                         color='inherit'
                         noWrap
                         key={section.title}
@@ -48,7 +51,7 @@ function Header(props) {
                         sx={{ p: 1, flexShrink: 0 }}
                     >
                         {section.title}
-                    </Link>
+                    </MuiLink>
                 ))}
             </Toolbar>
         </React.Fragment>

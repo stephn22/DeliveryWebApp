@@ -21,7 +21,7 @@ function Copyright(props) {
             {...props}
         >
             {'Copyright © '}
-            <Link color='inherit' href='#'> // TODO: href
+            <Link color='inherit' href='/'>
                 DeliveryApp
             </Link>{' '}
             {new Date().getFullYear()}
@@ -117,7 +117,7 @@ function SignUp() {
                         alignItems: 'center'
                     }}
                 >
-                    <Avatar sx={{ m: 1, bgcolor: 'secondary.main' }}>
+                    <Avatar sx={{ m: 1, bgcolor: 'primary.main' }}>
                         <TakeoutDiningIcon />
                     </Avatar>
                     <Typography component='h1' variant='h5'>
