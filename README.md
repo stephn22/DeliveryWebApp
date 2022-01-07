@@ -1,8 +1,11 @@
-[![.NET](https://github.com/stecrotti1/DeliveryWebApp/actions/workflows/dotnet.yml/badge.svg?branch=dev)](https://github.com/stecrotti1/DeliveryWebApp/actions/workflows/dotnet.yml)
+[![.NET](https://github.com/stecrotti1/DeliveryWebApp/actions/workflows/dotnet.yml/badge.svg?branch=react)](https://github.com/stecrotti1/DeliveryWebApp/actions/workflows/dotnet.yml)
 
 # Delivery Web Application
 
 ---
+
+## React branch info:
+This is a new branch currently in development, there may be some incomplete files.
 
 DeliveryWebApp is a .NET Web Application developed by [Stefano Crotti](https://github.com/stecrotti1) at the [Computer Science Institute](http://www.di.unipmn.it) of the [University of Piemonte Orientale](http://www.uniupo.it) as assesment for the *Web applications: architectures and languages* course.
 
