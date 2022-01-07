@@ -6,48 +6,46 @@ using MediatR;
 using System.Threading;
 using System.Threading.Tasks;
 
-namespace DeliveryWebApp.Application.BasketItems.Commands.DeleteBasketItem
+namespace DeliveryWebApp.Application.BasketItems.Commands.DeleteBasketItem;
+
+public class DeleteBasketItemCommand : IRequest<BasketItem>
 {
-    public class DeleteBasketItemCommand : IRequest<BasketItem>
+    public int Id { get; set; }
+}
+
+public class DeleteBasketItemCommandHandler : IRequestHandler<DeleteBasketItemCommand, BasketItem>
+{
+    private readonly IApplicationDbContext _context;
+    private readonly IMediator _mediator;
+
+    public DeleteBasketItemCommandHandler(IApplicationDbContext context, IMediator mediator)
     {
-        public int Id { get; set; }
+        _context = context;
+        _mediator = mediator;
     }
 
-    public class DeleteBasketItemCommandHandler : IRequestHandler<DeleteBasketItemCommand, BasketItem>
+    public async Task<BasketItem> Handle(DeleteBasketItemCommand request, CancellationToken cancellationToken)
     {
-        private readonly IApplicationDbContext _context;
-        private readonly IMediator _mediator;
+        var entity = await _context.BasketItems.FindAsync(request.Id);
 
-        public DeleteBasketItemCommandHandler(IApplicationDbContext context, IMediator mediator)
+        if (entity == null)
         {
-            _context = context;
-            _mediator = mediator;
+            throw new NotFoundException(nameof(BasketItem), request.Id);
         }
 
-        public async Task<BasketItem> Handle(DeleteBasketItemCommand request, CancellationToken cancellationToken)
+        _context.BasketItems.Remove(entity);
+        await _context.SaveChangesAsync(cancellationToken);
+
+        var basket = await _context.Baskets.FindAsync(entity.BasketId);
+
+        if (basket != null)
         {
-            var entity = await _context.BasketItems.FindAsync(request.Id);
-
-            if (entity == null)
-            {
-                throw new NotFoundException(nameof(BasketItem), request.Id);
-            }
-
-            _context.BasketItems.Remove(entity);
-            await _context.SaveChangesAsync(cancellationToken);
-
-            var basket = await _context.Baskets.FindAsync(entity.BasketId);
-
-            if (basket != null)
-            {
-                basket.TotalPrice = await basket.GetBasketTotalPrice(_mediator, _context);
-                _context.Baskets.Update(basket);
-            }
-
-            await _context.SaveChangesAsync(cancellationToken);
-
-            return entity;
+            basket.TotalPrice = await basket.GetBasketTotalPrice(_mediator, _context);
+            _context.Baskets.Update(basket);
         }
+
+        await _context.SaveChangesAsync(cancellationToken);
+
+        return entity;
     }
-
 }

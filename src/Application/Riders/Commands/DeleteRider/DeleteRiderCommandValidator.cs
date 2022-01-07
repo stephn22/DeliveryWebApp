@@ -1,12 +1,11 @@
 ﻿using FluentValidation;
 
-namespace DeliveryWebApp.Application.Riders.Commands.DeleteRider
+namespace DeliveryWebApp.Application.Riders.Commands.DeleteRider;
+
+public class DeleteRiderCommandValidator : AbstractValidator<DeleteRiderCommand>
 {
-    public class DeleteRiderCommandValidator : AbstractValidator<DeleteRiderCommand>
+    public DeleteRiderCommandValidator()
     {
-        public DeleteRiderCommandValidator()
-        {
-            RuleFor(r => r.Id).GreaterThan(0).NotEmpty();
-        }
+        RuleFor(r => r.Id).GreaterThan(0).NotEmpty();
     }
 }

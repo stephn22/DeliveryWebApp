@@ -8,45 +8,44 @@ using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 
-namespace DeliveryWebApp.Application.Orders.Queries.GetOrders
+namespace DeliveryWebApp.Application.Orders.Queries.GetOrders;
+
+public class GetOrdersQuery : IRequest<List<Order>>
 {
-    public class GetOrdersQuery : IRequest<List<Order>>
+    public int? CustomerId { get; set; }
+    public int? RestaurateurId { get; set; }
+}
+
+public class GetOrdersQueryHandler : IRequestHandler<GetOrdersQuery, List<Order>>
+{
+    private readonly IApplicationDbContext _context;
+
+    public GetOrdersQueryHandler(IApplicationDbContext context)
     {
-        public int? CustomerId { get; set; }
-        public int? RestaurateurId { get; set; }
+        _context = context;
     }
 
-    public class GetOrdersQueryHandler : IRequestHandler<GetOrdersQuery, List<Order>>
+    public async Task<List<Order>> Handle(GetOrdersQuery request, CancellationToken cancellationToken)
     {
-        private readonly IApplicationDbContext _context;
-
-        public GetOrdersQueryHandler(IApplicationDbContext context)
+        try
         {
-            _context = context;
+            if (request.CustomerId == null && request.RestaurateurId == null) // for administrator and rider
+            {
+                return await _context.Orders.ToListAsync(cancellationToken);
+            }
+
+            if (request.RestaurateurId != null) // for restaurateur
+            {
+                return await _context.Orders.Where(o => o.RestaurateurId == request.RestaurateurId)
+                    .ToListAsync(cancellationToken);
+            }
+
+            // for customer
+            return await (_context.Orders.Where(o => o.CustomerId == request.CustomerId)).ToListAsync(cancellationToken);
         }
-
-        public async Task<List<Order>> Handle(GetOrdersQuery request, CancellationToken cancellationToken)
+        catch (InvalidOperationException)
         {
-            try
-            {
-                if (request.CustomerId == null && request.RestaurateurId == null) // for administrator and rider
-                {
-                    return await _context.Orders.ToListAsync(cancellationToken);
-                }
-
-                if (request.RestaurateurId != null) // for restaurateur
-                {
-                    return await _context.Orders.Where(o => o.RestaurateurId == request.RestaurateurId)
-                        .ToListAsync(cancellationToken);
-                }
-
-                // for customer
-                return await (_context.Orders.Where(o => o.CustomerId == request.CustomerId)).ToListAsync(cancellationToken);
-            }
-            catch (InvalidOperationException)
-            {
-                return null;
-            }
+            return null;
         }
     }
 }

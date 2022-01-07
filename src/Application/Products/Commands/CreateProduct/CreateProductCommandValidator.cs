@@ -1,22 +1,21 @@
 ﻿using FluentValidation;
 
-namespace DeliveryWebApp.Application.Products.Commands.CreateProduct
+namespace DeliveryWebApp.Application.Products.Commands.CreateProduct;
+
+public class CreateProductCommandValidator : AbstractValidator<CreateProductCommand>
 {
-    public class CreateProductCommandValidator : AbstractValidator<CreateProductCommand>
+    public CreateProductCommandValidator()
     {
-        public CreateProductCommandValidator()
-        {
-            RuleFor(p => p.Name).MaximumLength(30).NotEmpty();
+        RuleFor(p => p.Name).MaximumLength(30).NotEmpty();
 
-            RuleFor(p => p.Category).NotEmpty();
+        RuleFor(p => p.Category).NotEmpty();
 
-            RuleFor(p => p.Discount).GreaterThanOrEqualTo(0).LessThanOrEqualTo(100).NotNull();
+        RuleFor(p => p.Discount).GreaterThanOrEqualTo(0).LessThanOrEqualTo(100).NotNull();
 
-            RuleFor(p => p.Price).GreaterThan(0.00M).NotEmpty();
+        RuleFor(p => p.Price).GreaterThan(0.00M).NotEmpty();
 
-            RuleFor(p => p.Quantity).GreaterThan(0).NotEmpty();
+        RuleFor(p => p.Quantity).GreaterThan(0).NotEmpty();
 
-            RuleFor(p => p.RestaurateurId).NotEmpty();
-        }
+        RuleFor(p => p.RestaurateurId).NotEmpty();
     }
 }

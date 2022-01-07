@@ -7,31 +7,30 @@ using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
 
-namespace DeliveryWebApp.Application.Riders.Queries.GetRiders
+namespace DeliveryWebApp.Application.Riders.Queries.GetRiders;
+
+public class GetRidersQuery : IRequest<List<Rider>>
 {
-    public class GetRidersQuery : IRequest<List<Rider>>
+}
+
+public class GetRidersQueryHandler : IRequestHandler<GetRidersQuery, List<Rider>>
+{
+    private readonly IApplicationDbContext _context;
+
+    public GetRidersQueryHandler(IApplicationDbContext context)
     {
+        _context = context;
     }
 
-    public class GetRidersQueryHandler : IRequestHandler<GetRidersQuery, List<Rider>>
+    public async Task<List<Rider>> Handle(GetRidersQuery request, CancellationToken cancellationToken)
     {
-        private readonly IApplicationDbContext _context;
-
-        public GetRidersQueryHandler(IApplicationDbContext context)
+        try
         {
-            _context = context;
+            return await _context.Riders.ToListAsync(cancellationToken);
         }
-
-        public async Task<List<Rider>> Handle(GetRidersQuery request, CancellationToken cancellationToken)
+        catch (InvalidOperationException)
         {
-            try
-            {
-                return await _context.Riders.ToListAsync(cancellationToken);
-            }
-            catch (InvalidOperationException)
-            {
-                return null;
-            }
+            return null;
         }
     }
 }

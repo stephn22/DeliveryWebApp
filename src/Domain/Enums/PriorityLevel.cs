@@ -1,10 +1,9 @@
-﻿namespace DeliveryWebApp.Domain.Enums
+﻿namespace DeliveryWebApp.Domain.Enums;
+
+public enum PriorityLevel
 {
-    public enum PriorityLevel
-    {
-        None = 0,
-        Low = 1,
-        Medium = 2,
-        High = 3
-    }
+    None = 0,
+    Low = 1,
+    Medium = 2,
+    High = 3
 }

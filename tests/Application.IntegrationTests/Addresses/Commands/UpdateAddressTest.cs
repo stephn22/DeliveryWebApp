@@ -7,64 +7,63 @@ using FluentAssertions;
 using NUnit.Framework;
 using System.Threading.Tasks;
 
-namespace DeliveryWebApp.Application.IntegrationTests.Addresses.Commands
+namespace DeliveryWebApp.Application.IntegrationTests.Addresses.Commands;
+
+using static Testing;
+
+public class UpdateAddressTest : TestBase
 {
-    using static Testing;
-
-    public class UpdateAddressTest : TestBase
+    [Test]
+    public async Task ShouldRequireMinimumFields()
     {
-        [Test]
-        public async Task ShouldRequireMinimumFields()
+        var command = new UpdateAddressCommand();
+
+        await FluentActions.Invoking(() =>
+            SendAsync(command)).Should().ThrowAsync<ValidationException>();
+    }
+
+    [Test]
+    public async Task ShouldUpdateAddressAsync()
+    {
+        var userId = await RunAsDefaultUserAsync();
+
+        var customerCommand = new CreateCustomerCommand()
         {
-            var command = new UpdateAddressCommand();
+            ApplicationUserFk = userId,
+            FirstName = "John",
+            LastName = "Doe",
+            Email = "johndoe@gmail.com"
+        };
 
-            await FluentActions.Invoking(() =>
-                SendAsync(command)).Should().ThrowAsync<ValidationException>();
-        }
+        var customer = await SendAsync(customerCommand);
 
-        [Test]
-        public async Task ShouldUpdateAddressAsync()
+        var addressCommand = new CreateAddressCommand
         {
-            var userId = await RunAsDefaultUserAsync();
+            Latitude = 48.5472M,
+            Longitude = 72.1804M,
+            CustomerId = customer.Id
+        };
 
-            var customerCommand = new CreateCustomerCommand()
-            {
-                ApplicationUserFk = userId,
-                FirstName = "John",
-                LastName = "Doe",
-                Email = "johndoe@gmail.com"
-            };
+        var address = await SendAsync(addressCommand);
 
-            var customer = await SendAsync(customerCommand);
+        const string newPlaceName = "Via Verdi, Palazzo Tartara, 2, Milan, MI, 28100, Italy";
 
-            var addressCommand = new CreateAddressCommand
-            {
-                Latitude = 48.5472M,
-                Longitude = 72.1804M,
-                CustomerId = customer.Id
-            };
+        var updateCommand = new UpdateAddressCommand
+        {
+            Id = address.Id,
+            PlaceName = newPlaceName,
+            Latitude = 23.4535M,
+            Longitude = 15.7628M,
+        };
 
-            var address = await SendAsync(addressCommand);
+        await SendAsync(updateCommand);
 
-            const string newPlaceName = "Via Verdi, Palazzo Tartara, 2, Milan, MI, 28100, Italy";
+        var update = await FindAsync<Address>(address.Id);
 
-            var updateCommand = new UpdateAddressCommand
-            {
-                Id = address.Id,
-                PlaceName = newPlaceName,
-                Latitude = 23.4535M,
-                Longitude = 15.7628M,
-            };
-
-            await SendAsync(updateCommand);
-
-            var update = await FindAsync<Address>(address.Id);
-
-            update.Should().NotBeNull();
-            update.Id.Should().BeGreaterThan(0);
-            update.PlaceName.Should().Be(updateCommand.PlaceName);
-            update.Latitude.Should().Be(updateCommand.Latitude);
-            update.Longitude.Should().Be(updateCommand.Longitude);
-        }
+        update.Should().NotBeNull();
+        update.Id.Should().BeGreaterThan(0);
+        update.PlaceName.Should().Be(updateCommand.PlaceName);
+        update.Latitude.Should().Be(updateCommand.Latitude);
+        update.Longitude.Should().Be(updateCommand.Longitude);
     }
 }

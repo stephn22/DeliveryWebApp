@@ -4,35 +4,34 @@ using MediatR;
 using System.Threading;
 using System.Threading.Tasks;
 
-namespace DeliveryWebApp.Application.Baskets.Commands.CreateBasket
+namespace DeliveryWebApp.Application.Baskets.Commands.CreateBasket;
+
+public class CreateBasketCommand : IRequest<Basket>
 {
-    public class CreateBasketCommand : IRequest<Basket>
+    public Customer Customer { get; set; }
+}
+
+public class CreateBasketCommandHandler : IRequestHandler<CreateBasketCommand, Basket>
+{
+    private readonly IApplicationDbContext _context;
+
+    public CreateBasketCommandHandler(IApplicationDbContext context)
     {
-        public Customer Customer { get; set; }
+        _context = context;
     }
 
-    public class CreateBasketCommandHandler : IRequestHandler<CreateBasketCommand, Basket>
+    public async Task<Basket> Handle(CreateBasketCommand request, CancellationToken cancellationToken)
     {
-        private readonly IApplicationDbContext _context;
-
-        public CreateBasketCommandHandler(IApplicationDbContext context)
+        var entity = new Basket
         {
-            _context = context;
-        }
+            CustomerId = request.Customer.Id,
+            TotalPrice = 0
+        };
 
-        public async Task<Basket> Handle(CreateBasketCommand request, CancellationToken cancellationToken)
-        {
-            var entity = new Basket
-            {
-                CustomerId = request.Customer.Id,
-                TotalPrice = 0
-            };
+        _context.Baskets.Add(entity);
 
-            _context.Baskets.Add(entity);
+        await _context.SaveChangesAsync(cancellationToken);
 
-            await _context.SaveChangesAsync(cancellationToken);
-
-            return entity;
-        }
+        return entity;
     }
 }

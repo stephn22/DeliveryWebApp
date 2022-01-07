@@ -5,35 +5,34 @@ using MediatR;
 using System.Threading;
 using System.Threading.Tasks;
 
-namespace DeliveryWebApp.Application.Reviews.Commands.DeleteReview
+namespace DeliveryWebApp.Application.Reviews.Commands.DeleteReview;
+
+public class DeleteReviewCommand : IRequest<Review>
 {
-    public class DeleteReviewCommand : IRequest<Review>
+    public int Id { get; set; }
+}
+
+public class DeleteReviewCommandHandler : IRequestHandler<DeleteReviewCommand, Review>
+{
+    private readonly IApplicationDbContext _context;
+
+    public DeleteReviewCommandHandler(IApplicationDbContext context)
     {
-        public int Id { get; set; }
+        _context = context;
     }
 
-    public class DeleteReviewCommandHandler : IRequestHandler<DeleteReviewCommand, Review>
+    public async Task<Review> Handle(DeleteReviewCommand request, CancellationToken cancellationToken)
     {
-        private readonly IApplicationDbContext _context;
+        var entity = await _context.Reviews.FindAsync(request.Id);
 
-        public DeleteReviewCommandHandler(IApplicationDbContext context)
+        if (entity == null)
         {
-            _context = context;
+            throw new NotFoundException(nameof(Review), request.Id);
         }
 
-        public async Task<Review> Handle(DeleteReviewCommand request, CancellationToken cancellationToken)
-        {
-            var entity = await _context.Reviews.FindAsync(request.Id);
+        _context.Reviews.Remove(entity);
+        await _context.SaveChangesAsync(cancellationToken);
 
-            if (entity == null)
-            {
-                throw new NotFoundException(nameof(Review), request.Id);
-            }
-
-            _context.Reviews.Remove(entity);
-            await _context.SaveChangesAsync(cancellationToken);
-
-            return entity;
-        }
+        return entity;
     }
 }

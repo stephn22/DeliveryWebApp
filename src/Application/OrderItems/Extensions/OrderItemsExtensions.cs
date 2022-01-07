@@ -2,13 +2,12 @@
 using DeliveryWebApp.Domain.Entities;
 using System.Threading.Tasks;
 
-namespace DeliveryWebApp.Application.OrderItems.Extensions
+namespace DeliveryWebApp.Application.OrderItems.Extensions;
+
+public static class OrderItemsExtensions
 {
-    public static class OrderItemsExtensions
+    public static async Task<Product> GetProduct(this OrderItem orderItem, IApplicationDbContext context)
     {
-        public static async Task<Product> GetProduct(this OrderItem orderItem, IApplicationDbContext context)
-        {
-            return await context.Products.FindAsync(orderItem.ProductId);
-        }
+        return await context.Products.FindAsync(orderItem.ProductId);
     }
 }

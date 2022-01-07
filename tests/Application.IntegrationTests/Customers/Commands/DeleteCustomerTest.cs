@@ -9,146 +9,145 @@ using FluentAssertions;
 using NUnit.Framework;
 using System.Threading.Tasks;
 
-namespace DeliveryWebApp.Application.IntegrationTests.Customers.Commands
+namespace DeliveryWebApp.Application.IntegrationTests.Customers.Commands;
+
+using static Testing;
+
+public class DeleteCustomerTest : TestBase
 {
-    using static Testing;
-
-    public class DeleteCustomerTest : TestBase
+    [Test]
+    public async Task ShouldRequireMinimumFields()
     {
-        [Test]
-        public async Task ShouldRequireMinimumFields()
+        var command = new DeleteCustomerCommand();
+
+        await FluentActions.Invoking(() =>
+            SendAsync(command)).Should().ThrowAsync<ValidationException>();
+    }
+
+    [Test]
+    public async Task ShouldDeleteCustomerAsync()
+    {
+        var userId = await RunAsAdministratorAsync();
+
+        var create = new CreateCustomerCommand
         {
-            var command = new DeleteCustomerCommand();
+            ApplicationUserFk = userId,
+            FirstName = "John",
+            LastName = "Doe",
+            Email = "johndoe@gmail.com"
+        };
 
-            await FluentActions.Invoking(() =>
-                SendAsync(command)).Should().ThrowAsync<ValidationException>();
-        }
+        var item = await SendAsync(create);
 
-        [Test]
-        public async Task ShouldDeleteCustomerAsync()
+        await SendAsync(new DeleteCustomerCommand
         {
-            var userId = await RunAsAdministratorAsync();
+            Customer = item
+        });
 
-            var create = new CreateCustomerCommand
-            {
-                ApplicationUserFk = userId,
-                FirstName = "John",
-                LastName = "Doe",
-                Email = "johndoe@gmail.com"
-            };
+        var customer = await FindAsync<Customer>(item.Id);
+        customer.Should().BeNull();
+    }
 
-            var item = await SendAsync(create);
+    [Test]
+    public async Task ShouldDeleteCustomerAndBasketAsync()
+    {
+        var userId = await RunAsAdministratorAsync();
 
-            await SendAsync(new DeleteCustomerCommand
-            {
-                Customer = item
-            });
-
-            var customer = await FindAsync<Customer>(item.Id);
-            customer.Should().BeNull();
-        }
-
-        [Test]
-        public async Task ShouldDeleteCustomerAndBasketAsync()
+        var create = new CreateCustomerCommand
         {
-            var userId = await RunAsAdministratorAsync();
+            ApplicationUserFk = userId,
+            FirstName = "John",
+            LastName = "Doe",
+            Email = "johndoe@gmail.com"
+        };
 
-            var create = new CreateCustomerCommand
-            {
-                ApplicationUserFk = userId,
-                FirstName = "John",
-                LastName = "Doe",
-                Email = "johndoe@gmail.com"
-            };
+        var item = await SendAsync(create);
 
-            var item = await SendAsync(create);
-
-            var basketCommand = new CreateBasketCommand
-            {
-                Customer = item
-            };
-
-            var b = await SendAsync(basketCommand);
-
-            await SendAsync(new DeleteCustomerCommand
-            {
-                Customer = item
-            });
-
-            var customer = await FindAsync<Customer>(item.Id);
-            var basket = await FindAsync<Basket>(b.Id);
-
-            customer.Should().BeNull();
-            basket.Should().BeNull();
-        }
-
-        [Test]
-        public async Task ShouldDeleteCustomerAndRiderAsync()
+        var basketCommand = new CreateBasketCommand
         {
-            var userId = await RunAsDefaultUserAsync();
+            Customer = item
+        };
 
-            var customerCommand = new CreateCustomerCommand
-            {
-                ApplicationUserFk = userId,
-                FirstName = "John",
-                LastName = "Doe",
-                Email = "johndoe@gmail.com"
-            };
+        var b = await SendAsync(basketCommand);
 
-            var c = await SendAsync(customerCommand);
-
-            var command = new CreateRiderCommand
-            {
-                Customer = c,
-                DeliveryCredit = 12.52M
-            };
-
-            var r = await SendAsync(command);
-
-            await SendAsync(new DeleteCustomerCommand
-            {
-                Customer = c
-            });
-
-            var customer = await FindAsync<Customer>(c.Id);
-            var rider = await FindAsync<Rider>(r.Id);
-
-            customer.Should().BeNull();
-            rider.Should().BeNull();
-        }
-
-        [Test]
-        public async Task ShouldDeleteCustomerAndRestaurateurAsync()
+        await SendAsync(new DeleteCustomerCommand
         {
-            var userId = await RunAsDefaultUserAsync();
+            Customer = item
+        });
 
-            var customerCommand = new CreateCustomerCommand
-            {
-                ApplicationUserFk = userId,
-                FirstName = "John",
-                LastName = "Doe",
-                Email = "johndoe@gmail.com"
-            };
+        var customer = await FindAsync<Customer>(item.Id);
+        var basket = await FindAsync<Basket>(b.Id);
 
-            var c = await SendAsync(customerCommand);
+        customer.Should().BeNull();
+        basket.Should().BeNull();
+    }
 
-            var command = new CreateRestaurateurCommand
-            {
-                Customer = c
-            };
+    [Test]
+    public async Task ShouldDeleteCustomerAndRiderAsync()
+    {
+        var userId = await RunAsDefaultUserAsync();
 
-            var r = await SendAsync(command);
+        var customerCommand = new CreateCustomerCommand
+        {
+            ApplicationUserFk = userId,
+            FirstName = "John",
+            LastName = "Doe",
+            Email = "johndoe@gmail.com"
+        };
 
-            await SendAsync(new DeleteCustomerCommand
-            {
-                Customer = c
-            });
+        var c = await SendAsync(customerCommand);
 
-            var customer = await FindAsync<Customer>(c.Id);
-            var restaurateur = await FindAsync<Restaurateur>(r.Id);
+        var command = new CreateRiderCommand
+        {
+            Customer = c,
+            DeliveryCredit = 12.52M
+        };
 
-            customer.Should().BeNull();
-            restaurateur.Should().BeNull();
-        }
+        var r = await SendAsync(command);
+
+        await SendAsync(new DeleteCustomerCommand
+        {
+            Customer = c
+        });
+
+        var customer = await FindAsync<Customer>(c.Id);
+        var rider = await FindAsync<Rider>(r.Id);
+
+        customer.Should().BeNull();
+        rider.Should().BeNull();
+    }
+
+    [Test]
+    public async Task ShouldDeleteCustomerAndRestaurateurAsync()
+    {
+        var userId = await RunAsDefaultUserAsync();
+
+        var customerCommand = new CreateCustomerCommand
+        {
+            ApplicationUserFk = userId,
+            FirstName = "John",
+            LastName = "Doe",
+            Email = "johndoe@gmail.com"
+        };
+
+        var c = await SendAsync(customerCommand);
+
+        var command = new CreateRestaurateurCommand
+        {
+            Customer = c
+        };
+
+        var r = await SendAsync(command);
+
+        await SendAsync(new DeleteCustomerCommand
+        {
+            Customer = c
+        });
+
+        var customer = await FindAsync<Customer>(c.Id);
+        var restaurateur = await FindAsync<Restaurateur>(r.Id);
+
+        customer.Should().BeNull();
+        restaurateur.Should().BeNull();
     }
 }

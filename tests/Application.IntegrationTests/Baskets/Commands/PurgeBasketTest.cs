@@ -12,127 +12,126 @@ using FluentAssertions;
 using NUnit.Framework;
 using System.Threading.Tasks;
 
-namespace DeliveryWebApp.Application.IntegrationTests.Baskets.Commands
+namespace DeliveryWebApp.Application.IntegrationTests.Baskets.Commands;
+
+using static Testing;
+
+public class PurgeBasketTest : TestBase
 {
-    using static Testing;
-
-    public class PurgeBasketTest : TestBase
+    [Test]
+    public async Task ShouldRequireMinimumFields()
     {
-        [Test]
-        public async Task ShouldRequireMinimumFields()
+        var command = new PurgeBasketCommand();
+
+        await FluentActions.Invoking(() =>
+            SendAsync(command)).Should().ThrowAsync<ValidationException>();
+    }
+
+    [Test]
+    public async Task ShouldPurgeBasketAsync()
+    {
+        var userId = await RunAsDefaultUserAsync();
+
+        // create customer
+        var customerCommand = new CreateCustomerCommand()
         {
-            var command = new PurgeBasketCommand();
+            ApplicationUserFk = userId,
+            FirstName = "John",
+            LastName = "Doe",
+            Email = "johndoe@gmail.com"
+        };
 
-            await FluentActions.Invoking(() =>
-                SendAsync(command)).Should().ThrowAsync<ValidationException>();
-        }
+        var customer = await SendAsync(customerCommand);
 
-        [Test]
-        public async Task ShouldPurgeBasketAsync()
+        // create restaurateur
+        var restaurateurCommand = new CreateRestaurateurCommand
         {
-            var userId = await RunAsDefaultUserAsync();
+            Customer = customer
+        };
 
-            // create customer
-            var customerCommand = new CreateCustomerCommand()
-            {
-                ApplicationUserFk = userId,
-                FirstName = "John",
-                LastName = "Doe",
-                Email = "johndoe@gmail.com"
-            };
+        var restaurateur = await SendAsync(restaurateurCommand);
 
-            var customer = await SendAsync(customerCommand);
+        // create some products
 
-            // create restaurateur
-            var restaurateurCommand = new CreateRestaurateurCommand
-            {
-                Customer = customer
-            };
+        var p1 = await SendAsync(new CreateProductCommand
+        {
+            Image = null,
+            Name = "Pizza",
+            Category = ProductCategory.Pizza,
+            Price = 5.50M,
+            Discount = 12,
+            Quantity = 21,
+            RestaurateurId = restaurateur.Id
+        });
 
-            var restaurateur = await SendAsync(restaurateurCommand);
+        var p2 = await SendAsync(new CreateProductCommand
+        {
+            Image = null,
+            Name = "Grilled Salmon",
+            Category = ProductCategory.Fish,
+            Price = 14.35M,
+            Discount = 0,
+            Quantity = 45,
+            RestaurateurId = restaurateur.Id
+        });
 
-            // create some products
+        var p3 = await SendAsync(new CreateProductCommand
+        {
+            Image = null,
+            Name = "Apple Pie",
+            Category = ProductCategory.Dessert,
+            Price = 11.20M,
+            Discount = 5,
+            Quantity = 17,
+            RestaurateurId = restaurateur.Id
+        });
 
-            var p1 = await SendAsync(new CreateProductCommand
-            {
-                Image = null,
-                Name = "Pizza",
-                Category = ProductCategory.Pizza,
-                Price = 5.50M,
-                Discount = 12,
-                Quantity = 21,
-                RestaurateurId = restaurateur.Id
-            });
+        // create a basket
+        var basketCommand = new CreateBasketCommand
+        {
+            Customer = customer
+        };
 
-            var p2 = await SendAsync(new CreateProductCommand
-            {
-                Image = null,
-                Name = "Grilled Salmon",
-                Category = ProductCategory.Fish,
-                Price = 14.35M,
-                Discount = 0,
-                Quantity = 45,
-                RestaurateurId = restaurateur.Id
-            });
+        var basket = await SendAsync(basketCommand);
 
-            var p3 = await SendAsync(new CreateProductCommand
-            {
-                Image = null,
-                Name = "Apple Pie",
-                Category = ProductCategory.Dessert,
-                Price = 11.20M,
-                Discount = 5,
-                Quantity = 17,
-                RestaurateurId = restaurateur.Id
-            });
+        // create basket items for each product
 
-            // create a basket
-            var basketCommand = new CreateBasketCommand
-            {
-                Customer = customer
-            };
+        await SendAsync(new UpdateBasketCommand
+        {
+            Basket = basket,
+            Product = p1,
+            Quantity = 1,
+            RestaurateurId = restaurateur.Id
+        });
+        await SendAsync(new UpdateBasketCommand
+        {
+            Basket = basket,
+            Product = p2,
+            Quantity = 2,
+            RestaurateurId = restaurateur.Id
+        });
+        var updatedBasket = await SendAsync(new UpdateBasketCommand
+        {
+            Basket = basket,
+            Product = p3,
+            Quantity = 3,
+            RestaurateurId = restaurateur.Id
+        });
 
-            var basket = await SendAsync(basketCommand);
+        await SendAsync(new PurgeBasketCommand
+        {
+            Id = basket.Id
+        });
 
-            // create basket items for each product
+        var items = await SendAsync(new GetBasketItemsQuery
+        {
+            Basket = updatedBasket
+        });
 
-            await SendAsync(new UpdateBasketCommand
-            {
-                Basket = basket,
-                Product = p1,
-                Quantity = 1,
-                RestaurateurId = restaurateur.Id
-            });
-            await SendAsync(new UpdateBasketCommand
-            {
-                Basket = basket,
-                Product = p2,
-                Quantity = 2,
-                RestaurateurId = restaurateur.Id
-            });
-            var updatedBasket = await SendAsync(new UpdateBasketCommand
-            {
-                Basket = basket,
-                Product = p3,
-                Quantity = 3,
-                RestaurateurId = restaurateur.Id
-            });
+        var b = await FindAsync<Basket>(basket.Id);
 
-            await SendAsync(new PurgeBasketCommand
-            {
-                Id = basket.Id
-            });
-
-            var items = await SendAsync(new GetBasketItemsQuery
-            {
-                Basket = updatedBasket
-            });
-
-            var b = await FindAsync<Basket>(basket.Id);
-
-            b.Should().NotBeNull();
-            b.TotalPrice.Should().Be(0.00M);
-            items.Should().BeNullOrEmpty();
-        }
+        b.Should().NotBeNull();
+        b.TotalPrice.Should().Be(0.00M);
+        items.Should().BeNullOrEmpty();
     }
 }

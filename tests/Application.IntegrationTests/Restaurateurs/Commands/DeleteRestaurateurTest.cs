@@ -9,67 +9,66 @@ using FluentAssertions;
 using NUnit.Framework;
 using System.Threading.Tasks;
 
-namespace DeliveryWebApp.Application.IntegrationTests.Restaurateurs.Commands
+namespace DeliveryWebApp.Application.IntegrationTests.Restaurateurs.Commands;
+
+using static Testing;
+
+public class DeleteRestaurateurTest : TestBase
 {
-    using static Testing;
-
-    public class DeleteRestaurateurTest : TestBase
+    [Test]
+    public async Task ShouldRequireMinimumFields()
     {
-        [Test]
-        public async Task ShouldRequireMinimumFields()
+        var command = new DeleteRestaurateurCommand();
+
+        await FluentActions.Invoking(() =>
+            SendAsync(command)).Should().ThrowAsync<ValidationException>();
+    }
+
+    [Test]
+    public async Task ShouldDeleteRestaurateurAsync()
+    {
+        var userId = await RunAsDefaultUserAsync();
+
+        var customerCommand = new CreateCustomerCommand
         {
-            var command = new DeleteRestaurateurCommand();
+            ApplicationUserFk = userId,
+            FirstName = "John",
+            LastName = "Doe",
+            Email = "johndoe@gmail.com"
+        };
 
-            await FluentActions.Invoking(() =>
-                SendAsync(command)).Should().ThrowAsync<ValidationException>();
-        }
+        var customer = await SendAsync(customerCommand);
 
-        [Test]
-        public async Task ShouldDeleteRestaurateurAsync()
+        var command = new CreateRestaurateurCommand
         {
-            var userId = await RunAsDefaultUserAsync();
+            Customer = customer
+        };
 
-            var customerCommand = new CreateCustomerCommand
-            {
-                ApplicationUserFk = userId,
-                FirstName = "John",
-                LastName = "Doe",
-                Email = "johndoe@gmail.com"
-            };
+        var item = await SendAsync(command);
 
-            var customer = await SendAsync(customerCommand);
+        var productCommand = new CreateProductCommand
+        {
+            Image = null,
+            Name = "Pizza",
+            Category = ProductCategory.Pizza,
+            Price = 5.50M,
+            Discount = 12,
+            Quantity = 21,
+            RestaurateurId = item.Id
+        };
 
-            var command = new CreateRestaurateurCommand
-            {
-                Customer = customer
-            };
+        var p = await SendAsync(productCommand);
 
-            var item = await SendAsync(command);
+        await SendAsync(new DeleteRestaurateurCommand
+        {
+            Id = item.Id
+        });
 
-            var productCommand = new CreateProductCommand
-            {
-                Image = null,
-                Name = "Pizza",
-                Category = ProductCategory.Pizza,
-                Price = 5.50M,
-                Discount = 12,
-                Quantity = 21,
-                RestaurateurId = item.Id
-            };
+        var product = await FindAsync<Product>(p.Id);
 
-            var p = await SendAsync(productCommand);
-
-            await SendAsync(new DeleteRestaurateurCommand
-            {
-                Id = item.Id
-            });
-
-            var product = await FindAsync<Product>(p.Id);
-
-            var restaurateur = await FindAsync<Restaurateur>(item.Id);
-            restaurateur.Should().BeNull();
-            product.Should().BeNull();
-            customer.Should().NotBeNull();
-        }
+        var restaurateur = await FindAsync<Restaurateur>(item.Id);
+        restaurateur.Should().BeNull();
+        product.Should().BeNull();
+        customer.Should().NotBeNull();
     }
 }

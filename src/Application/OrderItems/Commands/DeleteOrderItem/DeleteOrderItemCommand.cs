@@ -6,53 +6,52 @@ using MediatR;
 using System.Threading;
 using System.Threading.Tasks;
 
-namespace DeliveryWebApp.Application.OrderItems.Commands.DeleteOrderItem
+namespace DeliveryWebApp.Application.OrderItems.Commands.DeleteOrderItem;
+
+public class DeleteOrderItemCommand : IRequest<OrderItem>
 {
-    public class DeleteOrderItemCommand : IRequest<OrderItem>
+    public int Id { get; set; }
+}
+
+public class DeleteOrderItemCommandHandler : IRequestHandler<DeleteOrderItemCommand, OrderItem>
+{
+    private readonly IApplicationDbContext _context;
+    private readonly IMediator _mediator;
+
+    public DeleteOrderItemCommandHandler(IApplicationDbContext context, IMediator mediator)
     {
-        public int Id { get; set; }
+        _context = context;
+        _mediator = mediator;
     }
 
-    public class DeleteOrderItemCommandHandler : IRequestHandler<DeleteOrderItemCommand, OrderItem>
+    public async Task<OrderItem> Handle(DeleteOrderItemCommand request, CancellationToken cancellationToken)
     {
-        private readonly IApplicationDbContext _context;
-        private readonly IMediator _mediator;
+        var entity = await _context.OrderItems.FindAsync(request.Id);
 
-        public DeleteOrderItemCommandHandler(IApplicationDbContext context, IMediator mediator)
+        if (entity == null)
         {
-            _context = context;
-            _mediator = mediator;
+            throw new NotFoundException(nameof(Order), request.Id);
         }
 
-        public async Task<OrderItem> Handle(DeleteOrderItemCommand request, CancellationToken cancellationToken)
+        var product = await _context.Products.FindAsync(entity.ProductId);
+
+        if (product == null)
         {
-            var entity = await _context.OrderItems.FindAsync(request.Id);
-
-            if (entity == null)
-            {
-                throw new NotFoundException(nameof(Order), request.Id);
-            }
-
-            var product = await _context.Products.FindAsync(entity.ProductId);
-
-            if (product == null)
-            {
-                throw new NotFoundException(nameof(Product), entity.ProductId);
-            }
-
-            // update product quantity
-            var newQuantity = product.Quantity + entity.Quantity;
-
-            await _mediator.Send(new UpdateProductCommand
-            {
-                Id = product.Id,
-                Quantity = newQuantity
-            }, cancellationToken);
-
-            _context.OrderItems.Remove(entity);
-            await _context.SaveChangesAsync(cancellationToken);
-
-            return entity;
+            throw new NotFoundException(nameof(Product), entity.ProductId);
         }
+
+        // update product quantity
+        var newQuantity = product.Quantity + entity.Quantity;
+
+        await _mediator.Send(new UpdateProductCommand
+        {
+            Id = product.Id,
+            Quantity = newQuantity
+        }, cancellationToken);
+
+        _context.OrderItems.Remove(entity);
+        await _context.SaveChangesAsync(cancellationToken);
+
+        return entity;
     }
 }

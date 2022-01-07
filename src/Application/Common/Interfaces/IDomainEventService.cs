@@ -1,10 +1,9 @@
 ﻿using DeliveryWebApp.Domain.Common;
 using System.Threading.Tasks;
 
-namespace DeliveryWebApp.Application.Common.Interfaces
+namespace DeliveryWebApp.Application.Common.Interfaces;
+
+public interface IDomainEventService
 {
-    public interface IDomainEventService
-    {
-        Task Publish(DomainEvent domainEvent);
-    }
+    Task Publish(DomainEvent domainEvent);
 }

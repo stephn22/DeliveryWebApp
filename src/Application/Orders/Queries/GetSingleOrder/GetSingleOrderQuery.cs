@@ -5,32 +5,31 @@ using MediatR;
 using System.Threading;
 using System.Threading.Tasks;
 
-namespace DeliveryWebApp.Application.Orders.Queries.GetSingleOrder
+namespace DeliveryWebApp.Application.Orders.Queries.GetSingleOrder;
+
+public class GetSingleOrderQuery : IRequest<Order>
 {
-    public class GetSingleOrderQuery : IRequest<Order>
+    public int Id { get; set; }
+}
+
+public class GetSingleOrderQueryHandler : IRequestHandler<GetSingleOrderQuery, Order>
+{
+    private readonly IApplicationDbContext _context;
+
+    public GetSingleOrderQueryHandler(IApplicationDbContext context)
     {
-        public int Id { get; set; }
+        _context = context;
     }
 
-    public class GetSingleOrderQueryHandler : IRequestHandler<GetSingleOrderQuery, Order>
+    public async Task<Order> Handle(GetSingleOrderQuery request, CancellationToken cancellationToken)
     {
-        private readonly IApplicationDbContext _context;
+        var entity = await _context.Orders.FindAsync(request.Id);
 
-        public GetSingleOrderQueryHandler(IApplicationDbContext context)
+        if (entity == null)
         {
-            _context = context;
+            throw new NotFoundException(nameof(Order), request.Id);
         }
 
-        public async Task<Order> Handle(GetSingleOrderQuery request, CancellationToken cancellationToken)
-        {
-            var entity = await _context.Orders.FindAsync(request.Id);
-
-            if (entity == null)
-            {
-                throw new NotFoundException(nameof(Order), request.Id);
-            }
-
-            return entity;
-        }
+        return entity;
     }
 }

@@ -15,109 +15,108 @@ using NUnit.Framework;
 using System;
 using System.Threading.Tasks;
 
-namespace DeliveryWebApp.Application.IntegrationTests.OrderItems.Commands
+namespace DeliveryWebApp.Application.IntegrationTests.OrderItems.Commands;
+
+using static Testing;
+
+public class CreateOrderItemTest
 {
-    using static Testing;
-
-    public class CreateOrderItemTest
+    [Test]
+    public async Task ShouldRequireMinimumFields()
     {
-        [Test]
-        public async Task ShouldRequireMinimumFields()
+        var command = new CreateOrderItemCommand();
+
+        await FluentActions.Invoking(() => SendAsync(command)).Should().ThrowAsync<ValidationException>();
+    }
+
+    [Test]
+    public async Task ShouldCreateBasketItemAsync()
+    {
+        var user1 = await RunAsUserAsync("johnsmith@gmail.com", "Qwerty12!", Array.Empty<string>());
+
+        var customer1 = await SendAsync(new CreateCustomerCommand
         {
-            var command = new CreateOrderItemCommand();
+            ApplicationUserFk = user1,
+            FirstName = "John",
+            LastName = "Doe",
+            Email = "johndoe@gmail.com"
+        });
 
-            await FluentActions.Invoking(() => SendAsync(command)).Should().ThrowAsync<ValidationException>();
-        }
+        var user2 = await RunAsUserAsync("johndoe@gmail.com", "Qwerty12!", Array.Empty<string>());
 
-        [Test]
-        public async Task ShouldCreateBasketItemAsync()
+        var customer2 = await SendAsync(new CreateCustomerCommand
         {
-            var user1 = await RunAsUserAsync("johnsmith@gmail.com", "Qwerty12!", Array.Empty<string>());
+            ApplicationUserFk = user2,
+            FirstName = "Mario",
+            LastName = "Rossi",
+            Email = "mariorossi@gmail.com"
+        });
 
-            var customer1 = await SendAsync(new CreateCustomerCommand
-            {
-                ApplicationUserFk = user1,
-                FirstName = "John",
-                LastName = "Doe",
-                Email = "johndoe@gmail.com"
-            });
+        var restaurateur = await SendAsync(new CreateRestaurateurCommand
+        {
+            Customer = customer2
+        });
 
-            var user2 = await RunAsUserAsync("johndoe@gmail.com", "Qwerty12!", Array.Empty<string>());
+        var addressCommand = new CreateAddressCommand
+        {
+            Latitude = 48.5472M,
+            Longitude = 72.1804M,
+            CustomerId = customer1.Id
+        };
 
-            var customer2 = await SendAsync(new CreateCustomerCommand
-            {
-                ApplicationUserFk = user2,
-                FirstName = "Mario",
-                LastName = "Rossi",
-                Email = "mariorossi@gmail.com"
-            });
+        var address = await SendAsync(addressCommand);
 
-            var restaurateur = await SendAsync(new CreateRestaurateurCommand
-            {
-                Customer = customer2
-            });
+        var product = await SendAsync(new CreateProductCommand
+        {
+            Image = null,
+            Name = "Apple Pie",
+            Category = ProductCategory.Dessert,
+            Price = 4.99M,
+            Discount = 0,
+            Quantity = 23,
+            RestaurateurId = restaurateur.Id
+        });
 
-            var addressCommand = new CreateAddressCommand
-            {
-                Latitude = 48.5472M,
-                Longitude = 72.1804M,
-                CustomerId = customer1.Id
-            };
+        var b = await SendAsync(new CreateBasketCommand
+        {
+            Customer = customer1
+        });
 
-            var address = await SendAsync(addressCommand);
+        var basket = await SendAsync(new UpdateBasketCommand
+        {
+            Basket = b,
+            Product = product,
+            Quantity = 1,
+            RestaurateurId = restaurateur.Id
+        });
 
-            var product = await SendAsync(new CreateProductCommand
-            {
-                Image = null,
-                Name = "Apple Pie",
-                Category = ProductCategory.Dessert,
-                Price = 4.99M,
-                Discount = 0,
-                Quantity = 23,
-                RestaurateurId = restaurateur.Id
-            });
+        basket.BasketItems = await SendAsync(new GetBasketItemsQuery
+        {
+            Basket = basket
+        });
 
-            var b = await SendAsync(new CreateBasketCommand
-            {
-                Customer = customer1
-            });
+        var orderCommand = new CreateOrderCommand
+        {
+            Customer = customer1,
+            Restaurateur = restaurateur,
+            BasketItems = basket.BasketItems,
+            AddressId = address.Id
+        };
 
-            var basket = await SendAsync(new UpdateBasketCommand
-            {
-                Basket = b,
-                Product = product,
-                Quantity = 1,
-                RestaurateurId = restaurateur.Id
-            });
+        var order = await SendAsync(orderCommand);
 
-            basket.BasketItems = await SendAsync(new GetBasketItemsQuery
-            {
-                Basket = basket
-            });
+        var list = await SendAsync(new GetOrderItemsQuery
+        {
+            OrderId = order.Id
+        });
 
-            var orderCommand = new CreateOrderCommand
-            {
-                Customer = customer1,
-                Restaurateur = restaurateur,
-                BasketItems = basket.BasketItems,
-                AddressId = address.Id
-            };
-
-            var order = await SendAsync(orderCommand);
-
-            var list = await SendAsync(new GetOrderItemsQuery
-            {
-                OrderId = order.Id
-            });
-
-            list.Should().NotBeNullOrEmpty();
-            list.ForEach(o => o.Should().NotBeNull());
-            list.ForEach(o => o.Id.Should().BeGreaterThan(0));
-            list.ForEach(o => o.OrderId.Should().Be(order.Id));
-            list.ForEach(o => o.ProductId.Should().Be(product.Id));
-            list.ForEach(o => o.Quantity.Should().Be(1));
-            list.ForEach(o => o.Discount.Should().Be(0));
-            list.ForEach(o => o.ProductPrice.Should().Be(4.99M));
-        }
+        list.Should().NotBeNullOrEmpty();
+        list.ForEach(o => o.Should().NotBeNull());
+        list.ForEach(o => o.Id.Should().BeGreaterThan(0));
+        list.ForEach(o => o.OrderId.Should().Be(order.Id));
+        list.ForEach(o => o.ProductId.Should().Be(product.Id));
+        list.ForEach(o => o.Quantity.Should().Be(1));
+        list.ForEach(o => o.Discount.Should().Be(0));
+        list.ForEach(o => o.ProductPrice.Should().Be(4.99M));
     }
 }

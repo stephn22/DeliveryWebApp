@@ -5,46 +5,45 @@ using FluentAssertions;
 using NUnit.Framework;
 using System.Threading.Tasks;
 
-namespace DeliveryWebApp.Application.IntegrationTests.Baskets.Commands
+namespace DeliveryWebApp.Application.IntegrationTests.Baskets.Commands;
+
+using static Testing;
+
+public class CreateBasketTest : TestBase
 {
-    using static Testing;
-
-    public class CreateBasketTest : TestBase
+    [Test]
+    public async Task ShouldRequireMinimumFields()
     {
-        [Test]
-        public async Task ShouldRequireMinimumFields()
+        var command = new CreateBasketCommand();
+
+        await FluentActions.Invoking(() =>
+            SendAsync(command)).Should().ThrowAsync<ValidationException>();
+    }
+
+    [Test]
+    public async Task ShouldCreateBasketAsync()
+    {
+        var userId = await RunAsDefaultUserAsync();
+
+        var customerCommand = new CreateCustomerCommand()
         {
-            var command = new CreateBasketCommand();
+            ApplicationUserFk = userId,
+            FirstName = "John",
+            LastName = "Doe",
+            Email = "johndoe@gmail.com"
+        };
 
-            await FluentActions.Invoking(() =>
-                SendAsync(command)).Should().ThrowAsync<ValidationException>();
-        }
+        var customer = await SendAsync(customerCommand);
 
-        [Test]
-        public async Task ShouldCreateBasketAsync()
+        var basketCommand = new CreateBasketCommand
         {
-            var userId = await RunAsDefaultUserAsync();
+            Customer = customer
+        };
 
-            var customerCommand = new CreateCustomerCommand()
-            {
-                ApplicationUserFk = userId,
-                FirstName = "John",
-                LastName = "Doe",
-                Email = "johndoe@gmail.com"
-            };
+        var basket = await SendAsync(basketCommand);
 
-            var customer = await SendAsync(customerCommand);
-
-            var basketCommand = new CreateBasketCommand
-            {
-                Customer = customer
-            };
-
-            var basket = await SendAsync(basketCommand);
-
-            basket.Should().NotBeNull();
-            basket.Id.Should().NotBe(0);
-            basket.CustomerId.Should().Be(customer.Id);
-        }
+        basket.Should().NotBeNull();
+        basket.Id.Should().NotBe(0);
+        basket.CustomerId.Should().Be(customer.Id);
     }
 }

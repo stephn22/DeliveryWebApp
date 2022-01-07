@@ -9,40 +9,39 @@ using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 
-namespace DeliveryWebApp.Application.Products.Queries.GetProducts
+namespace DeliveryWebApp.Application.Products.Queries.GetProducts;
+
+public class GetProductsQuery : IRequest<List<Product>>
 {
-    public class GetProductsQuery : IRequest<List<Product>>
+    public int? RestaurateurId { get; set; }
+}
+
+public class GetProductsQueryHandler : IRequestHandler<GetProductsQuery, List<Product>>
+{
+    private readonly IApplicationDbContext _context;
+    private readonly ILogger<GetProductsQuery> _logger;
+
+    public GetProductsQueryHandler(IApplicationDbContext context, ILogger<GetProductsQuery> logger)
     {
-        public int? RestaurateurId { get; set; }
+        _context = context;
+        _logger = logger;
     }
 
-    public class GetProductsQueryHandler : IRequestHandler<GetProductsQuery, List<Product>>
+    public async Task<List<Product>> Handle(GetProductsQuery request, CancellationToken cancellationToken)
     {
-        private readonly IApplicationDbContext _context;
-        private readonly ILogger<GetProductsQuery> _logger;
-
-        public GetProductsQueryHandler(IApplicationDbContext context, ILogger<GetProductsQuery> logger)
+        try
         {
-            _context = context;
-            _logger = logger;
+            if (request.RestaurateurId != null)
+            {
+                return await _context.Products.Where(p => p.RestaurateurId == request.RestaurateurId).ToListAsync(cancellationToken);
+            }
+
+            return null;
         }
-
-        public async Task<List<Product>> Handle(GetProductsQuery request, CancellationToken cancellationToken)
+        catch (InvalidOperationException e)
         {
-            try
-            {
-                if (request.RestaurateurId != null)
-                {
-                    return await _context.Products.Where(p => p.RestaurateurId == request.RestaurateurId).ToListAsync(cancellationToken);
-                }
-
-                return null;
-            }
-            catch (InvalidOperationException e)
-            {
-                _logger.LogWarning($"{nameof(Product)}, {e.Message}");
-                return null;
-            }
+            _logger.LogWarning($"{nameof(Product)}, {e.Message}");
+            return null;
         }
     }
 }

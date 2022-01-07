@@ -1,12 +1,11 @@
 ﻿using FluentValidation;
 
-namespace DeliveryWebApp.Application.Reviews.Commands.DeleteReview
+namespace DeliveryWebApp.Application.Reviews.Commands.DeleteReview;
+
+public class DeleteReviewCommandValidator : AbstractValidator<DeleteReviewCommand>
 {
-    public class DeleteReviewCommandValidator : AbstractValidator<DeleteReviewCommand>
+    public DeleteReviewCommandValidator()
     {
-        public DeleteReviewCommandValidator()
-        {
-            RuleFor(r => r.Id).GreaterThan(0).NotEmpty();
-        }
+        RuleFor(r => r.Id).GreaterThan(0).NotEmpty();
     }
 }

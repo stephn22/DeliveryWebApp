@@ -5,44 +5,43 @@ using System;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace DeliveryWebApp.Application.Riders.Extensions
+namespace DeliveryWebApp.Application.Riders.Extensions;
+
+public static class RiderExtensions
 {
-    public static class RiderExtensions
+    public static async Task<Rider> GetRiderByIdAsync(this IApplicationDbContext context, int? riderId)
     {
-        public static async Task<Rider> GetRiderByIdAsync(this IApplicationDbContext context, int? riderId)
+        try
         {
-            try
+            if (riderId == null)
             {
-                if (riderId == null)
-                {
-                    throw new NullReferenceException();
-                }
+                throw new NullReferenceException();
+            }
 
-                return await context.Riders.Where(r => r.Id == riderId).FirstAsync();
-            }
-            catch (NullReferenceException e)
-            {
-                Console.WriteLine(e);
-                throw;
-            }
+            return await context.Riders.Where(r => r.Id == riderId).FirstAsync();
         }
-
-        public static async Task<Rider> GetRiderByCustomerIdAsync(this IApplicationDbContext context, int? customerId)
+        catch (NullReferenceException e)
         {
-            try
-            {
-                if (customerId == null)
-                {
-                    throw new NullReferenceException();
-                }
+            Console.WriteLine(e);
+            throw;
+        }
+    }
 
-                return await context.Riders.Where(r => r.Customer.Id == customerId).FirstAsync();
-            }
-            catch (NullReferenceException e)
+    public static async Task<Rider> GetRiderByCustomerIdAsync(this IApplicationDbContext context, int? customerId)
+    {
+        try
+        {
+            if (customerId == null)
             {
-                Console.WriteLine(e);
-                throw;
+                throw new NullReferenceException();
             }
+
+            return await context.Riders.Where(r => r.Customer.Id == customerId).FirstAsync();
+        }
+        catch (NullReferenceException e)
+        {
+            Console.WriteLine(e);
+            throw;
         }
     }
 }

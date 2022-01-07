@@ -1,9 +1,8 @@
 ﻿using System;
 
-namespace DeliveryWebApp.Application.Common.Interfaces
+namespace DeliveryWebApp.Application.Common.Interfaces;
+
+public interface IDateTime
 {
-    public interface IDateTime
-    {
-        DateTime Now { get; }
-    }
+    DateTime Now { get; }
 }

@@ -8,70 +8,69 @@ using FluentAssertions;
 using NUnit.Framework;
 using System.Threading.Tasks;
 
-namespace DeliveryWebApp.Application.IntegrationTests.Restaurateurs.Commands
+namespace DeliveryWebApp.Application.IntegrationTests.Restaurateurs.Commands;
+
+using static Testing;
+public class UpdateRestaurateurTest : TestBase
 {
-    using static Testing;
-    public class UpdateRestaurateurTest : TestBase
+    [Test]
+    public async Task ShouldRequireMinimumFields()
     {
-        [Test]
-        public async Task ShouldRequireMinimumFields()
+        var command = new UpdateRestaurateurCommand();
+
+        await FluentActions.Invoking(() =>
+            SendAsync(command)).Should().ThrowAsync<ValidationException>();
+    }
+
+    [Test]
+    public async Task ShouldUpdateRestaurateurAsync()
+    {
+        var userId = await RunAsDefaultUserAsync();
+
+        var customerCommand = new CreateCustomerCommand()
         {
-            var command = new UpdateRestaurateurCommand();
+            ApplicationUserFk = userId,
+            FirstName = "John",
+            LastName = "Doe",
+            Email = "johndoe@gmail.com"
+        };
 
-            await FluentActions.Invoking(() =>
-                SendAsync(command)).Should().ThrowAsync<ValidationException>();
-        }
+        var customer = await SendAsync(customerCommand);
 
-        [Test]
-        public async Task ShouldUpdateRestaurateurAsync()
+        var restaurateurCommand = new CreateRestaurateurCommand
         {
-            var userId = await RunAsDefaultUserAsync();
+            Customer = customer,
+        };
 
-            var customerCommand = new CreateCustomerCommand()
-            {
-                ApplicationUserFk = userId,
-                FirstName = "John",
-                LastName = "Doe",
-                Email = "johndoe@gmail.com"
-            };
+        var restaurateur = await SendAsync(restaurateurCommand);
 
-            var customer = await SendAsync(customerCommand);
+        var addressCommand = new CreateAddressCommand
+        {
+            Latitude = 48.5472M,
+            Longitude = 72.1804M,
+            RestaurateurId = restaurateur.Id
+        };
 
-            var restaurateurCommand = new CreateRestaurateurCommand
-            {
-                Customer = customer,
-            };
+        var address = await SendAsync(addressCommand);
 
-            var restaurateur = await SendAsync(restaurateurCommand);
+        var updateCommand = new UpdateRestaurateurCommand
+        {
+            Id = restaurateur.Id,
+            Logo = new byte[2],
+            RestaurantCategory = RestaurantCategory.Sushi,
+            RestaurantAddress = address,
+            RestaurantName = "Sushi 24/7"
+        };
 
-            var addressCommand = new CreateAddressCommand
-            {
-                Latitude = 48.5472M,
-                Longitude = 72.1804M,
-                RestaurateurId = restaurateur.Id
-            };
+        var update = await SendAsync(updateCommand);
 
-            var address = await SendAsync(addressCommand);
-
-            var updateCommand = new UpdateRestaurateurCommand
-            {
-                Id = restaurateur.Id,
-                Logo = new byte[2],
-                RestaurantCategory = RestaurantCategory.Sushi,
-                RestaurantAddress = address,
-                RestaurantName = "Sushi 24/7"
-            };
-
-            var update = await SendAsync(updateCommand);
-
-            update.Should().NotBeNull();
-            update.Id.Should().NotBe(0);
-            update.Id.Should().Be(restaurateur.Id);
-            update.RestaurantName.Should().Be(updateCommand.RestaurantName);
-            update.RestaurantCategory.Should().Be(updateCommand.RestaurantCategory);
-            update.RestaurantAddressId.Should().Be(address.Id);
-            update.Logo.Should().NotBeNull();
-            update.Logo.Length.Should().Be(2);
-        }
+        update.Should().NotBeNull();
+        update.Id.Should().NotBe(0);
+        update.Id.Should().Be(restaurateur.Id);
+        update.RestaurantName.Should().Be(updateCommand.RestaurantName);
+        update.RestaurantCategory.Should().Be(updateCommand.RestaurantCategory);
+        update.RestaurantAddressId.Should().Be(address.Id);
+        update.Logo.Should().NotBeNull();
+        update.Logo.Length.Should().Be(2);
     }
 }

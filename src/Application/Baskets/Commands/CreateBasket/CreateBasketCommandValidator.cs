@@ -1,12 +1,11 @@
 ﻿using FluentValidation;
 
-namespace DeliveryWebApp.Application.Baskets.Commands.CreateBasket
+namespace DeliveryWebApp.Application.Baskets.Commands.CreateBasket;
+
+public class CreateBasketCommandValidator : AbstractValidator<CreateBasketCommand>
 {
-    public class CreateBasketCommandValidator : AbstractValidator<CreateBasketCommand>
+    public CreateBasketCommandValidator()
     {
-        public CreateBasketCommandValidator()
-        {
-            RuleFor(b => b.Customer).NotEmpty();
-        }
+        RuleFor(b => b.Customer).NotEmpty();
     }
 }

@@ -11,44 +11,43 @@ using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 
-namespace DeliveryWebApp.Application.Customers.Queries.GetCustomersWithPagination
+namespace DeliveryWebApp.Application.Customers.Queries.GetCustomersWithPagination;
+
+public class GetCustomersWithPaginationQuery : IRequest<PaginatedList<Customer>>
 {
-    public class GetCustomersWithPaginationQuery : IRequest<PaginatedList<Customer>>
+    public int PageNumber { get; set; } = 1;
+    public int PageSize { get; set; } = 10;
+}
+
+public class
+    GetCustomersWithPaginationQueryHandler : IRequestHandler<GetCustomersWithPaginationQuery,
+        PaginatedList<Customer>>
+{
+    private readonly IApplicationDbContext _context;
+    private readonly IMapper _mapper;
+    private readonly ILogger<GetCustomersWithPaginationQuery> _logger;
+
+    public GetCustomersWithPaginationQueryHandler(IApplicationDbContext context, IMapper mapper, ILogger<GetCustomersWithPaginationQuery> logger)
     {
-        public int PageNumber { get; set; } = 1;
-        public int PageSize { get; set; } = 10;
+        _context = context;
+        _mapper = mapper;
+        _logger = logger;
     }
 
-    public class
-        GetCustomersWithPaginationQueryHandler : IRequestHandler<GetCustomersWithPaginationQuery,
-            PaginatedList<Customer>>
+    public async Task<PaginatedList<Customer>> Handle(GetCustomersWithPaginationQuery request,
+        CancellationToken cancellationToken)
     {
-        private readonly IApplicationDbContext _context;
-        private readonly IMapper _mapper;
-        private readonly ILogger<GetCustomersWithPaginationQuery> _logger;
-
-        public GetCustomersWithPaginationQueryHandler(IApplicationDbContext context, IMapper mapper, ILogger<GetCustomersWithPaginationQuery> logger)
+        try
         {
-            _context = context;
-            _mapper = mapper;
-            _logger = logger;
+            return await _context.Customers
+                .OrderBy(c => c.Id)
+                .ProjectTo<Customer>(_mapper.ConfigurationProvider)
+                .PaginatedListAsync(request.PageNumber, request.PageSize);
         }
-
-        public async Task<PaginatedList<Customer>> Handle(GetCustomersWithPaginationQuery request,
-            CancellationToken cancellationToken)
+        catch (InvalidOperationException e)
         {
-            try
-            {
-                return await _context.Customers
-                    .OrderBy(c => c.Id)
-                    .ProjectTo<Customer>(_mapper.ConfigurationProvider)
-                    .PaginatedListAsync(request.PageNumber, request.PageSize);
-            }
-            catch (InvalidOperationException e)
-            {
-                _logger.LogWarning($"{nameof(Customer)}, {e.Message}");
-                return null;
-            }
+            _logger.LogWarning($"{nameof(Customer)}, {e.Message}");
+            return null;
         }
     }
 }

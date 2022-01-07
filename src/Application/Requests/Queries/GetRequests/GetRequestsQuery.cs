@@ -8,34 +8,33 @@ using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
 
-namespace DeliveryWebApp.Application.Requests.Queries.GetRequests
+namespace DeliveryWebApp.Application.Requests.Queries.GetRequests;
+
+public class GetRequestsQuery : IRequest<List<Request>>
 {
-    public class GetRequestsQuery : IRequest<List<Request>>
+}
+
+public class GetRequestsQueryHandler : IRequestHandler<GetRequestsQuery, List<Request>>
+{
+    private readonly IApplicationDbContext _context;
+    private readonly ILogger<GetRequestsQuery> _logger;
+
+    public GetRequestsQueryHandler(IApplicationDbContext context, ILogger<GetRequestsQuery> logger)
     {
+        _context = context;
+        _logger = logger;
     }
 
-    public class GetRequestsQueryHandler : IRequestHandler<GetRequestsQuery, List<Request>>
+    public async Task<List<Request>> Handle(GetRequestsQuery request, CancellationToken cancellationToken)
     {
-        private readonly IApplicationDbContext _context;
-        private readonly ILogger<GetRequestsQuery> _logger;
-
-        public GetRequestsQueryHandler(IApplicationDbContext context, ILogger<GetRequestsQuery> logger)
+        try
         {
-            _context = context;
-            _logger = logger;
+            return await _context.Requests.ToListAsync(cancellationToken);
         }
-
-        public async Task<List<Request>> Handle(GetRequestsQuery request, CancellationToken cancellationToken)
+        catch (InvalidOperationException e)
         {
-            try
-            {
-                return await _context.Requests.ToListAsync(cancellationToken);
-            }
-            catch (InvalidOperationException e)
-            {
-                _logger.LogWarning($"{nameof(Request)}, {e.Message}");
-                return null;
-            }
+            _logger.LogWarning($"{nameof(Request)}, {e.Message}");
+            return null;
         }
     }
 }

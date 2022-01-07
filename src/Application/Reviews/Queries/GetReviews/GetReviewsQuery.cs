@@ -8,55 +8,54 @@ using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 
-namespace DeliveryWebApp.Application.Reviews.Queries.GetReviews
+namespace DeliveryWebApp.Application.Reviews.Queries.GetReviews;
+
+public class GetReviewsQuery : IRequest<List<Review>>
 {
-    public class GetReviewsQuery : IRequest<List<Review>>
+    public int? CustomerId { get; set; }
+    public int? RestaurateurId { get; set; }
+}
+
+public class GetReviewsQueryHandler : IRequestHandler<GetReviewsQuery, List<Review>>
+{
+    private readonly IApplicationDbContext _context;
+
+    public GetReviewsQueryHandler(IApplicationDbContext context)
     {
-        public int? CustomerId { get; set; }
-        public int? RestaurateurId { get; set; }
+        _context = context;
     }
 
-    public class GetReviewsQueryHandler : IRequestHandler<GetReviewsQuery, List<Review>>
+
+    public async Task<List<Review>> Handle(GetReviewsQuery request, CancellationToken cancellationToken)
     {
-        private readonly IApplicationDbContext _context;
-
-        public GetReviewsQueryHandler(IApplicationDbContext context)
+        // get reviews of a single customer
+        if (request.CustomerId != null)
         {
-            _context = context;
+            try
+            {
+                return await _context.Reviews.Where(r => r.CustomerId == request.CustomerId)
+                    .ToListAsync(cancellationToken);
+            }
+            catch (InvalidOperationException)
+            {
+                return null;
+            }
         }
 
-
-        public async Task<List<Review>> Handle(GetReviewsQuery request, CancellationToken cancellationToken)
+        // get reviews of a restaurateur
+        if (request.RestaurateurId != null)
         {
-            // get reviews of a single customer
-            if (request.CustomerId != null)
+            try
             {
-                try
-                {
-                    return await _context.Reviews.Where(r => r.CustomerId == request.CustomerId)
-                        .ToListAsync(cancellationToken);
-                }
-                catch (InvalidOperationException)
-                {
-                    return null;
-                }
+                return await _context.Reviews.Where(r => r.RestaurateurId == request.RestaurateurId)
+                    .ToListAsync(cancellationToken);
             }
-
-            // get reviews of a restaurateur
-            if (request.RestaurateurId != null)
+            catch (InvalidOperationException)
             {
-                try
-                {
-                    return await _context.Reviews.Where(r => r.RestaurateurId == request.RestaurateurId)
-                        .ToListAsync(cancellationToken);
-                }
-                catch (InvalidOperationException)
-                {
-                    return null;
-                }
+                return null;
             }
-
-            return null;
         }
+
+        return null;
     }
 }

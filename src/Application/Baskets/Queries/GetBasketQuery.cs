@@ -7,37 +7,36 @@ using System;
 using System.Threading;
 using System.Threading.Tasks;
 
-namespace DeliveryWebApp.Application.Baskets.Queries
+namespace DeliveryWebApp.Application.Baskets.Queries;
+
+public class GetBasketQuery : IRequest<Basket>
 {
-    public class GetBasketQuery : IRequest<Basket>
+    public Customer Customer { get; set; }
+}
+
+public class GetBasketQueryHandler : IRequestHandler<GetBasketQuery, Basket>
+{
+    private readonly IApplicationDbContext _context;
+    private readonly IMapper _mapper;
+
+    public GetBasketQueryHandler(IApplicationDbContext context, IMapper mapper)
     {
-        public Customer Customer { get; set; }
+        _context = context;
+        _mapper = mapper;
     }
 
-    public class GetBasketQueryHandler : IRequestHandler<GetBasketQuery, Basket>
+    public async Task<Basket> Handle(GetBasketQuery request, CancellationToken cancellationToken)
     {
-        private readonly IApplicationDbContext _context;
-        private readonly IMapper _mapper;
+        var customer = _mapper.Map<Customer>(request.Customer);
 
-        public GetBasketQueryHandler(IApplicationDbContext context, IMapper mapper)
+        try
         {
-            _context = context;
-            _mapper = mapper;
+            var entity = await _context.Baskets.FirstAsync(b => b.CustomerId == customer.Id, cancellationToken);
+            return entity;
         }
-
-        public async Task<Basket> Handle(GetBasketQuery request, CancellationToken cancellationToken)
+        catch (InvalidOperationException)
         {
-            var customer = _mapper.Map<Customer>(request.Customer);
-
-            try
-            {
-                var entity = await _context.Baskets.FirstAsync(b => b.CustomerId == customer.Id, cancellationToken);
-                return entity;
-            }
-            catch (InvalidOperationException)
-            {
-                return null;
-            }
+            return null;
         }
     }
 }

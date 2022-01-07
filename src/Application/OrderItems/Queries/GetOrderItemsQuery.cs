@@ -8,35 +8,34 @@ using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 
-namespace DeliveryWebApp.Application.OrderItems.Queries
+namespace DeliveryWebApp.Application.OrderItems.Queries;
+
+public class GetOrderItemsQuery : IRequest<List<OrderItem>>
 {
-    public class GetOrderItemsQuery : IRequest<List<OrderItem>>
+    public int OrderId { get; set; }
+}
+
+public class GetOrderItemsQueryHandler : IRequestHandler<GetOrderItemsQuery, List<OrderItem>>
+{
+    private readonly IApplicationDbContext _context;
+
+    public GetOrderItemsQueryHandler(IApplicationDbContext context)
     {
-        public int OrderId { get; set; }
+        _context = context;
     }
 
-    public class GetOrderItemsQueryHandler : IRequestHandler<GetOrderItemsQuery, List<OrderItem>>
+    public async Task<List<OrderItem>> Handle(GetOrderItemsQuery request, CancellationToken cancellationToken)
     {
-        private readonly IApplicationDbContext _context;
-
-        public GetOrderItemsQueryHandler(IApplicationDbContext context)
+        try
         {
-            _context = context;
+            var list = await _context.OrderItems.Where(o => o.OrderId == request.OrderId)
+                .ToListAsync(cancellationToken);
+
+            return list;
         }
-
-        public async Task<List<OrderItem>> Handle(GetOrderItemsQuery request, CancellationToken cancellationToken)
+        catch (InvalidOperationException)
         {
-            try
-            {
-                var list = await _context.OrderItems.Where(o => o.OrderId == request.OrderId)
-                    .ToListAsync(cancellationToken);
-
-                return list;
-            }
-            catch (InvalidOperationException)
-            {
-                return null;
-            }
+            return null;
         }
     }
 }

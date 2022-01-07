@@ -4,37 +4,36 @@ using MediatR;
 using System.Threading;
 using System.Threading.Tasks;
 
-namespace DeliveryWebApp.Application.Riders.Commands.CreateRider
+namespace DeliveryWebApp.Application.Riders.Commands.CreateRider;
+
+public class CreateRiderCommand : IRequest<Rider>
 {
-    public class CreateRiderCommand : IRequest<Rider>
+    public Customer Customer { get; set; }
+    public decimal DeliveryCredit { get; set; }
+
+    public class CreateRiderCommandHandler : IRequestHandler<CreateRiderCommand, Rider>
     {
-        public Customer Customer { get; set; }
-        public decimal DeliveryCredit { get; set; }
+        private readonly IApplicationDbContext _context;
 
-        public class CreateRiderCommandHandler : IRequestHandler<CreateRiderCommand, Rider>
+        public CreateRiderCommandHandler(IApplicationDbContext context)
         {
-            private readonly IApplicationDbContext _context;
+            _context = context;
+        }
 
-            public CreateRiderCommandHandler(IApplicationDbContext context)
+        public async Task<Rider> Handle(CreateRiderCommand request, CancellationToken cancellationToken)
+        {
+            var entity = new Rider
             {
-                _context = context;
-            }
+                CustomerId = request.Customer.Id,
+                DeliveryCredit = request.DeliveryCredit,
+                TotalCredit = 0
+            };
 
-            public async Task<Rider> Handle(CreateRiderCommand request, CancellationToken cancellationToken)
-            {
-                var entity = new Rider
-                {
-                    CustomerId = request.Customer.Id,
-                    DeliveryCredit = request.DeliveryCredit,
-                    TotalCredit = 0
-                };
+            _context.Riders.Add(entity);
 
-                _context.Riders.Add(entity);
+            await _context.SaveChangesAsync(cancellationToken);
 
-                await _context.SaveChangesAsync(cancellationToken);
-
-                return entity;
-            }
+            return entity;
         }
     }
 }

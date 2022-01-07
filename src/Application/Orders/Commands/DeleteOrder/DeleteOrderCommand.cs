@@ -7,52 +7,51 @@ using MediatR;
 using System.Threading;
 using System.Threading.Tasks;
 
-namespace DeliveryWebApp.Application.Orders.Commands.DeleteOrder
+namespace DeliveryWebApp.Application.Orders.Commands.DeleteOrder;
+
+public class DeleteOrderCommand : IRequest<Order>
 {
-    public class DeleteOrderCommand : IRequest<Order>
+    public int Id { get; set; }
+}
+
+public class DeleteOrderCommandHandler : IRequestHandler<DeleteOrderCommand, Order>
+{
+    private readonly IApplicationDbContext _context;
+    private readonly IMediator _mediator;
+
+    public DeleteOrderCommandHandler(IApplicationDbContext context, IMediator mediator)
     {
-        public int Id { get; set; }
+        _context = context;
+        _mediator = mediator;
     }
 
-    public class DeleteOrderCommandHandler : IRequestHandler<DeleteOrderCommand, Order>
+    public async Task<Order> Handle(DeleteOrderCommand request, CancellationToken cancellationToken)
     {
-        private readonly IApplicationDbContext _context;
-        private readonly IMediator _mediator;
+        var entity = await _context.Orders.FindAsync(request.Id);
 
-        public DeleteOrderCommandHandler(IApplicationDbContext context, IMediator mediator)
+        if (entity == null)
         {
-            _context = context;
-            _mediator = mediator;
+            throw new NotFoundException(nameof(Order), request.Id);
         }
 
-        public async Task<Order> Handle(DeleteOrderCommand request, CancellationToken cancellationToken)
+        var orderItems = await _mediator.Send(new GetOrderItemsQuery
         {
-            var entity = await _context.Orders.FindAsync(request.Id);
+            OrderId = entity.Id
+        }, cancellationToken);
 
-            if (entity == null)
+        // delete each orderItem
+        foreach (var item in orderItems)
+        {
+            await _mediator.Send(new DeleteOrderItemCommand
             {
-                throw new NotFoundException(nameof(Order), request.Id);
-            }
-
-            var orderItems = await _mediator.Send(new GetOrderItemsQuery
-            {
-                OrderId = entity.Id
+                Id = item.Id
             }, cancellationToken);
-
-            // delete each orderItem
-            foreach (var item in orderItems)
-            {
-                await _mediator.Send(new DeleteOrderItemCommand
-                {
-                    Id = item.Id
-                }, cancellationToken);
-            }
-
-            _context.Orders.Remove(entity);
-
-            await _context.SaveChangesAsync(cancellationToken);
-
-            return entity;
         }
+
+        _context.Orders.Remove(entity);
+
+        await _context.SaveChangesAsync(cancellationToken);
+
+        return entity;
     }
 }

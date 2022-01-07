@@ -1,12 +1,11 @@
 ﻿using FluentValidation;
 
-namespace DeliveryWebApp.Application.Restaurateurs.Commands.CreateRestaurateur
+namespace DeliveryWebApp.Application.Restaurateurs.Commands.CreateRestaurateur;
+
+public class CreateRestaurateurCommandValidator : AbstractValidator<CreateRestaurateurCommand>
 {
-    public class CreateRestaurateurCommandValidator : AbstractValidator<CreateRestaurateurCommand>
+    public CreateRestaurateurCommandValidator()
     {
-        public CreateRestaurateurCommandValidator()
-        {
-            RuleFor(r => r.Customer).NotEmpty();
-        }
+        RuleFor(r => r.Customer).NotEmpty();
     }
 }

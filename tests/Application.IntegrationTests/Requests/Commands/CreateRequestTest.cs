@@ -8,55 +8,54 @@ using FluentAssertions;
 using NUnit.Framework;
 using System.Threading.Tasks;
 
-namespace DeliveryWebApp.Application.IntegrationTests.Requests.Commands
+namespace DeliveryWebApp.Application.IntegrationTests.Requests.Commands;
+
+using static Testing;
+
+public class CreateRequestTest : TestBase
 {
-    using static Testing;
-
-    public class CreateRequestTest : TestBase
+    [Test]
+    public async Task ShouldRequireMinimumFields()
     {
-        [Test]
-        public async Task ShouldRequireMinimumFields()
+        var command = new CreateCustomerCommand();
+
+        await FluentActions.Invoking(() =>
+            SendAsync(command)).Should().ThrowAsync<ValidationException>();
+    }
+
+    [Test]
+    public async Task ShouldCreateRequestAsync()
+    {
+        // create customer first
+        var userId = await RunAsDefaultUserAsync();
+
+        var cmd = new CreateCustomerCommand
         {
-            var command = new CreateCustomerCommand();
+            ApplicationUserFk = userId,
+            FirstName = "John",
+            LastName = "Doe",
+            Email = "johndoe@gmail.com"
+        };
 
-            await FluentActions.Invoking(() =>
-                SendAsync(command)).Should().ThrowAsync<ValidationException>();
-        }
+        var customer = await SendAsync(cmd);
 
-        [Test]
-        public async Task ShouldCreateRequestAsync()
+        // then create request
+        var command = new CreateRequestCommand
         {
-            // create customer first
-            var userId = await RunAsDefaultUserAsync();
+            CustomerId = customer.Id,
+            Role = RoleName.Restaurateur,
+            Status = RequestStatus.Idle
+        };
 
-            var cmd = new CreateCustomerCommand
-            {
-                ApplicationUserFk = userId,
-                FirstName = "John",
-                LastName = "Doe",
-                Email = "johndoe@gmail.com"
-            };
+        var item = await SendAsync(command);
 
-            var customer = await SendAsync(cmd);
+        var request = await FindAsync<Request>(item.Id);
 
-            // then create request
-            var command = new CreateRequestCommand
-            {
-                CustomerId = customer.Id,
-                Role = RoleName.Restaurateur,
-                Status = RequestStatus.Idle
-            };
-
-            var item = await SendAsync(command);
-
-            var request = await FindAsync<Request>(item.Id);
-
-            request.Should().NotBeNull();
-            request.Id.Should().BeGreaterThan(0);
-            request.CustomerId.Should().Be(customer.Id);
-            request.Status.Should().Be(command.Status);
-            request.Role.Should().Be(command.Role);
-            request.Customer.Should().BeNull();
-        }
+        request.Should().NotBeNull();
+        request.Id.Should().BeGreaterThan(0);
+        request.CustomerId.Should().Be(customer.Id);
+        request.Status.Should().Be(command.Status);
+        request.Role.Should().Be(command.Role);
+        request.Customer.Should().BeNull();
     }
 }

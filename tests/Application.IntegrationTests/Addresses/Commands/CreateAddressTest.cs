@@ -8,101 +8,100 @@ using FluentAssertions;
 using NUnit.Framework;
 using System.Threading.Tasks;
 
-namespace DeliveryWebApp.Application.IntegrationTests.Addresses.Commands
+namespace DeliveryWebApp.Application.IntegrationTests.Addresses.Commands;
+
+using static Testing;
+
+public class CreateAddressTest : TestBase
 {
-    using static Testing;
-
-    public class CreateAddressTest : TestBase
+    [Test]
+    public async Task ShouldRequireMinimumFields()
     {
-        [Test]
-        public async Task ShouldRequireMinimumFields()
+        var command = new CreateAddressCommand();
+
+        await FluentActions.Invoking(() =>
+            SendAsync(command)).Should().ThrowAsync<ValidationException>();
+    }
+
+    [Test]
+    public async Task ShouldCreateAddressAsync()
+    {
+        var userId = await RunAsDefaultUserAsync();
+
+        var customerCommand = new CreateCustomerCommand()
         {
-            var command = new CreateAddressCommand();
+            ApplicationUserFk = userId,
+            FirstName = "John",
+            LastName = "Doe",
+            Email = "johndoe@gmail.com"
+        };
 
-            await FluentActions.Invoking(() =>
-                SendAsync(command)).Should().ThrowAsync<ValidationException>();
-        }
+        var customer = await SendAsync(customerCommand);
 
-        [Test]
-        public async Task ShouldCreateAddressAsync()
+        var addressCommand = new CreateAddressCommand
         {
-            var userId = await RunAsDefaultUserAsync();
+            Latitude = 48.5472M,
+            Longitude = 72.1804M,
+            CustomerId = customer.Id,
+            PlaceName = "221B Baker Street, London, UK"
+        };
 
-            var customerCommand = new CreateCustomerCommand()
-            {
-                ApplicationUserFk = userId,
-                FirstName = "John",
-                LastName = "Doe",
-                Email = "johndoe@gmail.com"
-            };
+        var address = await SendAsync(addressCommand);
 
-            var customer = await SendAsync(customerCommand);
+        address.Should().NotBeNull();
+        address.Id.Should().BeGreaterThan(0);
+        address.PlaceName.Should().Be(addressCommand.PlaceName);
+        address.Longitude.Should().Be(addressCommand.Longitude);
+        address.Latitude.Should().Be(addressCommand.Latitude);
+    }
 
-            var addressCommand = new CreateAddressCommand
-            {
-                Latitude = 48.5472M,
-                Longitude = 72.1804M,
-                CustomerId = customer.Id,
-                PlaceName = "221B Baker Street, London, UK"
-            };
+    [Test]
+    public async Task ShouldCreateAddressForRestaurateurAsync()
+    {
+        var userId = await RunAsDefaultUserAsync();
 
-            var address = await SendAsync(addressCommand);
-
-            address.Should().NotBeNull();
-            address.Id.Should().BeGreaterThan(0);
-            address.PlaceName.Should().Be(addressCommand.PlaceName);
-            address.Longitude.Should().Be(addressCommand.Longitude);
-            address.Latitude.Should().Be(addressCommand.Latitude);
-        }
-
-        [Test]
-        public async Task ShouldCreateAddressForRestaurateurAsync()
+        var customerCommand = new CreateCustomerCommand()
         {
-            var userId = await RunAsDefaultUserAsync();
+            ApplicationUserFk = userId,
+            FirstName = "John",
+            LastName = "Doe",
+            Email = "johndoe@gmail.com"
+        };
 
-            var customerCommand = new CreateCustomerCommand()
-            {
-                ApplicationUserFk = userId,
-                FirstName = "John",
-                LastName = "Doe",
-                Email = "johndoe@gmail.com"
-            };
+        var customer = await SendAsync(customerCommand);
 
-            var customer = await SendAsync(customerCommand);
+        var restaurateurCommand = new CreateRestaurateurCommand
+        {
+            Customer = customer
+        };
 
-            var restaurateurCommand = new CreateRestaurateurCommand
-            {
-                Customer = customer
-            };
+        var restaurateur = await SendAsync(restaurateurCommand);
 
-            var restaurateur = await SendAsync(restaurateurCommand);
+        var addressCommand = new CreateAddressCommand
+        {
+            Latitude = 48.5472M,
+            Longitude = 72.1804M,
+            RestaurateurId = restaurateur.Id
+        };
 
-            var addressCommand = new CreateAddressCommand
-            {
-                Latitude = 48.5472M,
-                Longitude = 72.1804M,
-                RestaurateurId = restaurateur.Id
-            };
+        var address = await SendAsync(addressCommand);
 
-            var address = await SendAsync(addressCommand);
+        var updateRestaurateurCommand = new UpdateRestaurateurCommand
+        {
+            Id = restaurateur.Id,
+            Logo = new byte[2],
+            RestaurantCategory = RestaurantCategory.Sushi,
+            RestaurantAddress = address,
+            RestaurantName = "Sushi 24/7"
+        };
 
-            var updateRestaurateurCommand = new UpdateRestaurateurCommand
-            {
-                Id = restaurateur.Id,
-                Logo = new byte[2],
-                RestaurantCategory = RestaurantCategory.Sushi,
-                RestaurantAddress = address,
-                RestaurantName = "Sushi 24/7"
-            };
+        var restaurateurUpdate = await SendAsync(updateRestaurateurCommand);
 
-            var restaurateurUpdate = await SendAsync(updateRestaurateurCommand);
-
-            address.Should().NotBeNull();
-            address.Id.Should().NotBe(0);
-            address.Id.Should().Be(restaurateurUpdate.RestaurantAddressId);
-            address.RestaurateurId.Should().Be(restaurateur.Id);
-            address.Latitude.Should().Be(addressCommand.Latitude);
-            address.Longitude.Should().Be(addressCommand.Longitude);
-        }
+        address.Should().NotBeNull();
+        address.Id.Should().NotBe(0);
+        address.Id.Should().Be(restaurateurUpdate.RestaurantAddressId);
+        address.RestaurateurId.Should().Be(restaurateur.Id);
+        address.Latitude.Should().Be(addressCommand.Latitude);
+        address.Longitude.Should().Be(addressCommand.Longitude);
     }
 }

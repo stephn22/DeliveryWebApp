@@ -4,39 +4,38 @@ using MediatR;
 using System.Threading;
 using System.Threading.Tasks;
 
-namespace DeliveryWebApp.Application.BasketItems.Commands.CreateBasketItem
+namespace DeliveryWebApp.Application.BasketItems.Commands.CreateBasketItem;
+
+public class CreateBasketItemCommand : IRequest<BasketItem>
 {
-    public class CreateBasketItemCommand : IRequest<BasketItem>
+    public Basket Basket { get; set; }
+    public Product Product { get; set; }
+    public int Quantity { get; set; }
+}
+
+public class CreateBasketItemCommandHandler : IRequestHandler<CreateBasketItemCommand, BasketItem>
+{
+    private readonly IApplicationDbContext _context;
+    private readonly IMediator _mediator;
+
+    public CreateBasketItemCommandHandler(IApplicationDbContext context, IMediator mediator)
     {
-        public Basket Basket { get; set; }
-        public Product Product { get; set; }
-        public int Quantity { get; set; }
+        _context = context;
+        _mediator = mediator;
     }
 
-    public class CreateBasketItemCommandHandler : IRequestHandler<CreateBasketItemCommand, BasketItem>
+    public async Task<BasketItem> Handle(CreateBasketItemCommand request, CancellationToken cancellationToken)
     {
-        private readonly IApplicationDbContext _context;
-        private readonly IMediator _mediator;
-
-        public CreateBasketItemCommandHandler(IApplicationDbContext context, IMediator mediator)
+        var entity = new BasketItem
         {
-            _context = context;
-            _mediator = mediator;
-        }
+            BasketId = request.Basket.Id,
+            ProductId = request.Product.Id,
+            Quantity = request.Quantity
+        };
 
-        public async Task<BasketItem> Handle(CreateBasketItemCommand request, CancellationToken cancellationToken)
-        {
-            var entity = new BasketItem
-            {
-                BasketId = request.Basket.Id,
-                ProductId = request.Product.Id,
-                Quantity = request.Quantity
-            };
+        _context.BasketItems.Add(entity);
+        await _context.SaveChangesAsync(cancellationToken);
 
-            _context.BasketItems.Add(entity);
-            await _context.SaveChangesAsync(cancellationToken);
-
-            return entity;
-        }
+        return entity;
     }
 }

@@ -5,36 +5,35 @@ using MediatR;
 using System.Threading;
 using System.Threading.Tasks;
 
-namespace DeliveryWebApp.Application.Requests.Commands.DeleteRequest
+namespace DeliveryWebApp.Application.Requests.Commands.DeleteRequest;
+
+public class DeleteRequestCommand : IRequest<Request>
 {
-    public class DeleteRequestCommand : IRequest<Request>
+    public int Id { get; set; }
+}
+
+public class DeleteRequestCommandHandler : IRequestHandler<DeleteRequestCommand, Request>
+{
+    private readonly IApplicationDbContext _context;
+
+    public DeleteRequestCommandHandler(IApplicationDbContext context)
     {
-        public int Id { get; set; }
+        _context = context;
     }
 
-    public class DeleteRequestCommandHandler : IRequestHandler<DeleteRequestCommand, Request>
+    public async Task<Request> Handle(DeleteRequestCommand request, CancellationToken cancellationToken)
     {
-        private readonly IApplicationDbContext _context;
+        var entity = await _context.Requests.FindAsync(request.Id);
 
-        public DeleteRequestCommandHandler(IApplicationDbContext context)
+        if (entity == null)
         {
-            _context = context;
+            throw new NotFoundException(nameof(Request), request.Id);
         }
 
-        public async Task<Request> Handle(DeleteRequestCommand request, CancellationToken cancellationToken)
-        {
-            var entity = await _context.Requests.FindAsync(request.Id);
+        _context.Requests.Remove(entity);
 
-            if (entity == null)
-            {
-                throw new NotFoundException(nameof(Request), request.Id);
-            }
+        await _context.SaveChangesAsync(cancellationToken);
 
-            _context.Requests.Remove(entity);
-
-            await _context.SaveChangesAsync(cancellationToken);
-
-            return entity;
-        }
+        return entity;
     }
 }

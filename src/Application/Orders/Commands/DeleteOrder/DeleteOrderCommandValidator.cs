@@ -1,12 +1,11 @@
 ﻿using FluentValidation;
 
-namespace DeliveryWebApp.Application.Orders.Commands.DeleteOrder
+namespace DeliveryWebApp.Application.Orders.Commands.DeleteOrder;
+
+public class DeleteOrderCommandValidator : AbstractValidator<DeleteOrderCommand>
 {
-    public class DeleteOrderCommandValidator : AbstractValidator<DeleteOrderCommand>
+    public DeleteOrderCommandValidator()
     {
-        public DeleteOrderCommandValidator()
-        {
-            RuleFor(o => o.Id).GreaterThan(0).NotEmpty();
-        }
+        RuleFor(o => o.Id).GreaterThan(0).NotEmpty();
     }
 }

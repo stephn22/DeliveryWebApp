@@ -14,116 +14,115 @@ using System;
 using System.Threading;
 using System.Threading.Tasks;
 
-namespace DeliveryWebApp.Application.Customers.Commands.DeleteCustomer
+namespace DeliveryWebApp.Application.Customers.Commands.DeleteCustomer;
+
+public class DeleteCustomerCommand : IRequest<Customer>
 {
-    public class DeleteCustomerCommand : IRequest<Customer>
+    public Customer Customer { get; set; }
+}
+
+public class DeleteCustomerCommandHandler : IRequestHandler<DeleteCustomerCommand, Customer>
+{
+    private readonly IApplicationDbContext _context;
+    private readonly IMapper _mapper;
+    private readonly IMediator _mediator;
+
+    public DeleteCustomerCommandHandler(IApplicationDbContext context, IMapper mapper, IMediator mediator)
     {
-        public Customer Customer { get; set; }
+        _context = context;
+        _mapper = mapper;
+
+        _mediator = mediator;
     }
 
-    public class DeleteCustomerCommandHandler : IRequestHandler<DeleteCustomerCommand, Customer>
+    public async Task<Customer> Handle(DeleteCustomerCommand request, CancellationToken cancellationToken)
     {
-        private readonly IApplicationDbContext _context;
-        private readonly IMapper _mapper;
-        private readonly IMediator _mediator;
+        var entity = _mapper.Map<Customer>(request.Customer);
 
-        public DeleteCustomerCommandHandler(IApplicationDbContext context, IMapper mapper, IMediator mediator)
+        if (entity == null)
         {
-            _context = context;
-            _mapper = mapper;
-
-            _mediator = mediator;
+            throw new NotFoundException(nameof(Customer), request.Customer.Id);
         }
 
-        public async Task<Customer> Handle(DeleteCustomerCommand request, CancellationToken cancellationToken)
+        // search if customer is also a restaurateur or a rider and delete it
+        try
         {
-            var entity = _mapper.Map<Customer>(request.Customer);
+            var restaurateur =
+                await _context.Restaurateurs.FirstAsync(r => r.CustomerId == entity.Id, cancellationToken);
 
-            if (entity == null)
+            await _mediator.Send(new DeleteRestaurateurCommand
             {
-                throw new NotFoundException(nameof(Customer), request.Customer.Id);
-            }
-
-            // search if customer is also a restaurateur or a rider and delete it
-            try
-            {
-                var restaurateur =
-                    await _context.Restaurateurs.FirstAsync(r => r.CustomerId == entity.Id, cancellationToken);
-
-                await _mediator.Send(new DeleteRestaurateurCommand
-                {
-                    Id = restaurateur.Id
-                }, cancellationToken);
-            }
-            catch (InvalidOperationException)
-            {
-            }
-            try
-            {
-                var rider =
-                    await _context.Riders.FirstAsync(r => r.CustomerId == entity.Id, cancellationToken);
-
-                await _mediator.Send(new DeleteRiderCommand
-                {
-                    Id = rider.Id
-                }, cancellationToken);
-            }
-            catch (InvalidOperationException)
-            {
-            }
-
-            // search if customer has basket and delete it
-            try
-            {
-                var basket = await _context.Baskets.FirstAsync(b => b.CustomerId == entity.Id, cancellationToken);
-
-                await _mediator.Send(new DeleteBasketCommand
-                {
-                    Id = basket.Id
-                }, cancellationToken);
-            }
-            catch (InvalidOperationException)
-            {
-            }
-
-            // search if customer has addresses and delete it
-            var addresses = await _mediator.Send(new GetAddressesQuery
-            {
-                CustomerId = entity.Id
+                Id = restaurateur.Id
             }, cancellationToken);
+        }
+        catch (InvalidOperationException)
+        {
+        }
+        try
+        {
+            var rider =
+                await _context.Riders.FirstAsync(r => r.CustomerId == entity.Id, cancellationToken);
 
-            if (addresses is { Count: > 0 })
+            await _mediator.Send(new DeleteRiderCommand
             {
-                _context.Addresses.RemoveRange(addresses);
-            }
-
-            // search if customer has reviews and delete them
-            var reviews = await _mediator.Send(new GetReviewsQuery
-            {
-                CustomerId = entity.Id
+                Id = rider.Id
             }, cancellationToken);
+        }
+        catch (InvalidOperationException)
+        {
+        }
 
-            if (reviews is { Count: > 0 })
+        // search if customer has basket and delete it
+        try
+        {
+            var basket = await _context.Baskets.FirstAsync(b => b.CustomerId == entity.Id, cancellationToken);
+
+            await _mediator.Send(new DeleteBasketCommand
             {
-                foreach (var review in reviews)
+                Id = basket.Id
+            }, cancellationToken);
+        }
+        catch (InvalidOperationException)
+        {
+        }
+
+        // search if customer has addresses and delete it
+        var addresses = await _mediator.Send(new GetAddressesQuery
+        {
+            CustomerId = entity.Id
+        }, cancellationToken);
+
+        if (addresses is { Count: > 0 })
+        {
+            _context.Addresses.RemoveRange(addresses);
+        }
+
+        // search if customer has reviews and delete them
+        var reviews = await _mediator.Send(new GetReviewsQuery
+        {
+            CustomerId = entity.Id
+        }, cancellationToken);
+
+        if (reviews is { Count: > 0 })
+        {
+            foreach (var review in reviews)
+            {
+                try
                 {
-                    try
+                    await _mediator.Send(new DeleteReviewCommand
                     {
-                        await _mediator.Send(new DeleteReviewCommand
-                        {
-                            Id = review.Id
-                        }, cancellationToken);
-                    }
-                    catch (NotFoundException)
-                    {
-                    }
+                        Id = review.Id
+                    }, cancellationToken);
+                }
+                catch (NotFoundException)
+                {
                 }
             }
-
-            _context.Customers.Remove(entity);
-            await _context.SaveChangesAsync(cancellationToken);
-
-            return entity;
         }
+
+        _context.Customers.Remove(entity);
+        await _context.SaveChangesAsync(cancellationToken);
+
+        return entity;
     }
 }

@@ -5,42 +5,41 @@ using MediatR;
 using System.Threading;
 using System.Threading.Tasks;
 
-namespace DeliveryWebApp.Application.Addresses.Commands.UpdateAddress
+namespace DeliveryWebApp.Application.Addresses.Commands.UpdateAddress;
+
+public class UpdateAddressCommand : IRequest<Address>
 {
-    public class UpdateAddressCommand : IRequest<Address>
+    public int Id { get; set; }
+    public string PlaceName { get; set; }
+    public decimal Longitude { get; set; }
+    public decimal Latitude { get; set; }
+}
+
+public class UpdateAddressCommandHandler : IRequestHandler<UpdateAddressCommand, Address>
+{
+    private readonly IApplicationDbContext _context;
+
+    public UpdateAddressCommandHandler(IApplicationDbContext context)
     {
-        public int Id { get; set; }
-        public string PlaceName { get; set; }
-        public decimal Longitude { get; set; }
-        public decimal Latitude { get; set; }
+        _context = context;
     }
 
-    public class UpdateAddressCommandHandler : IRequestHandler<UpdateAddressCommand, Address>
+    public async Task<Address> Handle(UpdateAddressCommand request, CancellationToken cancellationToken)
     {
-        private readonly IApplicationDbContext _context;
+        var entity = await _context.Addresses.FindAsync(request.Id);
 
-        public UpdateAddressCommandHandler(IApplicationDbContext context)
+        if (entity == null)
         {
-            _context = context;
+            throw new NotFoundException(nameof(Address), request.Id);
         }
 
-        public async Task<Address> Handle(UpdateAddressCommand request, CancellationToken cancellationToken)
-        {
-            var entity = await _context.Addresses.FindAsync(request.Id);
+        entity.PlaceName = request.PlaceName;
 
-            if (entity == null)
-            {
-                throw new NotFoundException(nameof(Address), request.Id);
-            }
+        entity.Latitude = request.Latitude;
+        entity.Longitude = request.Longitude;
 
-            entity.PlaceName = request.PlaceName;
+        await _context.SaveChangesAsync(cancellationToken);
 
-            entity.Latitude = request.Latitude;
-            entity.Longitude = request.Longitude;
-
-            await _context.SaveChangesAsync(cancellationToken);
-
-            return entity;
-        }
+        return entity;
     }
 }

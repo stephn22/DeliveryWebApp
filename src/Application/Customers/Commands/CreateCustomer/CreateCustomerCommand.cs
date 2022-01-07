@@ -5,36 +5,35 @@ using MediatR;
 using System.Threading;
 using System.Threading.Tasks;
 
-namespace DeliveryWebApp.Application.Customers.Commands.CreateCustomer
+namespace DeliveryWebApp.Application.Customers.Commands.CreateCustomer;
+
+public class CreateCustomerCommand : IRequest<Customer>
 {
-    public class CreateCustomerCommand : IRequest<Customer>
+    public string ApplicationUserFk { get; set; }
+    public string FirstName { get; set; }
+    public string LastName { get; set; }
+    public string Email { get; set; }
+
+    public class CreateCustomerCommandHandler : IRequestHandler<CreateCustomerCommand, Customer>
     {
-        public string ApplicationUserFk { get; set; }
-        public string FirstName { get; set; }
-        public string LastName { get; set; }
-        public string Email { get; set; }
+        private readonly IApplicationDbContext _context;
+        private readonly IMapper _mapper;
 
-        public class CreateCustomerCommandHandler : IRequestHandler<CreateCustomerCommand, Customer>
+        public CreateCustomerCommandHandler(IApplicationDbContext context, IMapper mapper)
         {
-            private readonly IApplicationDbContext _context;
-            private readonly IMapper _mapper;
+            _context = context;
+            _mapper = mapper;
+        }
 
-            public CreateCustomerCommandHandler(IApplicationDbContext context, IMapper mapper)
-            {
-                _context = context;
-                _mapper = mapper;
-            }
+        public async Task<Customer> Handle(CreateCustomerCommand request, CancellationToken cancellationToken)
+        {
+            var entity = _mapper.Map<Customer>(request);
 
-            public async Task<Customer> Handle(CreateCustomerCommand request, CancellationToken cancellationToken)
-            {
-                var entity = _mapper.Map<Customer>(request);
+            _context.Customers.Add(entity);
 
-                _context.Customers.Add(entity);
+            await _context.SaveChangesAsync(cancellationToken);
 
-                await _context.SaveChangesAsync(cancellationToken);
-
-                return entity;
-            }
+            return entity;
         }
     }
 }

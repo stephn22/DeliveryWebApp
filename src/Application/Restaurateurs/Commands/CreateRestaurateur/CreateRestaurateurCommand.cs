@@ -4,34 +4,33 @@ using MediatR;
 using System.Threading;
 using System.Threading.Tasks;
 
-namespace DeliveryWebApp.Application.Restaurateurs.Commands.CreateRestaurateur
+namespace DeliveryWebApp.Application.Restaurateurs.Commands.CreateRestaurateur;
+
+public class CreateRestaurateurCommand : IRequest<Restaurateur>
 {
-    public class CreateRestaurateurCommand : IRequest<Restaurateur>
+    public Customer Customer { get; set; }
+
+    public class CreateRestaurateurCommandHandler : IRequestHandler<CreateRestaurateurCommand, Restaurateur>
     {
-        public Customer Customer { get; set; }
+        private readonly IApplicationDbContext _context;
 
-        public class CreateRestaurateurCommandHandler : IRequestHandler<CreateRestaurateurCommand, Restaurateur>
+        public CreateRestaurateurCommandHandler(IApplicationDbContext context)
         {
-            private readonly IApplicationDbContext _context;
+            _context = context;
+        }
 
-            public CreateRestaurateurCommandHandler(IApplicationDbContext context)
+        public async Task<Restaurateur> Handle(CreateRestaurateurCommand request, CancellationToken cancellationToken)
+        {
+            var entity = new Restaurateur
             {
-                _context = context;
-            }
+                CustomerId = request.Customer.Id
+            };
 
-            public async Task<Restaurateur> Handle(CreateRestaurateurCommand request, CancellationToken cancellationToken)
-            {
-                var entity = new Restaurateur
-                {
-                    CustomerId = request.Customer.Id
-                };
+            _context.Restaurateurs.Add(entity);
 
-                _context.Restaurateurs.Add(entity);
+            await _context.SaveChangesAsync(cancellationToken);
 
-                await _context.SaveChangesAsync(cancellationToken);
-
-                return entity;
-            }
+            return entity;
         }
     }
 }

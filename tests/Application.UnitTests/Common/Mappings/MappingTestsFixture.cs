@@ -2,22 +2,21 @@
 using DeliveryWebApp.Application.Common.Mappings;
 using IConfigurationProvider = AutoMapper.IConfigurationProvider;
 
-namespace DeliveryWebApp.Application.UnitTests.Common.Mappings
+namespace DeliveryWebApp.Application.UnitTests.Common.Mappings;
+
+public class MappingTestsFixture
 {
-    public class MappingTestsFixture
+    public MappingTestsFixture()
     {
-        public MappingTestsFixture()
+        ConfigurationProvider = new MapperConfiguration(cfg =>
         {
-            ConfigurationProvider = new MapperConfiguration(cfg =>
-            {
-                cfg.AddProfile<MappingProfile>();
-            });
+            cfg.AddProfile<MappingProfile>();
+        });
 
-            Mapper = ConfigurationProvider.CreateMapper();
-        }
-
-        public IConfigurationProvider ConfigurationProvider { get; }
-
-        public IMapper Mapper { get; }
+        Mapper = ConfigurationProvider.CreateMapper();
     }
+
+    public IConfigurationProvider ConfigurationProvider { get; }
+
+    public IMapper Mapper { get; }
 }

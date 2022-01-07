@@ -5,64 +5,63 @@ using MediatR;
 using System.Threading;
 using System.Threading.Tasks;
 
-namespace DeliveryWebApp.Application.Restaurateurs.Commands.UpdateRestaurateur
+namespace DeliveryWebApp.Application.Restaurateurs.Commands.UpdateRestaurateur;
+
+public class UpdateRestaurateurCommand : IRequest<Restaurateur>
 {
-    public class UpdateRestaurateurCommand : IRequest<Restaurateur>
+    public int Id { get; set; }
+    public byte[] Logo { get; set; }
+    public string RestaurantName { get; set; }
+    public string RestaurantCategory { get; set; }
+    public int? RestaurantAddressId { get; set; }
+    public Address RestaurantAddress { get; set; }
+}
+
+public class UpdateRestaurateurCommandHandler : IRequestHandler<UpdateRestaurateurCommand, Restaurateur>
+{
+    private readonly IApplicationDbContext _context;
+
+    public UpdateRestaurateurCommandHandler(IApplicationDbContext context)
     {
-        public int Id { get; set; }
-        public byte[] Logo { get; set; }
-        public string RestaurantName { get; set; }
-        public string RestaurantCategory { get; set; }
-        public int? RestaurantAddressId { get; set; }
-        public Address RestaurantAddress { get; set; }
+        _context = context;
     }
 
-    public class UpdateRestaurateurCommandHandler : IRequestHandler<UpdateRestaurateurCommand, Restaurateur>
+    public async Task<Restaurateur> Handle(UpdateRestaurateurCommand request, CancellationToken cancellationToken)
     {
-        private readonly IApplicationDbContext _context;
+        var entity = await _context.Restaurateurs.FindAsync(request.Id);
 
-        public UpdateRestaurateurCommandHandler(IApplicationDbContext context)
+        if (entity == null)
         {
-            _context = context;
+            throw new NotFoundException(nameof(Restaurateur), request.Id);
         }
 
-        public async Task<Restaurateur> Handle(UpdateRestaurateurCommand request, CancellationToken cancellationToken)
+        if (request.Logo != null)
         {
-            var entity = await _context.Restaurateurs.FindAsync(request.Id);
-
-            if (entity == null)
-            {
-                throw new NotFoundException(nameof(Restaurateur), request.Id);
-            }
-
-            if (request.Logo != null)
-            {
-                entity.Logo = request.Logo;
-            }
-
-            if (!string.IsNullOrEmpty(request.RestaurantName))
-            {
-                entity.RestaurantName = request.RestaurantName;
-            }
-
-            if (!string.IsNullOrEmpty(request.RestaurantCategory))
-            {
-                entity.RestaurantCategory = request.RestaurantCategory;
-            }
-
-            if (request.RestaurantAddressId != null)
-            {
-                entity.RestaurantAddressId = (int)request.RestaurantAddressId;
-            }
-
-            if (request.RestaurantAddress != null)
-            {
-                entity.RestaurantAddressId = request.RestaurantAddress.Id;
-            }
-
-            await _context.SaveChangesAsync(cancellationToken);
-
-            return entity;
+            entity.Logo = request.Logo;
         }
+
+        if (!string.IsNullOrEmpty(request.RestaurantName))
+        {
+            entity.RestaurantName = request.RestaurantName;
+        }
+
+        if (!string.IsNullOrEmpty(request.RestaurantCategory))
+        {
+            entity.RestaurantCategory = request.RestaurantCategory;
+        }
+
+        if (request.RestaurantAddressId != null)
+        {
+            entity.RestaurantAddressId = (int)request.RestaurantAddressId;
+        }
+
+        if (request.RestaurantAddress != null)
+        {
+            entity.RestaurantAddressId = request.RestaurantAddress.Id;
+        }
+
+        await _context.SaveChangesAsync(cancellationToken);
+
+        return entity;
     }
 }

@@ -1,12 +1,11 @@
 ﻿using FluentValidation;
 
-namespace DeliveryWebApp.Application.Requests.Commands.DeleteRequest
+namespace DeliveryWebApp.Application.Requests.Commands.DeleteRequest;
+
+public class DeleteRequestCommandValidator : AbstractValidator<DeleteRequestCommand>
 {
-    public class DeleteRequestCommandValidator : AbstractValidator<DeleteRequestCommand>
+    public DeleteRequestCommandValidator()
     {
-        public DeleteRequestCommandValidator()
-        {
-            RuleFor(r => r.Id).GreaterThan(0).NotEmpty();
-        }
+        RuleFor(r => r.Id).GreaterThan(0).NotEmpty();
     }
 }

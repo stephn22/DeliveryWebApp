@@ -5,52 +5,51 @@ using FluentAssertions;
 using NUnit.Framework;
 using System.Threading.Tasks;
 
-namespace DeliveryWebApp.Application.IntegrationTests.Customers.Commands
+namespace DeliveryWebApp.Application.IntegrationTests.Customers.Commands;
+
+using static Testing;
+
+public class UpdateCustomerTest : TestBase
 {
-    using static Testing;
-
-    public class UpdateCustomerTest : TestBase
+    [Test]
+    public async Task ShouldRequireMinimumFields()
     {
-        [Test]
-        public async Task ShouldRequireMinimumFields()
+        var command = new UpdateCustomerCommand();
+
+        await FluentActions.Invoking(() =>
+            SendAsync(command)).Should().ThrowAsync<ValidationException>();
+    }
+
+    [Test]
+    public async Task ShouldUpdateCustomerAsync()
+    {
+        var userId = await RunAsDefaultUserAsync();
+
+        var customerCommand = new CreateCustomerCommand()
         {
-            var command = new UpdateCustomerCommand();
+            ApplicationUserFk = userId,
+            FirstName = "John",
+            LastName = "Doe",
+            Email = "johndoe@gmail.com"
+        };
 
-            await FluentActions.Invoking(() =>
-                SendAsync(command)).Should().ThrowAsync<ValidationException>();
-        }
+        var customer = await SendAsync(customerCommand);
 
-        [Test]
-        public async Task ShouldUpdateCustomerAsync()
+        var updateCommand = new UpdateCustomerCommand
         {
-            var userId = await RunAsDefaultUserAsync();
+            Id = customer.Id,
+            FName = "Mario",
+            LName = "Rossi"
+        };
 
-            var customerCommand = new CreateCustomerCommand()
-            {
-                ApplicationUserFk = userId,
-                FirstName = "John",
-                LastName = "Doe",
-                Email = "johndoe@gmail.com"
-            };
+        var update = await SendAsync(updateCommand);
 
-            var customer = await SendAsync(customerCommand);
-
-            var updateCommand = new UpdateCustomerCommand
-            {
-                Id = customer.Id,
-                FName = "Mario",
-                LName = "Rossi"
-            };
-
-            var update = await SendAsync(updateCommand);
-
-            update.Should().NotBeNull();
-            update.Id.Should().NotBe(0);
-            update.Id.Should().Be(customer.Id);
-            update.ApplicationUserFk.Should().Be(customer.ApplicationUserFk);
-            update.FirstName.Should().Be(updateCommand.FName);
-            update.LastName.Should().Be(updateCommand.LName);
-            update.Email.Should().Be(customer.Email);
-        }
+        update.Should().NotBeNull();
+        update.Id.Should().NotBe(0);
+        update.Id.Should().Be(customer.Id);
+        update.ApplicationUserFk.Should().Be(customer.ApplicationUserFk);
+        update.FirstName.Should().Be(updateCommand.FName);
+        update.LastName.Should().Be(updateCommand.LName);
+        update.Email.Should().Be(customer.Email);
     }
 }

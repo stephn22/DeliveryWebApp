@@ -5,39 +5,38 @@ using MediatR;
 using System.Threading;
 using System.Threading.Tasks;
 
-namespace DeliveryWebApp.Application.Products.Commands.CreateProduct
+namespace DeliveryWebApp.Application.Products.Commands.CreateProduct;
+
+public class CreateProductCommand : IRequest<Product>
 {
-    public class CreateProductCommand : IRequest<Product>
+    public string Name { get; set; }
+    public byte[] Image { get; set; }
+    public decimal Price { get; set; }
+    public int Discount { get; set; }
+    public string Category { get; set; }
+    public int Quantity { get; set; }
+    public int RestaurateurId { get; set; }
+}
+
+public class CreateProductCommandHandler : IRequestHandler<CreateProductCommand, Product>
+{
+    private readonly IApplicationDbContext _context;
+    private readonly IMapper _mapper;
+
+    public CreateProductCommandHandler(IApplicationDbContext context, IMapper mapper)
     {
-        public string Name { get; set; }
-        public byte[] Image { get; set; }
-        public decimal Price { get; set; }
-        public int Discount { get; set; }
-        public string Category { get; set; }
-        public int Quantity { get; set; }
-        public int RestaurateurId { get; set; }
+        _context = context;
+        _mapper = mapper;
     }
 
-    public class CreateProductCommandHandler : IRequestHandler<CreateProductCommand, Product>
+    public async Task<Product> Handle(CreateProductCommand request, CancellationToken cancellationToken)
     {
-        private readonly IApplicationDbContext _context;
-        private readonly IMapper _mapper;
+        var entity = _mapper.Map<Product>(request);
 
-        public CreateProductCommandHandler(IApplicationDbContext context, IMapper mapper)
-        {
-            _context = context;
-            _mapper = mapper;
-        }
+        _context.Products.Add(entity);
 
-        public async Task<Product> Handle(CreateProductCommand request, CancellationToken cancellationToken)
-        {
-            var entity = _mapper.Map<Product>(request);
+        await _context.SaveChangesAsync(cancellationToken);
 
-            _context.Products.Add(entity);
-
-            await _context.SaveChangesAsync(cancellationToken);
-
-            return entity;
-        }
+        return entity;
     }
 }

@@ -5,37 +5,36 @@ using MediatR;
 using System.Threading;
 using System.Threading.Tasks;
 
-namespace DeliveryWebApp.Application.Requests.Commands.UpdateRequest
+namespace DeliveryWebApp.Application.Requests.Commands.UpdateRequest;
+
+public class UpdateRequestCommand : IRequest<Request>
 {
-    public class UpdateRequestCommand : IRequest<Request>
+    public int Id { get; set; }
+    public string Status { get; set; }
+}
+
+public class UpdateRequestCommandHandler : IRequestHandler<UpdateRequestCommand, Request>
+{
+    private readonly IApplicationDbContext _context;
+
+    public UpdateRequestCommandHandler(IApplicationDbContext context)
     {
-        public int Id { get; set; }
-        public string Status { get; set; }
+        _context = context;
     }
 
-    public class UpdateRequestCommandHandler : IRequestHandler<UpdateRequestCommand, Request>
+    public async Task<Request> Handle(UpdateRequestCommand request, CancellationToken cancellationToken)
     {
-        private readonly IApplicationDbContext _context;
+        var entity = await _context.Requests.FindAsync(request.Id);
 
-        public UpdateRequestCommandHandler(IApplicationDbContext context)
+        if (entity == null)
         {
-            _context = context;
+            throw new NotFoundException(nameof(Request), request.Id);
         }
 
-        public async Task<Request> Handle(UpdateRequestCommand request, CancellationToken cancellationToken)
-        {
-            var entity = await _context.Requests.FindAsync(request.Id);
+        entity.Status = request.Status;
 
-            if (entity == null)
-            {
-                throw new NotFoundException(nameof(Request), request.Id);
-            }
+        await _context.SaveChangesAsync(cancellationToken);
 
-            entity.Status = request.Status;
-
-            await _context.SaveChangesAsync(cancellationToken);
-
-            return entity;
-        }
+        return entity;
     }
 }

@@ -1,12 +1,11 @@
 ﻿using FluentValidation;
 
-namespace DeliveryWebApp.Application.BasketItems.Commands.DeleteBasketItem
+namespace DeliveryWebApp.Application.BasketItems.Commands.DeleteBasketItem;
+
+public class DeleteBasketItemCommandValidator : AbstractValidator<DeleteBasketItemCommand>
 {
-    public class DeleteBasketItemCommandValidator : AbstractValidator<DeleteBasketItemCommand>
+    public DeleteBasketItemCommandValidator()
     {
-        public DeleteBasketItemCommandValidator()
-        {
-            RuleFor(b => b.Id).GreaterThan(0).NotEmpty();
-        }
+        RuleFor(b => b.Id).GreaterThan(0).NotEmpty();
     }
 }

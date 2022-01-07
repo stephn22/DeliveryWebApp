@@ -5,36 +5,35 @@ using MediatR;
 using System.Threading;
 using System.Threading.Tasks;
 
-namespace DeliveryWebApp.Application.Riders.Commands.DeleteRider
+namespace DeliveryWebApp.Application.Riders.Commands.DeleteRider;
+
+public class DeleteRiderCommand : IRequest
 {
-    public class DeleteRiderCommand : IRequest
+    public int Id { get; set; }
+}
+
+public class DeleteRiderCommandHandler : IRequestHandler<DeleteRiderCommand>
+{
+    private readonly IApplicationDbContext _context;
+
+    public DeleteRiderCommandHandler(IApplicationDbContext context)
     {
-        public int Id { get; set; }
+        _context = context;
     }
 
-    public class DeleteRiderCommandHandler : IRequestHandler<DeleteRiderCommand>
+    public async Task<Unit> Handle(DeleteRiderCommand request, CancellationToken cancellationToken)
     {
-        private readonly IApplicationDbContext _context;
+        var entity = await _context.Riders.FindAsync(request.Id);
 
-        public DeleteRiderCommandHandler(IApplicationDbContext context)
+        if (entity == null)
         {
-            _context = context;
+            throw new NotFoundException(nameof(Restaurateur), request.Id);
         }
 
-        public async Task<Unit> Handle(DeleteRiderCommand request, CancellationToken cancellationToken)
-        {
-            var entity = await _context.Riders.FindAsync(request.Id);
+        _context.Riders.Remove(entity);
 
-            if (entity == null)
-            {
-                throw new NotFoundException(nameof(Restaurateur), request.Id);
-            }
+        await _context.SaveChangesAsync(cancellationToken);
 
-            _context.Riders.Remove(entity);
-
-            await _context.SaveChangesAsync(cancellationToken);
-
-            return Unit.Value;
-        }
+        return Unit.Value;
     }
 }

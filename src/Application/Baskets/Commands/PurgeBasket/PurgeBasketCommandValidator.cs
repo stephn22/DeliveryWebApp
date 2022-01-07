@@ -1,12 +1,11 @@
 ﻿using FluentValidation;
 
-namespace DeliveryWebApp.Application.Baskets.Commands.PurgeBasket
+namespace DeliveryWebApp.Application.Baskets.Commands.PurgeBasket;
+
+public class PurgeBasketCommandValidator : AbstractValidator<PurgeBasketCommand>
 {
-    public class PurgeBasketCommandValidator : AbstractValidator<PurgeBasketCommand>
+    public PurgeBasketCommandValidator()
     {
-        public PurgeBasketCommandValidator()
-        {
-            RuleFor(b => b.Id).GreaterThan(0).NotEmpty();
-        }
+        RuleFor(b => b.Id).GreaterThan(0).NotEmpty();
     }
 }

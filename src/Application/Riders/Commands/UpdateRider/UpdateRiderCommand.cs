@@ -5,37 +5,36 @@ using MediatR;
 using System.Threading;
 using System.Threading.Tasks;
 
-namespace DeliveryWebApp.Application.Riders.Commands.UpdateRider
+namespace DeliveryWebApp.Application.Riders.Commands.UpdateRider;
+
+public class UpdateRiderCommand : IRequest<Rider>
 {
-    public class UpdateRiderCommand : IRequest<Rider>
+    public int Id { get; set; }
+    public decimal DeliveryCredit { get; set; }
+}
+
+public class UpdateRiderCommandHandler : IRequestHandler<UpdateRiderCommand, Rider>
+{
+    private readonly IApplicationDbContext _context;
+
+    public UpdateRiderCommandHandler(IApplicationDbContext context)
     {
-        public int Id { get; set; }
-        public decimal DeliveryCredit { get; set; }
+        _context = context;
     }
 
-    public class UpdateRiderCommandHandler : IRequestHandler<UpdateRiderCommand, Rider>
+    public async Task<Rider> Handle(UpdateRiderCommand request, CancellationToken cancellationToken)
     {
-        private readonly IApplicationDbContext _context;
+        var entity = await _context.Riders.FindAsync(request.Id);
 
-        public UpdateRiderCommandHandler(IApplicationDbContext context)
+        if (entity == null)
         {
-            _context = context;
+            throw new NotFoundException(nameof(Rider), request.Id);
         }
 
-        public async Task<Rider> Handle(UpdateRiderCommand request, CancellationToken cancellationToken)
-        {
-            var entity = await _context.Riders.FindAsync(request.Id);
+        entity.DeliveryCredit = request.DeliveryCredit;
 
-            if (entity == null)
-            {
-                throw new NotFoundException(nameof(Rider), request.Id);
-            }
+        await _context.SaveChangesAsync(cancellationToken);
 
-            entity.DeliveryCredit = request.DeliveryCredit;
-
-            await _context.SaveChangesAsync(cancellationToken);
-
-            return entity;
-        }
+        return entity;
     }
 }

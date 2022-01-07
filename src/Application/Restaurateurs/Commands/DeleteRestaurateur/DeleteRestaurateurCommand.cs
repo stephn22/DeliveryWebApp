@@ -7,56 +7,55 @@ using MediatR;
 using System.Threading;
 using System.Threading.Tasks;
 
-namespace DeliveryWebApp.Application.Restaurateurs.Commands.DeleteRestaurateur
+namespace DeliveryWebApp.Application.Restaurateurs.Commands.DeleteRestaurateur;
+
+public class DeleteRestaurateurCommand : IRequest
 {
-    public class DeleteRestaurateurCommand : IRequest
+    public int Id { get; set; }
+}
+
+public class DeleteRestaurateurCommandHandler : IRequestHandler<DeleteRestaurateurCommand>
+{
+    private readonly IApplicationDbContext _context;
+    private readonly IMediator _mediator;
+
+    public DeleteRestaurateurCommandHandler(IApplicationDbContext context, IMediator mediator)
     {
-        public int Id { get; set; }
+        _context = context;
+        _mediator = mediator;
     }
 
-    public class DeleteRestaurateurCommandHandler : IRequestHandler<DeleteRestaurateurCommand>
+    public async Task<Unit> Handle(DeleteRestaurateurCommand request, CancellationToken cancellationToken)
     {
-        private readonly IApplicationDbContext _context;
-        private readonly IMediator _mediator;
+        var entity = await _context.Restaurateurs.FindAsync(request.Id);
 
-        public DeleteRestaurateurCommandHandler(IApplicationDbContext context, IMediator mediator)
+        if (entity == null)
         {
-            _context = context;
-            _mediator = mediator;
+            throw new NotFoundException(nameof(Restaurateur), request.Id);
         }
 
-        public async Task<Unit> Handle(DeleteRestaurateurCommand request, CancellationToken cancellationToken)
+        // search if restaurateur has products
+
+        var products = await _mediator.Send(new GetProductsQuery
         {
-            var entity = await _context.Restaurateurs.FindAsync(request.Id);
+            RestaurateurId = entity.Id
+        }, cancellationToken);
 
-            if (entity == null)
+        if (products is { Count: > 0 })
+        {
+            foreach (var product in products)
             {
-                throw new NotFoundException(nameof(Restaurateur), request.Id);
-            }
-
-            // search if restaurateur has products
-
-            var products = await _mediator.Send(new GetProductsQuery
-            {
-                RestaurateurId = entity.Id
-            }, cancellationToken);
-
-            if (products is { Count: > 0 })
-            {
-                foreach (var product in products)
+                await _mediator.Send(new DeleteProductCommand
                 {
-                    await _mediator.Send(new DeleteProductCommand
-                    {
-                        Id = product.Id
-                    }, cancellationToken);
-                }
+                    Id = product.Id
+                }, cancellationToken);
             }
-
-            _context.Restaurateurs.Remove(entity);
-
-            await _context.SaveChangesAsync(cancellationToken);
-
-            return Unit.Value;
         }
+
+        _context.Restaurateurs.Remove(entity);
+
+        await _context.SaveChangesAsync(cancellationToken);
+
+        return Unit.Value;
     }
 }

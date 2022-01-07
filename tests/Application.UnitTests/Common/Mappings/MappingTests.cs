@@ -8,50 +8,49 @@ using NUnit.Framework;
 using System;
 using System.Runtime.Serialization;
 
-namespace DeliveryWebApp.Application.UnitTests.Common.Mappings
+namespace DeliveryWebApp.Application.UnitTests.Common.Mappings;
+
+public class MappingTests
 {
-    public class MappingTests
+    private readonly IConfigurationProvider _configuration;
+    private readonly IMapper _mapper;
+
+    public MappingTests()
     {
-        private readonly IConfigurationProvider _configuration;
-        private readonly IMapper _mapper;
-
-        public MappingTests()
+        _configuration = new MapperConfiguration(cfg =>
         {
-            _configuration = new MapperConfiguration(cfg =>
-            {
-                cfg.AddProfile<MappingProfile>();
-            });
+            cfg.AddProfile<MappingProfile>();
+        });
 
-            _mapper = _configuration.CreateMapper();
+        _mapper = _configuration.CreateMapper();
+    }
+
+    [Test]
+    public void ShouldHaveValidConfiguration()
+    {
+        _configuration.AssertConfigurationIsValid();
+    }
+    // TODO: complete
+
+    [Test]
+    [TestCase(typeof(Address), typeof(CreateAddressCommand))]
+    [TestCase(typeof(Address), typeof(UpdateAddressCommand))]
+    [TestCase(typeof(Address), typeof(DeleteAddressCommand))]
+    public void ShouldSupportMappingFromSourceToDestination(Type source, Type destination)
+    {
+        var instance = GetInstanceOf(source);
+
+        _mapper.Map(instance, source, destination);
+    }
+
+    private object GetInstanceOf(Type type)
+    {
+        if (type.GetConstructor(Type.EmptyTypes) != null)
+        {
+            return Activator.CreateInstance(type);
         }
 
-        [Test]
-        public void ShouldHaveValidConfiguration()
-        {
-            _configuration.AssertConfigurationIsValid();
-        }
-        // TODO: complete
-
-        [Test]
-        [TestCase(typeof(Address), typeof(CreateAddressCommand))]
-        [TestCase(typeof(Address), typeof(UpdateAddressCommand))]
-        [TestCase(typeof(Address), typeof(DeleteAddressCommand))]
-        public void ShouldSupportMappingFromSourceToDestination(Type source, Type destination)
-        {
-            var instance = GetInstanceOf(source);
-
-            _mapper.Map(instance, source, destination);
-        }
-
-        private object GetInstanceOf(Type type)
-        {
-            if (type.GetConstructor(Type.EmptyTypes) != null)
-            {
-                return Activator.CreateInstance(type);
-            }
-
-            // Type without parameterless constructor
-            return FormatterServices.GetUninitializedObject(type);
-        }
+        // Type without parameterless constructor
+        return FormatterServices.GetUninitializedObject(type);
     }
 }

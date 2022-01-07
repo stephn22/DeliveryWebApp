@@ -6,54 +6,53 @@ using System;
 using System.Threading;
 using System.Threading.Tasks;
 
-namespace DeliveryWebApp.Application.Orders.Commands.UpdateOrder
+namespace DeliveryWebApp.Application.Orders.Commands.UpdateOrder;
+
+public class UpdateOrderCommand : IRequest<Order>
 {
-    public class UpdateOrderCommand : IRequest<Order>
+    public int Id { get; set; }
+    public string OrderStatus { get; set; }
+    public DateTime? DeliveryDate { get; set; }
+    public Rider Rider { get; set; }
+}
+
+public class UpdateOrderCommandHandler : IRequestHandler<UpdateOrderCommand, Order>
+{
+    private readonly IApplicationDbContext _context;
+    private readonly IMediator _mediator;
+
+    public UpdateOrderCommandHandler(IApplicationDbContext context, IMediator mediator)
     {
-        public int Id { get; set; }
-        public string OrderStatus { get; set; }
-        public DateTime? DeliveryDate { get; set; }
-        public Rider Rider { get; set; }
+        _context = context;
+        _mediator = mediator;
     }
 
-    public class UpdateOrderCommandHandler : IRequestHandler<UpdateOrderCommand, Order>
+    public async Task<Order> Handle(UpdateOrderCommand request, CancellationToken cancellationToken)
     {
-        private readonly IApplicationDbContext _context;
-        private readonly IMediator _mediator;
+        var entity = await _context.Orders.FindAsync(request.Id);
 
-        public UpdateOrderCommandHandler(IApplicationDbContext context, IMediator mediator)
+        if (entity == null)
         {
-            _context = context;
-            _mediator = mediator;
+            throw new NotFoundException(nameof(Order), request.Id);
         }
 
-        public async Task<Order> Handle(UpdateOrderCommand request, CancellationToken cancellationToken)
+        if (request.DeliveryDate != null)
         {
-            var entity = await _context.Orders.FindAsync(request.Id);
-
-            if (entity == null)
-            {
-                throw new NotFoundException(nameof(Order), request.Id);
-            }
-
-            if (request.DeliveryDate != null)
-            {
-                entity.DeliveryDate = request.DeliveryDate;
-            }
-
-            if (!string.IsNullOrEmpty(request.OrderStatus))
-            {
-                entity.Status = request.OrderStatus;
-            }
-
-            if (request.Rider != null)
-            {
-                entity.RiderId = request.Rider.Id;
-            }
-
-            await _context.SaveChangesAsync(cancellationToken);
-
-            return entity;
+            entity.DeliveryDate = request.DeliveryDate;
         }
+
+        if (!string.IsNullOrEmpty(request.OrderStatus))
+        {
+            entity.Status = request.OrderStatus;
+        }
+
+        if (request.Rider != null)
+        {
+            entity.RiderId = request.Rider.Id;
+        }
+
+        await _context.SaveChangesAsync(cancellationToken);
+
+        return entity;
     }
 }

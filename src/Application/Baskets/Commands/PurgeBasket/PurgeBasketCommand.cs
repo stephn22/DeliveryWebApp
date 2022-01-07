@@ -7,56 +7,55 @@ using MediatR;
 using System.Threading;
 using System.Threading.Tasks;
 
-namespace DeliveryWebApp.Application.Baskets.Commands.PurgeBasket
+namespace DeliveryWebApp.Application.Baskets.Commands.PurgeBasket;
+
+public class PurgeBasketCommand : IRequest
 {
-    public class PurgeBasketCommand : IRequest
+    public int Id { get; set; }
+}
+
+public class PurgeBasketCommandHandler : IRequestHandler<PurgeBasketCommand>
+{
+    private readonly IApplicationDbContext _context;
+    private readonly IMediator _mediator;
+
+    public PurgeBasketCommandHandler(IApplicationDbContext context, IMediator mediator)
     {
-        public int Id { get; set; }
+        _context = context;
+        _mediator = mediator;
     }
 
-    public class PurgeBasketCommandHandler : IRequestHandler<PurgeBasketCommand>
+    public async Task<Unit> Handle(PurgeBasketCommand request, CancellationToken cancellationToken)
     {
-        private readonly IApplicationDbContext _context;
-        private readonly IMediator _mediator;
+        var entity = await _context.Baskets.FindAsync(request.Id);
 
-        public PurgeBasketCommandHandler(IApplicationDbContext context, IMediator mediator)
+        if (entity == null)
         {
-            _context = context;
-            _mediator = mediator;
+            throw new NotFoundException(nameof(Basket), request.Id);
         }
 
-        public async Task<Unit> Handle(PurgeBasketCommand request, CancellationToken cancellationToken)
+        var basketItems = await _mediator.Send(new GetBasketItemsQuery
         {
-            var entity = await _context.Baskets.FindAsync(request.Id);
+            Basket = entity
+        }, cancellationToken);
 
-            if (entity == null)
+        foreach (var item in basketItems)
+        {
+            try
             {
-                throw new NotFoundException(nameof(Basket), request.Id);
-            }
-
-            var basketItems = await _mediator.Send(new GetBasketItemsQuery
-            {
-                Basket = entity
-            }, cancellationToken);
-
-            foreach (var item in basketItems)
-            {
-                try
+                await _mediator.Send(new DeleteBasketItemCommand
                 {
-                    await _mediator.Send(new DeleteBasketItemCommand
-                    {
-                        Id = item.Id
-                    }, cancellationToken);
-                }
-                catch (NotFoundException)
-                { }
+                    Id = item.Id
+                }, cancellationToken);
             }
-
-            entity.TotalPrice = 0;
-
-            await _context.SaveChangesAsync(cancellationToken);
-
-            return Unit.Value;
+            catch (NotFoundException)
+            { }
         }
+
+        entity.TotalPrice = 0;
+
+        await _context.SaveChangesAsync(cancellationToken);
+
+        return Unit.Value;
     }
 }

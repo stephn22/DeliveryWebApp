@@ -5,38 +5,37 @@ using MediatR;
 using System.Threading;
 using System.Threading.Tasks;
 
-namespace DeliveryWebApp.Application.Addresses.Commands.DeleteAddress
+namespace DeliveryWebApp.Application.Addresses.Commands.DeleteAddress;
+
+public class DeleteAddressCommand : IRequest<Address>
 {
-    public class DeleteAddressCommand : IRequest<Address>
+    /// <summary>
+    /// Address id
+    /// </summary>
+    public int Id { get; set; }
+}
+
+public class DeleteAddressCommandHandler : IRequestHandler<DeleteAddressCommand, Address>
+{
+    private readonly IApplicationDbContext _context;
+
+    public DeleteAddressCommandHandler(IApplicationDbContext context)
     {
-        /// <summary>
-        /// Address id
-        /// </summary>
-        public int Id { get; set; }
+        _context = context;
     }
 
-    public class DeleteAddressCommandHandler : IRequestHandler<DeleteAddressCommand, Address>
+    public async Task<Address> Handle(DeleteAddressCommand request, CancellationToken cancellationToken)
     {
-        private readonly IApplicationDbContext _context;
+        var entity = await _context.Addresses.FindAsync(request.Id);
 
-        public DeleteAddressCommandHandler(IApplicationDbContext context)
+        if (entity == null)
         {
-            _context = context;
+            throw new NotFoundException(nameof(Address), request.Id);
         }
 
-        public async Task<Address> Handle(DeleteAddressCommand request, CancellationToken cancellationToken)
-        {
-            var entity = await _context.Addresses.FindAsync(request.Id);
+        _context.Addresses.Remove(entity);
+        await _context.SaveChangesAsync(cancellationToken);
 
-            if (entity == null)
-            {
-                throw new NotFoundException(nameof(Address), request.Id);
-            }
-
-            _context.Addresses.Remove(entity);
-            await _context.SaveChangesAsync(cancellationToken);
-
-            return entity;
-        }
+        return entity;
     }
 }

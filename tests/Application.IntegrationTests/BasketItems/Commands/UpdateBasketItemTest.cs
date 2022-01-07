@@ -11,108 +11,107 @@ using FluentAssertions;
 using NUnit.Framework;
 using System.Threading.Tasks;
 
-namespace DeliveryWebApp.Application.IntegrationTests.BasketItems.Commands
+namespace DeliveryWebApp.Application.IntegrationTests.BasketItems.Commands;
+
+using static Testing;
+
+public class UpdateBasketItemTest : TestBase
 {
-    using static Testing;
-
-    public class UpdateBasketItemTest : TestBase
+    [Test]
+    public async Task ShouldRequireMinimumFields()
     {
-        [Test]
-        public async Task ShouldRequireMinimumFields()
+        var command = new UpdateBasketItemCommand();
+
+        await FluentActions.Invoking(() =>
+            SendAsync(command)).Should().ThrowAsync<ValidationException>();
+    }
+
+    [Test]
+    public async Task ShouldUpdateBasketItemAsync()
+    {
+        var userId = await RunAsDefaultUserAsync();
+
+        // create customer
+        var customerCommand = new CreateCustomerCommand()
         {
-            var command = new UpdateBasketItemCommand();
+            ApplicationUserFk = userId,
+            FirstName = "John",
+            LastName = "Doe",
+            Email = "johndoe@gmail.com"
+        };
 
-            await FluentActions.Invoking(() =>
-                SendAsync(command)).Should().ThrowAsync<ValidationException>();
-        }
+        var customer = await SendAsync(customerCommand);
 
-        [Test]
-        public async Task ShouldUpdateBasketItemAsync()
+        // create restaurateur
+        var restaurateurCommand = new CreateRestaurateurCommand
         {
-            var userId = await RunAsDefaultUserAsync();
+            Customer = customer
+        };
 
-            // create customer
-            var customerCommand = new CreateCustomerCommand()
-            {
-                ApplicationUserFk = userId,
-                FirstName = "John",
-                LastName = "Doe",
-                Email = "johndoe@gmail.com"
-            };
+        var restaurateur = await SendAsync(restaurateurCommand);
 
-            var customer = await SendAsync(customerCommand);
+        // create product
+        var productCommand = new CreateProductCommand
+        {
+            Image = null,
+            Name = "Pizza",
+            Category = ProductCategory.Pizza,
+            Price = 5.50M,
+            Discount = 12,
+            Quantity = 21,
+            RestaurateurId = restaurateur.Id
+        };
 
-            // create restaurateur
-            var restaurateurCommand = new CreateRestaurateurCommand
-            {
-                Customer = customer
-            };
+        var product = await SendAsync(productCommand);
 
-            var restaurateur = await SendAsync(restaurateurCommand);
+        // create basket
+        var basketCommand = new CreateBasketCommand
+        {
+            Customer = customer
+        };
 
-            // create product
-            var productCommand = new CreateProductCommand
-            {
-                Image = null,
-                Name = "Pizza",
-                Category = ProductCategory.Pizza,
-                Price = 5.50M,
-                Discount = 12,
-                Quantity = 21,
-                RestaurateurId = restaurateur.Id
-            };
+        // create basket item
+        var basket = await SendAsync(basketCommand);
 
-            var product = await SendAsync(productCommand);
+        var command = new CreateBasketItemCommand
+        {
+            Basket = basket,
+            Product = product,
+            Quantity = 3
+        };
 
-            // create basket
-            var basketCommand = new CreateBasketCommand
-            {
-                Customer = customer
-            };
+        var basketItem = await SendAsync(command);
 
-            // create basket item
-            var basket = await SendAsync(basketCommand);
+        var newProductCommand = new CreateProductCommand
+        {
+            Image = null,
+            Name = "Hamburger",
+            Category = ProductCategory.Hamburger,
+            Price = 7.95M,
+            Discount = 15,
+            Quantity = 34,
+            RestaurateurId = restaurateur.Id
+        };
 
-            var command = new CreateBasketItemCommand
-            {
-                Basket = basket,
-                Product = product,
-                Quantity = 3
-            };
+        var newProduct = await SendAsync(newProductCommand);
 
-            var basketItem = await SendAsync(command);
+        var updateBasketItem = new UpdateBasketItemCommand
+        {
+            Id = basketItem.Id,
+            Quantity = newProductCommand.Quantity
+        };
 
-            var newProductCommand = new CreateProductCommand
-            {
-                Image = null,
-                Name = "Hamburger",
-                Category = ProductCategory.Hamburger,
-                Price = 7.95M,
-                Discount = 15,
-                Quantity = 34,
-                RestaurateurId = restaurateur.Id
-            };
+        await SendAsync(updateBasketItem);
 
-            var newProduct = await SendAsync(newProductCommand);
+        var update = await FindAsync<BasketItem>(updateBasketItem.Id);
+        var b = await FindAsync<Basket>(basket.Id);
 
-            var updateBasketItem = new UpdateBasketItemCommand
-            {
-                Id = basketItem.Id,
-                Quantity = newProductCommand.Quantity
-            };
-
-            await SendAsync(updateBasketItem);
-
-            var update = await FindAsync<BasketItem>(updateBasketItem.Id);
-            var b = await FindAsync<Basket>(basket.Id);
-
-            update.Should().NotBeNull();
-            update.Id.Should().NotBe(0);
-            update.Id.Should().Be(basketItem.Id);
-            update.ProductId.Should().Be(product.Id);
-            update.Quantity.Should().Be(updateBasketItem.Quantity);
-            update.BasketId.Should().Be(basket.Id);
-            b.TotalPrice.Should().Be(164.56M);
-        }
+        update.Should().NotBeNull();
+        update.Id.Should().NotBe(0);
+        update.Id.Should().Be(basketItem.Id);
+        update.ProductId.Should().Be(product.Id);
+        update.Quantity.Should().Be(updateBasketItem.Quantity);
+        update.BasketId.Should().Be(basket.Id);
+        b.TotalPrice.Should().Be(164.56M);
     }
 }

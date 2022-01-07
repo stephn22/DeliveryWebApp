@@ -11,53 +11,52 @@ using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 
-namespace DeliveryWebApp.Application.Orders.Queries.GetOrdersWithPagination
+namespace DeliveryWebApp.Application.Orders.Queries.GetOrdersWithPagination;
+
+public class GetOrdersWithPaginationQuery : IRequest<PaginatedList<Order>>
 {
-    public class GetOrdersWithPaginationQuery : IRequest<PaginatedList<Order>>
+    public int? CustomerId { get; set; }
+    public int PageNumber { get; set; } = 1;
+    public int PageSize { get; set; } = 10;
+}
+
+public class
+    GetOrdersWithPaginationQueryHandler : IRequestHandler<GetOrdersWithPaginationQuery, PaginatedList<Order>>
+{
+    private readonly IApplicationDbContext _context;
+    private readonly IMapper _mapper;
+    private readonly ILogger<GetOrdersWithPaginationQuery> _logger;
+
+    public GetOrdersWithPaginationQueryHandler(IApplicationDbContext context, IMapper mapper, ILogger<GetOrdersWithPaginationQuery> logger)
     {
-        public int? CustomerId { get; set; }
-        public int PageNumber { get; set; } = 1;
-        public int PageSize { get; set; } = 10;
+        _context = context;
+        _mapper = mapper;
+        _logger = logger;
     }
 
-    public class
-        GetOrdersWithPaginationQueryHandler : IRequestHandler<GetOrdersWithPaginationQuery, PaginatedList<Order>>
+    public async Task<PaginatedList<Order>> Handle(GetOrdersWithPaginationQuery request,
+        CancellationToken cancellationToken)
     {
-        private readonly IApplicationDbContext _context;
-        private readonly IMapper _mapper;
-        private readonly ILogger<GetOrdersWithPaginationQuery> _logger;
-
-        public GetOrdersWithPaginationQueryHandler(IApplicationDbContext context, IMapper mapper, ILogger<GetOrdersWithPaginationQuery> logger)
+        try
         {
-            _context = context;
-            _mapper = mapper;
-            _logger = logger;
-        }
-
-        public async Task<PaginatedList<Order>> Handle(GetOrdersWithPaginationQuery request,
-            CancellationToken cancellationToken)
-        {
-            try
+            if (request.CustomerId == null)
             {
-                if (request.CustomerId == null)
-                {
-                    return await _context.Orders
-                        .OrderBy(o => o.Date)
-                        .ProjectTo<Order>(_mapper.ConfigurationProvider)
-                        .PaginatedListAsync(request.PageNumber, request.PageSize);
-                }
-
                 return await _context.Orders
-                    .Where(c => c.CustomerId == request.CustomerId)
                     .OrderBy(o => o.Date)
                     .ProjectTo<Order>(_mapper.ConfigurationProvider)
                     .PaginatedListAsync(request.PageNumber, request.PageSize);
             }
-            catch (InvalidOperationException e)
-            {
-                _logger.LogWarning($"{nameof(Order)}, {e.Message}");
-                return null;
-            }
+
+            return await _context.Orders
+                .Where(c => c.CustomerId == request.CustomerId)
+                .OrderBy(o => o.Date)
+                .ProjectTo<Order>(_mapper.ConfigurationProvider)
+                .PaginatedListAsync(request.PageNumber, request.PageSize);
+        }
+        catch (InvalidOperationException e)
+        {
+            _logger.LogWarning($"{nameof(Order)}, {e.Message}");
+            return null;
         }
     }
 }

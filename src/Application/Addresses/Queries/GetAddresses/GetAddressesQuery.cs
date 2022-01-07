@@ -8,39 +8,38 @@ using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 
-namespace DeliveryWebApp.Application.Addresses.Queries.GetAddresses
+namespace DeliveryWebApp.Application.Addresses.Queries.GetAddresses;
+
+/// <summary>
+/// Used in controllers
+/// Get all addresses of a customer
+/// </summary>
+public class GetAddressesQuery : IRequest<List<Address>>
 {
-    /// <summary>
-    /// Used in controllers
-    /// Get all addresses of a customer
-    /// </summary>
-    public class GetAddressesQuery : IRequest<List<Address>>
+    public int CustomerId { get; set; }
+}
+
+public class GetAddressesQueryHandler : IRequestHandler<GetAddressesQuery, List<Address>>
+{
+    private readonly IApplicationDbContext _context;
+
+    public GetAddressesQueryHandler(IApplicationDbContext context)
     {
-        public int CustomerId { get; set; }
+        _context = context;
     }
 
-    public class GetAddressesQueryHandler : IRequestHandler<GetAddressesQuery, List<Address>>
+    public async Task<List<Address>> Handle(GetAddressesQuery request, CancellationToken cancellationToken)
     {
-        private readonly IApplicationDbContext _context;
-
-        public GetAddressesQueryHandler(IApplicationDbContext context)
+        // return list of addresses (max 2) of a customer
+        try
         {
-            _context = context;
+            return await (from a in _context.Addresses
+                where a.CustomerId == request.CustomerId
+                select a).ToListAsync(cancellationToken);
         }
-
-        public async Task<List<Address>> Handle(GetAddressesQuery request, CancellationToken cancellationToken)
+        catch (InvalidOperationException)
         {
-            // return list of addresses (max 2) of a customer
-            try
-            {
-                return await (from a in _context.Addresses
-                              where a.CustomerId == request.CustomerId
-                              select a).ToListAsync(cancellationToken);
-            }
-            catch (InvalidOperationException)
-            {
-                return null;
-            }
+            return null;
         }
     }
 }

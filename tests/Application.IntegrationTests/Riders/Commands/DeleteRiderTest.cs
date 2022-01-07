@@ -7,52 +7,51 @@ using FluentAssertions;
 using NUnit.Framework;
 using System.Threading.Tasks;
 
-namespace DeliveryWebApp.Application.IntegrationTests.Riders.Commands
+namespace DeliveryWebApp.Application.IntegrationTests.Riders.Commands;
+
+using static Testing;
+
+public class DeleteRiderTest : TestBase
 {
-    using static Testing;
-
-    public class DeleteRiderTest : TestBase
+    [Test]
+    public async Task ShouldRequireMinimumFields()
     {
-        [Test]
-        public async Task ShouldRequireMinimumFields()
+        var command = new DeleteRiderCommand();
+
+        await FluentActions.Invoking(() =>
+            SendAsync(command)).Should().ThrowAsync<ValidationException>();
+    }
+
+    [Test]
+    public async Task ShouldDeteleRiderAsync()
+    {
+        var userId = await RunAsDefaultUserAsync();
+
+        var customerCommand = new CreateCustomerCommand
         {
-            var command = new DeleteRiderCommand();
+            ApplicationUserFk = userId,
+            FirstName = "John",
+            LastName = "Doe",
+            Email = "johndoe@gmail.com"
+        };
 
-            await FluentActions.Invoking(() =>
-                SendAsync(command)).Should().ThrowAsync<ValidationException>();
-        }
+        var customer = await SendAsync(customerCommand);
 
-        [Test]
-        public async Task ShouldDeteleRiderAsync()
+        var command = new CreateRiderCommand
         {
-            var userId = await RunAsDefaultUserAsync();
+            Customer = customer,
+            DeliveryCredit = 12.52M
+        };
 
-            var customerCommand = new CreateCustomerCommand
-            {
-                ApplicationUserFk = userId,
-                FirstName = "John",
-                LastName = "Doe",
-                Email = "johndoe@gmail.com"
-            };
+        var item = await SendAsync(command);
 
-            var customer = await SendAsync(customerCommand);
+        await SendAsync(new DeleteRiderCommand
+        {
+            Id = item.Id
+        });
 
-            var command = new CreateRiderCommand
-            {
-                Customer = customer,
-                DeliveryCredit = 12.52M
-            };
-
-            var item = await SendAsync(command);
-
-            await SendAsync(new DeleteRiderCommand
-            {
-                Id = item.Id
-            });
-
-            var rider = await FindAsync<Rider>(item.Id);
-            rider.Should().BeNull();
-            customer.Should().NotBeNull();
-        }
+        var rider = await FindAsync<Rider>(item.Id);
+        rider.Should().BeNull();
+        customer.Should().NotBeNull();
     }
 }

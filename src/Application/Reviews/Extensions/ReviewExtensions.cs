@@ -4,21 +4,20 @@ using Microsoft.EntityFrameworkCore;
 using System;
 using System.Threading.Tasks;
 
-namespace DeliveryWebApp.Application.Reviews.Extensions
+namespace DeliveryWebApp.Application.Reviews.Extensions;
+
+public static class ReviewExtensions
 {
-    public static class ReviewExtensions
+    public static async Task<Customer> GetCustomerAsync(this Review review, IApplicationDbContext context)
     {
-        public static async Task<Customer> GetCustomerAsync(this Review review, IApplicationDbContext context)
+        try
         {
-            try
-            {
-                var customer = await context.Customers.FirstAsync(c => c.Id == review.CustomerId);
-                return customer;
-            }
-            catch (InvalidOperationException)
-            {
-                return null;
-            }
+            var customer = await context.Customers.FirstAsync(c => c.Id == review.CustomerId);
+            return customer;
+        }
+        catch (InvalidOperationException)
+        {
+            return null;
         }
     }
 }

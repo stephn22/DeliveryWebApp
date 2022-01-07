@@ -4,19 +4,18 @@ using FluentAssertions;
 using NUnit.Framework;
 using System.Threading.Tasks;
 
-namespace DeliveryWebApp.Application.IntegrationTests.Orders.Commands
+namespace DeliveryWebApp.Application.IntegrationTests.Orders.Commands;
+
+using static Testing;
+
+public class DeleteOrderTest : TestBase
 {
-    using static Testing;
-
-    public class DeleteOrderTest : TestBase
+    [Test]
+    public async Task ShouldRequireMinimumFields()
     {
-        [Test]
-        public async Task ShouldRequireMinimumFields()
-        {
-            var command = new DeleteOrderCommand();
+        var command = new DeleteOrderCommand();
 
-            await FluentActions.Invoking(() =>
-                SendAsync(command)).Should().ThrowAsync<ValidationException>();
-        }
+        await FluentActions.Invoking(() =>
+            SendAsync(command)).Should().ThrowAsync<ValidationException>();
     }
 }

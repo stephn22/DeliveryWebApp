@@ -11,68 +11,67 @@ using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 
-namespace DeliveryWebApp.Application.Orders.Commands.CreateOrder
+namespace DeliveryWebApp.Application.Orders.Commands.CreateOrder;
+
+public class CreateOrderCommand : IRequest<Order>
 {
-    public class CreateOrderCommand : IRequest<Order>
+    public Customer Customer { get; set; }
+    public Restaurateur Restaurateur { get; set; }
+    public IEnumerable<BasketItem> BasketItems { get; set; }
+    public int AddressId { get; set; }
+}
+
+public class CreateOrderCommandHandler : IRequestHandler<CreateOrderCommand, Order>
+{
+    private readonly IApplicationDbContext _context;
+    private readonly IMediator _mediator;
+
+    public CreateOrderCommandHandler(IApplicationDbContext context, IMediator mediator)
     {
-        public Customer Customer { get; set; }
-        public Restaurateur Restaurateur { get; set; }
-        public IEnumerable<BasketItem> BasketItems { get; set; }
-        public int AddressId { get; set; }
+        _context = context;
+        _mediator = mediator;
     }
 
-    public class CreateOrderCommandHandler : IRequestHandler<CreateOrderCommand, Order>
+    public async Task<Order> Handle(CreateOrderCommand request, CancellationToken cancellationToken)
     {
-        private readonly IApplicationDbContext _context;
-        private readonly IMediator _mediator;
-
-        public CreateOrderCommandHandler(IApplicationDbContext context, IMediator mediator)
+        var entity = new Order
         {
-            _context = context;
-            _mediator = mediator;
-        }
+            RestaurateurId = request.Restaurateur.Id,
+            CustomerId = request.Customer.Id,
+            Status = OrderStatus.New,
+            Date = DateTime.UtcNow,
+            DeliveryAddressId = request.AddressId
+        };
 
-        public async Task<Order> Handle(CreateOrderCommand request, CancellationToken cancellationToken)
+        _context.Orders.Add(entity);
+        await _context.SaveChangesAsync(cancellationToken);
+
+        if (request.BasketItems.Any())
         {
-            var entity = new Order
+            var basketId = 0;
+
+            foreach (var item in request.BasketItems)
             {
-                RestaurateurId = request.Restaurateur.Id,
-                CustomerId = request.Customer.Id,
-                Status = OrderStatus.New,
-                Date = DateTime.UtcNow,
-                DeliveryAddressId = request.AddressId
-            };
+                basketId = item.BasketId;
 
-            _context.Orders.Add(entity);
-            await _context.SaveChangesAsync(cancellationToken);
-
-            if (request.BasketItems.Any())
-            {
-                var basketId = 0;
-
-                foreach (var item in request.BasketItems)
+                await _mediator.Send(new CreateOrderItemCommand
                 {
-                    basketId = item.BasketId;
-
-                    await _mediator.Send(new CreateOrderItemCommand
-                    {
-                        BasketItemId = item.Id,
-                        OrderId = entity.Id
-                    }, cancellationToken);
-                }
-
-                // purge basket
-                await _mediator.Send(new PurgeBasketCommand
-                {
-                    Id = basketId
+                    BasketItemId = item.Id,
+                    OrderId = entity.Id
                 }, cancellationToken);
             }
 
-            entity.TotalPrice = await entity.GetOrderTotalPrice(_mediator, _context);
-
-            await _context.SaveChangesAsync(cancellationToken);
-
-            return entity;
+            // purge basket
+            await _mediator.Send(new PurgeBasketCommand
+            {
+                Id = basketId
+            }, cancellationToken);
         }
+
+        entity.TotalPrice = await entity.GetOrderTotalPrice(_mediator, _context);
+
+        await _context.SaveChangesAsync(cancellationToken);
+
+        return entity;
     }
 }

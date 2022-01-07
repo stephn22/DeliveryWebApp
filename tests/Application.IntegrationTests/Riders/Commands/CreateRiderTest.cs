@@ -5,48 +5,47 @@ using FluentAssertions;
 using NUnit.Framework;
 using System.Threading.Tasks;
 
-namespace DeliveryWebApp.Application.IntegrationTests.Riders.Commands
+namespace DeliveryWebApp.Application.IntegrationTests.Riders.Commands;
+
+using static Testing;
+
+public class CreateRiderTest : TestBase
 {
-    using static Testing;
-
-    public class CreateRiderTest : TestBase
+    [Test]
+    public async Task ShouldRequireMinimumFields()
     {
-        [Test]
-        public async Task ShouldRequireMinimumFields()
+        var command = new CreateRiderCommand();
+
+        await FluentActions.Invoking(() =>
+            SendAsync(command)).Should().ThrowAsync<ValidationException>();
+    }
+
+    [Test]
+    public async Task ShouldCreateRiderAsync()
+    {
+        var userId = await RunAsDefaultUserAsync();
+
+        var customerCommand = new CreateCustomerCommand
         {
-            var command = new CreateRiderCommand();
+            ApplicationUserFk = userId,
+            FirstName = "John",
+            LastName = "Doe",
+            Email = "johndoe@gmail.com"
+        };
 
-            await FluentActions.Invoking(() =>
-                SendAsync(command)).Should().ThrowAsync<ValidationException>();
-        }
+        var customer = await SendAsync(customerCommand);
 
-        [Test]
-        public async Task ShouldCreateRiderAsync()
+        var command = new CreateRiderCommand
         {
-            var userId = await RunAsDefaultUserAsync();
+            Customer = customer,
+            DeliveryCredit = 12.52M
+        };
 
-            var customerCommand = new CreateCustomerCommand
-            {
-                ApplicationUserFk = userId,
-                FirstName = "John",
-                LastName = "Doe",
-                Email = "johndoe@gmail.com"
-            };
+        var rider = await SendAsync(command);
 
-            var customer = await SendAsync(customerCommand);
-
-            var command = new CreateRiderCommand
-            {
-                Customer = customer,
-                DeliveryCredit = 12.52M
-            };
-
-            var rider = await SendAsync(command);
-
-            rider.Should().NotBeNull();
-            rider.Id.Should().NotBe(0);
-            rider.DeliveryCredit.Should().Be(command.DeliveryCredit);
-            rider.CustomerId.Should().Be(customer.Id);
-        }
+        rider.Should().NotBeNull();
+        rider.Id.Should().NotBe(0);
+        rider.DeliveryCredit.Should().Be(command.DeliveryCredit);
+        rider.CustomerId.Should().Be(customer.Id);
     }
 }

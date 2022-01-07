@@ -1,8 +1,7 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 
-namespace DeliveryWebApp.Infrastructure.Security.Policies
+namespace DeliveryWebApp.Infrastructure.Security.Policies;
+
+public class IsAuthenticated : IAuthorizationRequirement
 {
-    public class IsAuthenticated : IAuthorizationRequirement
-    {
-    }
 }

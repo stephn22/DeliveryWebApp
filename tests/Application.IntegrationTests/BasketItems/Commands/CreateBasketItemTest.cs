@@ -9,82 +9,81 @@ using FluentAssertions;
 using NUnit.Framework;
 using System.Threading.Tasks;
 
-namespace DeliveryWebApp.Application.IntegrationTests.BasketItems.Commands
+namespace DeliveryWebApp.Application.IntegrationTests.BasketItems.Commands;
+
+using static Testing;
+
+public class CreateBasketItemTest : TestBase
 {
-    using static Testing;
-
-    public class CreateBasketItemTest : TestBase
+    [Test]
+    public async Task ShouldRequireMinimumFields()
     {
-        [Test]
-        public async Task ShouldRequireMinimumFields()
+        var command = new CreateBasketItemCommand();
+
+        await FluentActions.Invoking(() =>
+            SendAsync(command)).Should().ThrowAsync<ValidationException>();
+    }
+
+    [Test]
+    public async Task ShouldCreateBasketItemAsync()
+    {
+        var userId = await RunAsDefaultUserAsync();
+
+        // create customer
+        var customerCommand = new CreateCustomerCommand()
         {
-            var command = new CreateBasketItemCommand();
+            ApplicationUserFk = userId,
+            FirstName = "John",
+            LastName = "Doe",
+            Email = "johndoe@gmail.com"
+        };
 
-            await FluentActions.Invoking(() =>
-                SendAsync(command)).Should().ThrowAsync<ValidationException>();
-        }
+        var customer = await SendAsync(customerCommand);
 
-        [Test]
-        public async Task ShouldCreateBasketItemAsync()
+        // create restaurateur
+        var restaurateurCommand = new CreateRestaurateurCommand
         {
-            var userId = await RunAsDefaultUserAsync();
+            Customer = customer
+        };
 
-            // create customer
-            var customerCommand = new CreateCustomerCommand()
-            {
-                ApplicationUserFk = userId,
-                FirstName = "John",
-                LastName = "Doe",
-                Email = "johndoe@gmail.com"
-            };
+        var restaurateur = await SendAsync(restaurateurCommand);
 
-            var customer = await SendAsync(customerCommand);
+        // create product
+        var productCommand = new CreateProductCommand
+        {
+            Image = null,
+            Name = "Pizza",
+            Category = ProductCategory.Pizza,
+            Price = 5.50M,
+            Discount = 12,
+            Quantity = 21,
+            RestaurateurId = restaurateur.Id
+        };
 
-            // create restaurateur
-            var restaurateurCommand = new CreateRestaurateurCommand
-            {
-                Customer = customer
-            };
+        var product = await SendAsync(productCommand);
 
-            var restaurateur = await SendAsync(restaurateurCommand);
+        // create basket
+        var basketCommand = new CreateBasketCommand
+        {
+            Customer = customer
+        };
 
-            // create product
-            var productCommand = new CreateProductCommand
-            {
-                Image = null,
-                Name = "Pizza",
-                Category = ProductCategory.Pizza,
-                Price = 5.50M,
-                Discount = 12,
-                Quantity = 21,
-                RestaurateurId = restaurateur.Id
-            };
+        // finally create basket item
+        var basket = await SendAsync(basketCommand);
 
-            var product = await SendAsync(productCommand);
+        var command = new CreateBasketItemCommand
+        {
+            Basket = basket,
+            Product = product,
+            Quantity = 3
+        };
 
-            // create basket
-            var basketCommand = new CreateBasketCommand
-            {
-                Customer = customer
-            };
+        var basketItem = await SendAsync(command);
 
-            // finally create basket item
-            var basket = await SendAsync(basketCommand);
-
-            var command = new CreateBasketItemCommand
-            {
-                Basket = basket,
-                Product = product,
-                Quantity = 3
-            };
-
-            var basketItem = await SendAsync(command);
-
-            basketItem.Should().NotBeNull();
-            basketItem.Id.Should().NotBe(0);
-            basketItem.BasketId.Should().Be(command.Basket.Id);
-            basketItem.ProductId.Should().Be(command.Product.Id);
-            basketItem.Quantity.Should().Be(command.Quantity);
-        }
+        basketItem.Should().NotBeNull();
+        basketItem.Id.Should().NotBe(0);
+        basketItem.BasketId.Should().Be(command.Basket.Id);
+        basketItem.ProductId.Should().Be(command.Product.Id);
+        basketItem.Quantity.Should().Be(command.Quantity);
     }
 }

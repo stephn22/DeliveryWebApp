@@ -1,7 +1,6 @@
-﻿namespace DeliveryWebApp.Domain.Entities
+﻿namespace DeliveryWebApp.Domain.Entities;
+
+public abstract class BaseEntity
 {
-    public abstract class BaseEntity
-    {
-        public int Id { get; protected set; }
-    }
+    public int Id { get; protected set; }
 }

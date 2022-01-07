@@ -5,38 +5,37 @@ using MediatR;
 using System.Threading;
 using System.Threading.Tasks;
 
-namespace DeliveryWebApp.Application.Addresses.Queries.GetSingleAddress
+namespace DeliveryWebApp.Application.Addresses.Queries.GetSingleAddress;
+
+/// <summary>
+/// Used in controllers
+/// </summary>
+public class GetSingleAddressQuery : IRequest<Address>
 {
     /// <summary>
-    /// Used in controllers
+    /// Address Id
     /// </summary>
-    public class GetSingleAddressQuery : IRequest<Address>
+    public int Id { get; set; }
+}
+
+public class GetSingleAddressQueryHandler : IRequestHandler<GetSingleAddressQuery, Address>
+{
+    private readonly IApplicationDbContext _context;
+
+    public GetSingleAddressQueryHandler(IApplicationDbContext context)
     {
-        /// <summary>
-        /// Address Id
-        /// </summary>
-        public int Id { get; set; }
+        _context = context;
     }
 
-    public class GetSingleAddressQueryHandler : IRequestHandler<GetSingleAddressQuery, Address>
+    public async Task<Address> Handle(GetSingleAddressQuery request, CancellationToken cancellationToken)
     {
-        private readonly IApplicationDbContext _context;
+        var entity = await _context.Addresses.FindAsync(request.Id);
 
-        public GetSingleAddressQueryHandler(IApplicationDbContext context)
+        if (entity == null)
         {
-            _context = context;
+            throw new NotFoundException(nameof(Address), request.Id);
         }
 
-        public async Task<Address> Handle(GetSingleAddressQuery request, CancellationToken cancellationToken)
-        {
-            var entity = await _context.Addresses.FindAsync(request.Id);
-
-            if (entity == null)
-            {
-                throw new NotFoundException(nameof(Address), request.Id);
-            }
-
-            return entity;
-        }
+        return entity;
     }
 }

@@ -1,6 +1,5 @@
-﻿namespace DeliveryWebApp.Application.Orders.Queries.GetOrderAddress
+﻿namespace DeliveryWebApp.Application.Orders.Queries.GetOrderAddress;
+
+class GetOrderAddressQuery
 {
-    class GetOrderAddressQuery
-    {
-    }
 }

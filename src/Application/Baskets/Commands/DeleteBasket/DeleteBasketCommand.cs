@@ -6,42 +6,41 @@ using MediatR;
 using System.Threading;
 using System.Threading.Tasks;
 
-namespace DeliveryWebApp.Application.Baskets.Commands.DeleteBasket
+namespace DeliveryWebApp.Application.Baskets.Commands.DeleteBasket;
+
+public class DeleteBasketCommand : IRequest<Basket>
 {
-    public class DeleteBasketCommand : IRequest<Basket>
+    public int Id { get; set; }
+}
+
+public class DeleteBasketCommandHandler : IRequestHandler<DeleteBasketCommand, Basket>
+{
+    private readonly IApplicationDbContext _context;
+    private readonly IMediator _mediator;
+
+    public DeleteBasketCommandHandler(IApplicationDbContext context, IMediator mediator)
     {
-        public int Id { get; set; }
+        _context = context;
+        _mediator = mediator;
     }
 
-    public class DeleteBasketCommandHandler : IRequestHandler<DeleteBasketCommand, Basket>
+    public async Task<Basket> Handle(DeleteBasketCommand request, CancellationToken cancellationToken)
     {
-        private readonly IApplicationDbContext _context;
-        private readonly IMediator _mediator;
+        var entity = await _context.Baskets.FindAsync(request.Id);
 
-        public DeleteBasketCommandHandler(IApplicationDbContext context, IMediator mediator)
+        if (entity == null)
         {
-            _context = context;
-            _mediator = mediator;
+            throw new NotFoundException(nameof(Basket), request.Id);
         }
 
-        public async Task<Basket> Handle(DeleteBasketCommand request, CancellationToken cancellationToken)
+        await _mediator.Send(new PurgeBasketCommand
         {
-            var entity = await _context.Baskets.FindAsync(request.Id);
+            Id = entity.Id
+        }, cancellationToken);
 
-            if (entity == null)
-            {
-                throw new NotFoundException(nameof(Basket), request.Id);
-            }
+        _context.Baskets.Remove(entity);
+        await _context.SaveChangesAsync(cancellationToken);
 
-            await _mediator.Send(new PurgeBasketCommand
-            {
-                Id = entity.Id
-            }, cancellationToken);
-
-            _context.Baskets.Remove(entity);
-            await _context.SaveChangesAsync(cancellationToken);
-
-            return entity;
-        }
+        return entity;
     }
 }

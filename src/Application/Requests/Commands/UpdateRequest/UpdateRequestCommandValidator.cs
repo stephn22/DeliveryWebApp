@@ -1,14 +1,13 @@
 ﻿using FluentValidation;
 
-namespace DeliveryWebApp.Application.Requests.Commands.UpdateRequest
-{
-    public class UpdateRequestCommandValidator : AbstractValidator<UpdateRequestCommand>
-    {
-        public UpdateRequestCommandValidator()
-        {
-            RuleFor(r => r.Id).GreaterThan(0).NotEmpty();
+namespace DeliveryWebApp.Application.Requests.Commands.UpdateRequest;
 
-            RuleFor(r => r.Status).NotEmpty();
-        }
+public class UpdateRequestCommandValidator : AbstractValidator<UpdateRequestCommand>
+{
+    public UpdateRequestCommandValidator()
+    {
+        RuleFor(r => r.Id).GreaterThan(0).NotEmpty();
+
+        RuleFor(r => r.Status).NotEmpty();
     }
 }

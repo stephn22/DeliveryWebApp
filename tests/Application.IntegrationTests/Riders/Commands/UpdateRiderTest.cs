@@ -6,57 +6,56 @@ using FluentAssertions;
 using NUnit.Framework;
 using System.Threading.Tasks;
 
-namespace DeliveryWebApp.Application.IntegrationTests.Riders.Commands
+namespace DeliveryWebApp.Application.IntegrationTests.Riders.Commands;
+
+using static Testing;
+
+public class UpdateRiderTest : TestBase
 {
-    using static Testing;
-
-    public class UpdateRiderTest : TestBase
+    [Test]
+    public async Task ShouldRequireMinimumFields()
     {
-        [Test]
-        public async Task ShouldRequireMinimumFields()
+        var command = new UpdateRiderCommand();
+
+        await FluentActions.Invoking(() =>
+            SendAsync(command)).Should().ThrowAsync<ValidationException>();
+    }
+
+    [Test]
+    public async Task ShouldUpdateRiderAsync()
+    {
+        var userId = await RunAsDefaultUserAsync();
+
+        var customerCommand = new CreateCustomerCommand
         {
-            var command = new UpdateRiderCommand();
+            ApplicationUserFk = userId,
+            FirstName = "John",
+            LastName = "Doe",
+            Email = "johndoe@gmail.com"
+        };
 
-            await FluentActions.Invoking(() =>
-                SendAsync(command)).Should().ThrowAsync<ValidationException>();
-        }
+        var customer = await SendAsync(customerCommand);
 
-        [Test]
-        public async Task ShouldUpdateRiderAsync()
+        var command = new CreateRiderCommand
         {
-            var userId = await RunAsDefaultUserAsync();
+            Customer = customer,
+            DeliveryCredit = 12.52M
+        };
 
-            var customerCommand = new CreateCustomerCommand
-            {
-                ApplicationUserFk = userId,
-                FirstName = "John",
-                LastName = "Doe",
-                Email = "johndoe@gmail.com"
-            };
+        var rider = await SendAsync(command);
 
-            var customer = await SendAsync(customerCommand);
+        var updateCommand = new UpdateRiderCommand
+        {
+            Id = rider.Id,
+            DeliveryCredit = 11.75M
+        };
 
-            var command = new CreateRiderCommand
-            {
-                Customer = customer,
-                DeliveryCredit = 12.52M
-            };
+        var update = await SendAsync(updateCommand);
 
-            var rider = await SendAsync(command);
-
-            var updateCommand = new UpdateRiderCommand
-            {
-                Id = rider.Id,
-                DeliveryCredit = 11.75M
-            };
-
-            var update = await SendAsync(updateCommand);
-
-            update.Should().NotBeNull();
-            update.Id.Should().NotBe(0);
-            update.Id.Should().Be(rider.Id);
-            update.CustomerId.Should().Be(customer.Id);
-            update.DeliveryCredit.Should().Be(updateCommand.DeliveryCredit);
-        }
+        update.Should().NotBeNull();
+        update.Id.Should().NotBe(0);
+        update.Id.Should().Be(rider.Id);
+        update.CustomerId.Should().Be(customer.Id);
+        update.DeliveryCredit.Should().Be(updateCommand.DeliveryCredit);
     }
 }

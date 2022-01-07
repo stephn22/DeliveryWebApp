@@ -6,50 +6,49 @@ using NUnit.Framework;
 using NUnit.Framework.Internal;
 using System.Threading.Tasks;
 
-namespace DeliveryWebApp.Application.IntegrationTests.Restaurateurs.Commands
+namespace DeliveryWebApp.Application.IntegrationTests.Restaurateurs.Commands;
+
+using static Testing;
+
+public class CreateRestaurateurTest : TestBase
 {
-    using static Testing;
 
-    public class CreateRestaurateurTest : TestBase
+    [Test]
+    public async Task ShouldRequireMinimumFields()
     {
+        var command = new CreateRestaurateurCommand();
 
-        [Test]
-        public async Task ShouldRequireMinimumFields()
+        await FluentActions.Invoking(() =>
+            SendAsync(command)).Should().ThrowAsync<ValidationException>();
+    }
+
+    [Test]
+    public async Task ShouldCreateRestaurateurAsync()
+    {
+        var userId = await RunAsDefaultUserAsync();
+
+        var customerCommand = new CreateCustomerCommand
         {
-            var command = new CreateRestaurateurCommand();
+            ApplicationUserFk = userId,
+            FirstName = "John",
+            LastName = "Doe",
+            Email = "johndoe@gmail.com"
+        };
 
-            await FluentActions.Invoking(() =>
-                SendAsync(command)).Should().ThrowAsync<ValidationException>();
-        }
+        var customer = await SendAsync(customerCommand);
 
-        [Test]
-        public async Task ShouldCreateRestaurateurAsync()
+        var command = new CreateRestaurateurCommand
         {
-            var userId = await RunAsDefaultUserAsync();
+            Customer = customer
+        };
 
-            var customerCommand = new CreateCustomerCommand
-            {
-                ApplicationUserFk = userId,
-                FirstName = "John",
-                LastName = "Doe",
-                Email = "johndoe@gmail.com"
-            };
+        var restaurateur = await SendAsync(command);
 
-            var customer = await SendAsync(customerCommand);
-
-            var command = new CreateRestaurateurCommand
-            {
-                Customer = customer
-            };
-
-            var restaurateur = await SendAsync(command);
-
-            restaurateur.Should().NotBeNull();
-            restaurateur.Id.Should().NotBe(0);
-            restaurateur.RestaurantName.Should().BeNull();
-            restaurateur.RestaurantAddress.Should().BeNull();
-            restaurateur.RestaurantCategory.Should().BeNull();
-            restaurateur.CustomerId.Should().Be(customer.Id);
-        }
+        restaurateur.Should().NotBeNull();
+        restaurateur.Id.Should().NotBe(0);
+        restaurateur.RestaurantName.Should().BeNull();
+        restaurateur.RestaurantAddress.Should().BeNull();
+        restaurateur.RestaurantCategory.Should().BeNull();
+        restaurateur.CustomerId.Should().Be(customer.Id);
     }
 }

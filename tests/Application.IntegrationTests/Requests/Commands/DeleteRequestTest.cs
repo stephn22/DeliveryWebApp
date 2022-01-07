@@ -9,57 +9,56 @@ using FluentAssertions;
 using NUnit.Framework;
 using System.Threading.Tasks;
 
-namespace DeliveryWebApp.Application.IntegrationTests.Requests.Commands
+namespace DeliveryWebApp.Application.IntegrationTests.Requests.Commands;
+
+using static Testing;
+
+public class DeleteRequestTest : TestBase
 {
-    using static Testing;
-
-    public class DeleteRequestTest : TestBase
+    [Test]
+    public async Task ShouldRequireMinimumFields()
     {
-        [Test]
-        public async Task ShouldRequireMinimumFields()
+        var command = new DeleteRequestCommand();
+
+        await FluentActions.Invoking(() =>
+            SendAsync(command)).Should().ThrowAsync<ValidationException>();
+    }
+
+    [Test]
+    public async Task ShouldDeleteRequestAsync()
+    {
+        // create customer first
+        var userId = await RunAsDefaultUserAsync();
+
+        var cmd = new CreateCustomerCommand
         {
-            var command = new DeleteRequestCommand();
+            ApplicationUserFk = userId,
+            FirstName = "John",
+            LastName = "Doe",
+            Email = "johndoe@gmail.com"
+        };
 
-            await FluentActions.Invoking(() =>
-                SendAsync(command)).Should().ThrowAsync<ValidationException>();
-        }
+        var customer = await SendAsync(cmd);
 
-        [Test]
-        public async Task ShouldDeleteRequestAsync()
+        // then create request
+        var command = new CreateRequestCommand
         {
-            // create customer first
-            var userId = await RunAsDefaultUserAsync();
+            CustomerId = customer.Id,
+            Role = RoleName.Restaurateur,
+            Status = RequestStatus.Idle
+        };
 
-            var cmd = new CreateCustomerCommand
-            {
-                ApplicationUserFk = userId,
-                FirstName = "John",
-                LastName = "Doe",
-                Email = "johndoe@gmail.com"
-            };
+        var request = await SendAsync(command);
 
-            var customer = await SendAsync(cmd);
+        // delete request
 
-            // then create request
-            var command = new CreateRequestCommand
-            {
-                CustomerId = customer.Id,
-                Role = RoleName.Restaurateur,
-                Status = RequestStatus.Idle
-            };
+        await SendAsync(new DeleteRequestCommand
+        {
+            Id = request.Id
+        });
 
-            var request = await SendAsync(command);
-
-            // delete request
-
-            await SendAsync(new DeleteRequestCommand
-            {
-                Id = request.Id
-            });
-
-            var r = await FindAsync<Request>(request.Id);
-            r.Should().BeNull();
-            customer.Should().NotBeNull();
-        }
+        var r = await FindAsync<Request>(request.Id);
+        r.Should().BeNull();
+        customer.Should().NotBeNull();
     }
 }

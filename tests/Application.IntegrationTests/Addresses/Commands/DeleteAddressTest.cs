@@ -7,53 +7,52 @@ using FluentAssertions;
 using NUnit.Framework;
 using System.Threading.Tasks;
 
-namespace DeliveryWebApp.Application.IntegrationTests.Addresses.Commands
+namespace DeliveryWebApp.Application.IntegrationTests.Addresses.Commands;
+
+using static Testing;
+
+public class DeleteAddressTest : TestBase
 {
-    using static Testing;
-
-    public class DeleteAddressTest : TestBase
+    [Test]
+    public async Task ShouldRequireMinimumFields()
     {
-        [Test]
-        public async Task ShouldRequireMinimumFields()
+        var command = new DeleteAddressCommand();
+
+        await FluentActions.Invoking(() =>
+            SendAsync(command)).Should().ThrowAsync<ValidationException>();
+    }
+
+    [Test]
+    public async Task ShouldDeleteAddressAsync()
+    {
+        var userId = await RunAsDefaultUserAsync();
+
+        var customerCommand = new CreateCustomerCommand()
         {
-            var command = new DeleteAddressCommand();
+            ApplicationUserFk = userId,
+            FirstName = "John",
+            LastName = "Doe",
+            Email = "johndoe@gmail.com"
+        };
 
-            await FluentActions.Invoking(() =>
-                SendAsync(command)).Should().ThrowAsync<ValidationException>();
-        }
+        var customer = await SendAsync(customerCommand);
 
-        [Test]
-        public async Task ShouldDeleteAddressAsync()
+        var addressCommand = new CreateAddressCommand
         {
-            var userId = await RunAsDefaultUserAsync();
+            Latitude = 48.5472M,
+            Longitude = 72.1804M,
+            CustomerId = customer.Id
+        };
 
-            var customerCommand = new CreateCustomerCommand()
-            {
-                ApplicationUserFk = userId,
-                FirstName = "John",
-                LastName = "Doe",
-                Email = "johndoe@gmail.com"
-            };
+        var address = await SendAsync(addressCommand);
 
-            var customer = await SendAsync(customerCommand);
+        await SendAsync(new DeleteAddressCommand
+        {
+            Id = address.Id
+        });
 
-            var addressCommand = new CreateAddressCommand
-            {
-                Latitude = 48.5472M,
-                Longitude = 72.1804M,
-                CustomerId = customer.Id
-            };
-
-            var address = await SendAsync(addressCommand);
-
-            await SendAsync(new DeleteAddressCommand
-            {
-                Id = address.Id
-            });
-
-            var a = await FindAsync<Address>(address.Id);
-            a.Should().BeNull();
-            customer.Should().NotBeNull();
-        }
+        var a = await FindAsync<Address>(address.Id);
+        a.Should().BeNull();
+        customer.Should().NotBeNull();
     }
 }

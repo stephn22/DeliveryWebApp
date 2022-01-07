@@ -8,51 +8,50 @@ using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 
-namespace DeliveryWebApp.Application.Products.Commands.DeleteProduct
+namespace DeliveryWebApp.Application.Products.Commands.DeleteProduct;
+
+public class DeleteProductCommand : IRequest<Product>
 {
-    public class DeleteProductCommand : IRequest<Product>
+    public int Id { get; set; }
+}
+
+public class DeleteProductCommandHandler : IRequestHandler<DeleteProductCommand, Product>
+{
+    private readonly IApplicationDbContext _context;
+    private readonly IMediator _mediator;
+
+    public DeleteProductCommandHandler(IApplicationDbContext context, IMediator mediator)
     {
-        public int Id { get; set; }
+        _context = context;
+        _mediator = mediator;
     }
 
-    public class DeleteProductCommandHandler : IRequestHandler<DeleteProductCommand, Product>
+    public async Task<Product> Handle(DeleteProductCommand request, CancellationToken cancellationToken)
     {
-        private readonly IApplicationDbContext _context;
-        private readonly IMediator _mediator;
+        var entity = await _context.Products.FindAsync(request.Id);
 
-        public DeleteProductCommandHandler(IApplicationDbContext context, IMediator mediator)
+        if (entity == null)
         {
-            _context = context;
-            _mediator = mediator;
+            throw new NotFoundException(nameof(Product), request.Id);
         }
 
-        public async Task<Product> Handle(DeleteProductCommand request, CancellationToken cancellationToken)
+        // remove the product from all basket items
+        var basketItems = await _context.BasketItems.Where(b => b.ProductId == entity.Id).ToListAsync(cancellationToken);
+
+        if (basketItems != null)
         {
-            var entity = await _context.Products.FindAsync(request.Id);
-
-            if (entity == null)
+            foreach (var item in basketItems)
             {
-                throw new NotFoundException(nameof(Product), request.Id);
-            }
-
-            // remove the product from all basket items
-            var basketItems = await _context.BasketItems.Where(b => b.ProductId == entity.Id).ToListAsync(cancellationToken);
-
-            if (basketItems != null)
-            {
-                foreach (var item in basketItems)
+                await _mediator.Send(new DeleteBasketItemCommand
                 {
-                    await _mediator.Send(new DeleteBasketItemCommand
-                    {
-                        Id = item.Id
-                    }, cancellationToken);
-                }
+                    Id = item.Id
+                }, cancellationToken);
             }
-
-            _context.Products.Remove(entity);
-            await _context.SaveChangesAsync(cancellationToken);
-
-            return entity;
         }
+
+        _context.Products.Remove(entity);
+        await _context.SaveChangesAsync(cancellationToken);
+
+        return entity;
     }
 }

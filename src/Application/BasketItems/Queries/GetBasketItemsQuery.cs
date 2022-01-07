@@ -10,44 +10,43 @@ using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 
-namespace DeliveryWebApp.Application.BasketItems.Queries
+namespace DeliveryWebApp.Application.BasketItems.Queries;
+
+public class GetBasketItemsQuery : IRequest<List<BasketItem>>
 {
-    public class GetBasketItemsQuery : IRequest<List<BasketItem>>
+    public Basket Basket { get; set; }
+}
+
+public class GetBasketItemsQueryHandler : IRequestHandler<GetBasketItemsQuery, List<BasketItem>>
+{
+    private readonly IApplicationDbContext _context;
+    private readonly IMapper _mapper;
+
+    public GetBasketItemsQueryHandler(IApplicationDbContext context, IMapper mapper)
     {
-        public Basket Basket { get; set; }
+        _context = context;
+        _mapper = mapper;
     }
 
-    public class GetBasketItemsQueryHandler : IRequestHandler<GetBasketItemsQuery, List<BasketItem>>
+    public async Task<List<BasketItem>> Handle(GetBasketItemsQuery request, CancellationToken cancellationToken)
     {
-        private readonly IApplicationDbContext _context;
-        private readonly IMapper _mapper;
+        var basket = _mapper.Map<Basket>(request.Basket);
 
-        public GetBasketItemsQueryHandler(IApplicationDbContext context, IMapper mapper)
+        if (basket == null)
         {
-            _context = context;
-            _mapper = mapper;
+            throw new NotFoundException(nameof(Basket), request.Basket.Id);
         }
 
-        public async Task<List<BasketItem>> Handle(GetBasketItemsQuery request, CancellationToken cancellationToken)
+        try
         {
-            var basket = _mapper.Map<Basket>(request.Basket);
+            var basketItemsList = await _context.BasketItems.Where(b => b.BasketId == basket.Id)
+                .ToListAsync(cancellationToken);
 
-            if (basket == null)
-            {
-                throw new NotFoundException(nameof(Basket), request.Basket.Id);
-            }
-
-            try
-            {
-                var basketItemsList = await _context.BasketItems.Where(b => b.BasketId == basket.Id)
-                    .ToListAsync(cancellationToken);
-
-                return basketItemsList;
-            }
-            catch (InvalidOperationException)
-            {
-                return null;
-            }
+            return basketItemsList;
+        }
+        catch (InvalidOperationException)
+        {
+            return null;
         }
     }
 }

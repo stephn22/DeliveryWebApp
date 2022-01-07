@@ -1,6 +1,5 @@
-﻿namespace DeliveryWebApp.Application.Requests.Extensions
+﻿namespace DeliveryWebApp.Application.Requests.Extensions;
+
+public static class RequestExtensions
 {
-    public static class RequestExtensions
-    {
-    }
 }
