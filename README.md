@@ -1,6 +1,11 @@
-[![.NET](https://github.com/stecrotti1/DeliveryWebApp/actions/workflows/dotnet.yml/badge.svg?branch=dev)](https://github.com/stecrotti1/DeliveryWebApp/actions/workflows/dotnet.yml)
+[![.NET](https://github.com/stecrotti1/DeliveryWebApp/actions/workflows/dotnet.yml/badge.svg?branch=react)](https://github.com/stecrotti1/DeliveryWebApp/actions/workflows/dotnet.yml)
 
 # Delivery Web Application
+
+---
+
+## React branch info:
+This is a new branch currently in development, there may be some incomplete files.
 
 ---
 
@@ -11,8 +16,9 @@ This web application was developed following the principles of [Clean Architectu
 ---
 
 ## Technologies:
+* [React](https://reactjs.org/)
 * [ASP.NET Core 6](https://docs.microsoft.com/en-us/aspnet/core/introduction-to-aspnet-core?view=aspnetcore-6.0)
-* [Bootstrap 5](https://getbootstrap.com/)
+* [MUI React Library](https://mui.com/)
 * [qrcodejs](https://github.com/davidshimjs/qrcodejs) (2FA QR Code generation)
 * [Entity Framework Core 6](https://docs.microsoft.com/en-us/ef/core/) (Microsoft SQL Server)
 * [AutoMapper](https://automapper.org/)
