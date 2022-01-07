@@ -7,6 +7,8 @@
 ## React branch info:
 This is a new branch currently in development, there may be some incomplete files.
 
+---
+
 DeliveryWebApp is a .NET Web Application developed by [Stefano Crotti](https://github.com/stecrotti1) at the [Computer Science Institute](http://www.di.unipmn.it) of the [University of Piemonte Orientale](http://www.uniupo.it) as assesment for the *Web applications: architectures and languages* course.
 
 This web application was developed following the principles of [Clean Architecture](https://docs.microsoft.com/en-us/dotnet/architecture/modern-web-apps-azure/common-web-application-architectures#clean-architecture).
