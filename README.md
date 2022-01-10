@@ -1,5 +1,5 @@
-[![.NET](https://github.com/stecrotti1/DeliveryWebApp/actions/workflows/dotnet.yml/badge.svg?branch=dev)](https://github.com/stecrotti1/DeliveryWebApp/actions/workflows/dotnet.yml)
-[![CodeQL](https://github.com/stecrotti1/DeliveryWebApp/actions/workflows/codeql-analysis.yml/badge.svg?branch=dev)](https://github.com/stecrotti1/DeliveryWebApp/actions/workflows/codeql-analysis.yml)
+[![.NET](https://github.com/stecrotti1/DeliveryWebApp/actions/workflows/dotnet.yml/badge.svg?branch=dev-razor)](https://github.com/stecrotti1/DeliveryWebApp/actions/workflows/dotnet.yml)
+[![CodeQL](https://github.com/stecrotti1/DeliveryWebApp/actions/workflows/codeql-analysis.yml/badge.svg?branch=dev-razor)](https://github.com/stecrotti1/DeliveryWebApp/actions/workflows/codeql-analysis.yml)
 
 # Delivery Web Application
 
