@@ -1,4 +1,6 @@
 [![.NET](https://github.com/stecrotti1/DeliveryWebApp/actions/workflows/dotnet.yml/badge.svg?branch=react)](https://github.com/stecrotti1/DeliveryWebApp/actions/workflows/dotnet.yml)
+[![Node.js CI](https://github.com/stecrotti1/DeliveryWebApp/actions/workflows/node.js.yml/badge.svg?branch=react)](https://github.com/stecrotti1/DeliveryWebApp/actions/workflows/node.js.yml)
+[![CodeQL](https://github.com/stecrotti1/DeliveryWebApp/actions/workflows/codeql-analysis.yml/badge.svg?branch=react)](https://github.com/stecrotti1/DeliveryWebApp/actions/workflows/codeql-analysis.yml)
 
 # Delivery Web Application
 
