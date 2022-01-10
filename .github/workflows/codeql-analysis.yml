@@ -13,10 +13,10 @@ name: "CodeQL"
 
 on:
   push:
-    branches: [ razor, dev-razor ]
+    branches: [ dev-razor ]
   pull_request:
     # The branches below must be a subset of the branches above
-    branches: [ razor, dev-razor ]
+    branches: [ dev-razor ]
   schedule:
     - cron: '36 3 * * 4'
 
