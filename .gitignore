@@ -238,3 +238,4 @@ _Pvt_Extensions
 .vscode
 /src/WebUI/Resources/Uploads
 /src/WebUI/ApplicationDbContext.dgml
+/src/WebUI/clientapp/node_modules
