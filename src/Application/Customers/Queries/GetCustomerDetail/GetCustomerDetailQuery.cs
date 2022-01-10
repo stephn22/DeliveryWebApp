@@ -1,18 +1,18 @@
-﻿using DeliveryWebApp.Application.Common.Exceptions;
+﻿using System.Threading;
+using System.Threading.Tasks;
+using DeliveryWebApp.Application.Common.Exceptions;
 using DeliveryWebApp.Application.Common.Interfaces;
 using DeliveryWebApp.Domain.Entities;
 using MediatR;
-using System.Threading;
-using System.Threading.Tasks;
 
-namespace DeliveryWebApp.Application.Customers.Queries.GetSingleCustomer;
+namespace DeliveryWebApp.Application.Customers.Queries.GetCustomerDetail;
 
-public class GetSingleCustomerQuery : IRequest<Customer>
+public class GetCustomerDetailQuery : IRequest<Customer>
 {
     public int Id { get; set; }
 }
 
-public class GetSingleCustomerRequestQueryHandler : IRequestHandler<GetSingleCustomerQuery, Customer>
+public class GetSingleCustomerRequestQueryHandler : IRequestHandler<GetCustomerDetailQuery, Customer>
 {
     private readonly IApplicationDbContext _context;
 
@@ -21,7 +21,7 @@ public class GetSingleCustomerRequestQueryHandler : IRequestHandler<GetSingleCus
         _context = context;
     }
 
-    public async Task<Customer> Handle(GetSingleCustomerQuery request, CancellationToken cancellationToken)
+    public async Task<Customer> Handle(GetCustomerDetailQuery request, CancellationToken cancellationToken)
     {
         var entity = await _context.Customers.FindAsync(request.Id);
 

@@ -1,16 +1,16 @@
-﻿using DeliveryWebApp.Application.Common.Exceptions;
+﻿using System.Threading;
+using System.Threading.Tasks;
+using DeliveryWebApp.Application.Common.Exceptions;
 using DeliveryWebApp.Application.Common.Interfaces;
 using DeliveryWebApp.Domain.Entities;
 using MediatR;
-using System.Threading;
-using System.Threading.Tasks;
 
-namespace DeliveryWebApp.Application.Addresses.Queries.GetSingleAddress;
+namespace DeliveryWebApp.Application.Addresses.Queries.GetAddressDetail;
 
 /// <summary>
 /// Used in controllers
 /// </summary>
-public class GetSingleAddressQuery : IRequest<Address>
+public class GetAddressDetailQuery : IRequest<Address>
 {
     /// <summary>
     /// Address Id
@@ -18,7 +18,7 @@ public class GetSingleAddressQuery : IRequest<Address>
     public int Id { get; set; }
 }
 
-public class GetSingleAddressQueryHandler : IRequestHandler<GetSingleAddressQuery, Address>
+public class GetSingleAddressQueryHandler : IRequestHandler<GetAddressDetailQuery, Address>
 {
     private readonly IApplicationDbContext _context;
 
@@ -27,7 +27,7 @@ public class GetSingleAddressQueryHandler : IRequestHandler<GetSingleAddressQuer
         _context = context;
     }
 
-    public async Task<Address> Handle(GetSingleAddressQuery request, CancellationToken cancellationToken)
+    public async Task<Address> Handle(GetAddressDetailQuery request, CancellationToken cancellationToken)
     {
         var entity = await _context.Addresses.FindAsync(request.Id);
 

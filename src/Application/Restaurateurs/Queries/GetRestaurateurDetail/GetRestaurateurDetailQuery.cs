@@ -5,14 +5,14 @@ using MediatR;
 using System.Threading;
 using System.Threading.Tasks;
 
-namespace DeliveryWebApp.Application.Restaurateurs.Queries.GetSingleRestaurateur;
+namespace DeliveryWebApp.Application.Restaurateurs.Queries.GetRestaurateurDetail;
 
-public class GetSingleRestaurateurQuery : IRequest<Restaurateur>
+public class GetRestaurateurDetailQuery : IRequest<Restaurateur>
 {
     public int Id { get; set; }
 }
 
-public class GetSingleRestaurateurQueryHandler : IRequestHandler<GetSingleRestaurateurQuery, Restaurateur>
+public class GetSingleRestaurateurQueryHandler : IRequestHandler<GetRestaurateurDetailQuery, Restaurateur>
 {
     private readonly IApplicationDbContext _context;
 
@@ -22,7 +22,7 @@ public class GetSingleRestaurateurQueryHandler : IRequestHandler<GetSingleRestau
     }
 
 
-    public async Task<Restaurateur> Handle(GetSingleRestaurateurQuery request, CancellationToken cancellationToken)
+    public async Task<Restaurateur> Handle(GetRestaurateurDetailQuery request, CancellationToken cancellationToken)
     {
         var entity = await _context.Restaurateurs.FindAsync(request.Id);
 
