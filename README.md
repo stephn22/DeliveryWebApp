@@ -1,4 +1,4 @@
-[![.NET](https://github.com/stecrotti1/DeliveryWebApp/actions/workflows/dotnet.yml/badge.svg?branch=razor)](https://github.com/stecrotti1/DeliveryWebApp/actions/workflows/dotnet.yml)
+[![.github/workflows/dotnet.yml](https://github.com/stecrotti1/DeliveryWebApp/actions/workflows/dotnet.yml/badge.svg?branch=razor)](https://github.com/stecrotti1/DeliveryWebApp/actions/workflows/dotnet.yml)
 
 # Delivery Web Application
 
