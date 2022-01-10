@@ -11,6 +11,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using System;
+using Microsoft.AspNetCore.Authentication;
 
 namespace DeliveryWebApp.Infrastructure;
 
@@ -31,16 +32,6 @@ public static class DependencyInjection
 
         services.AddScoped<IDomainEventService, DomainEventService>();
 
-        //services.AddResponseCaching();
-
-        services.AddSession(options =>
-        {
-            options.IdleTimeout = TimeSpan.FromMinutes(10);
-            options.Cookie.HttpOnly = true;
-            options.Cookie.IsEssential = true;
-            options.Cookie.MaxAge = TimeSpan.FromDays(30);
-        });
-
         services
             .AddDefaultIdentity<ApplicationUser>(options =>
             {
@@ -50,6 +41,22 @@ public static class DependencyInjection
             .AddRoles<IdentityRole>()
             .AddEntityFrameworkStores<ApplicationDbContext>()
             .AddDefaultTokenProviders();
+
+        services.AddIdentityServer()
+            .AddApiAuthorization<ApplicationUser, ApplicationDbContext>();
+
+        services.AddAuthentication()
+            .AddIdentityServerJwt();
+
+        services.AddResponseCaching();
+
+        services.AddSession(options =>
+        {
+            options.IdleTimeout = TimeSpan.FromMinutes(10);
+            options.Cookie.HttpOnly = true;
+            options.Cookie.IsEssential = true;
+            options.Cookie.MaxAge = TimeSpan.FromDays(30);
+        });
 
         services.AddTransient<IDateTime, DateTimeService>();
         services.AddTransient<IIdentityService, IdentityService>();
@@ -73,7 +80,8 @@ public static class DependencyInjection
             {
                 microsoftOptions.ClientId = configuration["Authentication:Microsoft:ClientId"];
                 microsoftOptions.ClientSecret = configuration["Authentication:Microsoft:ClientSecret"];
-            });
+            })
+            .AddJwtBearer();
 
         /********************************** Policies **********************************/
 

@@ -2,6 +2,7 @@
 using DeliveryWebApp.Domain.Common;
 using DeliveryWebApp.Domain.Entities;
 using DeliveryWebApp.Infrastructure.Identity;
+using Duende.IdentityServer.EntityFramework.Extensions;
 using Duende.IdentityServer.EntityFramework.Options;
 using Microsoft.AspNetCore.ApiAuthorization.IdentityServer;
 using Microsoft.EntityFrameworkCore;
@@ -18,6 +19,7 @@ public class ApplicationDbContext : ApiAuthorizationDbContext<ApplicationUser>, 
     private readonly ICurrentUserService _currentUserService;
     private readonly IDateTime _dateTime;
     private readonly IDomainEventService _domainEventService;
+    private readonly IOptions<OperationalStoreOptions> _operationalStoreOptions;
 
     public ApplicationDbContext(
         DbContextOptions options,
@@ -26,6 +28,7 @@ public class ApplicationDbContext : ApiAuthorizationDbContext<ApplicationUser>, 
         IDomainEventService domainEventService,
         IDateTime dateTime) : base(options, operationalStoreOptions)
     {
+        _operationalStoreOptions = operationalStoreOptions;
         _currentUserService = currentUserService;
         _domainEventService = domainEventService;
         _dateTime = dateTime;
@@ -71,6 +74,7 @@ public class ApplicationDbContext : ApiAuthorizationDbContext<ApplicationUser>, 
     protected override void OnModelCreating(ModelBuilder builder)
     {
         builder.ApplyConfigurationsFromAssembly(Assembly.GetExecutingAssembly());
+        builder.ConfigurePersistedGrantContext(_operationalStoreOptions.Value);
 
         base.OnModelCreating(builder);
     }
