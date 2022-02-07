@@ -13,7 +13,7 @@
 		<_ContentIncludedByDefault Remove="bundleconfig.json" />
 	</ItemGroup>
 	<ItemGroup>
-		<PackageReference Include="AutoMapper" Version="11.0.0" />
+		<PackageReference Include="AutoMapper" Version="11.0.1" />
 		<PackageReference Include="FluentValidation.AspNetCore" Version="10.3.6" />
 		<PackageReference Include="MediatR" Version="10.0.1" />
 		<PackageReference Include="Microsoft.AspNetCore.ApiAuthorization.IdentityServer" Version="6.0.1" />
