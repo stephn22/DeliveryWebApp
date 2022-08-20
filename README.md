@@ -4,6 +4,13 @@
 
 ---
 
+DeliveryWebApp is a web application developed in .NET, it offers services for food delivery as selecting a restaurant, selecting products and requesting them.
+There are 4 profiles: 
+ * Administrator;
+ * Restaurateur;
+ * Rider;
+ * Customer.
+ 
 This web application was developed following the principles of [Clean Architecture](https://docs.microsoft.com/en-us/dotnet/architecture/modern-web-apps-azure/common-web-application-architectures#clean-architecture).
 
 ---
